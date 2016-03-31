@@ -1,4 +1,4 @@
-# Chronicler  
+# ![](https://forum.choiceofgames.com/uploads/choiceofgames/270/107efc2878dfc5fc.png) Chronicler  
 **Description:**  
 Chronicler is a cross-platform visual code editor for [ChoiceScript](https://www.choiceofgames.com/make-your-own-games/choicescript-intro/). It allows both beginners and veteran novelists alike to design interactive fiction with a flowchart-like layout rather than typing code in a text editor.
 
