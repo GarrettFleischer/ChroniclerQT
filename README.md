@@ -11,7 +11,7 @@ C++, Qt, QML, Javascript
 ![](https://dl.dropboxusercontent.com/s/12unpg8wvym6bix/Chronicler7.png?dl=0)  
 ![](https://dl.dropboxusercontent.com/s/s4qjfcttlua7tu1/Chronicler5.png?dl=0)  
 
-**Installation**  
+**Installation:**  
 1. Install Qt Creator (5.5)  
 2. Import ChroniclerQT project  
 3. Build->Release  
@@ -19,6 +19,16 @@ C++, Qt, QML, Javascript
 **Contribution Guidelines:**  
 Naming convention: Prefix all .h .cpp and .qml files with "C"
 
+**TODO:**  
+* Implement all existing features of GM:S version in Qt
+ * Editable Story/Condition/Choice bubbles
+ * Links between bubbles
+ * .chron file import
+ * CS code generation
+ * CS code import
+
+**Bugs:**  
+* N/A
 
 **Contributors:**  
 [Garrett Fleischer](https://www.linkedin.com/in/garrett-fleischer-57a230b7)
