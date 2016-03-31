@@ -16,7 +16,7 @@ C++, Qt, QML, Javascript
 2. Import ChroniclerQT project  
 3. Build->Release  
 
-**Contribution Guidelines:**
+**Contribution Guidelines:**  
 Naming convention: Prefix all .h .cpp and .qml files with "C"
 
 
@@ -29,3 +29,5 @@ Two years ago I began work on a ChoiceScript adventure game and quickly became b
 
 ![](https://licensebuttons.net/l/by-nc/4.0/88x31.png)  
 **Chronicler** is licensed under a [Creative Commons Attribution-NonCommercial 4.0 International License](http://creativecommons.org/licenses/by-nc/4.0/)
+
+THIS SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
