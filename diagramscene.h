@@ -38,18 +38,76 @@
 **
 ****************************************************************************/
 
-#include "mainwindow.h"
+#ifndef DIAGRAMSCENE_H
+#define DIAGRAMSCENE_H
 
-#include <QApplication>
+#include <QGraphicsScene>
 
-int main(int argv, char *args[])
+QT_BEGIN_NAMESPACE
+class QGraphicsSceneMouseEvent;
+class QMenu;
+class QPointF;
+class QGraphicsLineItem;
+class QFont;
+class QGraphicsTextItem;
+class QColor;
+QT_END_NAMESPACE
+
+class CBubble;
+class CLink;
+
+//! [0]
+class DiagramScene : public QGraphicsScene
 {
-    Q_INIT_RESOURCE(chroniclernext);
+    Q_OBJECT
 
-    QApplication app(argv, args);
-    MainWindow mainWindow;
-    mainWindow.setGeometry(100, 100, 1280, 720);
-    mainWindow.show();
+public:
+    enum Mode { InsertItem, InsertLine, InsertText, Cursor, InsertStory, InsertCondition, InsertChoice };
+
+    explicit DiagramScene(QMenu *itemMenu, QObject *parent = 0);
+    QFont font() const { return myFont; }
+    QColor textColor() const { return myTextColor; }
+    QColor itemColor() const { return myItemColor; }
+    QColor lineColor() const { return myLineColor; }
+    void setLineColor(const QColor &color);
+    void setTextColor(const QColor &color);
+    void setItemColor(const QColor &color);
+    void setFont(const QFont &font);
+
+    bool isRubberBandSelecting() const { return m_rubberBand; }
+
+public slots:
+    void setMode(Mode mode);
     
-    return app.exec();
-}
+private slots:
+    void linkClicked(CLink *link);
+
+signals:
+    void itemInserted(CBubble *item);
+    void textInserted(QGraphicsTextItem *item);
+    void itemSelected(QGraphicsItem *item);
+    void leftPressed();
+    void leftReleased();
+
+protected:
+    void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) Q_DECL_OVERRIDE;
+    void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent) Q_DECL_OVERRIDE;
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent) Q_DECL_OVERRIDE;
+
+private:
+    bool isItemChange(int type);
+
+    QMenu *myItemMenu;
+    Mode myMode;
+    bool leftButtonDown;
+    QPointF startPoint;
+    QGraphicsLineItem *line;
+    QFont myFont;
+    QColor myTextColor;
+    QColor myItemColor;
+    QColor myLineColor;
+    bool m_rubberBand;
+};
+//! [0]
+
+#endif // DIAGRAMSCENE_H

@@ -38,18 +38,50 @@
 **
 ****************************************************************************/
 
-#include "mainwindow.h"
+#ifndef ARROW_H
+#define ARROW_H
 
-#include <QApplication>
+#include <QGraphicsLineItem>
 
-int main(int argv, char *args[])
+#include "Bubbles/cbubble.h"
+
+QT_BEGIN_NAMESPACE
+class QGraphicsPolygonItem;
+class QGraphicsLineItem;
+class QGraphicsScene;
+class QRectF;
+class QGraphicsSceneMouseEvent;
+class QPainterPath;
+QT_END_NAMESPACE
+
+
+//! [0]
+class Arrow : public QGraphicsLineItem
 {
-    Q_INIT_RESOURCE(chroniclernext);
+public:
+    enum { Type = UserType + 4 };
 
-    QApplication app(argv, args);
-    MainWindow mainWindow;
-    mainWindow.setGeometry(100, 100, 1280, 720);
-    mainWindow.show();
-    
-    return app.exec();
-}
+    Arrow(CBubble *startItem, CBubble *endItem,
+      QGraphicsItem *parent = 0);
+
+    int type() const Q_DECL_OVERRIDE { return Type; }
+    QRectF boundingRect() const Q_DECL_OVERRIDE;
+    QPainterPath shape() const Q_DECL_OVERRIDE;
+    void setColor(const QColor &color) { myColor = color; }
+    CBubble *startItem() const { return myStartItem; }
+    CBubble *endItem() const { return myEndItem; }
+
+    void updatePosition();
+
+protected:
+    void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0) Q_DECL_OVERRIDE;
+
+private:
+    CBubble *myStartItem;
+    CBubble *myEndItem;
+    QColor myColor;
+    QPolygonF arrowHead;
+};
+//! [0]
+
+#endif // ARROW_H
