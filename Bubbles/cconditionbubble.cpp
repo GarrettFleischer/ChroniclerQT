@@ -1,7 +1,7 @@
 #include "cconditionbubble.h"
 
 CConditionBubble::CConditionBubble(QMenu *contextMenu, QGraphicsItem *parent)
-    : CBubble(contextMenu, parent)
+    : CBubble(contextMenu, parent), m_label("")
 {
     m_type = Condition;
 

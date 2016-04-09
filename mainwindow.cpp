@@ -1,43 +1,3 @@
-/****************************************************************************
-**
-** Copyright (C) 2015 The Qt Company Ltd.
-** Contact: http://www.qt.io/licensing/
-**
-** This file is part of the examples of the Qt Toolkit.
-**
-** $QT_BEGIN_LICENSE:BSD$
-** You may use this file under the terms of the BSD license as follows:
-**
-** "Redistribution and use in source and binary forms, with or without
-** modification, are permitted provided that the following conditions are
-** met:
-**   * Redistributions of source code must retain the above copyright
-**     notice, this list of conditions and the following disclaimer.
-**   * Redistributions in binary form must reproduce the above copyright
-**     notice, this list of conditions and the following disclaimer in
-**     the documentation and/or other materials provided with the
-**     distribution.
-**   * Neither the name of The Qt Company Ltd nor the names of its
-**     contributors may be used to endorse or promote products derived
-**     from this software without specific prior written permission.
-**
-**
-** THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-** "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-** LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-** A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
-** OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
-** SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
-** LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
-** DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
-** THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-** (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
-** OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE."
-**
-** $QT_END_LICENSE$
-**
-****************************************************************************/
-
 #include "Connections/arrow.h"
 #include "diagramscene.h"
 #include "Bubbles/cstorybubble.h"
@@ -52,11 +12,12 @@ const int InsertTextButton = 10;
 
 
 MainWindow::MainWindow()
+    : m_ShiftHeld(false)
 {
-    m_ShiftHeld = false;
+    setWindowTitle(tr("Chronicler-Next"));
+    setUnifiedTitleAndToolBarOnMac(true);
 
     createActions();
-    //createToolBox();
     createMenus();
 
     scene = new DiagramScene(itemMenu, this);
@@ -78,7 +39,7 @@ MainWindow::MainWindow()
     view->setDragMode(QGraphicsView::RubberBandDrag);
     view->setRenderHint(QPainter::Antialiasing, true);
 
-    QStringList lst = QStringList() << "*set" << "*action" << "*create" << "*if" << "*elseif";
+    QStringList lst = QStringList() << "*set" << "*action" << "*create" << "*if" << "*elseif" << "${name}" << "${title}";
     QStringListModel * lstModel = new QStringListModel(lst, this);
 
     dock = new QDockWidget("Project", this);
@@ -94,8 +55,8 @@ MainWindow::MainWindow()
     handleFontChange();
 
 
-    setWindowTitle(tr("Chronicler-Next"));
-    setUnifiedTitleAndToolBarOnMac(true);
+
+
 }
 
 
@@ -105,6 +66,8 @@ void MainWindow::keyPressEvent(QKeyEvent *evt)
 
     if(evt->key() == Qt::Key_Shift)
         m_ShiftHeld = true;
+    else if(evt->key() == Qt::Key_Delete)
+        deleteItem();
 }
 
 void MainWindow::keyReleaseEvent(QKeyEvent *evt)
@@ -122,7 +85,10 @@ void MainWindow::keyReleaseEvent(QKeyEvent *evt)
 
 void MainWindow::deleteItem()
 {
+    properties->SetBubble(0);
 
+    foreach (QGraphicsItem *item, scene->selectedItems())
+        delete item;
 }
 
 
@@ -144,13 +110,6 @@ void MainWindow::itemInserted(CBubble *)
         pointerTypeGroup->button(int(DiagramScene::Cursor))->setChecked(true);
         scene->setMode(DiagramScene::Cursor);
     }
-}
-
-
-void MainWindow::textInserted(QGraphicsTextItem *)
-{
-    buttonGroup->button(InsertTextButton)->setChecked(false);
-    scene->setMode(DiagramScene::Mode(pointerTypeGroup->checkedId()));
 }
 
 
@@ -242,7 +201,7 @@ void MainWindow::itemSelected(QGraphicsItem *selectedItem)
     if(!scene->isRubberBandSelecting())
     {
         foreach (QGraphicsItem *item, scene->items())
-                item->setZValue(item->zValue() - qPow(1, -10));
+            item->setZValue(item->zValue() - qPow(1, -10));
 
         selectedItem->setZValue(1);
     }
@@ -275,16 +234,16 @@ void MainWindow::about()
 
 void MainWindow::createActions()
 {
-//    toFrontAction = new QAction(QIcon(":/images/bringtofront.png"),
-//                                tr("Bring to &Front"), this);
-//    toFrontAction->setShortcut(tr("Ctrl+F"));
-//    toFrontAction->setStatusTip(tr("Bring item to front"));
-//    connect(toFrontAction, SIGNAL(triggered()), this, SLOT(bringToFront()));
+    //    toFrontAction = new QAction(QIcon(":/images/bringtofront.png"),
+    //                                tr("Bring to &Front"), this);
+    //    toFrontAction->setShortcut(tr("Ctrl+F"));
+    //    toFrontAction->setStatusTip(tr("Bring item to front"));
+    //    connect(toFrontAction, SIGNAL(triggered()), this, SLOT(bringToFront()));
 
-//    sendBackAction = new QAction(QIcon(":/images/sendtoback.png"), tr("Send to &Back"), this);
-//    sendBackAction->setShortcut(tr("Ctrl+B"));
-//    sendBackAction->setStatusTip(tr("Send item to back"));
-//    connect(sendBackAction, SIGNAL(triggered()), this, SLOT(sendToBack()));
+    //    sendBackAction = new QAction(QIcon(":/images/sendtoback.png"), tr("Send to &Back"), this);
+    //    sendBackAction->setShortcut(tr("Ctrl+B"));
+    //    sendBackAction->setStatusTip(tr("Send item to back"));
+    //    connect(sendBackAction, SIGNAL(triggered()), this, SLOT(sendToBack()));
 
     deleteAction = new QAction(QIcon(":/images/delete.png"), tr("&Delete"), this);
     deleteAction->setShortcut(tr("Delete"));
@@ -327,8 +286,8 @@ void MainWindow::createMenus()
     itemMenu = menuBar()->addMenu(tr("&Item"));
     itemMenu->addAction(deleteAction);
     itemMenu->addSeparator();
-//    itemMenu->addAction(toFrontAction);
-//    itemMenu->addAction(sendBackAction);
+    //    itemMenu->addAction(toFrontAction);
+    //    itemMenu->addAction(sendBackAction);
 
     aboutMenu = menuBar()->addMenu(tr("&Help"));
     aboutMenu->addAction(aboutAction);

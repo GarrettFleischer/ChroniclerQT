@@ -57,7 +57,6 @@ class QComboBox;
 class QFontComboBox;
 class QButtonGroup;
 class QLineEdit;
-class QGraphicsTextItem;
 class QFont;
 class QToolButton;
 class QAbstractButton;
@@ -65,7 +64,7 @@ class QGraphicsView;
 class QGraphicsItem;
 QT_END_NAMESPACE
 
-//! [0]
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -77,16 +76,13 @@ protected:
    virtual void keyPressEvent(QKeyEvent *evt);
    virtual void keyReleaseEvent(QKeyEvent *evt);
 
-//signals:
-//    void SelectedItemChanged(CBubble *bbl);
-
 private slots:
     void deleteItem();
     void pointerGroupClicked(int id);
     void itemInserted(CBubble *);
-    void textInserted(QGraphicsTextItem *item);
     void currentFontChanged(const QFont &font);
     void fontSizeChanged(const QString &size);
+    void handleFontChange();
     void sceneScaleChanged(const QString &scale);
     void textColorChanged();
     void itemColorChanged();
@@ -94,13 +90,11 @@ private slots:
     void textButtonTriggered();
     void fillButtonTriggered();
     void lineButtonTriggered();
-    void handleFontChange();
     void itemSelected(QGraphicsItem *selectedItem);
     void about();
     void sceneLeftPressed();
     void sceneLeftReleased();
-    
-//    void linkClicked(CLink *);
+
 
 private:
     void createActions();
@@ -159,6 +153,5 @@ private:
     QDockWidget *dock;
     CPropertiesView *properties;
 };
-//! [0]
 
 #endif // MAINWINDOW_H

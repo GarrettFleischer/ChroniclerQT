@@ -2,6 +2,8 @@
 
 #include "Bubbles/cstorybubble.h"
 
+#include<limits>
+
 CStoryProperties::CStoryProperties(CBubble *bbl, QStringListModel *model, QWidget *parent)
     : QWidget(parent), m_model(model), m_titleEdit(0), m_storyEdit(0), m_lockEdit(0), m_orderEdit(0)
 {
@@ -26,7 +28,7 @@ CStoryProperties::CStoryProperties(CBubble *bbl, QStringListModel *model, QWidge
         // Order
         QLabel *lblOrder = new QLabel(tr("Order:"), this);
         m_orderEdit = new QLineEdit(this);
-        m_orderEdit->setValidator(new QIntValidator(0, 9999999));
+        m_orderEdit->setValidator(new QIntValidator(0, std::numeric_limits<int>::max()));
         m_orderEdit->setMaximumWidth(50);
         m_orderEdit->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Fixed);
         connect(m_orderEdit, SIGNAL(textChanged(QString)), this, SLOT(OrderChanged(QString)));

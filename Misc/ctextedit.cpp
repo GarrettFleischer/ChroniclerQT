@@ -4,7 +4,6 @@
 CTextEdit::CTextEdit(QWidget * parent, QStringListModel * model, const QString & text)
 : QTextEdit(parent), m_completer(0), m_model(model), m_enabled(true), m_acceptsReturn(true)
 {
-//    setTabChangesFocus(true);
     m_filtered = new QStringListModel(this);
     setText(text);
     setCompleter(new QCompleter(m_filtered, this));
@@ -26,7 +25,6 @@ void CTextEdit::setCompleter(QCompleter *completer)
     m_completer->setCompletionMode(QCompleter::PopupCompletion);
     m_completer->setCaseSensitivity(Qt::CaseInsensitive);
     m_completer->setModelSorting(QCompleter::CaseInsensitivelySortedModel);
-    m_completer->setWrapAround(false);
     m_completer->setModel(m_filtered);
 
     QObject::connect(m_completer, SIGNAL(activated(QString)),
@@ -106,8 +104,8 @@ QString CTextEdit::textUnderCursor() const
 
     if(!selected_text.isEmpty())
         tc.select(QTextCursor::WordUnderCursor);
-    selected_text = tc.selectedText();
 
+    selected_text += tc.selectedText();
 
     return selected_text;
 }
@@ -131,9 +129,6 @@ void CTextEdit::insertCompletion(const QString& completion)
 }
 
 
-
-
-
 void CTextEdit::focusInEvent(QFocusEvent *e)
 {
     if (m_completer)
@@ -144,9 +139,14 @@ void CTextEdit::focusInEvent(QFocusEvent *e)
 
 void CTextEdit::keyPressEvent(QKeyEvent *e)
 {
-    bool isShortcut = (e->key() == Qt::Key_Escape);
-    if(isShortcut)
-        m_enabled = !m_enabled;
+    bool isEscape = (e->key() == Qt::Key_Escape);
+    if(isEscape)
+    {
+        if(!m_completer->popup()->isHidden())
+            m_enabled = false;
+        else
+            m_enabled = true;
+    }
 
     bool isReturn = (e->key() == Qt::Key_Return || e->key() == Qt::Key_Enter);
     bool isTab = (e->key() == Qt::Key_Tab);
@@ -167,7 +167,7 @@ void CTextEdit::keyPressEvent(QKeyEvent *e)
        }
     }
 
-    if ((!m_completer || !isShortcut) && !(isReturn && !m_acceptsReturn) && !isTab)
+    if ((!m_completer || !isEscape) && !(isReturn && !m_acceptsReturn) && !isTab)
         QTextEdit::keyPressEvent(e);
 
 
@@ -176,13 +176,13 @@ void CTextEdit::keyPressEvent(QKeyEvent *e)
         return;
 
     bool hasModifier = (e->modifiers() != Qt::NoModifier) && !ctrlOrShift;
-    QString completionPrefix = textUnderCursor();
+    QString completionPrefix = textUnderCursor().replace("*","\\*");
 
-    QStringList filteredList = m_model->stringList().filter(completionPrefix, m_completer->caseSensitivity());
+    QStringList filteredList = m_model->stringList().filter(QRegExp("*"+completionPrefix+"*", m_completer->caseSensitivity(), QRegExp::WildcardUnix));
     m_filtered->setStringList(filteredList);
 
 
-    if (!m_enabled || (hasModifier || e->text().isEmpty() || completionPrefix.isEmpty() ||
+    if ((!m_enabled) || (hasModifier || e->text().isEmpty() || (completionPrefix.isEmpty() && !isEscape) ||
                        (!filteredList.isEmpty() && completionPrefix == filteredList.first())))
     {
         m_completer->popup()->hide();

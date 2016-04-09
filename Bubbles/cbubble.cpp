@@ -1,6 +1,6 @@
-#include "cbubble.h"
+#include "Bubbles/cbubble.h"
 
-#include "arrow.h"
+#include "Connections/arrow.h"
 
 
 
@@ -56,23 +56,10 @@ void CBubble::addArrow(Arrow *arrow)
 }
 
 
-QPixmap CBubble::image() const
-{
-    QPixmap pixmap(250, 250);
-    pixmap.fill(Qt::transparent);
-    QPainter painter(&pixmap);
-    painter.setPen(QPen(Qt::black, 8));
-    painter.translate(125, 125);
-    painter.drawPolyline(m_polygon);
-
-    return pixmap;
-}
-
-
 void CBubble::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 {
-    scene()->clearSelection();
-    setSelected(true);
+    //scene()->clearSelection();
+    //setSelected(true);
     m_contextMenu->exec(event->screenPos());
 }
 

@@ -11,12 +11,9 @@
 #include <QPainter>
 
 QT_BEGIN_NAMESPACE
-class QPixmap;
 class QGraphicsItem;
-class QTextEdit;
 class QGraphicsSceneMouseEvent;
 class QStyleOptionGraphicsItem;
-class QWidget;
 class QPolygonF;
 QT_END_NAMESPACE
 
@@ -37,8 +34,6 @@ public:
     void addArrow(Arrow *arrow);
     void removeArrow(Arrow *arrow);
     void removeArrows();
-
-    virtual QPixmap image() const;
 
     QPolygonF polygon() const { return m_polygon; }
 
@@ -63,21 +58,20 @@ protected:
     virtual void UpdateShape() = 0;
 
 protected:
-    QRectF m_bounds;
-    QPolygonF m_polygon;
     QMenu *m_contextMenu;
+    QRectF m_bounds;
+    QSizeF m_minSize;
+    QPolygonF m_polygon;
     QList<Arrow *> m_links;
     QList<Arrow *> m_connections;
     int m_order;
     bool m_locked;
+    QColor m_fontColor;
     QColor m_color;
     QColor m_lineColor;
     QFont m_font;
-    QColor m_fontColor;
     BType m_type;
-    QSizeF m_minSize;
 
-    
     
 signals:
     void Selected(QGraphicsItem *item);

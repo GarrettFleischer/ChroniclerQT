@@ -20,12 +20,12 @@ CStoryBubble::CStoryBubble(QMenu *contextMenu, QGraphicsItem *parent)
     
     SetColor(QColor(124, 140, 230));//(106,116,163);//(106,136,213);//(150,150,255);
 
-    m_title = new CTextItem("Story And a Half", QRectF(), this);
+    m_title = new CTextItem("Title", QRectF(), this);
     m_title->SetStyle(Qt::AlignHCenter);
 
-    QString s("Allow miles wound place the leave had.\nTo sitting subject no improve studied limited.\nYe indulgence unreserved connection alteration appearance my an astonished.\nUp as seen sent make he they of.\nHer raising and himself pasture believe females.\nFancy she stuff after aware merit small his.\nCharmed esteems luckily age out.\nBy an outlived insisted procured improved am.\nPaid hill fine ten now love even leaf.\nSupplied feelings mr of dissuade recurred no it offering honoured.\nAm of of in collecting devonshire favourable excellence.\nHer sixteen end ashamed cottage yet reached get hearing invited.\nResources ourselves sweetness ye do no perfectly.\nWarmly warmth six one any wisdom.\nFamily giving is pulled beauty chatty highly no.\nBlessing appetite domestic did mrs judgment rendered entirely.\nHighly indeed had garden not.\nPost no so what deal evil rent by real in.\nBut her ready least set lived spite solid.\nSeptember how men saw tolerably two behaviour arranging.\nShe offices for highest and replied one venture pasture.\nApplauded no discovery in newspaper allowance am northward.\nFrequently partiality possession resolution at or appearance unaffected he me.\nEngaged its was evident pleased husband.\nYe goodness felicity do disposal dwelling no.\nFirst am plate jokes to began of cause an scale.\nSubjects he prospect elegance followed no overcame possible it on.\nLooking started he up perhaps against.\nHow remainder all additions get elsewhere resources.\nOne missed shy wishes supply design answer formed.\nPrevent on present hastily passage an subject in be.\nBe happiness arranging so newspaper defective affection ye.\nFamilies blessing he in to no daughter.\nDo so written as raising parlors spirits mr elderly.\nMade late in of high left hold.\nCarried females of up highest calling.\nLimits marked led silent dining her she far.\nSir but elegance marriage dwelling likewise position old pleasure men.\nDissimilar themselves simplicity no of contrasted as.\nDelay great day hours men.\nStuff front to do allow to asked he.\nOf recommend residence education be on difficult repulsive offending.\nJudge views had mirth table seems great him for her.\nAlone all happy asked begin fully stand own get.\nExcuse ye seeing result of we.\nSee scale dried songs old may not.\nPromotion did disposing you household any instantly.\nHills we do under times at first short an.");
+    //QString s("Allow miles wound place the leave had.\nTo sitting subject no improve studied limited.\nYe indulgence unreserved connection alteration appearance my an astonished.\nUp as seen sent make he they of.\nHer raising and himself pasture believe females.\nFancy she stuff after aware merit small his.\nCharmed esteems luckily age out.\nBy an outlived insisted procured improved am.\nPaid hill fine ten now love even leaf.\nSupplied feelings mr of dissuade recurred no it offering honoured.\nAm of of in collecting devonshire favourable excellence.\nHer sixteen end ashamed cottage yet reached get hearing invited.\nResources ourselves sweetness ye do no perfectly.\nWarmly warmth six one any wisdom.\nFamily giving is pulled beauty chatty highly no.\nBlessing appetite domestic did mrs judgment rendered entirely.\nHighly indeed had garden not.\nPost no so what deal evil rent by real in.\nBut her ready least set lived spite solid.\nSeptember how men saw tolerably two behaviour arranging.\nShe offices for highest and replied one venture pasture.\nApplauded no discovery in newspaper allowance am northward.\nFrequently partiality possession resolution at or appearance unaffected he me.\nEngaged its was evident pleased husband.\nYe goodness felicity do disposal dwelling no.\nFirst am plate jokes to began of cause an scale.\nSubjects he prospect elegance followed no overcame possible it on.\nLooking started he up perhaps against.\nHow remainder all additions get elsewhere resources.\nOne missed shy wishes supply design answer formed.\nPrevent on present hastily passage an subject in be.\nBe happiness arranging so newspaper defective affection ye.\nFamilies blessing he in to no daughter.\nDo so written as raising parlors spirits mr elderly.\nMade late in of high left hold.\nCarried females of up highest calling.\nLimits marked led silent dining her she far.\nSir but elegance marriage dwelling likewise position old pleasure men.\nDissimilar themselves simplicity no of contrasted as.\nDelay great day hours men.\nStuff front to do allow to asked he.\nOf recommend residence education be on difficult repulsive offending.\nJudge views had mirth table seems great him for her.\nAlone all happy asked begin fully stand own get.\nExcuse ye seeing result of we.\nSee scale dried songs old may not.\nPromotion did disposing you household any instantly.\nHills we do under times at first short an.");
 
-    m_story = new CTextItem(s, QRectF(), this);
+    m_story = new CTextItem("Story", QRectF(), this);
     m_story->SetStyle(Qt::AlignLeft);// | Qt::TextWordWrap);
     
     setCursor(Qt::PointingHandCursor);
@@ -88,17 +88,6 @@ void CStoryBubble::LinkClicked(CLink *link)
     link->setConnection(new CConnection(link));
 }
 
-//void CStoryBubble::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *evt)
-//{
-//    QGraphicsItem::mouseDoubleClickEvent(evt);
-
-//    m_properties = new PropStoryBubble(m_title->Text(), m_story->Text(), m_order, m_locked, m_color);
-//    connect(m_properties, SIGNAL(accepted()), this, SLOT(PropertiesAccepted()));
-//    m_properties->show();
-//}
-
-
-
 
 void CStoryBubble::UpdateShape()
 {
@@ -129,7 +118,6 @@ void CStoryBubble::UpdateShape()
     path = path.simplified();
 
     m_polygon = path.toFillPolygon();
-
     setPolygon(m_polygon);
 }
 

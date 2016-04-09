@@ -48,7 +48,7 @@
 #include "Bubbles/cconditionbubble.h"
 #include "Connections/clink.h"
 
-//! [0]
+
 DiagramScene::DiagramScene(QMenu *itemMenu, QObject *parent)
     : QGraphicsScene(parent)
 {
@@ -62,9 +62,7 @@ DiagramScene::DiagramScene(QMenu *itemMenu, QObject *parent)
 
     setBackgroundBrush(QBrush(Qt::gray));//QColor(86,96,123)));
 }
-//! [0]
 
-//! [1]
 void DiagramScene::setLineColor(const QColor &color)
 {
     myLineColor = color;
@@ -74,15 +72,8 @@ void DiagramScene::setLineColor(const QColor &color)
         if(bbl)
             bbl->SetLineColor(myLineColor);
     }
-//    if (isItemChange(Arrow::Type)) {
-//        Arrow *item = qgraphicsitem_cast<Arrow *>(selectedItems().first());
-//        item->setColor(myLineColor);
-//        update();
-//    }
 }
-//! [1]
 
-//! [2]
 void DiagramScene::setTextColor(const QColor &color)
 {
     myTextColor = color;
@@ -92,15 +83,8 @@ void DiagramScene::setTextColor(const QColor &color)
         if(bbl)
             bbl->SetFontColor(myTextColor);
     }
-
-//    if (isItemChange(DiagramTextItem::Type)) {
-//        DiagramTextItem *item = qgraphicsitem_cast<DiagramTextItem *>(selectedItems().first());
-//        item->setDefaultTextColor(myTextColor);
-//    }
 }
-//! [2]
 
-//! [3]
 void DiagramScene::setItemColor(const QColor &color)
 {
     myItemColor = color;
@@ -110,14 +94,8 @@ void DiagramScene::setItemColor(const QColor &color)
         if(bbl)
             bbl->SetColor(myItemColor);
     }
-//    if (isItemChange(DiagramItem::Type)) {
-//        DiagramItem *item = qgraphicsitem_cast<DiagramItem *>(selectedItems().first());
-//        item->setBrush(myItemColor);
-//    }
 }
-//! [3]
 
-//! [4]
 void DiagramScene::setFont(const QFont &font)
 {
     if(myFont != font)
@@ -132,21 +110,18 @@ void DiagramScene::setFont(const QFont &font)
         }
     }
 }
-//! [4]
 
 void DiagramScene::setMode(Mode mode)
 {
     myMode = mode;
 }
 
-void DiagramScene::linkClicked(CLink *link)
+void DiagramScene::linkClicked(CLink *)
 {
     setMode(InsertLine);
     
 }
-//! [5]
 
-//! [6]
 void DiagramScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     if (mouseEvent->button() == Qt::LeftButton)
@@ -198,9 +173,7 @@ void DiagramScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
         emit leftPressed();
     }
 }
-//! [9]
 
-//! [10]
 void DiagramScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     if (myMode == InsertLine && line != 0) {
@@ -210,9 +183,7 @@ void DiagramScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
         QGraphicsScene::mouseMoveEvent(mouseEvent);
     }
 }
-//! [10]
 
-//! [11]
 void DiagramScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     if (line != 0 && myMode == InsertLine) {
@@ -225,11 +196,8 @@ void DiagramScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
         removeItem(line);
         delete line;
-//! [11] //! [12]
 
         if (startItems.count() > 0 && endItems.count() > 0 &&
-            //startItems.first()->type() == DiagramItem::Type &&
-            //endItems.first()->type() == DiagramItem::Type &&
             startItems.first() != endItems.first()) {
             CBubble *startItem = qgraphicsitem_cast<CBubble *>(startItems.first());
             CBubble *endItem = qgraphicsitem_cast<CBubble *>(endItems.first());
@@ -245,7 +213,7 @@ void DiagramScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
             }
         }
     }
-//! [12] //! [13]
+
     line = 0;
     QGraphicsScene::mouseReleaseEvent(mouseEvent);
 
@@ -253,9 +221,6 @@ void DiagramScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
     emit leftReleased();
 }
-//! [13]
-
-//! [14]
 bool DiagramScene::isItemChange(int type)
 {
     foreach (QGraphicsItem *item, selectedItems()) {
@@ -264,4 +229,3 @@ bool DiagramScene::isItemChange(int type)
     }
     return false;
 }
-//! [14]

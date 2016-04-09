@@ -42,5 +42,4 @@ void CLineEdit::AdjustHeight()
     qreal height = fm.boundingRect("W").height() * 2;
     setMinimumHeight(height);
     setMaximumHeight(height);
-
 }

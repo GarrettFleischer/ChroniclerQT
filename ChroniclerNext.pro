@@ -24,7 +24,8 @@ HEADERS += \
     Properties/cpropertiesview.h \
     Properties/cstoryproperties.h \
     diagramscene.h \
-    mainwindow.h
+    mainwindow.h \
+    Connections/cline.h
 
 SOURCES += \
     Bubbles/cbubble.cpp \
@@ -43,4 +44,5 @@ SOURCES += \
     Properties/cstoryproperties.cpp \
     diagramscene.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    Connections/cline.cpp
