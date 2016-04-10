@@ -48,6 +48,7 @@
 
 class DiagramScene;
 class CBubble;
+class CGraphicsView;
 
 QT_BEGIN_NAMESPACE
 class QAction;
@@ -64,7 +65,6 @@ class QGraphicsView;
 class QGraphicsItem;
 QT_END_NAMESPACE
 
-
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -75,6 +75,7 @@ public:
 protected:
    virtual void keyPressEvent(QKeyEvent *evt);
    virtual void keyReleaseEvent(QKeyEvent *evt);
+   virtual void mousePressEvent(QMouseEvent *evt);
 
 private slots:
     void deleteItem();
@@ -94,6 +95,7 @@ private slots:
     void about();
     void sceneLeftPressed();
     void sceneLeftReleased();
+    void sceneScrolled(int);
 
 
 private:
@@ -103,11 +105,13 @@ private:
     QMenu *createColorMenu(const char *slot, QColor defaultColor);
     QIcon createColorToolButtonIcon(const QString &image, QColor color);
     QIcon createColorIcon(QColor color);
+    void UpdateSceneScale();
 
     bool m_ShiftHeld;
+    float m_scale;
 
     DiagramScene *scene;
-    QGraphicsView *view;
+    CGraphicsView *view;
 
     QAction *exitAction;
     QAction *addAction;
@@ -152,6 +156,9 @@ private:
 
     QDockWidget *dock;
     CPropertiesView *properties;
+
+    // QWidget interface
+
 };
 
 #endif // MAINWINDOW_H

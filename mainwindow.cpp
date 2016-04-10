@@ -1,18 +1,23 @@
 #include "Connections/arrow.h"
 #include "diagramscene.h"
 #include "Bubbles/cstorybubble.h"
+#include "graphicsviewzoom.h"
+#include "cgraphicsview.h"
 
 #include "mainwindow.h"
 
 #include <QtWidgets>
 #include <QStringListModel>
+#include <QtGlobal>
+#include <limits>
+
 
 
 const int InsertTextButton = 10;
 
 
 MainWindow::MainWindow()
-    : m_ShiftHeld(false)
+    : m_ShiftHeld(false), m_scale(1)
 {
     setWindowTitle(tr("Chronicler-Next"));
     setUnifiedTitleAndToolBarOnMac(true);
@@ -20,26 +25,32 @@ MainWindow::MainWindow()
     createActions();
     createMenus();
 
+    float maxsize = std::numeric_limits<float>::max();
+    float minsize = -std::numeric_limits<float>::max()/2;
     scene = new DiagramScene(itemMenu, this);
-    scene->setSceneRect(QRectF(0, 0, 5000, 5000));
+    scene->setSceneRect(QRectF(minsize, minsize, maxsize, maxsize));
     connect(scene, SIGNAL(itemInserted(CBubble*)),
             this, SLOT(itemInserted(CBubble*)));
-    connect(scene, SIGNAL(textInserted(QGraphicsTextItem*)),
-            this, SLOT(textInserted(QGraphicsTextItem*)));
     connect(scene, SIGNAL(itemSelected(QGraphicsItem*)),
             this, SLOT(itemSelected(QGraphicsItem*)));
     connect(scene, SIGNAL(leftReleased()),
             this, SLOT(sceneLeftReleased()));
     connect(scene, SIGNAL(leftPressed()),
             this, SLOT(sceneLeftPressed()));
+    connect(scene, SIGNAL(mouseScrolled(int)),
+            this, SLOT(sceneScrolled(int)));
 
 
 
-    view = new QGraphicsView(scene);
-    view->setDragMode(QGraphicsView::RubberBandDrag);
-    view->setRenderHint(QPainter::Antialiasing, true);
+    view = new CGraphicsView(scene);
+//    view->setDragMode(QGraphicsView::RubberBandDrag);
+//    view->setRenderHint(QPainter::Antialiasing, true);
+//    view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+//    view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    //GraphicsViewZoom * gzoom = new GraphicsViewZoom(view);
+    //gzoom->SetModifiers(Qt::NoModifier);
 
-    QStringList lst = QStringList() << "*set" << "*action" << "*create" << "*if" << "*elseif" << "${name}" << "${title}";
+    QStringList lst = QStringList() << "*set" << "*action" << "*create" << "*if" << "*elseif" << "${name}" << "${title}" << "${strength}";
     QStringListModel * lstModel = new QStringListModel(lst, this);
 
     dock = new QDockWidget("Project", this);
@@ -53,10 +64,6 @@ MainWindow::MainWindow()
 
     createToolbars();
     handleFontChange();
-
-
-
-
 }
 
 
@@ -80,6 +87,12 @@ void MainWindow::keyReleaseEvent(QKeyEvent *evt)
         pointerTypeGroup->button(int(DiagramScene::Cursor))->setChecked(true);
         scene->setMode(DiagramScene::Cursor);
     }
+}
+
+void MainWindow::mousePressEvent(QMouseEvent *evt)
+{
+    if(evt->button() == Qt::MiddleButton)
+        view->setDragMode(QGraphicsView::ScrollHandDrag);
 }
 
 
@@ -127,11 +140,19 @@ void MainWindow::fontSizeChanged(const QString &)
 
 void MainWindow::sceneScaleChanged(const QString &scale)
 {
-    double newScale = scale.left(scale.indexOf(tr("%"))).toDouble() / 100.0;
-    QMatrix oldMatrix = view->matrix();
-    view->resetMatrix();
-    view->translate(oldMatrix.dx(), oldMatrix.dy());
-    view->scale(newScale, newScale);
+    m_scale = scale.left(scale.indexOf(tr("%"))).toFloat() / 100.0;
+    UpdateSceneScale();
+}
+
+void MainWindow::UpdateSceneScale()
+{
+    //    QMatrix oldMatrix = view->matrix();
+    //    QMatrix newMatrix;
+    //    //view->resetMatrix();
+    //   newMatrix.translate(oldMatrix.dx(), oldMatrix.dy());
+    //   view->setMatrix(newMatrix);
+    //view->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+    view->scale(m_scale, m_scale);
 }
 
 
@@ -223,6 +244,13 @@ void MainWindow::sceneLeftReleased()
         CBubble *bbl = dynamic_cast<CBubble *>(selected.first());
         properties->SetBubble(bbl);
     }
+}
+
+void MainWindow::sceneScrolled(int angle)
+{
+    m_scale += (float)angle / 1200.0;
+    m_scale = qBound<float>(0.1, m_scale, 2.0);
+    UpdateSceneScale();
 }
 
 

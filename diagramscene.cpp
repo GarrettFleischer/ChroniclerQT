@@ -43,6 +43,7 @@
 
 #include <QTextCursor>
 #include <QGraphicsSceneMouseEvent>
+#include <QWheelEvent>
 
 #include "Bubbles/cstorybubble.h"
 #include "Bubbles/cconditionbubble.h"
@@ -221,11 +222,8 @@ void DiagramScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
     emit leftReleased();
 }
-bool DiagramScene::isItemChange(int type)
-{
-    foreach (QGraphicsItem *item, selectedItems()) {
-        if (item->type() == type)
-            return true;
-    }
-    return false;
-}
+
+//void DiagramScene::wheelEvent(QGraphicsSceneWheelEvent *event)
+//{
+//    emit mouseScrolled(event->delta());
+//}

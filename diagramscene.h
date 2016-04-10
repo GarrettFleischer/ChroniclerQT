@@ -51,6 +51,7 @@ class QGraphicsLineItem;
 class QFont;
 class QGraphicsTextItem;
 class QColor;
+class QWheelEvent;
 QT_END_NAMESPACE
 
 class CBubble;
@@ -88,15 +89,15 @@ signals:
     void itemSelected(QGraphicsItem *item);
     void leftPressed();
     void leftReleased();
+    void mouseScrolled(int);
 
 protected:
-    void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent) Q_DECL_OVERRIDE;
-    void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent) Q_DECL_OVERRIDE;
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent) Q_DECL_OVERRIDE;
+    virtual void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
+    virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);
+    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent);
+//    virtual void wheelEvent(QGraphicsSceneWheelEvent *event);
 
 private:
-    bool isItemChange(int type);
-
     QMenu *myItemMenu;
     Mode myMode;
     bool leftButtonDown;
@@ -107,6 +108,8 @@ private:
     QColor myItemColor;
     QColor myLineColor;
     bool m_rubberBand;
+
+    // QGraphicsScene interface
 };
 //! [0]
 
