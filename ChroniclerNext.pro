@@ -26,7 +26,6 @@ HEADERS += \
     diagramscene.h \
     mainwindow.h \
     Connections/cline.h \
-    graphicsviewzoom.h \
     cgraphicsview.h
 
 SOURCES += \
@@ -48,5 +47,4 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     Connections/cline.cpp \
-    graphicsviewzoom.cpp \
     cgraphicsview.cpp
