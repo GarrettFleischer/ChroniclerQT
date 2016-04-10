@@ -10,9 +10,10 @@
 
 CGraphicsView::CGraphicsView(QGraphicsScene *scene, QWidget *parent)
     : QGraphicsView(scene, parent), m_scale(1.0), m_minScale(0.05), m_maxScale(5.0),
-      m_modifiers(Qt::NoModifier), m_zoom_factor_base(1.0015)
+      m_modifiers(Qt::NoModifier), m_zoom_factor_base(1.0015), m_shift(false)
 {
-    setDragMode(RubberBandDrag);
+    setMouseTracking(true);
+    setDragMode(ScrollHandDrag);
     setRenderHint(QPainter::Antialiasing, true);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -20,18 +21,15 @@ CGraphicsView::CGraphicsView(QGraphicsScene *scene, QWidget *parent)
 
 void CGraphicsView::mousePressEvent(QMouseEvent *evt)
 {
-    if(evt->button() == Qt::MiddleButton)
-        setDragMode(ScrollHandDrag);
-
     QGraphicsView::mousePressEvent(evt);
 }
 
 void CGraphicsView::mouseReleaseEvent(QMouseEvent *evt)
 {
-    if(evt->button() == Qt::MiddleButton)
-        setDragMode(RubberBandDrag);
-
     QGraphicsView::mouseReleaseEvent(evt);
+
+    if(!m_shift)
+        setDragMode(ScrollHandDrag);
 }
 
 void CGraphicsView::mouseMoveEvent(QMouseEvent *evt)
@@ -65,11 +63,23 @@ void CGraphicsView::wheelEvent(QWheelEvent *evt)
 
 void CGraphicsView::keyPressEvent(QKeyEvent *evt)
 {
+    if(evt->key() == Qt::Key_Shift)
+    {
+        m_shift = true;
+        setDragMode(RubberBandDrag);
+    }
+
     QGraphicsView::keyPressEvent(evt);
 }
 
 void CGraphicsView::keyReleaseEvent(QKeyEvent *evt)
 {
+    if(evt->key() == Qt::Key_Shift)
+    {
+        m_shift = false;
+        setDragMode(ScrollHandDrag);
+    }
+
     QGraphicsView::keyReleaseEvent(evt);
 }
 
@@ -83,6 +93,7 @@ void CGraphicsView::GentleZoom(double factor, const QPointF & mouse_pos)
         m_scale = newscale;
         scale(factor, factor);
 
+        // zoom in
         if(factor > 1)
         {
             centerOn(target_scene_pos);
@@ -91,9 +102,11 @@ void CGraphicsView::GentleZoom(double factor, const QPointF & mouse_pos)
             QPointF viewport_center = mapFromScene(target_scene_pos) - delta_viewport_pos;
             centerOn(mapToScene(viewport_center.toPoint()));
 
+            // update opposite positions
             target_viewport_pos2 = QPoint(viewport()->width(), viewport()->height()) - mouse_pos;
             target_scene_pos2 = mapToScene(target_viewport_pos2.toPoint());
         }
+        // zoom out
         else
         {
             centerOn(target_scene_pos2);
@@ -102,6 +115,7 @@ void CGraphicsView::GentleZoom(double factor, const QPointF & mouse_pos)
             QPointF viewport_center = mapFromScene(target_scene_pos2) - delta_viewport_pos;
             centerOn(mapToScene(viewport_center.toPoint()));
 
+            // update opposite positions
             target_viewport_pos = mouse_pos;
             target_scene_pos = mapToScene(target_viewport_pos.toPoint());
         }

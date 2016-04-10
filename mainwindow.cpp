@@ -1,7 +1,6 @@
 #include "Connections/arrow.h"
 #include "diagramscene.h"
 #include "Bubbles/cstorybubble.h"
-#include "graphicsviewzoom.h"
 #include "cgraphicsview.h"
 
 #include "mainwindow.h"
@@ -43,12 +42,6 @@ MainWindow::MainWindow()
 
 
     view = new CGraphicsView(scene);
-//    view->setDragMode(QGraphicsView::RubberBandDrag);
-//    view->setRenderHint(QPainter::Antialiasing, true);
-//    view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-//    view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    //GraphicsViewZoom * gzoom = new GraphicsViewZoom(view);
-    //gzoom->SetModifiers(Qt::NoModifier);
 
     QStringList lst = QStringList() << "*set" << "*action" << "*create" << "*if" << "*elseif" << "${name}" << "${title}" << "${strength}";
     QStringListModel * lstModel = new QStringListModel(lst, this);
@@ -86,13 +79,8 @@ void MainWindow::keyReleaseEvent(QKeyEvent *evt)
         m_ShiftHeld = false;
         pointerTypeGroup->button(int(DiagramScene::Cursor))->setChecked(true);
         scene->setMode(DiagramScene::Cursor);
-    }
-}
-
-void MainWindow::mousePressEvent(QMouseEvent *evt)
-{
-    if(evt->button() == Qt::MiddleButton)
         view->setDragMode(QGraphicsView::ScrollHandDrag);
+    }
 }
 
 
@@ -112,7 +100,7 @@ void MainWindow::pointerGroupClicked(int id)
     if(id == int(DiagramScene::InsertLine))
         view->setDragMode(QGraphicsView::NoDrag);
     else
-        view->setDragMode(QGraphicsView::RubberBandDrag);
+        view->setDragMode(QGraphicsView::ScrollHandDrag);
 }
 
 
@@ -122,6 +110,7 @@ void MainWindow::itemInserted(CBubble *)
     {
         pointerTypeGroup->button(int(DiagramScene::Cursor))->setChecked(true);
         scene->setMode(DiagramScene::Cursor);
+        view->setDragMode(QGraphicsView::ScrollHandDrag);
     }
 }
 

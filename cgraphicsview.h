@@ -27,6 +27,8 @@ private:
     Qt::KeyboardModifiers m_modifiers;
     double m_zoom_factor_base;
     QPointF target_scene_pos, target_scene_pos2, target_viewport_pos, target_viewport_pos2;
+
+    bool m_shift;
 };
 
 #endif // CGRAPHICSVIEW_H

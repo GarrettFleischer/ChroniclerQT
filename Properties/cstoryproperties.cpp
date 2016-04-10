@@ -130,7 +130,7 @@ void CStoryProperties::SetBubble(CBubble *bbl)
 
         m_titleEdit->setText(m_bbl->m_title->Text());
         m_titleEdit->setFont(bbl->GetFont());
-        m_titleEdit->setFocus();
+        //m_titleEdit->setFocus();
 
         m_storyEdit->setText(m_bbl->m_story->Text());
         m_storyEdit->setFont(bbl->GetFont());

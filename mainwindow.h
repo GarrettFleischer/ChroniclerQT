@@ -75,7 +75,6 @@ public:
 protected:
    virtual void keyPressEvent(QKeyEvent *evt);
    virtual void keyReleaseEvent(QKeyEvent *evt);
-   virtual void mousePressEvent(QMouseEvent *evt);
 
 private slots:
     void deleteItem();
