@@ -1,35 +1,28 @@
 #include "cconnection.h"
-#include "clink.h"
+#include "cline.h"
 #include "Bubbles/cbubble.h"
 
-CConnection::CConnection(CLink *from, CBubble *to)
-    : m_from(from), m_to(to), m_followMouse(false)
+CConnection::CConnection(CBubble *from, CBubble *to)
+    : m_from(from), m_to(to), m_line(0)
+{}
+
+CConnection::~CConnection()
 {
-    setFlag(QGraphicsItem::ItemIsSelectable, false);
-    m_color = Qt::black;
-    setPen(QPen(m_color, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-    
-    setAcceptHoverEvents(true);
+    delete m_line;
+    m_from = 0;
+    m_to = 0;
+    m_line = 0;
 }
 
-CConnection::CConnection(CLink *from)
-    : m_from(from), m_to(0), m_followMouse(true)
-{
-    setFlag(QGraphicsItem::ItemIsSelectable, false);
-    m_color = Qt::black;
-    setPen(QPen(m_color, 2, Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
-    
-    setAcceptHoverEvents(true);
-}
-
-CLink *CConnection::from() const
+CBubble *CConnection::from() const
 {
     return m_from;
 }
 
-void CConnection::setFrom(CLink *from)
+void CConnection::setFrom(CBubble *from)
 {
     m_from = from;
+    updatePosition();
 }
 
 CBubble *CConnection::to() const
@@ -40,11 +33,7 @@ CBubble *CConnection::to() const
 void CConnection::setTo(CBubble *to)
 {
     m_to = to;
-}
-
-void CConnection::setFollowMouse(bool followMouse)
-{
-    m_followMouse = followMouse;
+    updatePosition();
 }
 
 QColor CConnection::color() const
@@ -57,25 +46,24 @@ void CConnection::setColor(const QColor &color)
     m_color = color;
 }
 
-
-
 void CConnection::updatePosition()
 {
-    QPointF point = (m_followMouse ? m_mousePos : m_to->scenePos());
-    setLine(QLineF(m_from->scenePos(), point));
+    if(!m_line)
+        m_line = new CLine(QPointF(), QPointF());
+
+    if(m_from)
+        m_line->setStart(m_from->scenePos());
+    if(m_to)
+        m_line->setStart(m_to->scenePos());
 }
 
-void CConnection::mousePressEvent(QGraphicsSceneMouseEvent *evt)
+QRectF CConnection::boundingRect() const
 {
-    QGraphicsLineItem::mousePressEvent(evt);
+    if(m_line)
+        return m_line->boundingRect();
+
+    return QRectF();
 }
 
-void CConnection::mouseMoveEvent(QGraphicsSceneMouseEvent *evt)
-{
-    QGraphicsLineItem::mouseMoveEvent(evt);
-    if(m_followMouse)
-    {
-        m_mousePos = evt->scenePos();
-        updatePosition();
-    }
-}
+void CConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *item, QWidget *widget)
+{}

@@ -149,7 +149,7 @@ void CGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
             break;
 
         case InsertLine:
-            line = new CLine(mouseEvent->scenePos(), mouseEvent->scenePos(), this);
+            line = new CLine(mouseEvent->scenePos(), mouseEvent->scenePos());
             addItem(line);
             break;
 
@@ -169,44 +169,42 @@ void CGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 void CGraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     if (myMode == InsertLine && line != 0)
-    {
         line->setEnd(mouseEvent->scenePos());
-    } else if (myMode == Cursor) {
+    else if (myMode == Cursor)
         QGraphicsScene::mouseMoveEvent(mouseEvent);
-    }
 }
 
 void CGraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
-//    if (line != 0 && myMode == InsertLine)
-//    {
-//        QList<QGraphicsItem *> startItems = items(line->line().p1());
-//        if (startItems.count() && startItems.first() == line)
-//            startItems.removeFirst();
-//        QList<QGraphicsItem *> endItems = items(line->line().p2());
-//        if (endItems.count() && endItems.first() == line)
-//            endItems.removeFirst();
+    //    if (line != 0 && myMode == InsertLine)
+    //    {
+    //        QList<QGraphicsItem *> startItems = items(line->line().p1());
+    //        if (startItems.count() && startItems.first() == line)
+    //            startItems.removeFirst();
+    //        QList<QGraphicsItem *> endItems = items(line->line().p2());
+    //        if (endItems.count() && endItems.first() == line)
+    //            endItems.removeFirst();
 
-//        removeItem(line);
-//        delete line;
+    //        removeItem(line);
+    //        delete line;
 
-//        if (startItems.count() > 0 && endItems.count() > 0 &&
-//                startItems.first() != endItems.first())
-//        {
-//            CBubble *startItem = qgraphicsitem_cast<CBubble *>(startItems.first());
-//            CBubble *endItem = qgraphicsitem_cast<CBubble *>(endItems.first());
-//            if(startItem && endItem)
-//            {
-//                Arrow *arrow = new Arrow(startItem, endItem);
-//                arrow->setColor(myLineColor);
-//                startItem->addArrow(arrow);
-//                endItem->addArrow(arrow);
-//                arrow->setZValue(-1000.0);
-//                addItem(arrow);
-//                arrow->updatePosition();
-//            }
-//        }
-//    }
+    //        if (startItems.count() > 0 && endItems.count() > 0 &&
+    //                startItems.first() != endItems.first())
+    //        {
+    //            CBubble *startItem = qgraphicsitem_cast<CBubble *>(startItems.first());
+    //            CBubble *endItem = qgraphicsitem_cast<CBubble *>(endItems.first());
+    //            if(startItem && endItem)
+    //            {
+    //                Arrow *arrow = new Arrow(startItem, endItem);
+    //                arrow->setColor(myLineColor);
+    //                startItem->addArrow(arrow);
+    //                endItem->addArrow(arrow);
+    //                arrow->setZValue(-1000.0);
+    //                addItem(arrow);
+    //                arrow->updatePosition();
+    //            }
+    //        }
+    //    }
 
     line = 0;
     QGraphicsScene::mouseReleaseEvent(mouseEvent);

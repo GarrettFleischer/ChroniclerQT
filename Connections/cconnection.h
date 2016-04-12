@@ -2,50 +2,46 @@
 #define CCONNECTION_H
 
 #include <QObject>
-#include <QGraphicsLineItem>
-#include <QColor>
-#include <QPen>
+#include <QGraphicsItem>
 
-class CLink;
+QT_BEGIN_NAMESPACE
+class QColor;
+class QPen;
+QT_END_NAMESPACE
+
 class CBubble;
+class CLine;
 
-class CConnection : public QObject, public QGraphicsLineItem
+
+class CConnection : public QObject, public QGraphicsItem
 {
     Q_OBJECT
     
 public:
-    CConnection(CLink *from, CBubble *to);
-    CConnection(CLink *from);
+    CConnection(CBubble *from, CBubble *to);
+    ~CConnection();
     
-    CLink *from() const;
-    void setFrom(CLink *from);
+    CBubble *from() const;
+    void setFrom(CBubble *from);
     
     CBubble *to() const;
     void setTo(CBubble *to);
     
-    void setFollowMouse(bool followMouse);
-    
     QColor color() const;
     void setColor(const QColor &color);
-    
-public:
+
     void updatePosition();
-    
-    
-protected:
-    void mousePressEvent(QGraphicsSceneMouseEvent *evt);
-    void mouseMoveEvent(QGraphicsSceneMouseEvent *evt);
-    
+
+    virtual QRectF boundingRect() const;
+    virtual void paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *);
     
 private:
-    CLink *m_from;
+    CBubble *m_from;
     CBubble *m_to;
     
-    bool m_followMouse;
-    QPointF m_mousePos;
-    
+    CLine *m_line;
+
     QColor m_color;
-    
     
 signals:
     

@@ -85,7 +85,7 @@ void CStoryBubble::hoverMoveEvent(QGraphicsSceneHoverEvent *evt)
 
 void CStoryBubble::LinkClicked(CLink *link)
 {
-    link->setConnection(new CConnection(link));
+    //link->setConnection(new CConnection(link));
 }
 
 

@@ -15,6 +15,8 @@ class CLine : public QObject, public QGraphicsItem
 {
     Q_OBJECT
 public:
+    enum Anchor { RIGHT, DOWN, LEFT, UP };
+
     explicit CLine(const QPointF &start, const QPointF &end, QObject *parent = 0);
     explicit CLine(const CLine & copy);
 
@@ -23,10 +25,10 @@ public:
     virtual QPainterPath shape() const;
     virtual QRectF boundingRect() const;
 
-    const QPointF & setStart() const;
+    const QPointF & Start() const;
     void setStart(const QPointF &start);
 
-    const QPointF & setEnd() const;
+    const QPointF & End() const;
     void setEnd(const QPointF &end);
 
 signals:
@@ -42,7 +44,10 @@ private:
     QPainterPath m_path;
     QPointF m_start;
     QPointF m_end;
-    uint m_offset;
+    Anchor m_startAnchor;
+    Anchor m_endAnchor;
+    int m_offset;
+    float m_width;
 
 };
 
