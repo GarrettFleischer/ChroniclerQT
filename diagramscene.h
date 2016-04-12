@@ -56,6 +56,7 @@ QT_END_NAMESPACE
 
 class CBubble;
 class CLink;
+class CLine;
 
 //! [0]
 class DiagramScene : public QGraphicsScene
@@ -102,7 +103,7 @@ private:
     Mode myMode;
     bool leftButtonDown;
     QPointF startPoint;
-    QGraphicsLineItem *line;
+    CLine *line;
     QFont myFont;
     QColor myTextColor;
     QColor myItemColor;
