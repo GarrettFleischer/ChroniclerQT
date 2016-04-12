@@ -3,8 +3,8 @@
 #include <QPainterPath>
 
 
-CStoryBubble::CStoryBubble(QMenu *contextMenu, QGraphicsItem *parent)
-    : CBubble(contextMenu, parent), m_resize(false)
+CStoryBubble::CStoryBubble(QMenu *contextMenu, const QPointF &pos, const QFont &font, const QColor &fontColor, const QColor &lineColor, QGraphicsItem *parent)
+    : CBubble(contextMenu, pos, font, fontColor, lineColor, parent), m_resize(false)
 {
     m_type = Story;
     

@@ -59,14 +59,14 @@ class CLink;
 class CLine;
 
 //! [0]
-class DiagramScene : public QGraphicsScene
+class CGraphicsScene : public QGraphicsScene
 {
     Q_OBJECT
 
 public:
     enum Mode { InsertItem, InsertLine, InsertText, Cursor, InsertStory, InsertCondition, InsertChoice };
 
-    explicit DiagramScene(QMenu *itemMenu, QObject *parent = 0);
+    explicit CGraphicsScene(QMenu *itemMenu, QObject *parent = 0);
     QFont font() const { return myFont; }
     QColor textColor() const { return myTextColor; }
     QColor itemColor() const { return myItemColor; }

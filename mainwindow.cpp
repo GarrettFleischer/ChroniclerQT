@@ -1,5 +1,5 @@
 #include "Connections/arrow.h"
-#include "diagramscene.h"
+#include "cgraphicsscene.h"
 #include "Bubbles/cstorybubble.h"
 #include "cgraphicsview.h"
 
@@ -26,7 +26,7 @@ MainWindow::MainWindow()
 
     float maxsize = std::numeric_limits<float>::max();
     float minsize = -std::numeric_limits<float>::max()/2;
-    scene = new DiagramScene(itemMenu, this);
+    scene = new CGraphicsScene(itemMenu, this);
     scene->setSceneRect(QRectF(minsize, minsize, maxsize, maxsize));
     connect(scene, SIGNAL(itemInserted(CBubble*)),
             this, SLOT(itemInserted(CBubble*)));
@@ -77,8 +77,8 @@ void MainWindow::keyReleaseEvent(QKeyEvent *evt)
     if(evt->key() == Qt::Key_Shift)
     {
         m_ShiftHeld = false;
-        pointerTypeGroup->button(int(DiagramScene::Cursor))->setChecked(true);
-        scene->setMode(DiagramScene::Cursor);
+        pointerTypeGroup->button(int(CGraphicsScene::Cursor))->setChecked(true);
+        scene->setMode(CGraphicsScene::Cursor);
         view->setDragMode(QGraphicsView::ScrollHandDrag);
     }
 }
@@ -95,9 +95,9 @@ void MainWindow::deleteItem()
 
 void MainWindow::pointerGroupClicked(int id)
 {
-    scene->setMode(DiagramScene::Mode(id));
+    scene->setMode(CGraphicsScene::Mode(id));
 
-    if(id == int(DiagramScene::InsertLine))
+    if(id == int(CGraphicsScene::InsertLine))
         view->setDragMode(QGraphicsView::NoDrag);
     else
         view->setDragMode(QGraphicsView::ScrollHandDrag);
@@ -108,8 +108,8 @@ void MainWindow::itemInserted(CBubble *)
 {
     if(!m_ShiftHeld)
     {
-        pointerTypeGroup->button(int(DiagramScene::Cursor))->setChecked(true);
-        scene->setMode(DiagramScene::Cursor);
+        pointerTypeGroup->button(int(CGraphicsScene::Cursor))->setChecked(true);
+        scene->setMode(CGraphicsScene::Cursor);
         view->setDragMode(QGraphicsView::ScrollHandDrag);
     }
 }
@@ -385,11 +385,11 @@ void MainWindow::createToolbars()
 
 
     pointerTypeGroup = new QButtonGroup(this);
-    pointerTypeGroup->addButton(pointerButton, int(DiagramScene::Cursor));
-    pointerTypeGroup->addButton(linePointerButton, int(DiagramScene::InsertLine));
-    pointerTypeGroup->addButton(storyBubbleToolButton, int(DiagramScene::InsertStory));
-    pointerTypeGroup->addButton(conditionBubbleToolButton, int(DiagramScene::InsertCondition));
-    pointerTypeGroup->addButton(actionBubbleToolButton, int(DiagramScene::InsertChoice));
+    pointerTypeGroup->addButton(pointerButton, int(CGraphicsScene::Cursor));
+    pointerTypeGroup->addButton(linePointerButton, int(CGraphicsScene::InsertLine));
+    pointerTypeGroup->addButton(storyBubbleToolButton, int(CGraphicsScene::InsertStory));
+    pointerTypeGroup->addButton(conditionBubbleToolButton, int(CGraphicsScene::InsertCondition));
+    pointerTypeGroup->addButton(actionBubbleToolButton, int(CGraphicsScene::InsertChoice));
     connect(pointerTypeGroup, SIGNAL(buttonClicked(int)),
             this, SLOT(pointerGroupClicked(int)));
 

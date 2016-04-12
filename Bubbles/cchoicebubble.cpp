@@ -1,7 +1,7 @@
 #include "cchoicebubble.h"
 
-CChoiceBubble::CChoiceBubble(QMenu *contextMenu, QGraphicsItem *parent)
-    : CBubble(contextMenu, parent)
+CChoiceBubble::CChoiceBubble(QMenu *contextMenu, const QPointF &pos, const QFont &font, const QColor &fontColor, const QColor &lineColor, QGraphicsItem *parent)
+    : CBubble(contextMenu, pos, font, fontColor, lineColor, parent)
 {
     m_type = Condition;
 

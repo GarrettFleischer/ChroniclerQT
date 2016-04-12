@@ -38,7 +38,7 @@
 **
 ****************************************************************************/
 
-#include "diagramscene.h"
+#include "cgraphicsscene.h"
 #include "Connections/arrow.h"
 
 #include <QTextCursor>
@@ -51,7 +51,7 @@
 #include "Connections/cline.h"
 
 
-DiagramScene::DiagramScene(QMenu *itemMenu, QObject *parent)
+CGraphicsScene::CGraphicsScene(QMenu *itemMenu, QObject *parent)
     : QGraphicsScene(parent)
 {
     myItemMenu = itemMenu;
@@ -65,7 +65,7 @@ DiagramScene::DiagramScene(QMenu *itemMenu, QObject *parent)
     setBackgroundBrush(QBrush(Qt::gray));//QColor(86,96,123)));
 }
 
-void DiagramScene::setLineColor(const QColor &color)
+void CGraphicsScene::setLineColor(const QColor &color)
 {
     myLineColor = color;
     foreach (QGraphicsItem *item, selectedItems())
@@ -76,7 +76,7 @@ void DiagramScene::setLineColor(const QColor &color)
     }
 }
 
-void DiagramScene::setTextColor(const QColor &color)
+void CGraphicsScene::setTextColor(const QColor &color)
 {
     myTextColor = color;
     foreach (QGraphicsItem *item, selectedItems())
@@ -87,7 +87,7 @@ void DiagramScene::setTextColor(const QColor &color)
     }
 }
 
-void DiagramScene::setItemColor(const QColor &color)
+void CGraphicsScene::setItemColor(const QColor &color)
 {
     myItemColor = color;
     foreach (QGraphicsItem *item, selectedItems())
@@ -98,7 +98,7 @@ void DiagramScene::setItemColor(const QColor &color)
     }
 }
 
-void DiagramScene::setFont(const QFont &font)
+void CGraphicsScene::setFont(const QFont &font)
 {
     if(myFont != font)
     {
@@ -113,31 +113,27 @@ void DiagramScene::setFont(const QFont &font)
     }
 }
 
-void DiagramScene::setMode(Mode mode)
+void CGraphicsScene::setMode(Mode mode)
 {
     myMode = mode;
 }
 
-void DiagramScene::linkClicked(CLink *)
+void CGraphicsScene::linkClicked(CLink *)
 {
     setMode(InsertLine);
     
 }
 
-void DiagramScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
+void CGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     if (mouseEvent->button() == Qt::LeftButton)
     {
         CBubble *item;
         switch (myMode) {
         case InsertStory:
-            item = new CStoryBubble(myItemMenu);
-            addItem(item);
-            item->setPos(mouseEvent->scenePos());
-            item->SetFont(myFont);
-            item->SetLineColor(myLineColor);
-            item->SetFontColor(myTextColor);
+            item = new CStoryBubble(myItemMenu, mouseEvent->scenePos(), myFont, myTextColor, myLineColor);
             connect(item, SIGNAL(Selected(QGraphicsItem*)), this, SIGNAL(itemSelected(QGraphicsItem*)));
+            addItem(item);
             emit itemInserted(item);
             break;
 
@@ -146,20 +142,14 @@ void DiagramScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
             break;
 
         case InsertCondition:
-            item = new CConditionBubble(myItemMenu);
-            addItem(item);
-            item->setPos(mouseEvent->scenePos());
-            item->SetFont(myFont);
-            item->SetLineColor(myLineColor);
-            item->SetFontColor(myTextColor);
+            item = new CConditionBubble(myItemMenu, mouseEvent->scenePos(), myFont, myTextColor, myLineColor);
             connect(item, SIGNAL(Selected(QGraphicsItem*)), this, SIGNAL(itemSelected(QGraphicsItem*)));
+            addItem(item);
             emit itemInserted(item);
             break;
 
         case InsertLine:
-            line = new CLine(this);
-            line->setStart(mouseEvent->scenePos());
-            line->setEnd(QPointF(mouseEvent->scenePos().x() + 200, mouseEvent->scenePos().y() + 200));
+            line = new CLine(mouseEvent->scenePos(), mouseEvent->scenePos(), this);
             addItem(line);
             break;
 
@@ -176,19 +166,17 @@ void DiagramScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
     }
 }
 
-void DiagramScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
+void CGraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     if (myMode == InsertLine && line != 0)
     {
-        //QLineF newLine(line->line().p1(), mouseEvent->scenePos());
-        //line->setLine(newLine);
         line->setEnd(mouseEvent->scenePos());
     } else if (myMode == Cursor) {
         QGraphicsScene::mouseMoveEvent(mouseEvent);
     }
 }
 
-void DiagramScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
+void CGraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
 //    if (line != 0 && myMode == InsertLine)
 //    {
@@ -220,7 +208,6 @@ void DiagramScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 //        }
 //    }
 
-    //delete line;
     line = 0;
     QGraphicsScene::mouseReleaseEvent(mouseEvent);
 

@@ -23,10 +23,10 @@ HEADERS += \
     Properties/cconditionproperties.h \
     Properties/cpropertiesview.h \
     Properties/cstoryproperties.h \
-    diagramscene.h \
     mainwindow.h \
     Connections/cline.h \
-    cgraphicsview.h
+    cgraphicsview.h \
+    cgraphicsscene.h
 
 SOURCES += \
     Bubbles/cbubble.cpp \
@@ -43,8 +43,8 @@ SOURCES += \
     Properties/cconditionproperties.cpp \
     Properties/cpropertiesview.cpp \
     Properties/cstoryproperties.cpp \
-    diagramscene.cpp \
     main.cpp \
     mainwindow.cpp \
     Connections/cline.cpp \
-    cgraphicsview.cpp
+    cgraphicsview.cpp \
+    cgraphicsscene.cpp

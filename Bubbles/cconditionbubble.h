@@ -12,7 +12,8 @@ public:
     friend class CConditionProperties;
 
 public:
-    CConditionBubble(QMenu *contextMenu, QGraphicsItem *parent = 0);
+    CConditionBubble(QMenu *contextMenu, const QPointF &pos, const QFont &font = QFont(), const QColor &fontColor = Qt::black,
+                     const QColor &lineColor = Qt::black, QGraphicsItem *parent = 0);
 
 public:
     virtual void SetFont(const QFont &font);

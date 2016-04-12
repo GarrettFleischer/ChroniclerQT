@@ -28,7 +28,9 @@ public:
     enum BType { Story, Condition, Choice};
 
     CBubble(QGraphicsItem *parent);
-    CBubble(QMenu *contextMenu, QGraphicsItem *parent = 0);
+    CBubble(QMenu *contextMenu, const QPointF &pos, const QFont &font = QFont(), const QColor &fontColor = Qt::black,
+            const QColor &lineColor = Qt::black,
+            QGraphicsItem *parent = 0);
 
 public:
     void addArrow(Arrow *arrow);
@@ -66,10 +68,10 @@ protected:
     QList<Arrow *> m_connections;
     int m_order;
     bool m_locked;
+    QFont m_font;
     QColor m_fontColor;
     QColor m_color;
     QColor m_lineColor;
-    QFont m_font;
     BType m_type;
 
     

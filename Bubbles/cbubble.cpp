@@ -4,16 +4,18 @@
 
 
 
-CBubble::CBubble(QMenu *contextMenu, QGraphicsItem *parent)
+CBubble::CBubble(QMenu *contextMenu, const QPointF &pos, const QFont &font, const QColor &fontColor, const QColor &lineColor,
+                 QGraphicsItem *parent)
     : QGraphicsPolygonItem(parent), m_contextMenu(contextMenu),
       m_minSize(QSizeF(150,150)), m_order(0), m_locked(false),
-      m_fontColor(Qt::black), m_color(Qt::white), m_lineColor(Qt::black)
+      m_font(font), m_fontColor(fontColor), m_color(Qt::white), m_lineColor(lineColor)
 {
     setFlag(QGraphicsItem::ItemIsMovable, true);
     setFlag(QGraphicsItem::ItemIsSelectable, true);
     setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
     
     setCursor(Qt::PointingHandCursor);
+    setPos(pos);
 }
 
 

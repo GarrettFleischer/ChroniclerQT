@@ -46,7 +46,7 @@
 #include "Properties/cpropertiesview.h"
 
 
-class DiagramScene;
+class CGraphicsScene;
 class CBubble;
 class CGraphicsView;
 
@@ -109,7 +109,7 @@ private:
     bool m_ShiftHeld;
     float m_scale;
 
-    DiagramScene *scene;
+    CGraphicsScene *scene;
     CGraphicsView *view;
 
     QAction *exitAction;

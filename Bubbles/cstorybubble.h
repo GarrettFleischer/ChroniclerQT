@@ -18,7 +18,8 @@ public:
     friend class CStoryProperties;
 
 public:
-    CStoryBubble(QMenu *contextMenu, QGraphicsItem *parent = 0);
+    CStoryBubble(QMenu *contextMenu, const QPointF &pos, const QFont &font = QFont(), const QColor &fontColor = Qt::black,
+                 const QColor &lineColor = Qt::black, QGraphicsItem *parent = 0);
 
 public:
     virtual void SetFont(const QFont &font);

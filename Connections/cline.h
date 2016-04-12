@@ -7,7 +7,7 @@
 QT_BEGIN_NAMESPACE
 class QPainter;
 class QPainterPath;
-class QPointFF;
+class QPointF;
 QT_END_NAMESPACE
 
 
@@ -15,9 +15,8 @@ class CLine : public QObject, public QGraphicsItem
 {
     Q_OBJECT
 public:
-    explicit CLine(QObject *parent = 0);
+    explicit CLine(const QPointF &start, const QPointF &end, QObject *parent = 0);
     explicit CLine(const CLine & copy);
-    ~CLine();
 
     CLine & operator=(const CLine & rhs);
 
@@ -40,7 +39,7 @@ private:
 
     void UpdateShape();
 
-    QPainterPath *m_path;
+    QPainterPath m_path;
     QPointF m_start;
     QPointF m_end;
     uint m_offset;
