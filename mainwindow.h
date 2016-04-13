@@ -63,7 +63,9 @@ class QToolButton;
 class QAbstractButton;
 class QGraphicsView;
 class QGraphicsItem;
+class QTabWidget;
 QT_END_NAMESPACE
+
 
 class MainWindow : public QMainWindow
 {
@@ -71,6 +73,8 @@ class MainWindow : public QMainWindow
 
 public:
    MainWindow();
+
+   void LoadProject(const QString & filename);
 
 protected:
    virtual void keyPressEvent(QKeyEvent *evt);
@@ -94,7 +98,6 @@ private slots:
     void about();
     void sceneLeftPressed();
     void sceneLeftReleased();
-    void sceneScrolled(int);
 
 
 private:
@@ -109,6 +112,7 @@ private:
     bool m_ShiftHeld;
     float m_scale;
 
+    QTabWidget *tabView;
     CGraphicsScene *scene;
     CGraphicsView *view;
 
@@ -155,8 +159,6 @@ private:
 
     QDockWidget *dock;
     CPropertiesView *properties;
-
-    // QWidget interface
 
 };
 

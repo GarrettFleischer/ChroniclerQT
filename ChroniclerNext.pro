@@ -1,7 +1,11 @@
-QT += widgets
+QT += widgets webkitwidgets
 
 RESOURCES   =	chroniclernext.qrc
 
+LIBS += -LC:/Development/OpenSSL-Win32/lib -lubsec
+INCLUDEPATH += C:/Development/OpenSSL-Win32/include
+
+PKGCONFIG += openssl
 
 # install
 TARGET = Chronicler-Next
@@ -26,7 +30,8 @@ HEADERS += \
     mainwindow.h \
     Connections/cline.h \
     cgraphicsview.h \
-    cgraphicsscene.h
+    cgraphicsscene.h \
+    chomepage.h
 
 SOURCES += \
     Bubbles/cbubble.cpp \
@@ -47,4 +52,5 @@ SOURCES += \
     mainwindow.cpp \
     Connections/cline.cpp \
     cgraphicsview.cpp \
-    cgraphicsscene.cpp
+    cgraphicsscene.cpp \
+    chomepage.cpp

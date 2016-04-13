@@ -1,14 +1,16 @@
+#include "mainwindow.h"
+
 #include "Connections/arrow.h"
 #include "cgraphicsscene.h"
 #include "Bubbles/cstorybubble.h"
 #include "cgraphicsview.h"
-
-#include "mainwindow.h"
+#include "chomepage.h"
 
 #include <QtWidgets>
 #include <QStringListModel>
 #include <QtGlobal>
 #include <limits>
+#include <QTabWidget>
 
 
 
@@ -36,10 +38,6 @@ MainWindow::MainWindow()
             this, SLOT(sceneLeftReleased()));
     connect(scene, SIGNAL(leftPressed()),
             this, SLOT(sceneLeftPressed()));
-    connect(scene, SIGNAL(mouseScrolled(int)),
-            this, SLOT(sceneScrolled(int)));
-
-
 
     view = new CGraphicsView(scene);
 
@@ -51,12 +49,22 @@ MainWindow::MainWindow()
     dock->setWidget(properties);
     dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 
-    setCentralWidget(view);
+    CHomepage *home = new CHomepage(this);
+
+    tabView = new QTabWidget(this);
+    tabView->addTab(home,"Homepage");
+    tabView->addTab(view, "startup.scn");
+    setCentralWidget(tabView);
     addDockWidget(Qt::LeftDockWidgetArea, dock);
 
 
     createToolbars();
     handleFontChange();
+}
+
+void MainWindow::LoadProject(const QString &filename)
+{
+
 }
 
 
@@ -233,13 +241,6 @@ void MainWindow::sceneLeftReleased()
         CBubble *bbl = dynamic_cast<CBubble *>(selected.first());
         properties->SetBubble(bbl);
     }
-}
-
-void MainWindow::sceneScrolled(int angle)
-{
-    m_scale += (float)angle / 1200.0;
-    m_scale = qBound<float>(0.1, m_scale, 2.0);
-    UpdateSceneScale();
 }
 
 

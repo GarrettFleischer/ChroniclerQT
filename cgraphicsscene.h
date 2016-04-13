@@ -67,10 +67,10 @@ public:
     enum Mode { InsertItem, InsertLine, InsertText, Cursor, InsertStory, InsertCondition, InsertChoice };
 
     explicit CGraphicsScene(QMenu *itemMenu, QObject *parent = 0);
-    QFont font() const { return myFont; }
-    QColor textColor() const { return myTextColor; }
-    QColor itemColor() const { return myItemColor; }
-    QColor lineColor() const { return myLineColor; }
+    QFont font() const { return m_font; }
+    QColor textColor() const { return m_textColor; }
+    QColor itemColor() const { return m_itemColor; }
+    QColor lineColor() const { return m_lineColor; }
     void setLineColor(const QColor &color);
     void setTextColor(const QColor &color);
     void setItemColor(const QColor &color);
@@ -86,31 +86,25 @@ private slots:
 
 signals:
     void itemInserted(CBubble *item);
-    void textInserted(QGraphicsTextItem *item);
     void itemSelected(QGraphicsItem *item);
     void leftPressed();
     void leftReleased();
-    void mouseScrolled(int);
 
 protected:
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
     virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent);
-//    virtual void wheelEvent(QGraphicsSceneWheelEvent *event);
 
 private:
-    QMenu *myItemMenu;
-    Mode myMode;
-    bool leftButtonDown;
-    QPointF startPoint;
-    CLine *line;
-    QFont myFont;
-    QColor myTextColor;
-    QColor myItemColor;
-    QColor myLineColor;
+    QMenu *m_itemMenu;
+    Mode m_mode;
+    QPointF m_startPoint;
+    CLine *m_line;
+    QFont m_font;
+    QColor m_textColor;
+    QColor m_itemColor;
+    QColor m_lineColor;
     bool m_rubberBand;
-
-    // QGraphicsScene interface
 };
 //! [0]
 
