@@ -8,11 +8,11 @@
 #include <QVBoxLayout>
 #include <QLabel>
 
-#include "mainwindow.h"
+#include "cmainwindow.h"
 
 
-CHomepage::CHomepage(MainWindow *window)
-    : QWidget((QWidget*)window)
+CHomepage::CHomepage(CMainWindow *window)
+    : QWidget((QWidget*)window), m_window(window)
 {
     m_webView = new QWebView();
     m_recent = new QListWidget();

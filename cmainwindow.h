@@ -80,6 +80,9 @@ protected:
    virtual void keyPressEvent(QKeyEvent *evt);
    virtual void keyReleaseEvent(QKeyEvent *evt);
 
+public slots:
+void TabClosed(int);
+
 private slots:
     void DeleteItem();
     void PointerGroupClicked(int id);

@@ -65,5 +65,5 @@ QRectF CConnection::boundingRect() const
     return QRectF();
 }
 
-void CConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *item, QWidget *widget)
+void CConnection::paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *)
 {}
