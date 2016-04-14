@@ -5,6 +5,8 @@
 #include "Bubbles/cstorybubble.h"
 #include "cgraphicsview.h"
 #include "chomepage.h"
+#include "Properties/cdockmanager.h"
+#include "Properties/cpropertiesview.h"
 
 #include <QtWidgets>
 #include <QStringListModel>
@@ -45,7 +47,11 @@ CMainWindow::CMainWindow()
     QStringListModel * lstModel = new QStringListModel(lst, this);
 
     m_dock = new QDockWidget("Project", this);
-    m_properties = new CPropertiesView(lstModel, m_dock);
+    m_dockManager = new CDockManager(lstModel, m_dock);
+    m_dock->setWidget(m_dockManager);
+    addDockWidget(Qt::LeftDockWidgetArea, m_dock);
+    m_dock->setVisible(false);
+    //m_properties = new CPropertiesView(lstModel, m_dock);
     m_dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 
     CHomepage *home = new CHomepage(this);
@@ -59,16 +65,13 @@ CMainWindow::CMainWindow()
 
     setCentralWidget(m_tabView);
 
-
-
     CreateToolbars();
     HandleFontChange();
 }
 
 void CMainWindow::LoadProject(const QString &filename)
 {
-    m_dock->setWidget(m_properties);
-    addDockWidget(Qt::LeftDockWidgetArea, m_dock);
+    m_dock->setVisible(true);
     m_tabView->addTab(m_view, "startup.scn");
     m_tabView->setCurrentIndex(1);
 }
@@ -100,7 +103,7 @@ void CMainWindow::keyReleaseEvent(QKeyEvent *evt)
 
 void CMainWindow::DeleteItem()
 {
-    m_properties->SetBubble(0);
+    m_dockManager->setBubble(0);
 
     foreach (QGraphicsItem *item, m_scene->selectedItems())
         delete item;
@@ -216,7 +219,7 @@ void CMainWindow::HandleFontChange()
     font.setUnderline(m_underlineAction->isChecked());
 
     m_scene->setFont(font);
-    m_properties->setFont(font);
+    //m_properties->setFont(font);
 }
 
 
@@ -234,7 +237,7 @@ void CMainWindow::ItemSelected(QGraphicsItem *selectedItem)
 
 void CMainWindow::SceneLeftPressed()
 {
-    m_properties->SetBubble(0);
+    m_dockManager->properties().setBubble(0);
 }
 
 void CMainWindow::SceneLeftReleased()
@@ -245,8 +248,10 @@ void CMainWindow::SceneLeftReleased()
     if(selected.size() == 1)
     {
         CBubble *bbl = dynamic_cast<CBubble *>(selected.first());
-        m_properties->SetBubble(bbl);
+        m_dockManager->setBubble(bbl);
     }
+    else
+        m_dockManager->setBubble(0);
 }
 
 void CMainWindow::TabClosed(int index)

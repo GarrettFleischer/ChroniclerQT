@@ -7,6 +7,7 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QLabel>
+#include <QScrollBar>
 
 #include "cmainwindow.h"
 

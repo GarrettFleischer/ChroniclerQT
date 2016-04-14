@@ -31,7 +31,9 @@ HEADERS += \
     cgraphicsview.h \
     cgraphicsscene.h \
     chomepage.h \
-    cmainwindow.h
+    cmainwindow.h \
+    Properties/cprojectview.h \
+    Properties/cdockmanager.h
 
 SOURCES += \
     Bubbles/cbubble.cpp \
@@ -53,4 +55,6 @@ SOURCES += \
     cgraphicsview.cpp \
     cgraphicsscene.cpp \
     chomepage.cpp \
-    cmainwindow.cpp
+    cmainwindow.cpp \
+    Properties/cprojectview.cpp \
+    Properties/cdockmanager.cpp

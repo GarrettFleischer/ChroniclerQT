@@ -43,13 +43,6 @@
 
 #include <QMainWindow>
 
-#include "Properties/cpropertiesview.h"
-
-
-class CGraphicsScene;
-class CBubble;
-class CGraphicsView;
-
 QT_BEGIN_NAMESPACE
 class QAction;
 class QToolBox;
@@ -66,6 +59,11 @@ class QGraphicsItem;
 class QTabWidget;
 QT_END_NAMESPACE
 
+class CGraphicsScene;
+class CBubble;
+class CGraphicsView;
+class CDockManager;
+
 
 class CMainWindow : public QMainWindow
 {
@@ -80,8 +78,6 @@ protected:
    virtual void keyPressEvent(QKeyEvent *evt);
    virtual void keyReleaseEvent(QKeyEvent *evt);
 
-public slots:
-void TabClosed(int);
 
 private slots:
     void DeleteItem();
@@ -101,6 +97,7 @@ private slots:
     void About();
     void SceneLeftPressed();
     void SceneLeftReleased();
+    void TabClosed(int);
 
 
 private:
@@ -123,8 +120,8 @@ private:
     QAction *m_addAction;
     QAction *m_deleteAction;
 
-    QAction *m_toFrontAction;
-    QAction *m_sendBackAction;
+//    QAction *m_toFrontAction;
+//    QAction *m_sendBackAction;
     QAction *m_aboutAction;
 
     QMenu *m_fileMenu;
@@ -161,7 +158,8 @@ private:
     QAction *m_lineAction;
 
     QDockWidget *m_dock;
-    CPropertiesView *m_properties;
+    CDockManager *m_dockManager;
+    //CPropertiesView *m_properties;
 
 };
 
