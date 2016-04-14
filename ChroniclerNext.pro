@@ -27,11 +27,11 @@ HEADERS += \
     Properties/cconditionproperties.h \
     Properties/cpropertiesview.h \
     Properties/cstoryproperties.h \
-    mainwindow.h \
     Connections/cline.h \
     cgraphicsview.h \
     cgraphicsscene.h \
-    chomepage.h
+    chomepage.h \
+    cmainwindow.h
 
 SOURCES += \
     Bubbles/cbubble.cpp \
@@ -49,8 +49,8 @@ SOURCES += \
     Properties/cpropertiesview.cpp \
     Properties/cstoryproperties.cpp \
     main.cpp \
-    mainwindow.cpp \
     Connections/cline.cpp \
     cgraphicsview.cpp \
     cgraphicsscene.cpp \
-    chomepage.cpp
+    chomepage.cpp \
+    cmainwindow.cpp

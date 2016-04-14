@@ -1,15 +1,18 @@
 #include "chomepage.h"
 
 #include <QListWidget>
+#include <QListWidgetItem>
 #include <QWebView>
 #include <QUrl>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QLabel>
 
+#include "mainwindow.h"
+
 
 CHomepage::CHomepage(MainWindow *window)
-    : QWidget(window)
+    : QWidget((QWidget*)window)
 {
     m_webView = new QWebView();
     m_recent = new QListWidget();
@@ -18,6 +21,7 @@ CHomepage::CHomepage(MainWindow *window)
     m_webView->show();
 
     m_recent->addItem("C:/Development/Dragon.chron");
+    m_recent->horizontalScrollBar()->setValue(m_recent->horizontalScrollBar()->maximum());
     connect(m_recent, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(RecentItemSelected(QListWidgetItem *)));
 
     QHBoxLayout *main_layout = new QHBoxLayout(this);
@@ -34,5 +38,5 @@ CHomepage::CHomepage(MainWindow *window)
 
 void CHomepage::RecentItemSelected(QListWidgetItem *item)
 {
-
+    m_window->LoadProject(item->text());
 }

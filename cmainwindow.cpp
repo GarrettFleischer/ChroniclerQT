@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+#include "cmainwindow.h"
 
 #include "Connections/arrow.h"
 #include "cgraphicsscene.h"
@@ -17,7 +17,7 @@
 const int InsertTextButton = 10;
 
 
-MainWindow::MainWindow()
+CMainWindow::CMainWindow()
     : m_ShiftHeld(false), m_scale(1)
 {
     setWindowTitle(tr("Chronicler-Next"));
@@ -53,7 +53,7 @@ MainWindow::MainWindow()
 
     tabView = new QTabWidget(this);
     tabView->addTab(home,"Homepage");
-    tabView->addTab(view, "startup.scn");
+    //tabView->addTab(view, "startup.scn");
     setCentralWidget(tabView);
     addDockWidget(Qt::LeftDockWidgetArea, dock);
 
@@ -62,13 +62,13 @@ MainWindow::MainWindow()
     handleFontChange();
 }
 
-void MainWindow::LoadProject(const QString &filename)
+void CMainWindow::LoadProject(const QString &filename)
 {
 
 }
 
 
-void MainWindow::keyPressEvent(QKeyEvent *evt)
+void CMainWindow::keyPressEvent(QKeyEvent *evt)
 {
     QMainWindow::keyPressEvent(evt);
 
@@ -78,7 +78,7 @@ void MainWindow::keyPressEvent(QKeyEvent *evt)
         deleteItem();
 }
 
-void MainWindow::keyReleaseEvent(QKeyEvent *evt)
+void CMainWindow::keyReleaseEvent(QKeyEvent *evt)
 {
     QMainWindow::keyReleaseEvent(evt);
 
@@ -92,7 +92,7 @@ void MainWindow::keyReleaseEvent(QKeyEvent *evt)
 }
 
 
-void MainWindow::deleteItem()
+void CMainWindow::deleteItem()
 {
     properties->SetBubble(0);
 
@@ -101,7 +101,7 @@ void MainWindow::deleteItem()
 }
 
 
-void MainWindow::pointerGroupClicked(int id)
+void CMainWindow::pointerGroupClicked(int id)
 {
     scene->setMode(CGraphicsScene::Mode(id));
 
@@ -112,7 +112,7 @@ void MainWindow::pointerGroupClicked(int id)
 }
 
 
-void MainWindow::itemInserted(CBubble *)
+void CMainWindow::itemInserted(CBubble *)
 {
     if(!m_ShiftHeld)
     {
@@ -123,25 +123,25 @@ void MainWindow::itemInserted(CBubble *)
 }
 
 
-void MainWindow::currentFontChanged(const QFont &)
+void CMainWindow::currentFontChanged(const QFont &)
 {
     handleFontChange();
 }
 
 
-void MainWindow::fontSizeChanged(const QString &)
+void CMainWindow::fontSizeChanged(const QString &)
 {
     handleFontChange();
 }
 
 
-void MainWindow::sceneScaleChanged(const QString &scale)
+void CMainWindow::sceneScaleChanged(const QString &scale)
 {
     m_scale = scale.left(scale.indexOf(tr("%"))).toFloat() / 100.0;
     UpdateSceneScale();
 }
 
-void MainWindow::UpdateSceneScale()
+void CMainWindow::UpdateSceneScale()
 {
     //    QMatrix oldMatrix = view->matrix();
     //    QMatrix newMatrix;
@@ -153,7 +153,7 @@ void MainWindow::UpdateSceneScale()
 }
 
 
-void MainWindow::textColorChanged()
+void CMainWindow::textColorChanged()
 {
     textAction = qobject_cast<QAction *>(sender());
     fontColorToolButton->setIcon(createColorToolButtonIcon(
@@ -163,7 +163,7 @@ void MainWindow::textColorChanged()
 }
 
 
-void MainWindow::itemColorChanged()
+void CMainWindow::itemColorChanged()
 {
     fillAction = qobject_cast<QAction *>(sender());
     fillColorToolButton->setIcon(createColorToolButtonIcon(
@@ -173,7 +173,7 @@ void MainWindow::itemColorChanged()
 }
 
 
-void MainWindow::lineColorChanged()
+void CMainWindow::lineColorChanged()
 {
     lineAction = qobject_cast<QAction *>(sender());
     lineColorToolButton->setIcon(createColorToolButtonIcon(
@@ -183,25 +183,25 @@ void MainWindow::lineColorChanged()
 }
 
 
-void MainWindow::textButtonTriggered()
+void CMainWindow::textButtonTriggered()
 {
     scene->setTextColor(qvariant_cast<QColor>(textAction->data()));
 }
 
 
-void MainWindow::fillButtonTriggered()
+void CMainWindow::fillButtonTriggered()
 {
     scene->setItemColor(qvariant_cast<QColor>(fillAction->data()));
 }
 
 
-void MainWindow::lineButtonTriggered()
+void CMainWindow::lineButtonTriggered()
 {
     scene->setLineColor(qvariant_cast<QColor>(lineAction->data()));
 }
 
 
-void MainWindow::handleFontChange()
+void CMainWindow::handleFontChange()
 {
     QFont font = fontCombo->currentFont();
     font.setPointSize(fontSizeCombo->value());
@@ -214,7 +214,7 @@ void MainWindow::handleFontChange()
 }
 
 
-void MainWindow::itemSelected(QGraphicsItem *selectedItem)
+void CMainWindow::itemSelected(QGraphicsItem *selectedItem)
 {
     if(!scene->isRubberBandSelecting())
     {
@@ -226,12 +226,12 @@ void MainWindow::itemSelected(QGraphicsItem *selectedItem)
 }
 
 
-void MainWindow::sceneLeftPressed()
+void CMainWindow::sceneLeftPressed()
 {
     properties->SetBubble(0);
 }
 
-void MainWindow::sceneLeftReleased()
+void CMainWindow::sceneLeftReleased()
 {
     if(!dock->isHidden())
         dock->activateWindow();
@@ -244,13 +244,13 @@ void MainWindow::sceneLeftReleased()
 }
 
 
-void MainWindow::about()
+void CMainWindow::about()
 {
     QMessageBox::about(this, tr("About Chronicler-Next"), tr("<b>Insert legal stuff here...</b>"));
 }
 
 
-void MainWindow::createActions()
+void CMainWindow::createActions()
 {
     //    toFrontAction = new QAction(QIcon(":/images/bringtofront.png"),
     //                                tr("Bring to &Front"), this);
@@ -296,7 +296,7 @@ void MainWindow::createActions()
 }
 
 
-void MainWindow::createMenus()
+void CMainWindow::createMenus()
 {
     fileMenu = menuBar()->addMenu(tr("&File"));
     fileMenu->addAction(exitAction);
@@ -312,7 +312,7 @@ void MainWindow::createMenus()
 }
 
 
-void MainWindow::createToolbars()
+void CMainWindow::createToolbars()
 {
     fontCombo = new QFontComboBox();
     connect(fontCombo, SIGNAL(currentFontChanged(QFont)),
@@ -412,7 +412,7 @@ void MainWindow::createToolbars()
 }
 
 
-QMenu *MainWindow::createColorMenu(const char *slot, QColor defaultColor)
+QMenu *CMainWindow::createColorMenu(const char *slot, QColor defaultColor)
 {
     QList<QColor> colors;
     colors << Qt::black << Qt::white << Qt::red << Qt::blue << Qt::yellow;
@@ -434,7 +434,7 @@ QMenu *MainWindow::createColorMenu(const char *slot, QColor defaultColor)
 }
 
 
-QIcon MainWindow::createColorToolButtonIcon(const QString &imageFile, QColor color)
+QIcon CMainWindow::createColorToolButtonIcon(const QString &imageFile, QColor color)
 {
     QPixmap pixmap(50, 80);
     pixmap.fill(Qt::transparent);
@@ -450,7 +450,7 @@ QIcon MainWindow::createColorToolButtonIcon(const QString &imageFile, QColor col
 }
 
 
-QIcon MainWindow::createColorIcon(QColor color)
+QIcon CMainWindow::createColorIcon(QColor color)
 {
     QPixmap pixmap(20, 20);
     QPainter painter(&pixmap);

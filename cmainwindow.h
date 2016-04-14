@@ -67,12 +67,12 @@ class QTabWidget;
 QT_END_NAMESPACE
 
 
-class MainWindow : public QMainWindow
+class CMainWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-   MainWindow();
+   CMainWindow();
 
    void LoadProject(const QString & filename);
 
@@ -81,84 +81,84 @@ protected:
    virtual void keyReleaseEvent(QKeyEvent *evt);
 
 private slots:
-    void deleteItem();
-    void pointerGroupClicked(int id);
-    void itemInserted(CBubble *);
-    void currentFontChanged(const QFont &font);
-    void fontSizeChanged(const QString &size);
-    void handleFontChange();
-    void sceneScaleChanged(const QString &scale);
-    void textColorChanged();
-    void itemColorChanged();
-    void lineColorChanged();
-    void textButtonTriggered();
-    void fillButtonTriggered();
-    void lineButtonTriggered();
-    void itemSelected(QGraphicsItem *selectedItem);
-    void about();
-    void sceneLeftPressed();
-    void sceneLeftReleased();
+    void DeleteItem();
+    void PointerGroupClicked(int id);
+    void ItemInserted(CBubble *);
+    void CurrentFontChanged(const QFont &font);
+    void FontSizeChanged(const QString &size);
+    void HandleFontChange();
+    void SceneScaleChanged(const QString &scale);
+    void TextColorChanged();
+    void ItemColorChanged();
+    void LineColorChanged();
+    void TextButtonTriggered();
+    void FillButtonTriggered();
+    void LineButtonTriggered();
+    void ItemSelected(QGraphicsItem *selectedItem);
+    void About();
+    void SceneLeftPressed();
+    void SceneLeftReleased();
 
 
 private:
-    void createActions();
-    void createMenus();
-    void createToolbars();
-    QMenu *createColorMenu(const char *slot, QColor defaultColor);
-    QIcon createColorToolButtonIcon(const QString &image, QColor color);
-    QIcon createColorIcon(QColor color);
+    void CreateActions();
+    void CreateMenus();
+    void CreateToolbars();
+    QMenu *CreateColorMenu(const char *slot, QColor defaultColor);
+    QIcon CreateColorToolButtonIcon(const QString &image, QColor color);
+    QIcon CreateColorIcon(QColor color);
     void UpdateSceneScale();
 
     bool m_ShiftHeld;
     float m_scale;
 
-    QTabWidget *tabView;
-    CGraphicsScene *scene;
-    CGraphicsView *view;
+    QTabWidget *m_tabView;
+    CGraphicsScene *m_scene;
+    CGraphicsView *m_view;
 
-    QAction *exitAction;
-    QAction *addAction;
-    QAction *deleteAction;
+    QAction *m_exitAction;
+    QAction *m_addAction;
+    QAction *m_deleteAction;
 
-    QAction *toFrontAction;
-    QAction *sendBackAction;
-    QAction *aboutAction;
+    QAction *m_toFrontAction;
+    QAction *m_sendBackAction;
+    QAction *m_aboutAction;
 
-    QMenu *fileMenu;
-    QMenu *itemMenu;
-    QMenu *aboutMenu;
+    QMenu *m_fileMenu;
+    QMenu *m_itemMenu;
+    QMenu *m_aboutMenu;
 
-    QToolBar *textToolBar;
-    QToolBar *editToolBar;
-    QToolBar *colorToolBar;
-    QToolBar *pointerToolBar;
-    QToolBar *bubbleToolBar;
+    QToolBar *m_textToolBar;
+    QToolBar *m_editToolBar;
+    QToolBar *m_colorToolBar;
+    QToolBar *m_pointerToolBar;
+    QToolBar *m_bubbleToolBar;
 
-    QComboBox *sceneScaleCombo;
-    QComboBox *itemColorCombo;
-    QComboBox *textColorCombo;
-    QSpinBox *fontSizeCombo;
-    QFontComboBox *fontCombo;
+    QComboBox *m_sceneScaleCombo;
+    QComboBox *m_itemColorCombo;
+    QComboBox *m_textColorCombo;
+    QSpinBox *m_fontSizeCombo;
+    QFontComboBox *m_fontCombo;
 
-    QToolBox *toolBox;
-    QButtonGroup *buttonGroup;
-    QButtonGroup *pointerTypeGroup;
-    QButtonGroup *backgroundButtonGroup;
-    QButtonGroup *bubbleTypeGroup;
+    QToolBox *m_toolBox;
+    QButtonGroup *m_buttonGroup;
+    QButtonGroup *m_pointerTypeGroup;
+    QButtonGroup *m_backgroundButtonGroup;
+    QButtonGroup *m_bubbleTypeGroup;
 
-    QToolButton *fontColorToolButton;
-    QToolButton *fillColorToolButton;
-    QToolButton *lineColorToolButton;
+    QToolButton *m_fontColorToolButton;
+    QToolButton *m_fillColorToolButton;
+    QToolButton *m_lineColorToolButton;
 
-    QAction *boldAction;
-    QAction *underlineAction;
-    QAction *italicAction;
-    QAction *textAction;
-    QAction *fillAction;
-    QAction *lineAction;
+    QAction *m_boldAction;
+    QAction *m_underlineAction;
+    QAction *m_italicAction;
+    QAction *m_textAction;
+    QAction *m_fillAction;
+    QAction *m_lineAction;
 
-    QDockWidget *dock;
-    CPropertiesView *properties;
+    QDockWidget *m_dock;
+    CPropertiesView *m_properties;
 
 };
 

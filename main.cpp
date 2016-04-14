@@ -38,7 +38,7 @@
 **
 ****************************************************************************/
 
-#include "mainwindow.h"
+#include "cmainwindow.h"
 
 #include <QApplication>
 
@@ -47,7 +47,7 @@ int main(int argv, char *args[])
     Q_INIT_RESOURCE(chroniclernext);
 
     QApplication app(argv, args);
-    MainWindow mainWindow;
+    CMainWindow mainWindow;
     mainWindow.setGeometry(100, 100, 1280, 720);
     mainWindow.show();
     

@@ -7,18 +7,19 @@
 QT_BEGIN_NAMESPACE
 class QWebView;
 class QListWidget;
+class QListWidgetItem;
 QT_END_NAMESPACE
 
-class MainWindow;
+class CMainWindow;
 
 class CHomepage : public QWidget
 {
     Q_OBJECT
 public:
-    explicit CHomepage(MainWindow *window);
+    explicit CHomepage(CMainWindow *window);
 
 private:
-    MainWindow *m_window;
+    CMainWindow *m_window;
     QWebView * m_webView;
     QListWidget *m_recent;
 
