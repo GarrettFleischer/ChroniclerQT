@@ -72,7 +72,7 @@ class CMainWindow : public QMainWindow
 public:
    CMainWindow();
 
-   void LoadProject(const QString & filename);
+   void LoadProject(const QString & filepath);
 
 protected:
    virtual void keyPressEvent(QKeyEvent *evt);
@@ -86,7 +86,6 @@ private slots:
     void CurrentFontChanged(const QFont &font);
     void FontSizeChanged(const QString &size);
     void HandleFontChange();
-    void SceneScaleChanged(const QString &scale);
     void TextColorChanged();
     void ItemColorChanged();
     void LineColorChanged();
@@ -107,7 +106,6 @@ private:
     QMenu *CreateColorMenu(const char *slot, QColor defaultColor);
     QIcon CreateColorToolButtonIcon(const QString &image, QColor color);
     QIcon CreateColorIcon(QColor color);
-    void UpdateSceneScale();
 
     bool m_ShiftHeld;
     float m_scale;
@@ -119,9 +117,6 @@ private:
     QAction *m_exitAction;
     QAction *m_addAction;
     QAction *m_deleteAction;
-
-//    QAction *m_toFrontAction;
-//    QAction *m_sendBackAction;
     QAction *m_aboutAction;
 
     QMenu *m_fileMenu;
@@ -159,7 +154,6 @@ private:
 
     QDockWidget *m_dock;
     CDockManager *m_dockManager;
-    //CPropertiesView *m_properties;
 
 };
 

@@ -43,16 +43,16 @@ private:
     CTextItem * m_title;
     CTextItem * m_story;
     
-    CLink *m_linkLeft;
-    CLink *m_linkDown;
-    CLink *m_linkRight;
+//    CLink *m_linkLeft;
+//    CLink *m_linkDown;
+//    CLink *m_linkRight;
     
     bool m_resize;
     QPointF m_offset;
     QRectF m_lastBounds;
     
 public slots:
-    void LinkClicked(CLink *link);
+//    void LinkClicked(CLink *link);
     
 };
 

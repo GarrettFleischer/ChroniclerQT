@@ -10,12 +10,12 @@ CStoryBubble::CStoryBubble(QMenu *contextMenu, const QPointF &pos, const QFont &
     
     setPolygon(QPolygonF(QRectF(-100,-100,200,200)));
     
-    m_linkLeft = new CLink(CLink::Left, this);
-    m_linkDown = new CLink(CLink::Down, this);
-    m_linkRight = new CLink(CLink::Right, this);
-    connect(m_linkLeft, SIGNAL(clicked(CLink*)), this, SLOT(LinkClicked(CLink*)));
-    connect(m_linkDown, SIGNAL(clicked(CLink*)), this, SLOT(LinkClicked(CLink*)));
-    connect(m_linkRight, SIGNAL(clicked(CLink*)), this, SLOT(LinkClicked(CLink*)));
+//    m_linkLeft = new CLink(CLink::Left, this);
+//    m_linkDown = new CLink(CLink::Down, this);
+//    m_linkRight = new CLink(CLink::Right, this);
+//    connect(m_linkLeft, SIGNAL(clicked(CLink*)), this, SLOT(LinkClicked(CLink*)));
+//    connect(m_linkDown, SIGNAL(clicked(CLink*)), this, SLOT(LinkClicked(CLink*)));
+//    connect(m_linkRight, SIGNAL(clicked(CLink*)), this, SLOT(LinkClicked(CLink*)));
     
     
     SetColor(QColor(124, 140, 230));//(106,116,163);//(106,136,213);//(150,150,255);
@@ -83,10 +83,10 @@ void CStoryBubble::hoverMoveEvent(QGraphicsSceneHoverEvent *evt)
         setCursor(Qt::PointingHandCursor);
 }
 
-void CStoryBubble::LinkClicked(CLink *link)
-{
-    //link->setConnection(new CConnection(link));
-}
+//void CStoryBubble::LinkClicked(CLink *link)
+//{
+//    //link->setConnection(new CConnection(link));
+//}
 
 
 void CStoryBubble::UpdateShape()
@@ -95,9 +95,9 @@ void CStoryBubble::UpdateShape()
     qreal th = m_title->textBounds().height() + 10.0f;
     qreal tm = b.width()*2/3;
     
-    m_linkLeft->setPos(b.x() - 2, b.y() + b.height()/2);
-    m_linkDown->setPos(b.x() + b.width()/2, b.y() + b.height() + 2);
-    m_linkRight->setPos(b.x() + b.width() + 2, b.y() + b.height()/2);
+//    m_linkLeft->setPos(b.x() - 2, b.y() + b.height()/2);
+//    m_linkDown->setPos(b.x() + b.width()/2, b.y() + b.height() + 2);
+//    m_linkRight->setPos(b.x() + b.width() + 2, b.y() + b.height()/2);
 
     m_title->Resize(QRectF(b.x() + 10, b.y() + 2, tm - 20, th));
     m_story->Resize(QRectF(b.x() + 10, b.y() + th + 10, b.width() - 20, b.height() - th - 12));
@@ -149,9 +149,9 @@ void CStoryBubble::SetColor(const QColor &color)
         m_color = color;
         update();
         
-        m_linkLeft->setColor(color);
-        m_linkDown->setColor(color);
-        m_linkRight->setColor(color);
+//        m_linkLeft->setColor(color);
+//        m_linkDown->setColor(color);
+//        m_linkRight->setColor(color);
     }
 }
 
@@ -162,8 +162,8 @@ void CStoryBubble::SetLineColor(const QColor &color)
         m_lineColor = color;
         update();
         
-        m_linkLeft->setLineColor(color);
-        m_linkDown->setLineColor(color);
-        m_linkRight->setLineColor(color);
+//        m_linkLeft->setLineColor(color);
+//        m_linkDown->setLineColor(color);
+//        m_linkRight->setLineColor(color);
     }
 }

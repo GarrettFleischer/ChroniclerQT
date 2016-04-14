@@ -115,7 +115,6 @@ void CConditionProperties::SetBubble(CBubble *bbl)
         
         m_labelEdit->setText(m_bbl->m_label);
         m_labelEdit->setFont(m_bbl->GetFont());
-        //m_labelEdit->setFocus();
         
         m_conditionEdit->setText(m_bbl->m_conditionText);
         m_conditionEdit->setFont(m_bbl->GetFont());

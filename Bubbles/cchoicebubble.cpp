@@ -3,7 +3,7 @@
 CChoiceBubble::CChoiceBubble(QMenu *contextMenu, const QPointF &pos, const QFont &font, const QColor &fontColor, const QColor &lineColor, QGraphicsItem *parent)
     : CBubble(contextMenu, pos, font, fontColor, lineColor, parent)
 {
-    m_type = Condition;
+    m_type = Choice;
 
     m_color = QColor(151,118,166);
 
@@ -43,9 +43,6 @@ void CChoiceBubble::AdjustMinSize()
     m_minSize.setHeight(fm.height());
 }
 
-
-
-
 void CChoiceBubble::SetFont(const QFont &font)
 {
     CBubble::SetFont(font);
@@ -63,5 +60,9 @@ void CChoiceBubble::AddChoice(const QString &choice)
 {
     m_choices.append(new CTextItem(choice, QRectF(), this));
     UpdateShape();
-    
+}
+
+void CChoiceBubble::MoveChoice(int old_index, int new_index)
+{
+
 }

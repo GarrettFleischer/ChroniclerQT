@@ -7,6 +7,7 @@
 
 #include "Bubbles/cstorybubble.h"
 #include "Bubbles/cconditionbubble.h"
+#include "Bubbles/cchoicebubble.h"
 #include "Connections/clink.h"
 #include "Connections/cline.h"
 
@@ -98,7 +99,10 @@ void CGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
             break;
 
         case InsertChoice:
-
+            item = new CChoiceBubble(m_itemMenu, mouseEvent->scenePos(), m_font, m_textColor, m_lineColor);
+            connect(item, SIGNAL(Selected(QGraphicsItem*)), this, SIGNAL(itemSelected(QGraphicsItem*)));
+            addItem(item);
+            emit itemInserted(item);
             break;
 
         case InsertCondition:

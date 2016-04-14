@@ -27,23 +27,20 @@ CDockManager::CDockManager(QStringListModel *model, QWidget *parent)
     setLayout(layout);
 }
 
-void CDockManager::setBubble(CBubble *bbl)
+void CDockManager::setBubble(CBubble *bbl, bool ignore)
 {
     m_properties->setBubble(bbl);
 
-    if(bbl)
-        m_tabView->setCurrentWidget(m_properties);
-    else
-        m_tabView->setCurrentWidget(m_project);
+    if(!ignore)
+    {
+        if(bbl)
+            m_tabView->setCurrentWidget(m_properties);
+        else
+            m_tabView->setCurrentWidget(m_project);
+    }
 }
-
-CPropertiesView &CDockManager::properties()
-{
-    return *m_properties;
-}
-
 
 QSize CDockManager::sizeHint() const
 {
-    return QSize(300, 0);
+    return QSize(350, 0);
 }

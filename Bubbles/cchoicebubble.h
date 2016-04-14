@@ -21,6 +21,7 @@ public:
     virtual void SetFontColor(const QColor &color);
 
     void AddChoice(const QString &choice);
+    void MoveChoice(int old_index, int new_index);
 
 protected:
     virtual void UpdateShape();

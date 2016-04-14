@@ -20,9 +20,9 @@ class CDockManager : public QWidget
 public:
     explicit CDockManager(QStringListModel *model, QWidget *parent = 0);
 
-    void setBubble(CBubble *bbl);
+    virtual QSize sizeHint() const;
 
-    CPropertiesView & properties();
+    void setBubble(CBubble *bbl, bool ignore = false);
 
 private:
     QTabWidget *m_tabView;
@@ -34,9 +34,6 @@ signals:
 
 public slots:
 
-    // QWidget interface
-public:
-    virtual QSize sizeHint() const;
 };
 
 #endif // CDOCKMANAGER_H

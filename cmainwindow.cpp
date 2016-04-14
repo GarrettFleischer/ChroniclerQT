@@ -1,19 +1,18 @@
 #include "cmainwindow.h"
 
+#include <QtWidgets>
+#include <QStringListModel>
+#include <QtGlobal>
+#include <limits>
+#include <QTabWidget>
+#include <QFileInfo>
+
 #include "Connections/arrow.h"
 #include "cgraphicsscene.h"
 #include "Bubbles/cstorybubble.h"
 #include "cgraphicsview.h"
 #include "chomepage.h"
 #include "Properties/cdockmanager.h"
-#include "Properties/cpropertiesview.h"
-
-#include <QtWidgets>
-#include <QStringListModel>
-#include <QtGlobal>
-#include <limits>
-#include <QTabWidget>
-
 
 
 const int InsertTextButton = 10;
@@ -51,12 +50,12 @@ CMainWindow::CMainWindow()
     m_dock->setWidget(m_dockManager);
     addDockWidget(Qt::LeftDockWidgetArea, m_dock);
     m_dock->setVisible(false);
-    //m_properties = new CPropertiesView(lstModel, m_dock);
     m_dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 
     CHomepage *home = new CHomepage(this);
 
     m_tabView = new QTabWidget(this);
+    m_tabView->setMovable(true);
     m_tabView->setTabsClosable(true);
     connect(m_tabView, SIGNAL(tabCloseRequested(int)),
             this, SLOT(TabClosed(int)));
@@ -69,11 +68,12 @@ CMainWindow::CMainWindow()
     HandleFontChange();
 }
 
-void CMainWindow::LoadProject(const QString &filename)
+void CMainWindow::LoadProject(const QString &filepath)
 {
     m_dock->setVisible(true);
+    m_dock->setWindowTitle(QFileInfo(filepath).fileName());
     m_tabView->addTab(m_view, "startup.scn");
-    m_tabView->setCurrentIndex(1);
+    m_tabView->setCurrentWidget(m_view);
 }
 
 
@@ -144,24 +144,6 @@ void CMainWindow::FontSizeChanged(const QString &)
 }
 
 
-void CMainWindow::SceneScaleChanged(const QString &scale)
-{
-    m_scale = scale.left(scale.indexOf(tr("%"))).toFloat() / 100.0;
-    UpdateSceneScale();
-}
-
-void CMainWindow::UpdateSceneScale()
-{
-    //    QMatrix oldMatrix = view->matrix();
-    //    QMatrix newMatrix;
-    //    //view->resetMatrix();
-    //   newMatrix.translate(oldMatrix.dx(), oldMatrix.dy());
-    //   view->setMatrix(newMatrix);
-    //view->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
-    m_view->scale(m_scale, m_scale);
-}
-
-
 void CMainWindow::TextColorChanged()
 {
     m_textAction = qobject_cast<QAction *>(sender());
@@ -219,7 +201,7 @@ void CMainWindow::HandleFontChange()
     font.setUnderline(m_underlineAction->isChecked());
 
     m_scene->setFont(font);
-    //m_properties->setFont(font);
+    m_dockManager->setFont(font);
 }
 
 
@@ -237,7 +219,7 @@ void CMainWindow::ItemSelected(QGraphicsItem *selectedItem)
 
 void CMainWindow::SceneLeftPressed()
 {
-    m_dockManager->properties().setBubble(0);
+    //m_dockManager->setBubble(0, true);
 }
 
 void CMainWindow::SceneLeftReleased()
@@ -268,17 +250,6 @@ void CMainWindow::About()
 
 void CMainWindow::CreateActions()
 {
-    //    toFrontAction = new QAction(QIcon(":/images/bringtofront.png"),
-    //                                tr("Bring to &Front"), this);
-    //    toFrontAction->setShortcut(tr("Ctrl+F"));
-    //    toFrontAction->setStatusTip(tr("Bring item to front"));
-    //    connect(toFrontAction, SIGNAL(triggered()), this, SLOT(bringToFront()));
-
-    //    sendBackAction = new QAction(QIcon(":/images/sendtoback.png"), tr("Send to &Back"), this);
-    //    sendBackAction->setShortcut(tr("Ctrl+B"));
-    //    sendBackAction->setStatusTip(tr("Send item to back"));
-    //    connect(sendBackAction, SIGNAL(triggered()), this, SLOT(sendToBack()));
-
     m_deleteAction = new QAction(QIcon(":/images/delete.png"), tr("&Delete"), this);
     m_deleteAction->setShortcut(tr("Delete"));
     m_deleteAction->setStatusTip(tr("Delete item from diagram"));
@@ -320,8 +291,6 @@ void CMainWindow::CreateMenus()
     m_itemMenu = menuBar()->addMenu(tr("&Item"));
     m_itemMenu->addAction(m_deleteAction);
     m_itemMenu->addSeparator();
-    //    itemMenu->addAction(toFrontAction);
-    //    itemMenu->addAction(sendBackAction);
 
     m_aboutMenu = menuBar()->addMenu(tr("&Help"));
     m_aboutMenu->addAction(m_aboutAction);
@@ -410,13 +379,13 @@ void CMainWindow::CreateToolbars()
     connect(m_pointerTypeGroup, SIGNAL(buttonClicked(int)),
             this, SLOT(PointerGroupClicked(int)));
 
-    m_sceneScaleCombo = new QComboBox;
-    QStringList scales;
-    scales << tr("50%") << tr("75%") << tr("100%") << tr("125%") << tr("150%");
-    m_sceneScaleCombo->addItems(scales);
-    m_sceneScaleCombo->setCurrentIndex(2);
-    connect(m_sceneScaleCombo, SIGNAL(currentIndexChanged(QString)),
-            this, SLOT(SceneScaleChanged(QString)));
+//    m_sceneScaleCombo = new QComboBox;
+//    QStringList scales;
+//    scales << tr("50%") << tr("75%") << tr("100%") << tr("125%") << tr("150%");
+//    m_sceneScaleCombo->addItems(scales);
+//    m_sceneScaleCombo->setCurrentIndex(2);
+//    connect(m_sceneScaleCombo, SIGNAL(currentIndexChanged(QString)),
+//            this, SLOT(SceneScaleChanged(QString)));
 
     m_pointerToolBar = addToolBar(tr("Pointer type"));
     m_pointerToolBar->addWidget(pointerButton);
@@ -424,7 +393,7 @@ void CMainWindow::CreateToolbars()
     m_pointerToolBar->addWidget(storyBubbleToolButton);
     m_pointerToolBar->addWidget(conditionBubbleToolButton);
     m_pointerToolBar->addWidget(actionBubbleToolButton);
-    m_pointerToolBar->addWidget(m_sceneScaleCombo);
+//    m_pointerToolBar->addWidget(m_sceneScaleCombo);
 }
 
 
