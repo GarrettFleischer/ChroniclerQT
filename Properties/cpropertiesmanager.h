@@ -12,12 +12,12 @@ class CStoryProperties;
 class CConditionProperties;
 class CBubble;
 
-class CPropertiesView : public QWidget
+class CPropertiesManager : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit CPropertiesView(QStringListModel *model, QWidget *parent = 0);
+    explicit CPropertiesManager(QStringListModel *model, QWidget *parent = 0);
 
 public:
     void setBubble(CBubble *bbl);

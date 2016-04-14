@@ -4,7 +4,7 @@
 #include <QVBoxLayout>
 
 
-#include "cpropertiesview.h"
+#include "cpropertiesmanager.h"
 #include "cprojectview.h"
 
 CDockManager::CDockManager(QStringListModel *model, QWidget *parent)
@@ -15,7 +15,7 @@ CDockManager::CDockManager(QStringListModel *model, QWidget *parent)
     m_tabView = new QTabWidget();
     m_tabView->setTabPosition(QTabWidget::South);
 
-    m_properties = new CPropertiesView(model);
+    m_properties = new CPropertiesManager(model);
     m_project = new CProjectView();
 
     m_tabView->addTab(m_project, "Project");

@@ -9,7 +9,6 @@ class CGraphicsView : public QGraphicsView
 public:
     CGraphicsView(QGraphicsScene *scene, QWidget *parent = 0);
 
-    // QWidget interface
 protected:
     virtual void mousePressEvent(QMouseEvent *);
     virtual void mouseReleaseEvent(QMouseEvent *);

@@ -9,7 +9,7 @@ class QTabWidget;
 class QStringListModel;
 QT_END_NAMESPACE
 
-class CPropertiesView;
+class CPropertiesManager;
 class CProjectView;
 
 class CBubble;
@@ -27,7 +27,7 @@ public:
 private:
     QTabWidget *m_tabView;
 
-    CPropertiesView *m_properties;
+    CPropertiesManager *m_properties;
     CProjectView *m_project;
 
 signals:

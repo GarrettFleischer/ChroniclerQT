@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QWidget>
 
-class CPropertiesView;
+class CPropertiesManager;
 
 class CProjectView : public QWidget
 {

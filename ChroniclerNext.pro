@@ -24,16 +24,18 @@ HEADERS += \
     Misc/clineedit.h \
     Misc/ctextedit.h \
     Misc/ctextitem.h \
-    Properties/cconditionproperties.h \
-    Properties/cpropertiesview.h \
-    Properties/cstoryproperties.h \
     Connections/cline.h \
     cgraphicsview.h \
     cgraphicsscene.h \
     chomepage.h \
     cmainwindow.h \
     Properties/cprojectview.h \
-    Properties/cdockmanager.h
+    Properties/cdockmanager.h \
+    Properties/cpropertiesmanager.h \
+    Properties/Widgets/cchoiceproperties.h \
+    Properties/Widgets/cconditionproperties.h \
+    Properties/Widgets/cpropertieswidget.h \
+    Properties/Widgets/cstoryproperties.h
 
 SOURCES += \
     Bubbles/cbubble.cpp \
@@ -47,9 +49,6 @@ SOURCES += \
     Misc/clineedit.cpp \
     Misc/ctextedit.cpp \
     Misc/ctextitem.cpp \
-    Properties/cconditionproperties.cpp \
-    Properties/cpropertiesview.cpp \
-    Properties/cstoryproperties.cpp \
     main.cpp \
     Connections/cline.cpp \
     cgraphicsview.cpp \
@@ -57,4 +56,9 @@ SOURCES += \
     chomepage.cpp \
     cmainwindow.cpp \
     Properties/cprojectview.cpp \
-    Properties/cdockmanager.cpp
+    Properties/cdockmanager.cpp \
+    Properties/cpropertiesmanager.cpp \
+    Properties/Widgets/cchoiceproperties.cpp \
+    Properties/Widgets/cconditionproperties.cpp \
+    Properties/Widgets/cpropertieswidget.cpp \
+    Properties/Widgets/cstoryproperties.cpp

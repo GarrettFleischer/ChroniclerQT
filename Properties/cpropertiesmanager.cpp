@@ -1,19 +1,19 @@
-#include "cpropertiesview.h"
+#include "cpropertiesmanager.h"
 
 #include <QVBoxLayout>
 
-#include "Properties/cstoryproperties.h"
-#include "Properties/cconditionproperties.h"
+#include "Widgets/cstoryproperties.h"
+#include "Widgets/cconditionproperties.h"
 #include "Bubbles/cbubble.h"
 
 
-CPropertiesView::CPropertiesView(QStringListModel *model, QWidget *parent)
+CPropertiesManager::CPropertiesManager(QStringListModel *model, QWidget *parent)
     : QWidget(parent)
 {
-    m_storyProperties = new CStoryProperties(NULL, model, parent);
+    m_storyProperties = new CStoryProperties(model, parent);
     m_storyProperties->setEnabled(false);
 
-    m_conditionProperties = new CConditionProperties(NULL, model, parent);
+    m_conditionProperties = new CConditionProperties(model, parent);
     m_conditionProperties->setEnabled(false);
     m_conditionProperties->hide();
 
@@ -38,7 +38,7 @@ CPropertiesView::CPropertiesView(QStringListModel *model, QWidget *parent)
 
 
 
-void CPropertiesView::setBubble(CBubble *bbl)
+void CPropertiesManager::setBubble(CBubble *bbl)
 {
     if(bbl)
     {
@@ -48,30 +48,30 @@ void CPropertiesView::setBubble(CBubble *bbl)
         switch(bbl->GetType())
         {
         case CBubble::Story:
-            m_storyProperties->SetBubble(bbl);
+            m_storyProperties->setBubble(bbl);
             m_storyProperties->show();
         break;
 
         case CBubble::Condition:
-            m_conditionProperties->SetBubble(bbl);
+            m_conditionProperties->setBubble(bbl);
             m_conditionProperties->show();
         break;
 
         case CBubble::Choice:
-            m_storyProperties->SetBubble(0);
-            m_conditionProperties->SetBubble(0);
+            m_storyProperties->setBubble(0);
+            m_conditionProperties->setBubble(0);
         break;
         }
     }
     else
     {
-        m_storyProperties->SetBubble(0);
-        m_conditionProperties->SetBubble(0);
+        m_storyProperties->setBubble(0);
+        m_conditionProperties->setBubble(0);
     }
 }
 
 
-void CPropertiesView::setFont(const QFont &font)
+void CPropertiesManager::setFont(const QFont &font)
 {
     QWidget::setFont(font);
     m_storyProperties->setFont(font);
