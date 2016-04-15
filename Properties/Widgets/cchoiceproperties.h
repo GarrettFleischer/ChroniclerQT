@@ -3,6 +3,10 @@
 
 #include "cpropertieswidget.h"
 
+QT_BEGIN_NAMESPACE
+class QListWidget;
+QT_END_NAMESPACE
+
 class CChoiceBubble;
 
 class CChoiceProperties : public CPropertiesWidget
@@ -17,6 +21,7 @@ public:
 private:
     CChoiceBubble *m_bbl;
 
+    QListWidget *m_choices;
 
 signals:
 

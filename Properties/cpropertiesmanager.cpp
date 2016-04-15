@@ -4,6 +4,7 @@
 
 #include "Widgets/cstoryproperties.h"
 #include "Widgets/cconditionproperties.h"
+#include "Widgets/cchoiceproperties.h"
 #include "Bubbles/cbubble.h"
 
 
@@ -17,10 +18,15 @@ CPropertiesManager::CPropertiesManager(QStringListModel *model, QWidget *parent)
     m_conditionProperties->setEnabled(false);
     m_conditionProperties->hide();
 
+    m_choiceProperties = new CChoiceProperties(model, parent);
+    m_choiceProperties->setEnabled(false);
+    m_choiceProperties->hide();
+
     
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->addWidget(m_storyProperties);
     layout->addWidget(m_conditionProperties);
+    layout->addWidget(m_choiceProperties);
     setLayout(layout);
 
     //m_tabView->addTab(this, "Properties");
@@ -44,6 +50,7 @@ void CPropertiesManager::setBubble(CBubble *bbl)
     {
         m_storyProperties->hide();
         m_conditionProperties->hide();
+        m_choiceProperties->hide();
 
         switch(bbl->GetType())
         {
@@ -58,8 +65,8 @@ void CPropertiesManager::setBubble(CBubble *bbl)
         break;
 
         case CBubble::Choice:
-            m_storyProperties->setBubble(0);
-            m_conditionProperties->setBubble(0);
+            m_choiceProperties->setBubble(bbl);
+            m_choiceProperties->show();
         break;
         }
     }
@@ -67,6 +74,7 @@ void CPropertiesManager::setBubble(CBubble *bbl)
     {
         m_storyProperties->setBubble(0);
         m_conditionProperties->setBubble(0);
+        m_choiceProperties->setBubble(0);
     }
 }
 

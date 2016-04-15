@@ -2,13 +2,13 @@
 #define CPROPERTIES_H
 
 #include <QWidget>
+#include <QVBoxLayout>
+#include <QLineEdit>
+#include <QCheckBox>
 
 QT_BEGIN_NAMESPACE
 class QStringListModel;
 class QFont;
-class QLineEdit;
-class QCheckBox;
-class QVBoxLayout;
 QT_END_NAMESPACE
 
 class CBubble;

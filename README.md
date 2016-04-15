@@ -29,6 +29,7 @@ Naming convention: Prefix all .h .cpp and .qml files with "C"
 
 **Bugs:**  
 * Mouse cursor in improper state when adding connections to the scene
+* Font changes only apply to existing objects
 
 **Contributors:**  
 [Garrett Fleischer](https://www.linkedin.com/in/garrett-fleischer-57a230b7)

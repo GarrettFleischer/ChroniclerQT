@@ -1,12 +1,8 @@
 #include "cpropertieswidget.h"
 
 #include <QLabel>
-#include <QLineEdit>
 #include <QIntValidator>
-#include <QCheckBox>
 #include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QStringListModel>
 
 #include "Misc/clineedit.h"
 

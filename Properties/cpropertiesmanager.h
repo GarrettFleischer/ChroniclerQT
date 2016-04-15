@@ -10,6 +10,7 @@ QT_END_NAMESPACE
 
 class CStoryProperties;
 class CConditionProperties;
+class CChoiceProperties;
 class CBubble;
 
 class CPropertiesManager : public QWidget
@@ -28,6 +29,7 @@ private:
 
     CStoryProperties *m_storyProperties;
     CConditionProperties *m_conditionProperties;
+    CChoiceProperties *m_choiceProperties;
 
 signals:
 

@@ -1,14 +1,6 @@
 #include "cstoryproperties.h"
 
 #include <QLabel>
-#include <QLineEdit>
-#include <QIntValidator>
-#include <QCheckBox>
-#include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QStringListModel>
-
-#include<limits>
 
 #include "Misc/ctextedit.h"
 #include "Bubbles/cstorybubble.h"
@@ -32,34 +24,6 @@ CStoryProperties::CStoryProperties(QStringListModel *model, QWidget *parent)
     m_layout->addLayout(lStory);
 
     setBubble(0);
-}
-
-
-void CStoryProperties::LabelChanged(QString label)
-{
-    if(m_bbl)
-        m_bbl->m_title->SetText(label);
-}
-
-void CStoryProperties::StoryChanged()
-{
-    if(m_bbl)
-        m_bbl->m_story->SetText(m_storyEdit->toPlainText());
-}
-
-void CStoryProperties::OrderChanged(QString order)
-{
-    if(m_bbl)
-        m_bbl->m_order = order.toInt();
-}
-
-void CStoryProperties::LockedChanged(bool locked)
-{
-    if(m_bbl)
-    {
-        m_bbl->m_locked = locked;
-        m_orderEdit->setEnabled(locked);
-    }
 }
 
 
@@ -98,4 +62,32 @@ void CStoryProperties::setFont(const QFont &font)
 {
     CPropertiesWidget::setFont(font);
     m_storyEdit->setFont(font);
+}
+
+
+void CStoryProperties::LabelChanged(QString label)
+{
+    if(m_bbl)
+        m_bbl->m_title->SetText(label);
+}
+
+void CStoryProperties::StoryChanged()
+{
+    if(m_bbl)
+        m_bbl->m_story->SetText(m_storyEdit->toPlainText());
+}
+
+void CStoryProperties::OrderChanged(QString order)
+{
+    if(m_bbl)
+        m_bbl->m_order = order.toInt();
+}
+
+void CStoryProperties::LockedChanged(bool locked)
+{
+    if(m_bbl)
+    {
+        m_bbl->m_locked = locked;
+        m_orderEdit->setEnabled(locked);
+    }
 }

@@ -1,12 +1,7 @@
 #include "cconditionproperties.h"
 
 #include <QLabel>
-#include <QLineEdit>
-#include <QIntValidator>
-#include <QCheckBox>
 #include <QHBoxLayout>
-#include <QVBoxLayout>
-#include <QStringListModel>
 
 #include "Misc/clineedit.h"
 #include "Bubbles/cconditionbubble.h"
@@ -30,6 +25,44 @@ CConditionProperties::CConditionProperties(QStringListModel *model, QWidget *par
     m_layout->addStretch(1);
 
     setBubble(0);
+}
+
+
+void CConditionProperties::setBubble(CBubble *bbl)
+{
+    m_bbl = qgraphicsitem_cast<CConditionBubble *>(bbl);
+
+    if(m_bbl)
+    {
+        setEnabled(true);
+
+        m_labelEdit->setText(m_bbl->m_label);
+        m_labelEdit->setFont(m_bbl->GetFont());
+
+        m_conditionEdit->setText(m_bbl->m_conditionText);
+        m_conditionEdit->setFont(m_bbl->GetFont());
+
+        m_lockEdit->setChecked(m_bbl->m_locked);
+
+        m_orderEdit->setText(QString().number(m_bbl->m_order));
+        m_orderEdit->setEnabled(m_lockEdit->isChecked());
+    }
+    else
+    {
+        m_labelEdit->setText(tr(""));
+        m_conditionEdit->setText(tr(""));
+        m_lockEdit->setChecked(false);
+        m_orderEdit->setText(tr(""));
+
+        setEnabled(false);
+    }
+}
+
+
+void CConditionProperties::setFont(const QFont &font)
+{
+    CPropertiesWidget::setFont(font);
+    m_conditionEdit->setFont(font);
 }
 
 
@@ -58,42 +91,4 @@ void CConditionProperties::LockedChanged(bool locked)
         m_bbl->m_locked = locked;
         m_orderEdit->setEnabled(locked);
     }
-}
-
-
-void CConditionProperties::setBubble(CBubble *bbl)
-{
-    m_bbl = qgraphicsitem_cast<CConditionBubble *>(bbl);
-
-    if(m_bbl)
-    {
-        setEnabled(true);
-        
-        m_labelEdit->setText(m_bbl->m_label);
-        m_labelEdit->setFont(m_bbl->GetFont());
-        
-        m_conditionEdit->setText(m_bbl->m_conditionText);
-        m_conditionEdit->setFont(m_bbl->GetFont());
-        
-        m_lockEdit->setChecked(m_bbl->m_locked);
-        
-        m_orderEdit->setText(QString().number(m_bbl->m_order));
-        m_orderEdit->setEnabled(m_lockEdit->isChecked());
-    }
-    else
-    {
-        m_labelEdit->setText(tr(""));
-        m_conditionEdit->setText(tr(""));
-        m_lockEdit->setChecked(false);
-        m_orderEdit->setText(tr(""));
-
-        setEnabled(false);
-    }
-}
-
-
-void CConditionProperties::setFont(const QFont &font)
-{
-    CPropertiesWidget::setFont(font);
-    m_conditionEdit->setFont(font);
 }
