@@ -21,7 +21,7 @@ public:
     explicit CPropertiesWidget(QStringListModel *model, QWidget *parent = 0);
 
     virtual void setBubble(CBubble *bbl) = 0;
-    virtual void setFont(const QFont &font) = 0;
+    virtual void setFont(const QFont &font);
 
 protected:
     QStringListModel *m_model;

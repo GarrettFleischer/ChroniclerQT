@@ -94,9 +94,6 @@ void CConditionProperties::setBubble(CBubble *bbl)
 
 void CConditionProperties::setFont(const QFont &font)
 {
-    QWidget::setFont(font);
-    m_labelEdit->setFont(font);
+    CPropertiesWidget::setFont(font);
     m_conditionEdit->setFont(font);
-    m_lockEdit->setFont(font);
-    m_orderEdit->setFont(font);
 }

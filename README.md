@@ -28,7 +28,7 @@ Naming convention: Prefix all .h .cpp and .qml files with "C"
  * CS code import
 
 **Bugs:**  
-* N/A
+* Mouse cursor in improper state when adding connections to the scene
 
 **Contributors:**  
 [Garrett Fleischer](https://www.linkedin.com/in/garrett-fleischer-57a230b7)

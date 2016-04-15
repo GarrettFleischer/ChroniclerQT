@@ -96,9 +96,6 @@ void CStoryProperties::setBubble(CBubble *bbl)
 
 void CStoryProperties::setFont(const QFont &font)
 {
-    QWidget::setFont(font);
-    m_labelEdit->setFont(font);
+    CPropertiesWidget::setFont(font);
     m_storyEdit->setFont(font);
-    m_lockEdit->setFont(font);
-    m_orderEdit->setFont(font);
 }

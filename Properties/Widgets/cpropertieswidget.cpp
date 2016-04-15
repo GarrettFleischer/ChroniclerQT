@@ -71,3 +71,11 @@ CPropertiesWidget::CPropertiesWidget(QStringListModel *model, QWidget *parent)
 
     setLayout(m_layout);
 }
+
+void CPropertiesWidget::setFont(const QFont &font)
+{
+    QWidget::setFont(font);
+    m_labelEdit->setFont(font);
+    m_lockEdit->setFont(font);
+    m_orderEdit->setFont(font);
+}

@@ -17,6 +17,7 @@ public:
 private:
     CChoiceBubble *m_bbl;
 
+
 signals:
 
 protected slots:
