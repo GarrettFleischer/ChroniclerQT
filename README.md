@@ -35,7 +35,7 @@ Naming convention: Prefix all .h .cpp and .qml files with "C"
 
 
 **Inspiration:**  
-Two years ago I began work on a ChoiceScript adventure game and quickly became bogged down in all the branching paths. I thought to myself, "_Would it not be easier to view this in a flowchart?_" Thus [Tinker](https://forum.choiceofgames.com/t/tool-tinker-visual-code-editor/6207) was born, followed 6 months later by [Chronicler](https://forum.choiceofgames.com/t/tool-chronicler-choicescript-visual-code-editor/6811). Both versions were developed in Game Maker: Studio which currently has poor cross-platform support. As such I have decided to switch to Qt for further development.
+Two years ago I began work on a ChoiceScript adventure game and quickly became bogged down in all the branching paths. I thought to myself, "_Would it not be easier to view this in a flowchart?_" Thus [Tinker](https://forum.choiceofgames.com/t/tool-tinker-visual-code-editor/6207) was born, followed 6 months later by [Chronicler](https://forum.choiceofgames.com/t/tool-chronicler-choicescript-visual-code-editor/6811). Both versions were developed in Game Maker Studio which currently has poor cross-platform support. As such I have decided to switch to Qt for further development.
 
 ![](https://licensebuttons.net/l/by-nc/4.0/88x31.png)  
 **Chronicler** is licensed under a [Creative Commons Attribution-NonCommercial 4.0 International License](http://creativecommons.org/licenses/by-nc/4.0/)
