@@ -12,11 +12,6 @@ CChoiceProperties::CChoiceProperties(QStringListModel *model, QWidget *parent)
     m_choices->setDragDropMode(QAbstractItemView::DragDrop);
     m_choices->setDefaultDropAction(Qt::MoveAction);
 
-    m_choices->addItem("Code");
-    m_choices->addItem("Eat");
-    m_choices->addItem("Sleep");
-    m_choices->addItem("In that order...");
-
     m_layout->addWidget(m_choices);
 }
 
@@ -28,11 +23,12 @@ void CChoiceProperties::setBubble(CBubble *bbl)
     m_choiceBubble = qgraphicsitem_cast<CChoiceBubble *>(bbl);
     if(m_choiceBubble)
     {
-        // update properties...
+        m_choices->clear();
+        m_choices->addItems(m_choiceBubble->getChoices());
     }
     else
     {
-
+        m_choices->clear();
     }
 }
 

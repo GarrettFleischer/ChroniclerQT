@@ -15,11 +15,11 @@ CConditionBubble::CConditionBubble(QMenu *contextMenu, const QPointF &pos, const
     AdjustMinSize();
 
     setPolygon(QPolygonF(QRectF(-m_minSize.width()/2, -m_minSize.height()/2, m_minSize.width()*2, m_minSize.height()*2)));
-    UpdateShape();
+    UpdatePolygon();
 }
 
 
-void CConditionBubble::UpdateShape()
+void CConditionBubble::UpdatePolygon()
 {
     qreal padding = 10;
     QRectF tb = m_condition->textBounds(m_minSize);
@@ -46,7 +46,7 @@ void CConditionBubble::setFont(const QFont &font)
 {
     CBubble::setFont(font);
     m_condition->setFont(m_font);
-    UpdateShape();
+    UpdatePolygon();
 }
 
 void CConditionBubble::setPalette(const Chronicler::CPalette &palette)
@@ -60,6 +60,6 @@ void CConditionBubble::setCondition(QString condition)
     m_conditionText = condition;
     QString txt = QString("*if ( ").append(condition).append(" )");
     m_condition->setText(txt);
-    UpdateShape();
+    UpdatePolygon();
 }
 

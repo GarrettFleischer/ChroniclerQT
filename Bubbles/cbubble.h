@@ -56,7 +56,7 @@ protected:
     virtual QVariant itemChange(GraphicsItemChange change, const QVariant &value);
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *);
 
-    virtual void UpdateShape() = 0;
+    virtual void UpdatePolygon() = 0;
 
 
     BubbleType m_type;

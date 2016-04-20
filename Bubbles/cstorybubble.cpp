@@ -25,7 +25,7 @@ CStoryBubble::CStoryBubble(QMenu *contextMenu, const QPointF &pos, const CPalett
     setCursor(Qt::PointingHandCursor);
     setAcceptHoverEvents(true);
 
-    UpdateShape();
+    UpdatePolygon();
 }
 
 void CStoryBubble::mousePressEvent(QGraphicsSceneMouseEvent *evt)
@@ -60,7 +60,7 @@ void CStoryBubble::mouseMoveEvent(QGraphicsSceneMouseEvent *evt)
         setPolygon(QRectF(m_lastBounds.x(), m_lastBounds.y(),
                           qMax<float>(m_lastBounds.width() + delta.x(), m_minSize.width()),
                           qMax<float>(m_lastBounds.height() + delta.y(), m_minSize.height())));
-        UpdateShape();
+        UpdatePolygon();
     }
     else
         CBubble::mouseMoveEvent(evt);
@@ -78,7 +78,7 @@ void CStoryBubble::hoverMoveEvent(QGraphicsSceneHoverEvent *evt)
 }
 
 
-void CStoryBubble::UpdateShape()
+void CStoryBubble::UpdatePolygon()
 {
     QRectF b = boundingRect();
     qreal th = m_title->textBounds().height() + 10.0f;
@@ -111,7 +111,7 @@ void CStoryBubble::setFont(const QFont &font)
         m_font = font;
         m_title->setFont(m_font);
         m_story->setFont(m_font);
-        UpdateShape();
+        UpdatePolygon();
     }
 }
 

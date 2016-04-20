@@ -12,16 +12,17 @@ CStoryProperties::CStoryProperties(QStringListModel *model, QWidget *parent)
 {
 
     // Story Widget
-    QLabel *lblStory = new QLabel(tr("Story:"), this);
+//    QLabel *lblStory = new QLabel(tr("Story:"), this);
     m_storyEdit = new CTextEdit(this, m_model);
     connect(m_storyEdit, SIGNAL(textChanged()), this, SLOT(StoryChanged()));
 
     // Story Layout
-    QVBoxLayout *lStory = new QVBoxLayout();
-    lStory->addWidget(lblStory);
-    lStory->addWidget(m_storyEdit);
+//    QVBoxLayout *lStory = new QVBoxLayout();
+//    lStory->addWidget(lblStory);
+//    lStory->addWidget(m_storyEdit);
 
-    m_layout->addLayout(lStory);
+//    m_layout->addLayout(lStory);
+    m_layout->addWidget(m_storyEdit);
 
     setBubble(0);
 }

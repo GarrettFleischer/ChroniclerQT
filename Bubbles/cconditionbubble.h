@@ -18,7 +18,7 @@ public:
     QString getCondition() { return m_conditionText; }
 
 protected:
-    virtual void UpdateShape();
+    virtual void UpdatePolygon();
     void AdjustMinSize();
 
 private:

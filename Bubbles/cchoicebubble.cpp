@@ -10,15 +10,20 @@ CChoiceBubble::CChoiceBubble(QMenu *contextMenu, const QPointF &pos, const Chron
     m_choices.append(new CTextItem("", QRectF(), this));
     m_choices[0]->SetStyle(Qt::AlignHCenter);
 
+    m_choiceStrings.append("Code");
+    m_choiceStrings.append("Eat");
+    m_choiceStrings.append("Sleep");
+    m_choiceStrings.append("In that order...");
+
     AdjustMinSize();
 
     setPolygon(QPolygonF(QRectF(-m_minSize.width()/2, -m_minSize.height()/2, m_minSize.width()*2, m_minSize.height()*2)));
-    UpdateShape();
+    UpdatePolygon();
 }
 
 
 
-void CChoiceBubble::UpdateShape()
+void CChoiceBubble::UpdatePolygon()
 {
     qreal padding = 10;
     QRectF tb = m_choices[0]->textBounds(m_minSize);
@@ -46,14 +51,14 @@ void CChoiceBubble::setFont(const QFont &font)
     CBubble::setFont(font);
     for(CTextItem *itm : m_choices)
         itm->setFont(m_font);
-    UpdateShape();
+    UpdatePolygon();
 }
 
 
 void CChoiceBubble::AddChoice(const QString &choice)
 {
     m_choices.append(new CTextItem(choice, QRectF(), this));
-    UpdateShape();
+    UpdatePolygon();
 }
 
 void CChoiceBubble::MoveChoice(int old_index, int new_index)

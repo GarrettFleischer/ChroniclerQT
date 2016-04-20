@@ -26,7 +26,7 @@ public:
     QString getStory() { return m_story->Text(); }
 
 protected:
-    virtual void UpdateShape();
+    virtual void UpdatePolygon();
 
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *evt);
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *evt);

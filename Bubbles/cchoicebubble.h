@@ -15,15 +15,18 @@ public:
     virtual void setFont(const QFont &font);
     virtual void setPalette(const Chronicler::CPalette &palette);
 
+    QStringList getChoices() { return m_choiceStrings; }
+
     void AddChoice(const QString &choice);
     void MoveChoice(int old_index, int new_index);
 
 protected:
-    virtual void UpdateShape();
+    virtual void UpdatePolygon();
     void AdjustMinSize();
 
 private:
     QList<CTextItem *> m_choices;
+    QStringList m_choiceStrings;
 
 };
 
