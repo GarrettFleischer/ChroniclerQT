@@ -18,14 +18,17 @@ public:
     friend class CStoryProperties;
 
 public:
-    CStoryBubble(QMenu *contextMenu, const QPointF &pos, const QFont &font = QFont(), const QColor &fontColor = Qt::black,
-                 const QColor &lineColor = Qt::black, QGraphicsItem *parent = 0);
+    CStoryBubble(QMenu *contextMenu, const QPointF &pos, const Chronicler::CPalette &palette, const QFont &font = QFont(), QGraphicsItem *parent = 0);
 
 public:
-    virtual void SetFont(const QFont &font);
-    virtual void SetFontColor(const QColor &color);
-    virtual void SetColor(const QColor &color);
-    virtual void SetLineColor(const QColor &color);
+    virtual void setFont(const QFont &font);
+    virtual void setPalette(const Chronicler::CPalette &palette);
+
+    virtual void setLabel(QString label);
+
+//    virtual void setFontColor(const QColor &color);
+//    virtual void setColor(const QColor &color);
+//    virtual void setLineColor(const QColor &color);
 
 
 protected:
@@ -53,7 +56,7 @@ private:
     
 public slots:
 //    void LinkClicked(CLink *link);
-    
+
 };
 
 #endif // CSTORYBUBBLE_H

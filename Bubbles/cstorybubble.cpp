@@ -3,10 +3,10 @@
 #include <QPainterPath>
 
 
-CStoryBubble::CStoryBubble(QMenu *contextMenu, const QPointF &pos, const QFont &font, const QColor &fontColor, const QColor &lineColor, QGraphicsItem *parent)
-    : CBubble(contextMenu, pos, font, fontColor, lineColor, parent), m_resize(false)
+CStoryBubble::CStoryBubble(QMenu *contextMenu, const QPointF &pos, const CPalette &palette, const QFont &font, QGraphicsItem *parent)
+    : CBubble(contextMenu, pos, palette, font, parent), m_resize(false)
 {
-    m_type = Story;
+    m_type = Chronicler::Story;
     
     setPolygon(QPolygonF(QRectF(-100,-100,200,200)));
     
@@ -17,8 +17,8 @@ CStoryBubble::CStoryBubble(QMenu *contextMenu, const QPointF &pos, const QFont &
 //    connect(m_linkDown, SIGNAL(clicked(CLink*)), this, SLOT(LinkClicked(CLink*)));
 //    connect(m_linkRight, SIGNAL(clicked(CLink*)), this, SLOT(LinkClicked(CLink*)));
     
-    
-    SetColor(QColor(124, 140, 230));//(106,116,163);//(106,136,213);//(150,150,255);
+    m_palette.fill = QColor(124, 140, 230);
+    //setColor(QColor(124, 140, 230));//(106,116,163);//(106,136,213);//(150,150,255);
 
     m_title = new CTextItem("Title", QRectF(), this);
     m_title->SetStyle(Qt::AlignHCenter);
@@ -121,49 +121,63 @@ void CStoryBubble::UpdateShape()
     setPolygon(m_polygon);
 }
 
-void CStoryBubble::SetFont(const QFont &font)
+void CStoryBubble::setFont(const QFont &font)
 {
     if(font != m_font)
     {
         m_font = font;
-        m_title->SetFont(m_font);
-        m_story->SetFont(m_font);
+        m_title->setFont(m_font);
+        m_story->setFont(m_font);
         UpdateShape();
     }
 }
 
-void CStoryBubble::SetFontColor(const QColor &color)
+//void CStoryBubble::setFontColor(const QColor &color)
+//{
+//    if(color != m_fontColor)
+//    {
+//        m_fontColor = color;
+//        m_title->SetColor(m_fontColor);
+//        m_story->SetColor(m_fontColor);
+//    }
+//}
+
+//void CStoryBubble::setColor(const QColor &color)
+//{
+//    if(color != m_color)
+//    {
+//        m_color = color;
+//        update();
+        
+////        m_linkLeft->setColor(color);
+////        m_linkDown->setColor(color);
+////        m_linkRight->setColor(color);
+//    }
+//}
+
+//void CStoryBubble::setLineColor(const QColor &color)
+//{
+//    if(color != m_lineColor)
+//    {
+//        m_lineColor = color;
+//        update();
+        
+////        m_linkLeft->setLineColor(color);
+////        m_linkDown->setLineColor(color);
+////        m_linkRight->setLineColor(color);
+//    }
+//}
+
+
+void CStoryBubble::setLabel(QString label)
 {
-    if(color != m_fontColor)
-    {
-        m_fontColor = color;
-        m_title->SetColor(m_fontColor);
-        m_story->SetColor(m_fontColor);
-    }
+    CBubble::setLabel(label);
+    m_title->setText(label);
 }
 
-void CStoryBubble::SetColor(const QColor &color)
+void CStoryBubble::setPalette(const Chronicler::CPalette &palette)
 {
-    if(color != m_color)
-    {
-        m_color = color;
-        update();
-        
-//        m_linkLeft->setColor(color);
-//        m_linkDown->setColor(color);
-//        m_linkRight->setColor(color);
-    }
-}
-
-void CStoryBubble::SetLineColor(const QColor &color)
-{
-    if(color != m_lineColor)
-    {
-        m_lineColor = color;
-        update();
-        
-//        m_linkLeft->setLineColor(color);
-//        m_linkDown->setLineColor(color);
-//        m_linkRight->setLineColor(color);
-    }
+    m_title->setColor(palette.font);
+    m_story->setColor(palette.font);
+    CBubble::setPalette(palette);
 }

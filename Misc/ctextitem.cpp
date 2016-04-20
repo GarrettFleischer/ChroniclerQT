@@ -45,7 +45,7 @@ QRectF CTextItem::textBounds(const QSizeF &minimum) const
 }
 
 
-void CTextItem::SetColor(const QColor &color)
+void CTextItem::setColor(const QColor &color)
 {
     m_color = color;
     update();

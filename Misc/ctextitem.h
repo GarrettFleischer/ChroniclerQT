@@ -15,12 +15,12 @@ public:
     CTextItem(const QString &text, const QRectF &bounds, QGraphicsItem *parent = 0);
 
     QString Text() { return m_text; }
-    void SetText(const QString& text) { m_text = text; update(); }
+    void setText(const QString& text) { m_text = text; update(); }
 
-    void SetFont(const QFont &font) { m_font = font; }
+    void setFont(const QFont &font) { m_font = font; }
     void SetStyle(int style) { m_style = style; update(); }
 
-    void SetColor(const QColor &color);
+    void setColor(const QColor &color);
 
     virtual QRectF boundingRect() const { return m_bounds; }
     virtual void Resize(const QRectF &bounds) { m_bounds = bounds; update(); }

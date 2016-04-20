@@ -52,19 +52,19 @@ void CPropertiesManager::setBubble(CBubble *bbl)
         m_conditionProperties->hide();
         m_choiceProperties->hide();
 
-        switch(bbl->GetType())
+        switch(bbl->getType())
         {
-        case CBubble::Story:
+        case Chronicler::Story:
             m_storyProperties->setBubble(bbl);
             m_storyProperties->show();
         break;
 
-        case CBubble::Condition:
+        case Chronicler::Condition:
             m_conditionProperties->setBubble(bbl);
             m_conditionProperties->show();
         break;
 
-        case CBubble::Choice:
+        case Chronicler::Choice:
             m_choiceProperties->setBubble(bbl);
             m_choiceProperties->show();
         break;

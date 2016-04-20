@@ -1,11 +1,11 @@
 #include "cconditionbubble.h"
 
-CConditionBubble::CConditionBubble(QMenu *contextMenu, const QPointF &pos, const QFont &font, const QColor &fontColor, const QColor &lineColor, QGraphicsItem *parent)
-    : CBubble(contextMenu, pos, font, fontColor, lineColor, parent), m_label("")
+CConditionBubble::CConditionBubble(QMenu *contextMenu, const QPointF &pos, const CPalette &palette, const QFont &font, QGraphicsItem *parent)
+    : CBubble(contextMenu, pos, palette, font, parent)
 {
-    m_type = Condition;
+    m_type = Chronicler::Condition;
 
-    m_color = QColor(151,118,166);
+    m_palette.fill = QColor(151,118,166);
 
     m_condition = new CTextItem("", QRectF(), this);
     m_condition->SetStyle(Qt::AlignHCenter);
@@ -45,26 +45,25 @@ void CConditionBubble::AdjustMinSize()
 }
 
 
-void CConditionBubble::SetFont(const QFont &font)
+void CConditionBubble::setFont(const QFont &font)
 {
-    CBubble::SetFont(font);
-    m_condition->SetFont(m_font);
+    CBubble::setFont(font);
+    m_condition->setFont(m_font);
     UpdateShape();
 }
 
-void CConditionBubble::SetFontColor(const QColor &color)
-{
-    CBubble::SetFontColor(color);
-    m_condition->SetColor(m_fontColor);
-}
-
-
-
-void CConditionBubble::SetCondition(const QString &condition)
+void CConditionBubble::setCondition(const QString &condition)
 {
     m_conditionText = condition;
     QString txt = QString("*if ( ").append(condition).append(" )");
-    m_condition->SetText(txt);
+    m_condition->setText(txt);
     UpdateShape();
 }
 
+
+
+void CConditionBubble::setPalette(const Chronicler::CPalette &palette)
+{
+    m_condition->setColor(palette.font);
+    CBubble::setPalette(palette);
+}

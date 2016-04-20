@@ -12,23 +12,24 @@ public:
     friend class CConditionProperties;
 
 public:
-    CConditionBubble(QMenu *contextMenu, const QPointF &pos, const QFont &font = QFont(), const QColor &fontColor = Qt::black,
-                     const QColor &lineColor = Qt::black, QGraphicsItem *parent = 0);
+    CConditionBubble(QMenu *contextMenu, const QPointF &pos, const Chronicler::CPalette &palette, const QFont &font = QFont(), QGraphicsItem *parent = 0);
 
 public:
-    virtual void SetFont(const QFont &font);
-    virtual void SetFontColor(const QColor &color);
+    virtual void setFont(const QFont &font);
 
-    void SetCondition(const QString &condition);
+    virtual void setPalette(const Chronicler::CPalette &palette);
+    //virtual void setFontColor(const QColor &color);
+
+    void setCondition(const QString &condition);
 
 protected:
     virtual void UpdateShape();
     void AdjustMinSize();
 
 private:
-    QString m_label;
     CTextItem * m_condition;
     QString m_conditionText;
+
 
 };
 

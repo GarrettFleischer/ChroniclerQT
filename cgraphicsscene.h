@@ -58,6 +58,10 @@ class CBubble;
 class CLink;
 class CLine;
 
+#include "Misc/cutils.h"
+using Chronicler::CPalette;
+using Chronicler::BubbleType;
+
 //! [0]
 class CGraphicsScene : public QGraphicsScene
 {
@@ -67,14 +71,18 @@ public:
     enum Mode { InsertItem, InsertLine, InsertText, Cursor, InsertStory, InsertCondition, InsertChoice };
 
     explicit CGraphicsScene(QMenu *itemMenu, QObject *parent = 0);
-    QFont font() const { return m_font; }
-    QColor textColor() const { return m_textColor; }
-    QColor itemColor() const { return m_itemColor; }
-    QColor lineColor() const { return m_lineColor; }
-    void setLineColor(const QColor &color);
-    void setTextColor(const QColor &color);
-    void setItemColor(const QColor &color);
+
     void setFont(const QFont &font);
+    QFont getFont() const { return m_font; }
+
+    void setPalette(const CPalette &palette);
+//    QColor textColor() const { return m_textColor; }
+//    QColor itemColor() const { return m_itemColor; }
+//    QColor lineColor() const { return m_lineColor; }
+//    void setLineColor(const QColor &color);
+//    void setTextColor(const QColor &color);
+//    void setItemColor(const QColor &color);
+
 
     bool isRubberBandSelecting() const { return m_rubberBand; }
 
@@ -82,7 +90,7 @@ public slots:
     void setMode(Mode mode);
     
 private slots:
-    void linkClicked(CLink *link);
+//    void linkClicked(CLink *link);
 
 signals:
     void itemInserted(CBubble *item);
@@ -96,16 +104,22 @@ protected:
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent);
 
 private:
+    void AddBubble(BubbleType type, const QPointF &pos);
+
     QMenu *m_itemMenu;
     Mode m_mode;
     QPointF m_startPoint;
     CLine *m_line;
     QFont m_font;
-    QColor m_textColor;
-    QColor m_itemColor;
-    QColor m_lineColor;
+    CPalette m_palette;
+//    QColor m_textColor;
+//    QColor m_itemColor;
+//    QColor m_lineColor;
     bool m_rubberBand;
 };
-//! [0]
+
+
+
+
 
 #endif // DIAGRAMSCENE_H

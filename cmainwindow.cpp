@@ -27,10 +27,10 @@ CMainWindow::CMainWindow()
     CreateActions();
     CreateMenus();
 
-    float maxsize = std::numeric_limits<float>::max();
-    float minsize = -std::numeric_limits<float>::max()/2;
+    //float maxsize = 15000.0;//std::numeric_limits<float>::max();
+    //float minsize = 15000.0;//-std::numeric_limits<float>::max()/2;
     m_scene = new CGraphicsScene(m_itemMenu, this);
-    m_scene->setSceneRect(QRectF(minsize, minsize, maxsize, maxsize));
+    //m_scene->setSceneRect(QRectF(minsize, minsize, maxsize, maxsize));
     connect(m_scene, SIGNAL(itemInserted(CBubble*)),
             this, SLOT(ItemInserted(CBubble*)));
     connect(m_scene, SIGNAL(itemSelected(QGraphicsItem*)),
@@ -176,19 +176,19 @@ void CMainWindow::LineColorChanged()
 
 void CMainWindow::TextButtonTriggered()
 {
-    m_scene->setTextColor(qvariant_cast<QColor>(m_textAction->data()));
+    //m_scene->setTextColor(qvariant_cast<QColor>(m_textAction->data()));
 }
 
 
 void CMainWindow::FillButtonTriggered()
 {
-    m_scene->setItemColor(qvariant_cast<QColor>(m_fillAction->data()));
+    //m_scene->setItemColor(qvariant_cast<QColor>(m_fillAction->data()));
 }
 
 
 void CMainWindow::LineButtonTriggered()
 {
-    m_scene->setLineColor(qvariant_cast<QColor>(m_lineAction->data()));
+    //m_scene->setLineColor(qvariant_cast<QColor>(m_lineAction->data()));
 }
 
 

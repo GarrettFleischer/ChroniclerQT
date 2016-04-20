@@ -6,6 +6,7 @@
 class CChoice : public QWidget
 {
     Q_OBJECT
+
 public:
     explicit CChoice(QWidget *parent = 0);
     

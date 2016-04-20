@@ -7,6 +7,8 @@ INCLUDEPATH += C:/Development/OpenSSL-Win32/include
 
 PKGCONFIG += openssl
 
+CONFIG += c++11
+
 # install
 TARGET = Chronicler-Next
 
@@ -35,7 +37,8 @@ HEADERS += \
     Properties/Widgets/cchoiceproperties.h \
     Properties/Widgets/cconditionproperties.h \
     Properties/Widgets/cpropertieswidget.h \
-    Properties/Widgets/cstoryproperties.h
+    Properties/Widgets/cstoryproperties.h \
+    Misc/chronicler.h
 
 SOURCES += \
     Bubbles/cbubble.cpp \
@@ -61,4 +64,5 @@ SOURCES += \
     Properties/Widgets/cchoiceproperties.cpp \
     Properties/Widgets/cconditionproperties.cpp \
     Properties/Widgets/cpropertieswidget.cpp \
-    Properties/Widgets/cstoryproperties.cpp
+    Properties/Widgets/cstoryproperties.cpp \
+    Misc/chronicler.cpp

@@ -13,51 +13,46 @@
 
 
 CGraphicsScene::CGraphicsScene(QMenu *itemMenu, QObject *parent)
-    : QGraphicsScene(parent)
+    : QGraphicsScene(parent), m_itemMenu(itemMenu), m_mode(Cursor), m_line(0), m_rubberBand(false)
 {
-    m_itemMenu = itemMenu;
-    m_mode = Cursor;
-    m_line = 0;
-    m_itemColor = Qt::white;
-    m_textColor = Qt::black;
-    m_lineColor = Qt::black;
-    m_rubberBand = false;
-
+    float maxsize = 15000.0;//std::numeric_limits<float>::max();
+    float minsize = -15000.0/2;//-std::numeric_limits<float>::max()/2;
+    setSceneRect(QRectF(minsize, minsize, maxsize, maxsize));
     setBackgroundBrush(QBrush(Qt::gray));//QColor(86,96,123)));
 }
 
-void CGraphicsScene::setLineColor(const QColor &color)
-{
-    m_lineColor = color;
-    foreach (QGraphicsItem *item, selectedItems())
-    {
-        CBubble *bbl = qgraphicsitem_cast<CBubble *>(item);
-        if(bbl)
-            bbl->SetLineColor(m_lineColor);
-    }
-}
+//void CGraphicsScene::setLineColor(const QColor &color)
+//{
+//    m_lineColor = color;
+//    foreach (QGraphicsItem *item, selectedItems())
+//    {
+//        CBubble *bbl = qgraphicsitem_cast<CBubble *>(item);
+//        if(bbl)
+//            bbl->setLineColor(m_lineColor);
+//    }
+//}
 
-void CGraphicsScene::setTextColor(const QColor &color)
-{
-    m_textColor = color;
-    foreach (QGraphicsItem *item, selectedItems())
-    {
-        CBubble *bbl = qgraphicsitem_cast<CBubble *>(item);
-        if(bbl)
-            bbl->SetFontColor(m_textColor);
-    }
-}
+//void CGraphicsScene::setTextColor(const QColor &color)
+//{
+//    m_textColor = color;
+//    foreach (QGraphicsItem *item, selectedItems())
+//    {
+//        CBubble *bbl = qgraphicsitem_cast<CBubble *>(item);
+//        if(bbl)
+//            bbl->setFontColor(m_textColor);
+//    }
+//}
 
-void CGraphicsScene::setItemColor(const QColor &color)
-{
-    m_itemColor = color;
-    foreach (QGraphicsItem *item, selectedItems())
-    {
-        CBubble *bbl = qgraphicsitem_cast<CBubble *>(item);
-        if(bbl)
-            bbl->SetColor(m_itemColor);
-    }
-}
+//void CGraphicsScene::setItemColor(const QColor &color)
+//{
+//    m_itemColor = color;
+//    foreach (QGraphicsItem *item, selectedItems())
+//    {
+//        CBubble *bbl = qgraphicsitem_cast<CBubble *>(item);
+//        if(bbl)
+//            bbl->setColor(m_itemColor);
+//    }
+//}
 
 void CGraphicsScene::setFont(const QFont &font)
 {
@@ -65,12 +60,23 @@ void CGraphicsScene::setFont(const QFont &font)
     {
         m_font = font;
 
-        foreach (QGraphicsItem *item, items())
+        for(QGraphicsItem *item : items())
         {
             CBubble *bbl = qgraphicsitem_cast<CBubble *>(item);
             if(bbl)
-                bbl->SetFont(m_font);
+                bbl->setFont(m_font);
         }
+    }
+}
+
+void CGraphicsScene::setPalette(const CPalette &palette)
+{
+    m_palette = palette;
+    for(QGraphicsItem *item : selectedItems())
+    {
+        CBubble *bbl = qgraphicsitem_cast<CBubble *>(item);
+        if(bbl)
+            bbl->setPalette(m_palette);
     }
 }
 
@@ -79,37 +85,27 @@ void CGraphicsScene::setMode(Mode mode)
     m_mode = mode;
 }
 
-void CGraphicsScene::linkClicked(CLink *)
-{
-    setMode(InsertLine);
+//void CGraphicsScene::linkClicked(CLink *)
+//{
+//    setMode(InsertLine);
     
-}
+//}
 
 void CGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     if (mouseEvent->button() == Qt::LeftButton)
     {
-        CBubble *item;
         switch (m_mode) {
         case InsertStory:
-            item = new CStoryBubble(m_itemMenu, mouseEvent->scenePos(), m_font, m_textColor, m_lineColor);
-            connect(item, SIGNAL(Selected(QGraphicsItem*)), this, SIGNAL(itemSelected(QGraphicsItem*)));
-            addItem(item);
-            emit itemInserted(item);
-            break;
-
-        case InsertChoice:
-            item = new CChoiceBubble(m_itemMenu, mouseEvent->scenePos(), m_font, m_textColor, m_lineColor);
-            connect(item, SIGNAL(Selected(QGraphicsItem*)), this, SIGNAL(itemSelected(QGraphicsItem*)));
-            addItem(item);
-            emit itemInserted(item);
+            AddBubble(Chronicler::Story, mouseEvent->scenePos());
             break;
 
         case InsertCondition:
-            item = new CConditionBubble(m_itemMenu, mouseEvent->scenePos(), m_font, m_textColor, m_lineColor);
-            connect(item, SIGNAL(Selected(QGraphicsItem*)), this, SIGNAL(itemSelected(QGraphicsItem*)));
-            addItem(item);
-            emit itemInserted(item);
+            AddBubble(Chronicler::Condition, mouseEvent->scenePos());
+            break;
+
+        case InsertChoice:
+            AddBubble(Chronicler::Choice, mouseEvent->scenePos());
             break;
 
         case InsertLine:
@@ -176,4 +172,20 @@ void CGraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
     m_rubberBand = false;
 
     emit leftReleased();
+}
+
+void CGraphicsScene::AddBubble(BubbleType type, const QPointF &pos)
+{
+    CBubble *bbl;
+    if(type == Chronicler::Story)
+        bbl = new CStoryBubble(m_itemMenu, pos, m_palette, m_font);
+    else if(type == Chronicler::Condition)
+        bbl = new CConditionBubble(m_itemMenu, pos, m_palette, m_font);
+    else
+        bbl = new CChoiceBubble(m_itemMenu, pos, m_palette, m_font);
+
+    connect(bbl, SIGNAL(Selected(QGraphicsItem*)), this, SIGNAL(itemSelected(QGraphicsItem*)));
+    addItem(bbl);
+
+    emit itemInserted(bbl);
 }

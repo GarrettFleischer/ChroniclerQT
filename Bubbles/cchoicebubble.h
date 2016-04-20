@@ -13,12 +13,11 @@ public:
     friend class CConditionProperties;
 
 public:
-    CChoiceBubble(QMenu *contextMenu, const QPointF &pos, const QFont &font = QFont(), const QColor &fontColor = Qt::black,
-                  const QColor &lineColor = Qt::black, QGraphicsItem *parent = 0);
+    CChoiceBubble(QMenu *contextMenu, const QPointF &pos, const CPalette &palette, const QFont &font = QFont(), QGraphicsItem *parent = 0);
 
 public:
-    virtual void SetFont(const QFont &font);
-    virtual void SetFontColor(const QColor &color);
+    virtual void setFont(const QFont &font);
+    virtual void setPalette(const Chronicler::CPalette &palette);
 
     void AddChoice(const QString &choice);
     void MoveChoice(int old_index, int new_index);
@@ -28,8 +27,8 @@ protected:
     void AdjustMinSize();
 
 private:
-    QString m_label;
     QList<CTextItem *> m_choices;
+
 };
 
 #endif // CCHOICEBUBBLE_H

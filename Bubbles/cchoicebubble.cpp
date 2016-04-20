@@ -1,11 +1,11 @@
 #include "cchoicebubble.h"
 
-CChoiceBubble::CChoiceBubble(QMenu *contextMenu, const QPointF &pos, const QFont &font, const QColor &fontColor, const QColor &lineColor, QGraphicsItem *parent)
-    : CBubble(contextMenu, pos, font, fontColor, lineColor, parent)
+CChoiceBubble::CChoiceBubble(QMenu *contextMenu, const QPointF &pos, const Chronicler::CPalette &palette, const QFont &font, QGraphicsItem *parent)
+    : CBubble(contextMenu, pos, palette, font, parent)
 {
-    m_type = Choice;
+    m_type = Chronicler::Choice;
 
-    m_color = QColor(151,118,166);
+    m_palette.fill = QColor(151,118,166);
 
     m_choices.append(new CTextItem("", QRectF(), this));
     m_choices[0]->SetStyle(Qt::AlignHCenter);
@@ -43,18 +43,19 @@ void CChoiceBubble::AdjustMinSize()
     m_minSize.setHeight(fm.height());
 }
 
-void CChoiceBubble::SetFont(const QFont &font)
+void CChoiceBubble::setFont(const QFont &font)
 {
-    CBubble::SetFont(font);
-    m_choices[0]->SetFont(m_font);
+    CBubble::setFont(font);
+    for(CTextItem *itm : m_choices)
+        itm->setFont(m_font);
     UpdateShape();
 }
 
-void CChoiceBubble::SetFontColor(const QColor &color)
-{
-    CBubble::SetFontColor(color);
-    m_choices[0]->SetColor(m_fontColor);
-}
+//void CChoiceBubble::setFontColor(const QColor &color)
+//{
+//    CBubble::setFontColor(color);
+//    m_choices[0]->SetColor(m_palette.font);
+//}
 
 void CChoiceBubble::AddChoice(const QString &choice)
 {
@@ -65,4 +66,13 @@ void CChoiceBubble::AddChoice(const QString &choice)
 void CChoiceBubble::MoveChoice(int old_index, int new_index)
 {
 
+}
+
+
+
+void CChoiceBubble::setPalette(const Chronicler::CPalette &palette)
+{
+    CBubble::setPalette(palette);
+    for(CTextItem *itm : m_choices)
+        itm->setColor(m_palette.font);
 }

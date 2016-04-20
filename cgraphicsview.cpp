@@ -15,8 +15,8 @@ CGraphicsView::CGraphicsView(QGraphicsScene *scene, QWidget *parent)
     setMouseTracking(true);
     setDragMode(ScrollHandDrag);
     setRenderHint(QPainter::Antialiasing, true);
-    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    //setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    //setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 }
 
 void CGraphicsView::mousePressEvent(QMouseEvent *evt)

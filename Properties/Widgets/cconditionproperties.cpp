@@ -37,10 +37,10 @@ void CConditionProperties::setBubble(CBubble *bbl)
         setEnabled(true);
 
         m_labelEdit->setText(m_bbl->m_label);
-        m_labelEdit->setFont(m_bbl->GetFont());
+        m_labelEdit->setFont(m_bbl->getFont());
 
         m_conditionEdit->setText(m_bbl->m_conditionText);
-        m_conditionEdit->setFont(m_bbl->GetFont());
+        m_conditionEdit->setFont(m_bbl->getFont());
 
         m_lockEdit->setChecked(m_bbl->m_locked);
 
@@ -75,7 +75,7 @@ void CConditionProperties::LabelChanged(QString label)
 void CConditionProperties::ConditionChanged()
 {
     if(m_bbl)
-        m_bbl->SetCondition(m_conditionEdit->toPlainText());
+        m_bbl->setCondition(m_conditionEdit->toPlainText());
 }
 
 void CConditionProperties::OrderChanged(QString order)

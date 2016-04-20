@@ -17,6 +17,7 @@ class CBubble;
 class CDockManager : public QWidget
 {
     Q_OBJECT
+
 public:
     explicit CDockManager(QStringListModel *model, QWidget *parent = 0);
 

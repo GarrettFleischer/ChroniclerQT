@@ -36,10 +36,10 @@ void CStoryProperties::setBubble(CBubble *bbl)
         setEnabled(true);
 
         m_labelEdit->setText(m_bbl->m_title->Text());
-        m_labelEdit->setFont(bbl->GetFont());
+        m_labelEdit->setFont(bbl->getFont());
 
         m_storyEdit->setText(m_bbl->m_story->Text());
-        m_storyEdit->setFont(bbl->GetFont());
+        m_storyEdit->setFont(bbl->getFont());
 
         m_lockEdit->setChecked(m_bbl->m_locked);
 
@@ -68,13 +68,13 @@ void CStoryProperties::setFont(const QFont &font)
 void CStoryProperties::LabelChanged(QString label)
 {
     if(m_bbl)
-        m_bbl->m_title->SetText(label);
+        m_bbl->m_title->setText(label);
 }
 
 void CStoryProperties::StoryChanged()
 {
     if(m_bbl)
-        m_bbl->m_story->SetText(m_storyEdit->toPlainText());
+        m_bbl->m_story->setText(m_storyEdit->toPlainText());
 }
 
 void CStoryProperties::OrderChanged(QString order)
