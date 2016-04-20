@@ -31,9 +31,7 @@ void CConditionBubble::UpdateShape()
     QPainterPath path;
     path.addRoundedRect(b, 10, 10);
 
-    m_polygon = path.toFillPolygon();
-
-    setPolygon(m_polygon);
+    setPolygon(path.toFillPolygon());
 }
 
 void CConditionBubble::AdjustMinSize()

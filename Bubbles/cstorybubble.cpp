@@ -77,11 +77,6 @@ void CStoryBubble::hoverMoveEvent(QGraphicsSceneHoverEvent *evt)
         setCursor(Qt::PointingHandCursor);
 }
 
-//void CStoryBubble::LinkClicked(CLink *link)
-//{
-//    //link->setConnection(new CConnection(link));
-//}
-
 
 void CStoryBubble::UpdateShape()
 {
@@ -105,10 +100,8 @@ void CStoryBubble::UpdateShape()
     path.lineTo(b.x() + 10, b.y());
     path.lineTo(b.x() + tm - 10, b.y());
     path.lineTo(b.x() + tm, b.y() + th);
-    path = path.simplified();
 
-    m_polygon = path.toFillPolygon();
-    setPolygon(m_polygon);
+    setPolygon(path.simplified().toFillPolygon());
 }
 
 void CStoryBubble::setFont(const QFont &font)
@@ -121,42 +114,6 @@ void CStoryBubble::setFont(const QFont &font)
         UpdateShape();
     }
 }
-
-//void CStoryBubble::setFontColor(const QColor &color)
-//{
-//    if(color != m_fontColor)
-//    {
-//        m_fontColor = color;
-//        m_title->SetColor(m_fontColor);
-//        m_story->SetColor(m_fontColor);
-//    }
-//}
-
-//void CStoryBubble::setColor(const QColor &color)
-//{
-//    if(color != m_color)
-//    {
-//        m_color = color;
-//        update();
-        
-////        m_linkLeft->setColor(color);
-////        m_linkDown->setColor(color);
-////        m_linkRight->setColor(color);
-//    }
-//}
-
-//void CStoryBubble::setLineColor(const QColor &color)
-//{
-//    if(color != m_lineColor)
-//    {
-//        m_lineColor = color;
-//        update();
-        
-////        m_linkLeft->setLineColor(color);
-////        m_linkDown->setLineColor(color);
-////        m_linkRight->setLineColor(color);
-//    }
-//}
 
 
 void CStoryBubble::setLabel(QString label)

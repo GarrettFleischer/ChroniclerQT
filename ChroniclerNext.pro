@@ -38,7 +38,8 @@ HEADERS += \
     Properties/Widgets/cconditionproperties.h \
     Properties/Widgets/cpropertieswidget.h \
     Properties/Widgets/cstoryproperties.h \
-    Misc/chronicler.h
+    Misc/chronicler.h \
+    Bubbles/cactionbubble.h
 
 SOURCES += \
     Bubbles/cbubble.cpp \
@@ -65,4 +66,5 @@ SOURCES += \
     Properties/Widgets/cconditionproperties.cpp \
     Properties/Widgets/cpropertieswidget.cpp \
     Properties/Widgets/cstoryproperties.cpp \
-    Misc/chronicler.cpp
+    Misc/chronicler.cpp \
+    Bubbles/cactionbubble.cpp

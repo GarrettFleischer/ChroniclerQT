@@ -30,9 +30,7 @@ void CChoiceBubble::UpdateShape()
     QPainterPath path;
     path.addRoundedRect(b, 10, 10);
 
-    m_polygon = path.toFillPolygon();
-
-    setPolygon(m_polygon);
+    setPolygon(path.toFillPolygon());
 }
 
 void CChoiceBubble::AdjustMinSize()
@@ -51,11 +49,6 @@ void CChoiceBubble::setFont(const QFont &font)
     UpdateShape();
 }
 
-//void CChoiceBubble::setFontColor(const QColor &color)
-//{
-//    CBubble::setFontColor(color);
-//    m_choices[0]->SetColor(m_palette.font);
-//}
 
 void CChoiceBubble::AddChoice(const QString &choice)
 {

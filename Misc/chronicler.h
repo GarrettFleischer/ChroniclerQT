@@ -11,7 +11,7 @@ QT_END_NAMESPACE
 namespace Chronicler
 {
 
-    enum BubbleType { Story, Condition, Choice};
+    enum BubbleType { Story, Condition, Action, Choice };
 
 
     struct CPalette

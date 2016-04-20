@@ -30,8 +30,6 @@ public:
     CBubble(QGraphicsItem *parent);
     CBubble(QMenu *contextMenu, const QPointF &pos, const CPalette &palette, const QFont &font = QFont(), QGraphicsItem *parent = 0);
 
-public:
-    QPolygonF polygon() const { return m_polygon; }
 
     virtual void setLabel(QString label) { m_label = label; }
     QString getLabel() const { return m_label; }
@@ -60,14 +58,13 @@ protected:
 
     virtual void UpdateShape() = 0;
 
-protected:
+
     BubbleType m_type;
 
     QMenu *m_contextMenu;
 
     QRectF m_bounds;
     QSizeF m_minSize;
-    QPolygonF m_polygon;
 
     QList<CConnection *> m_links;
     QList<CConnection *> m_connections;

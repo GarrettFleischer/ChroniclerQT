@@ -41,8 +41,6 @@ private:
     bool m_resize;
     QPointF m_offset;
     QRectF m_lastBounds;
-    
-public slots:
 
 };
 

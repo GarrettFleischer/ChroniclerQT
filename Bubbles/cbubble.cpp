@@ -64,7 +64,7 @@ void CBubble::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget
     QPen outline = (isSelected() ? QPen(m_palette.select, 2) : QPen(m_palette.line, 1.5));
     painter->setPen(outline);
     painter->setBrush(QBrush(m_palette.fill));
-    painter->drawPolygon(m_polygon, Qt::WindingFill);
+    painter->drawPolygon(polygon(), Qt::WindingFill);
 }
 
 
