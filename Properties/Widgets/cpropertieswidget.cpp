@@ -4,11 +4,12 @@
 #include <QIntValidator>
 #include <QHBoxLayout>
 
+#include "Bubbles/cbubble.h"
 #include "Misc/clineedit.h"
 
 
 CPropertiesWidget::CPropertiesWidget(QStringListModel *model, QWidget *parent)
-    : QWidget(parent), m_model(model), m_labelEdit(0), m_lockEdit(0), m_orderEdit(0)
+    : QWidget(parent), m_bubble(0), m_model(model), m_labelEdit(0), m_lockEdit(0), m_orderEdit(0)
 {
     // WIDGETS
         // Title
@@ -68,10 +69,56 @@ CPropertiesWidget::CPropertiesWidget(QStringListModel *model, QWidget *parent)
     setLayout(m_layout);
 }
 
+void CPropertiesWidget::setBubble(CBubble *bbl)
+{
+    m_bubble = bbl;
+
+    if(m_bubble)
+    {
+        setEnabled(true);
+
+        m_labelEdit->setText(m_bubble->getLabel());
+
+        m_lockEdit->setChecked(m_bubble->getLocked());
+
+        m_orderEdit->setText(QString().number(m_bubble->getOrder()));
+        m_orderEdit->setEnabled(m_lockEdit->isChecked());
+    }
+    else
+    {
+        m_labelEdit->setText(tr(""));
+        m_lockEdit->setChecked(false);
+        m_orderEdit->setText(tr(""));
+
+        setEnabled(false);
+    }
+}
+
 void CPropertiesWidget::setFont(const QFont &font)
 {
     QWidget::setFont(font);
     m_labelEdit->setFont(font);
     m_lockEdit->setFont(font);
     m_orderEdit->setFont(font);
+}
+
+void CPropertiesWidget::LabelChanged(QString label)
+{
+    if(m_bubble)
+        m_bubble->setLabel(label);
+}
+
+void CPropertiesWidget::OrderChanged(QString order)
+{
+    if(m_bubble)
+        m_bubble->setOrder(order.toInt());
+}
+
+void CPropertiesWidget::LockedChanged(bool locked)
+{
+    if(m_bubble)
+    {
+        m_bubble->setLocked(locked);
+        m_orderEdit->setEnabled(locked);
+    }
 }

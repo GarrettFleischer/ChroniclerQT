@@ -7,7 +7,7 @@
 #include "Bubbles/cconditionbubble.h"
 
 CConditionProperties::CConditionProperties(QStringListModel *model, QWidget *parent)
-    : CPropertiesWidget(model, parent), m_conditionEdit(0)
+    : CPropertiesWidget(model, parent), m_conditionBubble(0), m_conditionEdit(0)
 {
     // Condition Widget
     QLabel *lblConditionStart = new QLabel(tr("*if ("), this);
@@ -30,31 +30,17 @@ CConditionProperties::CConditionProperties(QStringListModel *model, QWidget *par
 
 void CConditionProperties::setBubble(CBubble *bbl)
 {
-    m_bbl = qgraphicsitem_cast<CConditionBubble *>(bbl);
+    CPropertiesWidget::setBubble(bbl);
 
-    if(m_bbl)
+    m_conditionBubble = qgraphicsitem_cast<CConditionBubble *>(bbl);
+    if(m_conditionBubble)
     {
-        setEnabled(true);
-
-        m_labelEdit->setText(m_bbl->m_label);
-        m_labelEdit->setFont(m_bbl->getFont());
-
-        m_conditionEdit->setText(m_bbl->m_conditionText);
-        m_conditionEdit->setFont(m_bbl->getFont());
-
-        m_lockEdit->setChecked(m_bbl->m_locked);
-
-        m_orderEdit->setText(QString().number(m_bbl->m_order));
-        m_orderEdit->setEnabled(m_lockEdit->isChecked());
+        m_conditionEdit->setText(m_conditionBubble->getCondition());
+        m_conditionEdit->setFont(m_conditionBubble->getFont());
     }
     else
     {
-        m_labelEdit->setText(tr(""));
         m_conditionEdit->setText(tr(""));
-        m_lockEdit->setChecked(false);
-        m_orderEdit->setText(tr(""));
-
-        setEnabled(false);
     }
 }
 
@@ -66,29 +52,9 @@ void CConditionProperties::setFont(const QFont &font)
 }
 
 
-void CConditionProperties::LabelChanged(QString label)
-{
-    if(m_bbl)
-        m_bbl->m_label = label;
-}
-
 void CConditionProperties::ConditionChanged()
 {
-    if(m_bbl)
-        m_bbl->setCondition(m_conditionEdit->toPlainText());
+    if(m_conditionBubble)
+        m_conditionBubble->setCondition(m_conditionEdit->toPlainText());
 }
 
-void CConditionProperties::OrderChanged(QString order)
-{
-    if(m_bbl)
-        m_bbl->m_order = order.toInt();
-}
-
-void CConditionProperties::LockedChanged(bool locked)
-{
-    if(m_bbl)
-    {
-        m_bbl->m_locked = locked;
-        m_orderEdit->setEnabled(locked);
-    }
-}

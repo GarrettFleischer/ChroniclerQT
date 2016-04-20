@@ -19,18 +19,15 @@ public:
     virtual void setFont(const QFont &font);
 
 private:
-    CStoryBubble *m_bbl;
+    CStoryBubble *m_storyBubble;
 
     CTextEdit *m_storyEdit;
 
 signals:
 
 protected slots:
-    virtual void LabelChanged(QString title);
-    virtual void OrderChanged(QString order);
-    virtual void LockedChanged(bool locked);
-
     void StoryChanged();
+
 };
 
 #endif // CSTORYPROPERTIES_H

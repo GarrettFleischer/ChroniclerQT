@@ -18,17 +18,13 @@ public:
     virtual void setFont(const QFont &font);
 
 protected:
-    CConditionBubble *m_bbl;
+    CConditionBubble *m_conditionBubble;
 
     CLineEdit *m_conditionEdit;
 
 signals:
 
 protected slots:
-    virtual void LabelChanged(QString label);
-    virtual void OrderChanged(QString order);
-    virtual void LockedChanged(bool locked);
-
     void ConditionChanged();
 };
 

@@ -44,7 +44,6 @@ void CConditionBubble::AdjustMinSize()
     m_minSize.setHeight(fm.height());
 }
 
-
 void CConditionBubble::setFont(const QFont &font)
 {
     CBubble::setFont(font);
@@ -52,7 +51,13 @@ void CConditionBubble::setFont(const QFont &font)
     UpdateShape();
 }
 
-void CConditionBubble::setCondition(const QString &condition)
+void CConditionBubble::setPalette(const Chronicler::CPalette &palette)
+{
+    m_condition->setColor(palette.font);
+    CBubble::setPalette(palette);
+}
+
+void CConditionBubble::setCondition(QString condition)
 {
     m_conditionText = condition;
     QString txt = QString("*if ( ").append(condition).append(" )");
@@ -60,10 +65,3 @@ void CConditionBubble::setCondition(const QString &condition)
     UpdateShape();
 }
 
-
-
-void CConditionBubble::setPalette(const Chronicler::CPalette &palette)
-{
-    m_condition->setColor(palette.font);
-    CBubble::setPalette(palette);
-}

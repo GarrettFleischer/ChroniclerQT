@@ -8,7 +8,7 @@
 
 
 CStoryProperties::CStoryProperties(QStringListModel *model, QWidget *parent)
-    : CPropertiesWidget(model, parent), m_storyEdit(0)
+    : CPropertiesWidget(model, parent), m_storyBubble(0), m_storyEdit(0)
 {
 
     // Story Widget
@@ -29,31 +29,17 @@ CStoryProperties::CStoryProperties(QStringListModel *model, QWidget *parent)
 
 void CStoryProperties::setBubble(CBubble *bbl)
 {
-    m_bbl = qgraphicsitem_cast<CStoryBubble *>(bbl);
+    CPropertiesWidget::setBubble(bbl);
 
-    if(m_bbl)
+    m_storyBubble = qgraphicsitem_cast<CStoryBubble *>(bbl);
+    if(m_storyBubble)
     {
-        setEnabled(true);
-
-        m_labelEdit->setText(m_bbl->m_title->Text());
-        m_labelEdit->setFont(bbl->getFont());
-
-        m_storyEdit->setText(m_bbl->m_story->Text());
-        m_storyEdit->setFont(bbl->getFont());
-
-        m_lockEdit->setChecked(m_bbl->m_locked);
-
-        m_orderEdit->setText(QString().number(m_bbl->m_order));
-        m_orderEdit->setEnabled(m_lockEdit->isChecked());
+        m_storyEdit->setText(m_storyBubble->getStory());
+        m_storyEdit->setFont(m_storyBubble->getFont());
     }
     else
     {
-        m_labelEdit->setText(tr(""));
         m_storyEdit->setText(tr(""));
-        m_lockEdit->setChecked(false);
-        m_orderEdit->setText(tr(""));
-
-        setEnabled(false);
     }
 }
 
@@ -65,29 +51,9 @@ void CStoryProperties::setFont(const QFont &font)
 }
 
 
-void CStoryProperties::LabelChanged(QString label)
-{
-    if(m_bbl)
-        m_bbl->m_title->setText(label);
-}
-
 void CStoryProperties::StoryChanged()
 {
-    if(m_bbl)
-        m_bbl->m_story->setText(m_storyEdit->toPlainText());
+    if(m_storyBubble)
+        m_storyBubble->setStory(m_storyEdit->toPlainText());
 }
 
-void CStoryProperties::OrderChanged(QString order)
-{
-    if(m_bbl)
-        m_bbl->m_order = order.toInt();
-}
-
-void CStoryProperties::LockedChanged(bool locked)
-{
-    if(m_bbl)
-    {
-        m_bbl->m_locked = locked;
-        m_orderEdit->setEnabled(locked);
-    }
-}

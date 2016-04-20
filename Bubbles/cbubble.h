@@ -14,7 +14,7 @@ class QStyleOptionGraphicsItem;
 class QPolygonF;
 QT_END_NAMESPACE
 
-#include "Misc/cutils.h"
+#include "Misc/chronicler.h"
 using Chronicler::CPalette;
 using Chronicler::BubbleType;
 
@@ -31,23 +31,22 @@ public:
     CBubble(QMenu *contextMenu, const QPointF &pos, const CPalette &palette, const QFont &font = QFont(), QGraphicsItem *parent = 0);
 
 public:
-//    void addArrow(Arrow *arrow);
-//    void removeArrow(Arrow *arrow);
-//    void removeArrows();
-
     QPolygonF polygon() const { return m_polygon; }
 
-    virtual void setLabel(QString label);
+    virtual void setLabel(QString label) { m_label = label; }
     QString getLabel() const { return m_label; }
+
+    void setOrder(int order) { m_order = order; }
+    int getOrder() const { return m_order; }
+
+    void setLocked(bool locked) { m_locked = locked; }
+    bool getLocked() const { return m_locked; }
 
     virtual void setFont(const QFont &font);
     QFont getFont() const { return m_font; }
 
     virtual void setPalette(const CPalette & palette);
-
-//    virtual void setFontColor(const QColor &color);
-//    virtual void setColor(const QColor &color);
-//    virtual void setLineColor(const QColor &color);
+    const CPalette & getPalette() const { return m_palette; }
 
     BubbleType getType() const { return m_type; }
 
@@ -79,9 +78,6 @@ protected:
 
     QFont m_font;
     CPalette m_palette;
-//    QColor m_fontColor;
-//    QColor m_color;
-//    QColor m_lineColor;
     
 signals:
     void Selected(QGraphicsItem *item);

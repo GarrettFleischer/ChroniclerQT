@@ -20,10 +20,12 @@ class CPropertiesWidget : public QWidget
 public:
     explicit CPropertiesWidget(QStringListModel *model, QWidget *parent = 0);
 
-    virtual void setBubble(CBubble *bbl) = 0;
+    virtual void setBubble(CBubble *bbl);
     virtual void setFont(const QFont &font);
 
 protected:
+    CBubble *m_bubble;
+
     QStringListModel *m_model;
     QLineEdit *m_labelEdit;
 
@@ -35,9 +37,9 @@ protected:
 signals:
 
 protected slots:
-    virtual void LabelChanged(QString label) = 0;
-    virtual void OrderChanged(QString order) = 0;
-    virtual void LockedChanged(bool locked) = 0;
+    virtual void LabelChanged(QString label);
+    virtual void OrderChanged(QString order);
+    virtual void LockedChanged(bool locked);
 
 };
 

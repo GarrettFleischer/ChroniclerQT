@@ -24,11 +24,6 @@ CBubble::CBubble(QMenu *contextMenu, const QPointF &pos, const Chronicler::CPale
     setPos(pos);
 }
 
-void CBubble::setLabel(QString label)
-{
-    m_label = label;
-}
-
 
 void CBubble::mouseMoveEvent(QGraphicsSceneMouseEvent *evt)
 {
@@ -41,32 +36,6 @@ void CBubble::mouseReleaseEvent(QGraphicsSceneMouseEvent *evt)
     QGraphicsPolygonItem::mouseReleaseEvent(evt);
     setCursor(Qt::PointingHandCursor);
 }
-
-
-//void CBubble::removeArrow(Arrow *arrow)
-//{
-//    int index = m_links.indexOf(arrow);
-
-//    if (index != -1)
-//        m_links.removeAt(index);
-//}
-
-
-//void CBubble::removeArrows()
-//{
-//    foreach (Arrow *arrow, m_links) {
-//        arrow->startItem()->removeArrow(arrow);
-//        arrow->endItem()->removeArrow(arrow);
-//        scene()->removeItem(arrow);
-//        delete arrow;
-//    }
-//}
-
-
-//void CBubble::addArrow(Arrow *arrow)
-//{
-//    m_links.append(arrow);
-//}
 
 
 void CBubble::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
@@ -92,7 +61,6 @@ QVariant CBubble::itemChange(GraphicsItemChange change, const QVariant &value)
 
 void CBubble::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
-    //QColor(255,200,0) - select
     QPen outline = (isSelected() ? QPen(m_palette.select, 2) : QPen(m_palette.line, 1.5));
     painter->setPen(outline);
     painter->setBrush(QBrush(m_palette.fill));
@@ -114,30 +82,3 @@ void CBubble::setPalette(const Chronicler::CPalette &palette)
     m_palette = palette;
     update();
 }
-
-//void CBubble::setFontColor(const QColor &color)
-//{
-//    if(color != m_fontColor)
-//    {
-//        m_fontColor = color;
-//        update();
-//    }
-//}
-
-//void CBubble::setColor(const QColor &color)
-//{
-//    if(color != m_color)
-//    {
-//        m_color = color;
-//        update();
-//    }
-//}
-
-//void CBubble::setLineColor(const QColor &color)
-//{
-//    if(color != m_lineColor)
-//    {
-//        m_lineColor = color;
-//        update();
-//    }
-//}

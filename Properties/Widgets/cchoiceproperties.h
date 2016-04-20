@@ -19,16 +19,15 @@ public:
     virtual void setFont(const QFont &font);
 
 private:
-    CChoiceBubble *m_bbl;
+    CChoiceBubble *m_choiceBubble;
 
     QListWidget *m_choices;
 
 signals:
 
 protected slots:
-    virtual void LabelChanged(QString label);
-    virtual void OrderChanged(QString order);
-    virtual void LockedChanged(bool locked);
+    virtual void ChoicesChanged(const QStringList &list);
+
 };
 
 #endif // CCHOICEPROPERTIES_H

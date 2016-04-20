@@ -58,7 +58,7 @@ class CBubble;
 class CLink;
 class CLine;
 
-#include "Misc/cutils.h"
+#include "Misc/chronicler.h"
 using Chronicler::CPalette;
 using Chronicler::BubbleType;
 
