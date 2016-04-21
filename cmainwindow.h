@@ -57,6 +57,7 @@ class QAbstractButton;
 class QGraphicsView;
 class QGraphicsItem;
 class QTabWidget;
+class QSettings;
 QT_END_NAMESPACE
 
 class CGraphicsScene;
@@ -70,7 +71,7 @@ class CMainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-   CMainWindow();
+   CMainWindow(QSettings *settings);
 
    void LoadProject(const QString & filepath);
 
@@ -97,6 +98,7 @@ private slots:
     void SceneLeftPressed();
     void SceneLeftReleased();
     void TabClosed(int);
+    void DockAreaChanged(Qt::DockWidgetArea);
 
 
 private:
@@ -154,6 +156,8 @@ private:
 
     QDockWidget *m_dock;
     CDockManager *m_dockManager;
+
+    QSettings *m_settings;
 
 };
 

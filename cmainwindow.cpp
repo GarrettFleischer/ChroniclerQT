@@ -6,6 +6,7 @@
 #include <limits>
 #include <QTabWidget>
 #include <QFileInfo>
+#include <QSettings>
 
 #include "Connections/arrow.h"
 #include "cgraphicsscene.h"
@@ -13,13 +14,14 @@
 #include "cgraphicsview.h"
 #include "chomepage.h"
 #include "Properties/cdockmanager.h"
+#include "csettingsview.h"
 
 
 const int InsertTextButton = 10;
 
 
-CMainWindow::CMainWindow()
-    : m_ShiftHeld(false), m_scale(1)
+CMainWindow::CMainWindow(QSettings *settings)
+    : m_ShiftHeld(false), m_scale(1), m_settings(settings)
 {
     setWindowTitle(tr("Chronicler-Next"));
     setUnifiedTitleAndToolBarOnMac(true);
@@ -27,10 +29,8 @@ CMainWindow::CMainWindow()
     CreateActions();
     CreateMenus();
 
-    //float maxsize = 15000.0;//std::numeric_limits<float>::max();
-    //float minsize = 15000.0;//-std::numeric_limits<float>::max()/2;
+
     m_scene = new CGraphicsScene(m_itemMenu, this);
-    //m_scene->setSceneRect(QRectF(minsize, minsize, maxsize, maxsize));
     connect(m_scene, SIGNAL(itemInserted(CBubble*)),
             this, SLOT(ItemInserted(CBubble*)));
     connect(m_scene, SIGNAL(itemSelected(QGraphicsItem*)),
@@ -46,13 +46,20 @@ CMainWindow::CMainWindow()
     QStringListModel * lstModel = new QStringListModel(lst, this);
 
     m_dock = new QDockWidget("Project", this);
+    connect(m_dock, SIGNAL(dockLocationChanged(Qt::DockWidgetArea)),
+            this, SLOT(DockAreaChanged(Qt::DockWidgetArea)));
+
     m_dockManager = new CDockManager(lstModel, m_dock);
     m_dock->setWidget(m_dockManager);
-    addDockWidget(Qt::LeftDockWidgetArea, m_dock);
+
+    // load the last dock widget area from the settings
+    Qt::DockWidgetArea area = static_cast<Qt::DockWidgetArea>(m_settings->value("MainWindow/DockArea", static_cast<int>(Qt::LeftDockWidgetArea)).toInt());
+    addDockWidget(area, m_dock);
+
     m_dock->setVisible(false);
     m_dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 
-    CHomepage *home = new CHomepage(this);
+    CHomepage *home = new CHomepage(this, m_settings);
 
     m_tabView = new QTabWidget(this);
     m_tabView->setMovable(true);
@@ -60,7 +67,9 @@ CMainWindow::CMainWindow()
     connect(m_tabView, SIGNAL(tabCloseRequested(int)),
             this, SLOT(TabClosed(int)));
 
+    m_tabView->addTab(new CSettingsView(m_settings), "Settings");
     m_tabView->addTab(home,"Homepage");
+
 
     setCentralWidget(m_tabView);
 
@@ -241,6 +250,12 @@ void CMainWindow::TabClosed(int index)
     m_tabView->removeTab(index);
 }
 
+void CMainWindow::DockAreaChanged(Qt::DockWidgetArea area)
+{
+    // reflect this change in the settings.
+    m_settings->setValue("MainWindow/DockArea", static_cast<int>(area));
+}
+
 
 void CMainWindow::About()
 {
@@ -379,13 +394,13 @@ void CMainWindow::CreateToolbars()
     connect(m_pointerTypeGroup, SIGNAL(buttonClicked(int)),
             this, SLOT(PointerGroupClicked(int)));
 
-//    m_sceneScaleCombo = new QComboBox;
-//    QStringList scales;
-//    scales << tr("50%") << tr("75%") << tr("100%") << tr("125%") << tr("150%");
-//    m_sceneScaleCombo->addItems(scales);
-//    m_sceneScaleCombo->setCurrentIndex(2);
-//    connect(m_sceneScaleCombo, SIGNAL(currentIndexChanged(QString)),
-//            this, SLOT(SceneScaleChanged(QString)));
+    //    m_sceneScaleCombo = new QComboBox;
+    //    QStringList scales;
+    //    scales << tr("50%") << tr("75%") << tr("100%") << tr("125%") << tr("150%");
+    //    m_sceneScaleCombo->addItems(scales);
+    //    m_sceneScaleCombo->setCurrentIndex(2);
+    //    connect(m_sceneScaleCombo, SIGNAL(currentIndexChanged(QString)),
+    //            this, SLOT(SceneScaleChanged(QString)));
 
     m_pointerToolBar = addToolBar(tr("Pointer type"));
     m_pointerToolBar->addWidget(pointerButton);
@@ -393,7 +408,7 @@ void CMainWindow::CreateToolbars()
     m_pointerToolBar->addWidget(storyBubbleToolButton);
     m_pointerToolBar->addWidget(conditionBubbleToolButton);
     m_pointerToolBar->addWidget(actionBubbleToolButton);
-//    m_pointerToolBar->addWidget(m_sceneScaleCombo);
+    //    m_pointerToolBar->addWidget(m_sceneScaleCombo);
 }
 
 

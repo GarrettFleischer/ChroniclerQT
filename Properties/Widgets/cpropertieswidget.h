@@ -36,7 +36,7 @@ protected:
 
 signals:
 
-protected slots:
+public slots:
     virtual void LabelChanged(QString label);
     virtual void OrderChanged(QString order);
     virtual void LockedChanged(bool locked);

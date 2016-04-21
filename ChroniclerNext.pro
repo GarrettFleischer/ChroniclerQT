@@ -39,7 +39,10 @@ HEADERS += \
     Properties/Widgets/cpropertieswidget.h \
     Properties/Widgets/cstoryproperties.h \
     Misc/chronicler.h \
-    Bubbles/cactionbubble.h
+    Bubbles/cactionbubble.h \
+    Misc/ListView/clistview.h \
+    Misc/ListView/clistmodel.h \
+    csettingsview.h
 
 SOURCES += \
     Bubbles/cbubble.cpp \
@@ -67,4 +70,7 @@ SOURCES += \
     Properties/Widgets/cpropertieswidget.cpp \
     Properties/Widgets/cstoryproperties.cpp \
     Misc/chronicler.cpp \
-    Bubbles/cactionbubble.cpp
+    Bubbles/cactionbubble.cpp \
+    Misc/ListView/clistview.cpp \
+    Misc/ListView/clistmodel.cpp \
+    csettingsview.cpp
