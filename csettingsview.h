@@ -5,6 +5,7 @@
 
 QT_BEGIN_NAMESPACE
 class QSettings;
+class QLayout;
 QT_END_NAMESPACE
 
 
@@ -25,10 +26,16 @@ private:
     //autocomplete snippets
     //hide/show various warnings
 
+    void SetupChoiceScript(QLayout *main_layout);
+    void SetupEditor(QLayout *main_layout);
+    void SetupHistory(QLayout *main_layout);
+
     QSettings *m_settings;
 
 
 private slots:
+    void CSDirChanged(QString);
+
     void AutosavesChanged(int);
     void UndosChanged(int);
     void StoreHistoryChanged(int);

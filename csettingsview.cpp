@@ -9,12 +9,63 @@
 #include <QSpinBox>
 #include <QCheckBox>
 #include <QGroupBox>
-
+#include <QLineEdit>
+#include <QPushButton>
+#include <QIcon>
 
 CSettingsView::CSettingsView(QSettings *settings, QWidget *parent)
     : QWidget(parent), m_settings(settings)
 {
     QVBoxLayout *vl_main = new QVBoxLayout(this);
+
+    SetupChoiceScript(vl_main);
+    SetupEditor(vl_main);
+    SetupHistory(vl_main);
+
+    vl_main->addStretch(1);
+}
+
+void CSettingsView::SetupChoiceScript(QLayout *main_layout)
+{
+    // ChoiceScript Group box
+    QGroupBox *gb_cs = new QGroupBox("ChoiceScript");
+    main_layout->addWidget(gb_cs);
+    QFormLayout *fl_cs = new QFormLayout(gb_cs);
+
+
+    // ChoiceScript directory
+    QLineEdit *le_dir = new QLineEdit();
+    le_dir->setMaximumWidth(500);
+    connect(le_dir, SIGNAL(textChanged()), this, SLOT(CSDirChanged(QString)));
+
+    // File picker button
+    QPushButton *pb_dir = new QPushButton(QIcon(":/images/floodfill.png"), "");
+
+    QHBoxLayout *hl_dir = new QHBoxLayout();
+    hl_dir->addWidget(le_dir);
+    hl_dir->addWidget(pb_dir);
+    hl_dir->addStretch(1);
+
+
+    // Add Rows
+    fl_cs->addRow("ChoiceScript directory", hl_dir);
+
+    // Load Settings
+    le_dir->setText(m_settings->value("Editor/CSDir", "").toString());
+}
+
+void CSettingsView::SetupEditor(QLayout *main_layout)
+{
+
+}
+
+void CSettingsView::SetupHistory(QLayout *main_layout)
+{
+    // History Group box
+    QGroupBox *gb_history = new QGroupBox("History");
+    main_layout->addWidget(gb_history);
+    QFormLayout *fl_history = new QFormLayout(gb_history);
+
 
     // Max Autosaves
     QHBoxLayout *hl_autosaves = new QHBoxLayout();
@@ -42,21 +93,20 @@ CSettingsView::CSettingsView(QSettings *settings, QWidget *parent)
     hl_undos->addStretch(1);
 
 
-    QGroupBox *gb_history = new QGroupBox("History");
-    QFormLayout *fl_history = new QFormLayout(gb_history);
+    // Add rows
     fl_history->addRow("max autosaves", hl_autosaves);
     fl_history->addRow("max undos", hl_undos);
 
 
-    //vl_main->addLayout(hl_undos);
-    vl_main->addWidget(gb_history);
-    vl_main->addStretch(1);
-
-
     // Load settings
-    sb_autosaves->setValue(settings->value("Editor/MaxAutosaves", 5).toInt());
-    sb_undos->setValue(settings->value("Editor/MaxUndos", 100).toInt());
-    cb_history->setCheckState(static_cast<Qt::CheckState>(settings->value("Editor/StoreHistory", Qt::Unchecked).toInt()));
+    sb_autosaves->setValue(m_settings->value("Editor/MaxAutosaves", 5).toInt());
+    sb_undos->setValue(m_settings->value("Editor/MaxUndos", 100).toInt());
+    cb_history->setCheckState(static_cast<Qt::CheckState>(m_settings->value("Editor/StoreHistory", Qt::Unchecked).toInt()));
+}
+
+void CSettingsView::CSDirChanged(QString dir)
+{
+    m_settings->setValue("Editor/CSDir", dir);
 }
 
 void CSettingsView::AutosavesChanged(int maxAutosaves)
