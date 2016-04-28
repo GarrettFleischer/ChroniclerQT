@@ -23,9 +23,19 @@ class CSettingsView : public QWidget
 public:
     CSettingsView(QSettings *settings, QWidget *parent = 0);
 
+    QString choiceScriptDirectory();
+
+    QFont font();
+    QColor fontColor();
+
+    int maxAutosaves();
+    int maxUndos();
+    bool storeHistoryInProject();
+
 private:
-    //autocomplete snippets
-    //hide/show various warnings
+    // TODO
+    // autocomplete snippets
+    // hide/show various warnings (ask to save before closing)
 
     void SetupChoiceScript(QLayout *main_layout);
     void SetupEditor(QLayout *main_layout);
@@ -34,35 +44,42 @@ private:
     void LoadSettings();
     void SaveSettings();
 
+    void MarkChanged(bool changed);
+
     QIcon ColorIcon(const QSize &size, const QColor &color);
 
     QSettings *m_settings;
 
     QLineEdit *m_csdir;
 
-    QFontComboBox   *m_fontPicker;
+    QFontComboBox   *m_fontCombo;
     QSpinBox        *m_fontSize;
     QPushButton     *m_fontColorButton;
+    QFont            m_font;
     QColor           m_fontColor;
 
     QSpinBox *m_autosaves;
     QSpinBox *m_undos;
     QCheckBox *m_history;
 
-signals:
-    FontChanged(const QFont &);
-    FontColorChanged(const QColor &);
+    QPushButton *m_apply;
+    QPushButton *m_cancel;
 
+signals:
+    void SettingsChanged();
 
 private slots:
-    void CSDirChanged(const QString &);
     void CSDirButtonPressed();
-
-    void AutosavesChanged(int);
-    void UndosChanged(int);
-    void StoreHistoryChanged(int);
-
     void FontColorButtonPressed();
+
+    void SettingsApplied();
+    void SettingsCanceled();
+
+    void CSDirChanged();
+
+    void AutosavesChanged();
+    void UndosChanged();
+    void StoreHistoryChanged();
 
     void FontChanged();
     void FontColorSelected(const QColor &);
