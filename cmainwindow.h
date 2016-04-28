@@ -65,6 +65,7 @@ class CBubble;
 class CGraphicsView;
 class CDockManager;
 class CSettingsView;
+class CHomepage;
 
 
 class CMainWindow : public QMainWindow
@@ -117,11 +118,12 @@ private:
 
     QMenu *m_fileMenu;
     QMenu *m_editMenu;
-    QMenu *m_itemMenu;
     QMenu *m_aboutMenu;
 
     QToolBar *m_pointerToolBar;
     QButtonGroup *m_pointerTypeGroup;
+
+    CHomepage *m_homepage;
 
     QDockWidget *m_dock;
     CDockManager *m_dockManager;

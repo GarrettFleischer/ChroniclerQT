@@ -24,14 +24,14 @@ const int InsertTextButton = 10;
 CMainWindow::CMainWindow(QSettings *settings)
     : m_ShiftHeld(false), m_settings(settings), m_settingsView(0)
 {
-    setWindowTitle(tr("Chronicler-Next"));
+    setWindowTitle(tr("Chronicler"));
     setUnifiedTitleAndToolBarOnMac(true);
 
     CreateActions();
     CreateMenus();
 
 
-    m_scene = new CGraphicsScene(m_itemMenu, this);
+    m_scene = new CGraphicsScene(m_editMenu, this);
     connect(m_scene, SIGNAL(itemInserted(CBubble*)),
             this, SLOT(ItemInserted(CBubble*)));
     connect(m_scene, SIGNAL(itemSelected(QGraphicsItem*)),
@@ -60,7 +60,7 @@ CMainWindow::CMainWindow(QSettings *settings)
     m_dock->setVisible(false);
     m_dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 
-    CHomepage *home = new CHomepage(this, m_settings);
+    m_homepage = new CHomepage(this, m_settings);
 
 
     m_tabView = new QTabWidget(this);
@@ -69,15 +69,13 @@ CMainWindow::CMainWindow(QSettings *settings)
     connect(m_tabView, SIGNAL(tabCloseRequested(int)),
             this, SLOT(TabClosed(int)));
 
-    m_tabView->addTab(home,"Homepage");
-
-    //m_tabView->addTab(m_view, "startup.scn");
-
+    m_tabView->addTab(m_homepage,"Homepage");
 
     setCentralWidget(m_tabView);
 
     CreateToolbars();
 
+    // Load the settings...
     m_settingsView = new CSettingsView(m_settings);
     SettingsChanged();
     delete m_settingsView;
@@ -86,10 +84,16 @@ CMainWindow::CMainWindow(QSettings *settings)
 
 void CMainWindow::LoadProject(const QString &filepath)
 {
+    QString project_name = QFileInfo(filepath).fileName();
+
+    setWindowTitle("Chronicler - " + project_name);
+
     m_dock->setVisible(true);
-    m_dock->setWindowTitle(QFileInfo(filepath).fileName());
+    m_dock->setWindowTitle(project_name);
     m_tabView->addTab(m_view, "startup.scn");
     m_tabView->setCurrentWidget(m_view);
+
+    m_tabView->removeTab(m_tabView->indexOf(m_homepage));
 }
 
 
@@ -236,6 +240,7 @@ void CMainWindow::DockAreaChanged(Qt::DockWidgetArea area)
 
 void CMainWindow::ToolBarAreaChanged(bool)
 {
+    // reflect this change in the settings.
     m_settings->setValue("MainWindow/ToolBarArea", static_cast<int>(toolBarArea(m_pointerToolBar)));
 }
 
@@ -281,13 +286,11 @@ void CMainWindow::CreateMenus()
 {
     m_fileMenu = menuBar()->addMenu(tr("&File"));
     m_fileMenu->addAction(m_exitAction);
+    m_fileMenu->addSeparator();
+    m_fileMenu->addAction(m_settingsAction);
 
     m_editMenu = menuBar()->addMenu(tr("&Edit"));
-    m_editMenu->addAction(m_settingsAction);
-
-    m_itemMenu = menuBar()->addMenu(tr("&Item"));
-    m_itemMenu->addAction(m_deleteAction);
-    m_itemMenu->addSeparator();
+    m_editMenu->addAction(m_deleteAction);
 
     m_aboutMenu = menuBar()->addMenu(tr("&Help"));
     m_aboutMenu->addAction(m_aboutAction);
@@ -325,7 +328,7 @@ void CMainWindow::CreateToolbars()
     connect(m_pointerTypeGroup, SIGNAL(buttonClicked(int)),
             this, SLOT(PointerGroupClicked(int)));
 
-    Qt::ToolBarArea area = static_cast<Qt::ToolBarArea>(m_settings->value("MainWindow/ToolBarArea", static_cast<int>(Qt::TopToolBarArea)).toInt());
+    Qt::ToolBarArea area = static_cast<Qt::ToolBarArea>(m_settings->value("MainWindow/ToolBarArea", static_cast<int>(Qt::RightToolBarArea)).toInt());
     m_pointerToolBar = new QToolBar("Pointer type");
     m_pointerToolBar->addWidget(pointerButton);
     m_pointerToolBar->addWidget(linePointerButton);

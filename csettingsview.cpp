@@ -200,10 +200,10 @@ void CSettingsView::LoadSettings()
     m_csdir->setText(m_settings->value("Editor/CSDir").toString());
 
     // Load Editor
-    QFont font = static_cast<QFont>(m_settings->value("Editor/Font", QVariant::fromValue(QFont("Arial", 10))).value<QFont>());
+    QFont font = m_settings->value("Editor/Font", QVariant::fromValue(QFont("Arial", 10))).value<QFont>();
     m_fontSize->setValue(font.pointSize());
     m_fontCombo->setCurrentFont(font);
-    FontColorSelected(static_cast<QColor>(m_settings->value("Editor/FontColor", QVariant::fromValue(QColor(Qt::black))).value<QColor>()));
+    FontColorSelected(m_settings->value("Editor/FontColor", QVariant::fromValue(QColor(Qt::black))).value<QColor>());
 
     // Load History
     m_autosaves->setValue(m_settings->value("Editor/MaxAutosaves", 5).toInt());
