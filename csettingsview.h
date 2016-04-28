@@ -12,6 +12,7 @@ class QFontComboBox;
 class QSpinBox;
 class QPushButton;
 class QSize;
+class QCheckBox;
 QT_END_NAMESPACE
 
 
@@ -23,12 +24,6 @@ public:
     CSettingsView(QSettings *settings, QWidget *parent = 0);
 
 private:
-    //max autosaves
-    //max undos
-    //save undo history to project
-    //choicescript directory
-    //dark/light theme?
-    //editor font
     //autocomplete snippets
     //hide/show various warnings
 
@@ -49,6 +44,10 @@ private:
     QSpinBox        *m_fontSize;
     QPushButton     *m_fontColorButton;
     QColor           m_fontColor;
+
+    QSpinBox *m_autosaves;
+    QSpinBox *m_undos;
+    QCheckBox *m_history;
 
 signals:
     FontChanged(const QFont &);

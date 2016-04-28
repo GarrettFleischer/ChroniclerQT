@@ -32,6 +32,8 @@ CSettingsView::CSettingsView(QSettings *settings, QWidget *parent)
     SetupEditor(vl_main);
     SetupHistory(vl_main);
 
+    LoadSettings();
+
     vl_main->addStretch(1);
 }
 
@@ -60,9 +62,6 @@ void CSettingsView::SetupChoiceScript(QLayout *main_layout)
 
     // Add Rows
     fl_cs->addRow("ChoiceScript directory", hl_dir);
-
-    // Load Settings
-    m_csdir->setText(m_settings->value("Editor/CSDir").toString());
 }
 
 void CSettingsView::SetupEditor(QLayout *main_layout)
@@ -99,13 +98,6 @@ void CSettingsView::SetupEditor(QLayout *main_layout)
     // Add rows
     fl_editor->addRow("Font", hl_font);
     fl_editor->addRow("Theme", new QCheckBox("dark"));
-
-    // Load settings
-    QFont font = static_cast<QFont>(m_settings->value("Editor/Font", QVariant::fromValue(QFont("Times New Roman", 11))).value<QFont>());
-    m_fontSize->setValue(font.pointSize());
-    m_fontPicker->setCurrentFont(font);
-
-    FontColorSelected(static_cast<QColor>(m_settings->value("Editor/FontColor", QVariant::fromValue(QColor(Qt::black))).value<QColor>()));
 }
 
 void CSettingsView::SetupHistory(QLayout *main_layout)
@@ -119,48 +111,64 @@ void CSettingsView::SetupHistory(QLayout *main_layout)
     // Max Autosaves
     QHBoxLayout *hl_autosaves = new QHBoxLayout();
 
-    QSpinBox *sb_autosaves = new QSpinBox();
-    sb_autosaves->setRange(0, 100);
-    connect(sb_autosaves, SIGNAL(valueChanged(int)),
+    m_autosaves = new QSpinBox();
+    m_autosaves->setRange(0, 100);
+    connect(m_autosaves, SIGNAL(valueChanged(int)),
             this, SLOT(AutosavesChanged(int)));
-    hl_autosaves->addWidget(sb_autosaves,0, Qt::AlignLeft);
+    hl_autosaves->addWidget(m_autosaves,0, Qt::AlignLeft);
     hl_autosaves->addStretch(1);
 
     // Max Undos
     QHBoxLayout *hl_undos = new QHBoxLayout();
 
-    QSpinBox *sb_undos = new QSpinBox();
-    sb_undos->setRange(0, 500);
-    connect(sb_undos, SIGNAL(valueChanged(int)),
+    m_undos = new QSpinBox();
+    m_undos->setRange(0, 500);
+    connect(m_undos, SIGNAL(valueChanged(int)),
             this, SLOT(UndosChanged(int)));
-    hl_undos->addWidget(sb_undos, 0, Qt::AlignLeft);
+    hl_undos->addWidget(m_undos, 0, Qt::AlignLeft);
 
-    QCheckBox *cb_history = new QCheckBox("store history in project");
-    connect(cb_history, SIGNAL(stateChanged(int)),
+    m_history = new QCheckBox("store history in project");
+    connect(m_history, SIGNAL(stateChanged(int)),
             this, SLOT(StoreHistoryChanged(int)));
-    hl_undos->addWidget(cb_history, 0, Qt::AlignLeft);
+    hl_undos->addWidget(m_history, 0, Qt::AlignLeft);
     hl_undos->addStretch(1);
 
 
     // Add rows
     fl_history->addRow("max autosaves", hl_autosaves);
     fl_history->addRow("max undos", hl_undos);
-
-
-    // Load settings
-    sb_autosaves->setValue(m_settings->value("Editor/MaxAutosaves", 5).toInt());
-    sb_undos->setValue(m_settings->value("Editor/MaxUndos", 100).toInt());
-    cb_history->setCheckState(static_cast<Qt::CheckState>(m_settings->value("Editor/StoreHistory", Qt::Unchecked).toInt()));
 }
 
 void CSettingsView::LoadSettings()
 {
+    // Load Choicescript
+    m_csdir->setText(m_settings->value("Editor/CSDir").toString());
 
+    // Load Editor
+    QFont font = static_cast<QFont>(m_settings->value("Editor/Font", QVariant::fromValue(QFont("Times New Roman", 11))).value<QFont>());
+    m_fontSize->setValue(font.pointSize());
+    m_fontPicker->setCurrentFont(font);
+    FontColorSelected(static_cast<QColor>(m_settings->value("Editor/FontColor", QVariant::fromValue(QColor(Qt::black))).value<QColor>()));
+
+    // Load History
+    m_autosaves->setValue(m_settings->value("Editor/MaxAutosaves", 5).toInt());
+    m_undos->setValue(m_settings->value("Editor/MaxUndos", 100).toInt());
+    m_history->setCheckState(static_cast<Qt::CheckState>(m_settings->value("Editor/StoreHistory", Qt::Unchecked).toInt()));
 }
 
 void CSettingsView::SaveSettings()
 {
+    // Save Choicescript
+    m_settings->setValue("Editor/CSDir", dir);
 
+    // Save Editor
+    m_settings->setValue("Editor/Font", QVariant::fromValue(font)); // includes point size
+    m_settings->setValue("Editor/FontColor", QVariant::fromValue(color));
+
+    // Save History
+    m_settings->setValue("Editor/MaxAutosaves", maxAutosaves);
+    m_settings->setValue("Editor/MaxUndos", maxUndos);
+    m_settings->setValue("Editor/StoreHistory", state);
 }
 
 QIcon CSettingsView::ColorIcon(const QSize &size, const QColor &color)
@@ -175,7 +183,7 @@ QIcon CSettingsView::ColorIcon(const QSize &size, const QColor &color)
 
 void CSettingsView::CSDirChanged(const QString &dir)
 {
-    m_settings->setValue("Editor/CSDir", dir);
+
 }
 
 void CSettingsView::CSDirButtonPressed()
@@ -191,17 +199,17 @@ void CSettingsView::CSDirButtonPressed()
 
 void CSettingsView::AutosavesChanged(int maxAutosaves)
 {
-    m_settings->setValue("Editor/MaxAutosaves", maxAutosaves);
+
 }
 
 void CSettingsView::UndosChanged(int maxUndos)
 {
-    m_settings->setValue("Editor/MaxUndos", maxUndos);
+
 }
 
 void CSettingsView::StoreHistoryChanged(int state)
 {
-    m_settings->setValue("Editor/StoreHistory", state);
+
 }
 
 void CSettingsView::FontColorButtonPressed()
@@ -220,7 +228,7 @@ void CSettingsView::FontChanged()
     QFont font = m_fontPicker->currentFont();
     font.setPointSize(m_fontSize->value());
 
-    m_settings->setValue("Editor/Font", QVariant::fromValue(font));
+
 
     emit FontChanged(font);
 }
@@ -230,7 +238,7 @@ void CSettingsView::FontColorSelected(const QColor &color)
     m_fontColor = color;
     m_fontColorButton->setIcon(ColorIcon(QSize(20, 20), color));
 
-    m_settings->setValue("Editor/FontColor", QVariant::fromValue(color));
+
 
     emit FontColorChanged(color);
 }
