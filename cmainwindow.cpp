@@ -56,10 +56,11 @@ CMainWindow::CMainWindow(QSettings *settings)
     Qt::DockWidgetArea area = static_cast<Qt::DockWidgetArea>(m_settings->value("MainWindow/DockArea", static_cast<int>(Qt::LeftDockWidgetArea)).toInt());
     addDockWidget(area, m_dock);
 
-    m_dock->setVisible(false);
+    //m_dock->setVisible(false);
     m_dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 
     CHomepage *home = new CHomepage(this, m_settings);
+
 
     m_tabView = new QTabWidget(this);
     m_tabView->setMovable(true);
@@ -69,6 +70,9 @@ CMainWindow::CMainWindow(QSettings *settings)
 
     m_tabView->addTab(new CSettingsView(m_settings), "Settings");
     m_tabView->addTab(home,"Homepage");
+
+    m_tabView->addTab(m_view, "startup.scn");
+    m_tabView->setCurrentWidget(m_view);
 
 
     setCentralWidget(m_tabView);
@@ -155,31 +159,31 @@ void CMainWindow::FontSizeChanged(const QString &)
 
 void CMainWindow::TextColorChanged()
 {
-    m_textAction = qobject_cast<QAction *>(sender());
-    m_fontColorToolButton->setIcon(CreateColorToolButtonIcon(
-                                       ":/images/textpointer.png",
-                                       qvariant_cast<QColor>(m_textAction->data())));
-    TextButtonTriggered();
+    //    m_textAction = qobject_cast<QAction *>(sender());
+    //    m_fontColorToolButton->setIcon(CreateColorToolButtonIcon(
+    //                                       ":/images/textpointer.png",
+    //                                       qvariant_cast<QColor>(m_textAction->data())));
+    //    TextButtonTriggered();
 }
 
 
 void CMainWindow::ItemColorChanged()
 {
-    m_fillAction = qobject_cast<QAction *>(sender());
-    m_fillColorToolButton->setIcon(CreateColorToolButtonIcon(
-                                       ":/images/floodfill.png",
-                                       qvariant_cast<QColor>(m_fillAction->data())));
-    FillButtonTriggered();
+    //    m_fillAction = qobject_cast<QAction *>(sender());
+    //    m_fillColorToolButton->setIcon(CreateColorToolButtonIcon(
+    //                                       ":/images/floodfill.png",
+    //                                       qvariant_cast<QColor>(m_fillAction->data())));
+    //    FillButtonTriggered();
 }
 
 
 void CMainWindow::LineColorChanged()
 {
-    m_lineAction = qobject_cast<QAction *>(sender());
-    m_lineColorToolButton->setIcon(CreateColorToolButtonIcon(
-                                       ":/images/linecolor.png",
-                                       qvariant_cast<QColor>(m_lineAction->data())));
-    LineButtonTriggered();
+    //    m_lineAction = qobject_cast<QAction *>(sender());
+    //    m_lineColorToolButton->setIcon(CreateColorToolButtonIcon(
+    //                                       ":/images/linecolor.png",
+    //                                       qvariant_cast<QColor>(m_lineAction->data())));
+    //    LineButtonTriggered();
 }
 
 
@@ -203,14 +207,14 @@ void CMainWindow::LineButtonTriggered()
 
 void CMainWindow::HandleFontChange()
 {
-    QFont font = m_fontCombo->currentFont();
-    font.setPointSize(m_fontSizeCombo->value());
-    font.setWeight(m_boldAction->isChecked() ? QFont::Bold : QFont::Normal);
-    font.setItalic(m_italicAction->isChecked());
-    font.setUnderline(m_underlineAction->isChecked());
+    //    QFont font = m_fontCombo->currentFont();
+    //    font.setPointSize(m_fontSizeCombo->value());
+    //    font.setWeight(m_boldAction->isChecked() ? QFont::Bold : QFont::Normal);
+    //    font.setItalic(m_italicAction->isChecked());
+    //    font.setUnderline(m_underlineAction->isChecked());
 
-    m_scene->setFont(font);
-    m_dockManager->setFont(font);
+    //    m_scene->setFont(font);
+    //    m_dockManager->setFont(font);
 }
 
 
@@ -256,6 +260,11 @@ void CMainWindow::DockAreaChanged(Qt::DockWidgetArea area)
     m_settings->setValue("MainWindow/DockArea", static_cast<int>(area));
 }
 
+void CMainWindow::ToolBarAreaChanged(bool)
+{
+    m_settings->setValue("MainWindow/ToolBarArea", static_cast<int>(toolBarArea(m_pointerToolBar)));
+}
+
 
 void CMainWindow::About()
 {
@@ -275,25 +284,24 @@ void CMainWindow::CreateActions()
     m_exitAction->setStatusTip(tr("Quit Scenediagram example"));
     connect(m_exitAction, SIGNAL(triggered()), this, SLOT(close()));
 
-    m_boldAction = new QAction(tr("Bold"), this);
-    m_boldAction->setCheckable(true);
-    QPixmap pixmap(":/images/bold.png");
-    m_boldAction->setIcon(QIcon(pixmap));
-    m_boldAction->setShortcut(tr("Ctrl+B"));
-    connect(m_boldAction, SIGNAL(triggered()), this, SLOT(HandleFontChange()));
+    //    m_boldAction = new QAction(tr("Bold"), this);
+    //    m_boldAction->setCheckable(true);
+    //    QPixmap pixmap(":/images/bold.png");
+    //    m_boldAction->setIcon(QIcon(pixmap));
+    //    m_boldAction->setShortcut(tr("Ctrl+B"));
+    //    connect(m_boldAction, SIGNAL(triggered()), this, SLOT(HandleFontChange()));
 
-    m_italicAction = new QAction(QIcon(":/images/italic.png"), tr("Italic"), this);
-    m_italicAction->setCheckable(true);
-    m_italicAction->setShortcut(tr("Ctrl+I"));
-    connect(m_italicAction, SIGNAL(triggered()), this, SLOT(HandleFontChange()));
+    //    m_italicAction = new QAction(QIcon(":/images/italic.png"), tr("Italic"), this);
+    //    m_italicAction->setCheckable(true);
+    //    m_italicAction->setShortcut(tr("Ctrl+I"));
+    //    connect(m_italicAction, SIGNAL(triggered()), this, SLOT(HandleFontChange()));
 
-    m_underlineAction = new QAction(QIcon(":/images/underline.png"), tr("Underline"), this);
-    m_underlineAction->setCheckable(true);
-    m_underlineAction->setShortcut(tr("Ctrl+U"));
-    connect(m_underlineAction, SIGNAL(triggered()), this, SLOT(HandleFontChange()));
+    //    m_underlineAction = new QAction(QIcon(":/images/underline.png"), tr("Underline"), this);
+    //    m_underlineAction->setCheckable(true);
+    //    m_underlineAction->setShortcut(tr("Ctrl+U"));
+    //    connect(m_underlineAction, SIGNAL(triggered()), this, SLOT(HandleFontChange()));
 
     m_aboutAction = new QAction(tr("A&bout"), this);
-    m_aboutAction->setShortcut(tr("Ctrl+B"));
     connect(m_aboutAction, SIGNAL(triggered()), this, SLOT(About()));
 }
 
@@ -314,56 +322,56 @@ void CMainWindow::CreateMenus()
 
 void CMainWindow::CreateToolbars()
 {
-    m_fontCombo = new QFontComboBox();
-    connect(m_fontCombo, SIGNAL(currentFontChanged(QFont)),
-            this, SLOT(CurrentFontChanged(QFont)));
-    m_fontCombo->setCurrentText("Times New Roman");
+    //    m_fontCombo = new QFontComboBox();
+    //    connect(m_fontCombo, SIGNAL(currentFontChanged(QFont)),
+    //            this, SLOT(CurrentFontChanged(QFont)));
+    //    m_fontCombo->setCurrentText("Times New Roman");
 
 
-    m_fontSizeCombo = new QSpinBox;
-    m_fontSizeCombo->setRange(8, 42);
-    m_fontSizeCombo->setValue(11);
-    connect(m_fontSizeCombo, SIGNAL(valueChanged(QString)),
-            this, SLOT(FontSizeChanged(QString)));
+    //    m_fontSizeCombo = new QSpinBox;
+    //    m_fontSizeCombo->setRange(8, 42);
+    //    m_fontSizeCombo->setValue(11);
+    //    connect(m_fontSizeCombo, SIGNAL(valueChanged(QString)),
+    //            this, SLOT(FontSizeChanged(QString)));
 
-    m_fontColorToolButton = new QToolButton;
-    m_fontColorToolButton->setPopupMode(QToolButton::MenuButtonPopup);
-    m_fontColorToolButton->setMenu(CreateColorMenu(SLOT(TextColorChanged()), Qt::black));
-    m_textAction = m_fontColorToolButton->menu()->defaultAction();
-    m_fontColorToolButton->setIcon(CreateColorToolButtonIcon(":/images/textpointer.png", Qt::black));
-    m_fontColorToolButton->setAutoFillBackground(true);
-    connect(m_fontColorToolButton, SIGNAL(clicked()),
-            this, SLOT(TextButtonTriggered()));
+    //    m_fontColorToolButton = new QToolButton;
+    //    m_fontColorToolButton->setPopupMode(QToolButton::MenuButtonPopup);
+    //    m_fontColorToolButton->setMenu(CreateColorMenu(SLOT(TextColorChanged()), Qt::black));
+    //    m_textAction = m_fontColorToolButton->menu()->defaultAction();
+    //    m_fontColorToolButton->setIcon(CreateColorToolButtonIcon(":/images/textpointer.png", Qt::black));
+    //    m_fontColorToolButton->setAutoFillBackground(true);
+    //    connect(m_fontColorToolButton, SIGNAL(clicked()),
+    //            this, SLOT(TextButtonTriggered()));
 
-    m_fillColorToolButton = new QToolButton;
-    m_fillColorToolButton->setPopupMode(QToolButton::MenuButtonPopup);
-    m_fillColorToolButton->setMenu(CreateColorMenu(SLOT(ItemColorChanged()), Qt::white));
-    m_fillAction = m_fillColorToolButton->menu()->defaultAction();
-    m_fillColorToolButton->setIcon(CreateColorToolButtonIcon(
-                                       ":/images/floodfill.png", Qt::white));
-    connect(m_fillColorToolButton, SIGNAL(clicked()),
-            this, SLOT(FillButtonTriggered()));
+    //    m_fillColorToolButton = new QToolButton;
+    //    m_fillColorToolButton->setPopupMode(QToolButton::MenuButtonPopup);
+    //    m_fillColorToolButton->setMenu(CreateColorMenu(SLOT(ItemColorChanged()), Qt::white));
+    //    m_fillAction = m_fillColorToolButton->menu()->defaultAction();
+    //    m_fillColorToolButton->setIcon(CreateColorToolButtonIcon(
+    //                                       ":/images/floodfill.png", Qt::white));
+    //    connect(m_fillColorToolButton, SIGNAL(clicked()),
+    //            this, SLOT(FillButtonTriggered()));
 
-    m_lineColorToolButton = new QToolButton;
-    m_lineColorToolButton->setPopupMode(QToolButton::MenuButtonPopup);
-    m_lineColorToolButton->setMenu(CreateColorMenu(SLOT(LineColorChanged()), Qt::black));
-    m_lineAction = m_lineColorToolButton->menu()->defaultAction();
-    m_lineColorToolButton->setIcon(CreateColorToolButtonIcon(
-                                       ":/images/linecolor.png", Qt::black));
-    connect(m_lineColorToolButton, SIGNAL(clicked()),
-            this, SLOT(LineButtonTriggered()));
+    //    m_lineColorToolButton = new QToolButton;
+    //    m_lineColorToolButton->setPopupMode(QToolButton::MenuButtonPopup);
+    //    m_lineColorToolButton->setMenu(CreateColorMenu(SLOT(LineColorChanged()), Qt::black));
+    //    m_lineAction = m_lineColorToolButton->menu()->defaultAction();
+    //    m_lineColorToolButton->setIcon(CreateColorToolButtonIcon(
+    //                                       ":/images/linecolor.png", Qt::black));
+    //    connect(m_lineColorToolButton, SIGNAL(clicked()),
+    //            this, SLOT(LineButtonTriggered()));
 
-    m_textToolBar = addToolBar(tr("Font"));
-    m_textToolBar->addWidget(m_fontCombo);
-    m_textToolBar->addWidget(m_fontSizeCombo);
-    m_textToolBar->addAction(m_boldAction);
-    m_textToolBar->addAction(m_italicAction);
-    m_textToolBar->addAction(m_underlineAction);
+    //    m_textToolBar = addToolBar(tr("Font"));
+    //    m_textToolBar->addWidget(m_fontCombo);
+    //    m_textToolBar->addWidget(m_fontSizeCombo);
+    //    m_textToolBar->addAction(m_boldAction);
+    //    m_textToolBar->addAction(m_italicAction);
+    //    m_textToolBar->addAction(m_underlineAction);
 
-    m_colorToolBar = addToolBar(tr("Color"));
-    m_colorToolBar->addWidget(m_fontColorToolButton);
-    m_colorToolBar->addWidget(m_fillColorToolButton);
-    m_colorToolBar->addWidget(m_lineColorToolButton);
+    //    m_colorToolBar = addToolBar(tr("Color"));
+    //    m_colorToolBar->addWidget(m_fontColorToolButton);
+    //    m_colorToolBar->addWidget(m_fillColorToolButton);
+    //    m_colorToolBar->addWidget(m_lineColorToolButton);
 
     QToolButton *pointerButton = new QToolButton;
     pointerButton->setCheckable(true);
@@ -394,42 +402,37 @@ void CMainWindow::CreateToolbars()
     connect(m_pointerTypeGroup, SIGNAL(buttonClicked(int)),
             this, SLOT(PointerGroupClicked(int)));
 
-    //    m_sceneScaleCombo = new QComboBox;
-    //    QStringList scales;
-    //    scales << tr("50%") << tr("75%") << tr("100%") << tr("125%") << tr("150%");
-    //    m_sceneScaleCombo->addItems(scales);
-    //    m_sceneScaleCombo->setCurrentIndex(2);
-    //    connect(m_sceneScaleCombo, SIGNAL(currentIndexChanged(QString)),
-    //            this, SLOT(SceneScaleChanged(QString)));
-
-    m_pointerToolBar = addToolBar(tr("Pointer type"));
+    Qt::ToolBarArea area = static_cast<Qt::ToolBarArea>(m_settings->value("MainWindow/ToolBarArea", static_cast<int>(Qt::TopToolBarArea)).toInt());
+    m_pointerToolBar = new QToolBar("Pointer type");
     m_pointerToolBar->addWidget(pointerButton);
     m_pointerToolBar->addWidget(linePointerButton);
     m_pointerToolBar->addWidget(storyBubbleToolButton);
     m_pointerToolBar->addWidget(conditionBubbleToolButton);
     m_pointerToolBar->addWidget(actionBubbleToolButton);
-    //    m_pointerToolBar->addWidget(m_sceneScaleCombo);
+    addToolBar(area, m_pointerToolBar);
+    connect(m_pointerToolBar, SIGNAL(topLevelChanged(bool)),
+            this, SLOT(ToolBarAreaChanged(bool)));
 }
 
 
 QMenu *CMainWindow::CreateColorMenu(const char *slot, QColor defaultColor)
 {
-    QList<QColor> colors;
-    colors << Qt::black << Qt::white << Qt::red << Qt::blue << Qt::yellow;
-    QStringList names;
-    names << tr("black") << tr("white") << tr("red") << tr("blue")
-          << tr("yellow");
+    //    QList<QColor> colors;
+    //    colors << Qt::black << Qt::white << Qt::red << Qt::blue << Qt::yellow;
+    //    QStringList names;
+    //    names << tr("black") << tr("white") << tr("red") << tr("blue")
+    //          << tr("yellow");
 
     QMenu *colorMenu = new QMenu(this);
-    for (int i = 0; i < colors.count(); ++i) {
-        QAction *action = new QAction(names.at(i), this);
-        action->setData(colors.at(i));
-        action->setIcon(CreateColorIcon(colors.at(i)));
-        connect(action, SIGNAL(triggered()), this, slot);
-        colorMenu->addAction(action);
-        if (colors.at(i) == defaultColor)
-            colorMenu->setDefaultAction(action);
-    }
+    //    for (int i = 0; i < colors.count(); ++i) {
+    //        QAction *action = new QAction(names.at(i), this);
+    //        action->setData(colors.at(i));
+    //        action->setIcon(CreateColorIcon(colors.at(i)));
+    //        connect(action, SIGNAL(triggered()), this, slot);
+    //        colorMenu->addAction(action);
+    //        if (colors.at(i) == defaultColor)
+    //            colorMenu->setDefaultAction(action);
+    //    }
     return colorMenu;
 }
 

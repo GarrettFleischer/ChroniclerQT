@@ -9,7 +9,7 @@ int main(int argv, char *args[])
 
     QApplication app(argv, args);
 
-    QSettings settings("GameSmith", "Chronicler");
+    QSettings settings(QSettings::IniFormat, QSettings::UserScope, "Chronicler", "Chronicler");
 
     CMainWindow mainWindow(&settings);
     mainWindow.setGeometry(100, 100, 1280, 720);

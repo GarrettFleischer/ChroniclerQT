@@ -42,7 +42,8 @@ HEADERS += \
     Bubbles/cactionbubble.h \
     Misc/ListView/clistview.h \
     Misc/ListView/clistmodel.h \
-    csettingsview.h
+    csettingsview.h \
+    Misc/actionbutton.h
 
 SOURCES += \
     Bubbles/cbubble.cpp \
@@ -73,4 +74,5 @@ SOURCES += \
     Bubbles/cactionbubble.cpp \
     Misc/ListView/clistview.cpp \
     Misc/ListView/clistmodel.cpp \
-    csettingsview.cpp
+    csettingsview.cpp \
+    Misc/actionbutton.cpp

@@ -6,6 +6,7 @@
 QT_BEGIN_NAMESPACE
 class QSettings;
 class QLayout;
+class QLineEdit;
 QT_END_NAMESPACE
 
 
@@ -32,9 +33,12 @@ private:
 
     QSettings *m_settings;
 
+    QLineEdit *m_csdir;
+
 
 private slots:
     void CSDirChanged(QString);
+    void CSDirButtonPressed();
 
     void AutosavesChanged(int);
     void UndosChanged(int);

@@ -12,6 +12,11 @@
 #include <QLineEdit>
 #include <QPushButton>
 #include <QIcon>
+#include <QFileDialog>
+#include <QDir>
+#include <QFontComboBox>
+#include <QSpinBox>
+#include <QToolButton>
 
 CSettingsView::CSettingsView(QSettings *settings, QWidget *parent)
     : QWidget(parent), m_settings(settings)
@@ -34,29 +39,81 @@ void CSettingsView::SetupChoiceScript(QLayout *main_layout)
 
 
     // ChoiceScript directory
-    QLineEdit *le_dir = new QLineEdit();
-    le_dir->setMaximumWidth(500);
-    connect(le_dir, SIGNAL(textChanged()), this, SLOT(CSDirChanged(QString)));
+    m_csdir = new QLineEdit();
+    //m_csdir->setMaximumWidth(500);
+    connect(m_csdir, SIGNAL(textChanged(QString)), this, SLOT(CSDirChanged(QString)));
 
     // File picker button
     QPushButton *pb_dir = new QPushButton(QIcon(":/images/floodfill.png"), "");
+    connect(pb_dir, SIGNAL(clicked(bool)), this, SLOT(CSDirButtonPressed()));
 
     QHBoxLayout *hl_dir = new QHBoxLayout();
-    hl_dir->addWidget(le_dir);
+    hl_dir->addWidget(m_csdir, 1);
     hl_dir->addWidget(pb_dir);
-    hl_dir->addStretch(1);
+    hl_dir->addStretch(2);
 
 
     // Add Rows
     fl_cs->addRow("ChoiceScript directory", hl_dir);
 
     // Load Settings
-    le_dir->setText(m_settings->value("Editor/CSDir", "").toString());
+    m_csdir->setText(m_settings->value("Editor/CSDir").toString());
 }
 
 void CSettingsView::SetupEditor(QLayout *main_layout)
 {
+    // ChoiceScript Group box
+    QGroupBox *gb_editor = new QGroupBox("Editor");
+    main_layout->addWidget(gb_editor);
+    QFormLayout *fl_editor = new QFormLayout(gb_editor);
 
+
+    QFontComboBox *fcb_font = new QFontComboBox();
+    //    connect(fcb_editor, SIGNAL(currentFontChanged(QFont)),
+    //            this, SLOT(CurrentFontChanged(QFont)));
+    fcb_font->setCurrentText("Times New Roman");
+
+    QSpinBox *sb_font_size = new QSpinBox();
+    sb_font_size->setRange(8, 42);
+    sb_font_size->setValue(11);
+    //    connect(m_fontSizeCombo, SIGNAL(valueChanged(QString)),
+    //            this, SLOT(FontSizeChanged(QString)));
+
+
+
+    QToolButton *tb_font_color = new QToolButton;
+    tb_font_color->setPopupMode(QToolButton::MenuButtonPopup);
+    //tb_font_color->setMenu(CreateColorMenu(SLOT(TextColorChanged()), Qt::black));
+    //m_textAction = m_fontColorToolButton->menu()->defaultAction();
+    //tb_font_color->setIcon(CreateColorToolButtonIcon(":/images/textpointer.png", Qt::black));
+    tb_font_color->setAutoFillBackground(true);
+    //    connect(m_fontColorToolButton, SIGNAL(clicked()),
+    //            this, SLOT(TextButtonTriggered()));
+
+    QHBoxLayout *hl_font = new QHBoxLayout();
+    hl_font->addWidget(fcb_font, 1);
+    hl_font->addWidget(sb_font_size);
+    hl_font->addWidget(tb_font_color);
+    hl_font->addStretch(4);
+
+    fl_editor->addRow("Font", hl_font);
+
+    //    m_boldAction = new QAction(tr("Bold"), this);
+    //    m_boldAction->setCheckable(true);
+    //    QPixmap pixmap(":/images/bold.png");
+    //    m_boldAction->setIcon(QIcon(pixmap));
+    //    m_boldAction->setShortcut(tr("Ctrl+B"));
+    //    connect(m_boldAction, SIGNAL(triggered()), this, SLOT(HandleFontChange()));
+
+    //    m_italicAction = new QAction(QIcon(":/images/italic.png"), tr("Italic"), this);
+    //    m_italicAction->setCheckable(true);
+    //    m_italicAction->setShortcut(tr("Ctrl+I"));
+    //    connect(m_italicAction, SIGNAL(triggered()), this, SLOT(HandleFontChange()));
+
+    //    m_underlineAction = new QAction(QIcon(":/images/underline.png"), tr("Underline"), this);
+    //    m_underlineAction->setCheckable(true);
+    //    m_underlineAction->setShortcut(tr("Ctrl+U"));
+    //    connect(m_underlineAction, SIGNAL(triggered()), this, SLOT(HandleFontChange()));
 }
 
 void CSettingsView::SetupHistory(QLayout *main_layout)
@@ -107,6 +164,17 @@ void CSettingsView::SetupHistory(QLayout *main_layout)
 void CSettingsView::CSDirChanged(QString dir)
 {
     m_settings->setValue("Editor/CSDir", dir);
+}
+
+void CSettingsView::CSDirButtonPressed()
+{
+    QFileDialog fd;
+    fd.setFileMode(QFileDialog::DirectoryOnly);
+
+    QDir dir(m_csdir->text());
+    dir.cdUp();
+
+    m_csdir->setText(fd.getExistingDirectory(0, "ChoiceScript directory", dir.path()));
 }
 
 void CSettingsView::AutosavesChanged(int maxAutosaves)

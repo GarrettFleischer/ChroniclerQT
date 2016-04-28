@@ -99,6 +99,7 @@ private slots:
     void SceneLeftReleased();
     void TabClosed(int);
     void DockAreaChanged(Qt::DockWidgetArea);
+    void ToolBarAreaChanged(bool);
 
 
 private:
