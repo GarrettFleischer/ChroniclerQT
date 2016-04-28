@@ -16,7 +16,12 @@
 #include <QDir>
 #include <QFontComboBox>
 #include <QSpinBox>
-#include <QToolButton>
+#include <QPalette>
+#include <QBrush>
+#include <QColorDialog>
+#include <QPixmap>
+#include <QPainter>
+//#include <QToolButton>
 
 CSettingsView::CSettingsView(QSettings *settings, QWidget *parent)
     : QWidget(parent), m_settings(settings)
@@ -62,58 +67,45 @@ void CSettingsView::SetupChoiceScript(QLayout *main_layout)
 
 void CSettingsView::SetupEditor(QLayout *main_layout)
 {
-    // ChoiceScript Group box
+    // Editor Group box
     QGroupBox *gb_editor = new QGroupBox("Editor");
     main_layout->addWidget(gb_editor);
     QFormLayout *fl_editor = new QFormLayout(gb_editor);
 
 
-    QFontComboBox *fcb_font = new QFontComboBox();
-    //    connect(fcb_editor, SIGNAL(currentFontChanged(QFont)),
-    //            this, SLOT(CurrentFontChanged(QFont)));
-    fcb_font->setCurrentText("Times New Roman");
+    // Font settings
+    m_fontPicker = new QFontComboBox();
+    connect(m_fontPicker, SIGNAL(currentFontChanged(QFont)),
+            this, SLOT(FontChanged()));
 
-    QSpinBox *sb_font_size = new QSpinBox();
-    sb_font_size->setRange(8, 42);
-    sb_font_size->setValue(11);
-    //    connect(m_fontSizeCombo, SIGNAL(valueChanged(QString)),
-    //            this, SLOT(FontSizeChanged(QString)));
+    m_fontSize = new QSpinBox();
+    m_fontSize->setRange(8, 42);
+    connect(m_fontSize, SIGNAL(valueChanged(int)),
+            this, SLOT(FontChanged()));
 
+    m_fontColorButton = new QPushButton();
+    m_fontColorButton->setMaximumSize(24, 24);
 
+    connect(m_fontColorButton, SIGNAL(clicked(bool)),
+            this, SLOT(FontColorButtonPressed()));
 
-    QToolButton *tb_font_color = new QToolButton;
-    tb_font_color->setPopupMode(QToolButton::MenuButtonPopup);
-    //tb_font_color->setMenu(CreateColorMenu(SLOT(TextColorChanged()), Qt::black));
-    //m_textAction = m_fontColorToolButton->menu()->defaultAction();
-    //tb_font_color->setIcon(CreateColorToolButtonIcon(":/images/textpointer.png", Qt::black));
-    tb_font_color->setAutoFillBackground(true);
-    //    connect(m_fontColorToolButton, SIGNAL(clicked()),
-    //            this, SLOT(TextButtonTriggered()));
-
+    // Font layout
     QHBoxLayout *hl_font = new QHBoxLayout();
-    hl_font->addWidget(fcb_font, 1);
-    hl_font->addWidget(sb_font_size);
-    hl_font->addWidget(tb_font_color);
+    hl_font->addWidget(m_fontPicker, 1);
+    hl_font->addWidget(m_fontSize);
+    hl_font->addWidget(m_fontColorButton);
     hl_font->addStretch(4);
 
+    // Add rows
     fl_editor->addRow("Font", hl_font);
+    fl_editor->addRow("Theme", new QCheckBox("dark"));
 
-    //    m_boldAction = new QAction(tr("Bold"), this);
-    //    m_boldAction->setCheckable(true);
-    //    QPixmap pixmap(":/images/bold.png");
-    //    m_boldAction->setIcon(QIcon(pixmap));
-    //    m_boldAction->setShortcut(tr("Ctrl+B"));
-    //    connect(m_boldAction, SIGNAL(triggered()), this, SLOT(HandleFontChange()));
+    // Load settings
+    QFont font = static_cast<QFont>(m_settings->value("Editor/Font", QVariant::fromValue(QFont("Times New Roman", 11))).value<QFont>());
+    m_fontSize->setValue(font.pointSize());
+    m_fontPicker->setCurrentFont(font);
 
-    //    m_italicAction = new QAction(QIcon(":/images/italic.png"), tr("Italic"), this);
-    //    m_italicAction->setCheckable(true);
-    //    m_italicAction->setShortcut(tr("Ctrl+I"));
-    //    connect(m_italicAction, SIGNAL(triggered()), this, SLOT(HandleFontChange()));
-
-    //    m_underlineAction = new QAction(QIcon(":/images/underline.png"), tr("Underline"), this);
-    //    m_underlineAction->setCheckable(true);
-    //    m_underlineAction->setShortcut(tr("Ctrl+U"));
-    //    connect(m_underlineAction, SIGNAL(triggered()), this, SLOT(HandleFontChange()));
+    FontColorSelected(static_cast<QColor>(m_settings->value("Editor/FontColor", QVariant::fromValue(QColor(Qt::black))).value<QColor>()));
 }
 
 void CSettingsView::SetupHistory(QLayout *main_layout)
@@ -161,7 +153,27 @@ void CSettingsView::SetupHistory(QLayout *main_layout)
     cb_history->setCheckState(static_cast<Qt::CheckState>(m_settings->value("Editor/StoreHistory", Qt::Unchecked).toInt()));
 }
 
-void CSettingsView::CSDirChanged(QString dir)
+void CSettingsView::LoadSettings()
+{
+
+}
+
+void CSettingsView::SaveSettings()
+{
+
+}
+
+QIcon CSettingsView::ColorIcon(const QSize &size, const QColor &color)
+{
+    QPixmap pixmap(size);
+    QPainter painter(&pixmap);
+    painter.setPen(Qt::NoPen);
+    painter.fillRect(QRect(QPoint(0, 0), size), color);
+
+    return QIcon(pixmap);
+}
+
+void CSettingsView::CSDirChanged(const QString &dir)
 {
     m_settings->setValue("Editor/CSDir", dir);
 }
@@ -190,4 +202,35 @@ void CSettingsView::UndosChanged(int maxUndos)
 void CSettingsView::StoreHistoryChanged(int state)
 {
     m_settings->setValue("Editor/StoreHistory", state);
+}
+
+void CSettingsView::FontColorButtonPressed()
+{
+    QColorDialog *cd = new QColorDialog(this);
+    cd->setCurrentColor(m_fontColor);
+
+    connect(cd, SIGNAL(colorSelected(QColor)),
+            this, SLOT(FontColorSelected(QColor)));
+
+    cd->show();
+}
+
+void CSettingsView::FontChanged()
+{
+    QFont font = m_fontPicker->currentFont();
+    font.setPointSize(m_fontSize->value());
+
+    m_settings->setValue("Editor/Font", QVariant::fromValue(font));
+
+    emit FontChanged(font);
+}
+
+void CSettingsView::FontColorSelected(const QColor &color)
+{
+    m_fontColor = color;
+    m_fontColorButton->setIcon(ColorIcon(QSize(20, 20), color));
+
+    m_settings->setValue("Editor/FontColor", QVariant::fromValue(color));
+
+    emit FontColorChanged(color);
 }

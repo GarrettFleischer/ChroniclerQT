@@ -21,7 +21,7 @@ const int InsertTextButton = 10;
 
 
 CMainWindow::CMainWindow(QSettings *settings)
-    : m_ShiftHeld(false), m_scale(1), m_settings(settings)
+    : m_ShiftHeld(false), m_settings(settings)
 {
     setWindowTitle(tr("Chronicler-Next"));
     setUnifiedTitleAndToolBarOnMac(true);
@@ -72,13 +72,11 @@ CMainWindow::CMainWindow(QSettings *settings)
     m_tabView->addTab(home,"Homepage");
 
     m_tabView->addTab(m_view, "startup.scn");
-    m_tabView->setCurrentWidget(m_view);
 
 
     setCentralWidget(m_tabView);
 
     CreateToolbars();
-    HandleFontChange();
 }
 
 void CMainWindow::LoadProject(const QString &filepath)
@@ -145,76 +143,10 @@ void CMainWindow::ItemInserted(CBubble *)
 }
 
 
-void CMainWindow::CurrentFontChanged(const QFont &)
+void CMainWindow::FontChanged(const QFont &font)
 {
-    HandleFontChange();
-}
-
-
-void CMainWindow::FontSizeChanged(const QString &)
-{
-    HandleFontChange();
-}
-
-
-void CMainWindow::TextColorChanged()
-{
-    //    m_textAction = qobject_cast<QAction *>(sender());
-    //    m_fontColorToolButton->setIcon(CreateColorToolButtonIcon(
-    //                                       ":/images/textpointer.png",
-    //                                       qvariant_cast<QColor>(m_textAction->data())));
-    //    TextButtonTriggered();
-}
-
-
-void CMainWindow::ItemColorChanged()
-{
-    //    m_fillAction = qobject_cast<QAction *>(sender());
-    //    m_fillColorToolButton->setIcon(CreateColorToolButtonIcon(
-    //                                       ":/images/floodfill.png",
-    //                                       qvariant_cast<QColor>(m_fillAction->data())));
-    //    FillButtonTriggered();
-}
-
-
-void CMainWindow::LineColorChanged()
-{
-    //    m_lineAction = qobject_cast<QAction *>(sender());
-    //    m_lineColorToolButton->setIcon(CreateColorToolButtonIcon(
-    //                                       ":/images/linecolor.png",
-    //                                       qvariant_cast<QColor>(m_lineAction->data())));
-    //    LineButtonTriggered();
-}
-
-
-void CMainWindow::TextButtonTriggered()
-{
-    //m_scene->setTextColor(qvariant_cast<QColor>(m_textAction->data()));
-}
-
-
-void CMainWindow::FillButtonTriggered()
-{
-    //m_scene->setItemColor(qvariant_cast<QColor>(m_fillAction->data()));
-}
-
-
-void CMainWindow::LineButtonTriggered()
-{
-    //m_scene->setLineColor(qvariant_cast<QColor>(m_lineAction->data()));
-}
-
-
-void CMainWindow::HandleFontChange()
-{
-    //    QFont font = m_fontCombo->currentFont();
-    //    font.setPointSize(m_fontSizeCombo->value());
-    //    font.setWeight(m_boldAction->isChecked() ? QFont::Bold : QFont::Normal);
-    //    font.setItalic(m_italicAction->isChecked());
-    //    font.setUnderline(m_underlineAction->isChecked());
-
-    //    m_scene->setFont(font);
-    //    m_dockManager->setFont(font);
+        m_scene->setFont(font);
+        m_dockManager->setFont(font);
 }
 
 
@@ -412,28 +344,6 @@ void CMainWindow::CreateToolbars()
     addToolBar(area, m_pointerToolBar);
     connect(m_pointerToolBar, SIGNAL(topLevelChanged(bool)),
             this, SLOT(ToolBarAreaChanged(bool)));
-}
-
-
-QMenu *CMainWindow::CreateColorMenu(const char *slot, QColor defaultColor)
-{
-    //    QList<QColor> colors;
-    //    colors << Qt::black << Qt::white << Qt::red << Qt::blue << Qt::yellow;
-    //    QStringList names;
-    //    names << tr("black") << tr("white") << tr("red") << tr("blue")
-    //          << tr("yellow");
-
-    QMenu *colorMenu = new QMenu(this);
-    //    for (int i = 0; i < colors.count(); ++i) {
-    //        QAction *action = new QAction(names.at(i), this);
-    //        action->setData(colors.at(i));
-    //        action->setIcon(CreateColorIcon(colors.at(i)));
-    //        connect(action, SIGNAL(triggered()), this, slot);
-    //        colorMenu->addAction(action);
-    //        if (colors.at(i) == defaultColor)
-    //            colorMenu->setDefaultAction(action);
-    //    }
-    return colorMenu;
 }
 
 

@@ -84,15 +84,7 @@ private slots:
     void DeleteItem();
     void PointerGroupClicked(int id);
     void ItemInserted(CBubble *);
-    void CurrentFontChanged(const QFont &font);
-    void FontSizeChanged(const QString &size);
-    void HandleFontChange();
-    void TextColorChanged();
-    void ItemColorChanged();
-    void LineColorChanged();
-    void TextButtonTriggered();
-    void FillButtonTriggered();
-    void LineButtonTriggered();
+    void FontChanged(const QFont &font);
     void ItemSelected(QGraphicsItem *selectedItem);
     void About();
     void SceneLeftPressed();
@@ -106,19 +98,16 @@ private:
     void CreateActions();
     void CreateMenus();
     void CreateToolbars();
-    QMenu *CreateColorMenu(const char *slot, QColor defaultColor);
     QIcon CreateColorToolButtonIcon(const QString &image, QColor color);
     QIcon CreateColorIcon(QColor color);
 
     bool m_ShiftHeld;
-    float m_scale;
 
     QTabWidget *m_tabView;
     CGraphicsScene *m_scene;
     CGraphicsView *m_view;
 
     QAction *m_exitAction;
-    QAction *m_addAction;
     QAction *m_deleteAction;
     QAction *m_aboutAction;
 
@@ -126,34 +115,8 @@ private:
     QMenu *m_itemMenu;
     QMenu *m_aboutMenu;
 
-    QToolBar *m_textToolBar;
-    QToolBar *m_editToolBar;
-    QToolBar *m_colorToolBar;
     QToolBar *m_pointerToolBar;
-    QToolBar *m_bubbleToolBar;
-
-    QComboBox *m_sceneScaleCombo;
-    QComboBox *m_itemColorCombo;
-    QComboBox *m_textColorCombo;
-    QSpinBox *m_fontSizeCombo;
-    QFontComboBox *m_fontCombo;
-
-    QToolBox *m_toolBox;
-    QButtonGroup *m_buttonGroup;
     QButtonGroup *m_pointerTypeGroup;
-    QButtonGroup *m_backgroundButtonGroup;
-    QButtonGroup *m_bubbleTypeGroup;
-
-    QToolButton *m_fontColorToolButton;
-    QToolButton *m_fillColorToolButton;
-    QToolButton *m_lineColorToolButton;
-
-    QAction *m_boldAction;
-    QAction *m_underlineAction;
-    QAction *m_italicAction;
-    QAction *m_textAction;
-    QAction *m_fillAction;
-    QAction *m_lineAction;
 
     QDockWidget *m_dock;
     CDockManager *m_dockManager;
