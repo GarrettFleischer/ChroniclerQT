@@ -48,6 +48,10 @@ public:
 
     BubbleType getType() const { return m_type; }
 
+    void AddConnection(CConnection *connection);
+    void RemoveConnection(CConnection *connection);
+    void RemoveLink(CConnection *link) = 0;
+
 protected:
     virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *evt);
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *evt);
@@ -66,7 +70,6 @@ protected:
     QRectF m_bounds;
     QSizeF m_minSize;
 
-    QList<CConnection *> m_links;
     QList<CConnection *> m_connections;
 
     QString m_label;
@@ -78,7 +81,7 @@ protected:
     
 signals:
     void Selected(QGraphicsItem *item);
-    void linkClicked(CLink *);
+    void ConnectionsChanged(int);
 };
 
 #endif // CBUBBLE_H

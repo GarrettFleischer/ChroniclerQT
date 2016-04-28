@@ -25,10 +25,10 @@ public:
     virtual QPainterPath shape() const;
     virtual QRectF boundingRect() const;
 
-    const QPointF & Start() const;
+    const QPointF & start() const;
     void setStart(const QPointF &start);
 
-    const QPointF & End() const;
+    const QPointF & end() const;
     void setEnd(const QPointF &end);
 
 signals:

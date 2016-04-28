@@ -84,7 +84,7 @@ CMainWindow::CMainWindow(QSettings *settings)
 
 void CMainWindow::LoadProject(const QString &filepath)
 {
-    QString project_name = QFileInfo(filepath).fileName();
+    QString project_name = QFileInfo(filepath).baseName();
 
     setWindowTitle("Chronicler - " + project_name);
 
@@ -254,6 +254,7 @@ void CMainWindow::ToolBarAreaChanged(bool)
 
 void CMainWindow::SettingsChanged()
 {
+    // Update font and font color.
     setFont(m_settingsView->font());
 
     QPalette pal = palette();
@@ -312,70 +313,44 @@ void CMainWindow::CreateMenus()
 
 void CMainWindow::CreateToolbars()
 {
-    QToolButton *pointerButton = new QToolButton;
+    QToolButton *pointerButton = new QToolButton();
     pointerButton->setCheckable(true);
     pointerButton->setChecked(true);
     pointerButton->setIcon(QIcon(":/images/pointer.png"));
-    QToolButton *linePointerButton = new QToolButton;
-    linePointerButton->setCheckable(true);
-    linePointerButton->setIcon(QIcon(":/images/linepointer.png"));
+    QToolButton *connectionPointerButton = new QToolButton();
+    connectionPointerButton->setCheckable(true);
+    connectionPointerButton->setIcon(QIcon(":/images/linepointer.png"));
 
 
-    QToolButton *storyBubbleToolButton = new QToolButton;
+    QToolButton *storyBubbleToolButton = new QToolButton();
     storyBubbleToolButton->setCheckable(true);
     storyBubbleToolButton->setIcon(QIcon(":/images/icn_story.png"));
-    QToolButton *conditionBubbleToolButton = new QToolButton;
+    QToolButton *conditionBubbleToolButton = new QToolButton();
     conditionBubbleToolButton->setCheckable(true);
     conditionBubbleToolButton->setIcon(QIcon(":/images/icn_condition.png"));
-    QToolButton *actionBubbleToolButton = new QToolButton;
+    QToolButton *actionBubbleToolButton = new QToolButton();
     actionBubbleToolButton->setCheckable(true);
     actionBubbleToolButton->setIcon(QIcon(":/images/icn_choice.png"));
 
 
     m_pointerTypeGroup = new QButtonGroup(this);
     m_pointerTypeGroup->addButton(pointerButton, int(CGraphicsScene::Cursor));
-    m_pointerTypeGroup->addButton(linePointerButton, int(CGraphicsScene::InsertLine));
+    m_pointerTypeGroup->addButton(connectionPointerButton, int(CGraphicsScene::InsertLine));
     m_pointerTypeGroup->addButton(storyBubbleToolButton, int(CGraphicsScene::InsertStory));
     m_pointerTypeGroup->addButton(conditionBubbleToolButton, int(CGraphicsScene::InsertCondition));
     m_pointerTypeGroup->addButton(actionBubbleToolButton, int(CGraphicsScene::InsertChoice));
     connect(m_pointerTypeGroup, SIGNAL(buttonClicked(int)),
             this, SLOT(PointerGroupClicked(int)));
 
+
     Qt::ToolBarArea area = static_cast<Qt::ToolBarArea>(m_settings->value("MainWindow/ToolBarArea", static_cast<int>(Qt::RightToolBarArea)).toInt());
     m_pointerToolBar = new QToolBar("Pointer type");
     m_pointerToolBar->addWidget(pointerButton);
-    m_pointerToolBar->addWidget(linePointerButton);
+    m_pointerToolBar->addWidget(connectionPointerButton);
     m_pointerToolBar->addWidget(storyBubbleToolButton);
     m_pointerToolBar->addWidget(conditionBubbleToolButton);
     m_pointerToolBar->addWidget(actionBubbleToolButton);
     addToolBar(area, m_pointerToolBar);
     connect(m_pointerToolBar, SIGNAL(topLevelChanged(bool)),
             this, SLOT(ToolBarAreaChanged(bool)));
-}
-
-
-QIcon CMainWindow::CreateColorToolButtonIcon(const QString &imageFile, QColor color)
-{
-    QPixmap pixmap(50, 80);
-    pixmap.fill(Qt::transparent);
-    QPainter painter(&pixmap);
-    QPixmap image(imageFile);
-    // Draw icon centred horizontally on button.
-    QRect target(4, 0, 42, 43);
-    QRect source(0, 0, 42, 43);
-    painter.fillRect(QRect(0, 60, 50, 80), color);
-    painter.drawPixmap(target, image, source);
-
-    return QIcon(pixmap);
-}
-
-
-QIcon CMainWindow::CreateColorIcon(QColor color)
-{
-    QPixmap pixmap(20, 20);
-    QPainter painter(&pixmap);
-    painter.setPen(Qt::NoPen);
-    painter.fillRect(QRect(0, 0, 20, 20), color);
-
-    return QIcon(pixmap);
 }

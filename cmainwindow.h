@@ -102,8 +102,6 @@ private:
     void CreateActions();
     void CreateMenus();
     void CreateToolbars();
-    QIcon CreateColorToolButtonIcon(const QString &image, QColor color);
-    QIcon CreateColorIcon(QColor color);
 
     bool m_ShiftHeld;
 

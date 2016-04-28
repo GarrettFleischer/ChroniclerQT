@@ -8,10 +8,8 @@ CConnection::CConnection(CBubble *from, CBubble *to)
 
 CConnection::~CConnection()
 {
-    delete m_line;
-    m_from = 0;
-    m_to = 0;
-    m_line = 0;
+    m_from->RemoveLink(this);
+    m_to->RemoveConnection(this);
 }
 
 CBubble *CConnection::from() const
@@ -49,7 +47,7 @@ void CConnection::setColor(const QColor &color)
 void CConnection::updatePosition()
 {
     if(!m_line)
-        m_line = new CLine(QPointF(), QPointF());
+        m_line = new CLine(QPointF(), QPointF(), this);
 
     if(m_from)
         m_line->setStart(m_from->scenePos());

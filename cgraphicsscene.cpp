@@ -21,39 +21,6 @@ CGraphicsScene::CGraphicsScene(QMenu *itemMenu, QObject *parent)
     setBackgroundBrush(QBrush(Qt::gray));//QColor(86,96,123)));
 }
 
-//void CGraphicsScene::setLineColor(const QColor &color)
-//{
-//    m_lineColor = color;
-//    foreach (QGraphicsItem *item, selectedItems())
-//    {
-//        CBubble *bbl = qgraphicsitem_cast<CBubble *>(item);
-//        if(bbl)
-//            bbl->setLineColor(m_lineColor);
-//    }
-//}
-
-//void CGraphicsScene::setTextColor(const QColor &color)
-//{
-//    m_textColor = color;
-//    foreach (QGraphicsItem *item, selectedItems())
-//    {
-//        CBubble *bbl = qgraphicsitem_cast<CBubble *>(item);
-//        if(bbl)
-//            bbl->setFontColor(m_textColor);
-//    }
-//}
-
-//void CGraphicsScene::setItemColor(const QColor &color)
-//{
-//    m_itemColor = color;
-//    foreach (QGraphicsItem *item, selectedItems())
-//    {
-//        CBubble *bbl = qgraphicsitem_cast<CBubble *>(item);
-//        if(bbl)
-//            bbl->setColor(m_itemColor);
-//    }
-//}
-
 void CGraphicsScene::setFont(const QFont &font)
 {
     if(m_font != font)
@@ -85,12 +52,6 @@ void CGraphicsScene::setMode(Mode mode)
     m_mode = mode;
 }
 
-//void CGraphicsScene::linkClicked(CLink *)
-//{
-//    setMode(InsertLine);
-    
-//}
-
 void CGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     if (mouseEvent->button() == Qt::LeftButton)
@@ -109,8 +70,11 @@ void CGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
             break;
 
         case InsertLine:
-            m_line = new CLine(mouseEvent->scenePos(), mouseEvent->scenePos());
-            addItem(m_line);
+            if(items(mouseEvent->scenePos()).length() > 0)
+            {
+                m_line = new CLine(mouseEvent->scenePos(), mouseEvent->scenePos());
+                addItem(m_line);
+            }
             break;
 
         default:

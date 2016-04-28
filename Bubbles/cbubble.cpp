@@ -8,10 +8,7 @@
 #include <QPainter>
 
 
-
-
-CBubble::CBubble(QMenu *contextMenu, const QPointF &pos, const Chronicler::CPalette &palette, const QFont &font,
-                 QGraphicsItem *parent)
+CBubble::CBubble(QMenu *contextMenu, const QPointF &pos, const Chronicler::CPalette &palette,const QFont &font, QGraphicsItem *parent)
     : QGraphicsPolygonItem(parent), m_contextMenu(contextMenu),
       m_minSize(QSizeF(150,150)), m_order(0), m_locked(false),
       m_font(font), m_palette(palette)
@@ -85,4 +82,20 @@ void CBubble::setPalette(const Chronicler::CPalette &palette)
 {
     m_palette = palette;
     update();
+}
+
+void CBubble::AddConnection(CConnection *connection)
+{
+    if(!m_connections.contains(connection))
+    {
+        m_connections.append(connection);
+        emit ConnectionsChanged(m_connections.length());
+    }
+}
+
+void CBubble::RemoveConnection(CConnection *connection)
+{
+    m_connections.removeAll(connection);
+
+    emit ConnectionsChanged(m_connections.length());
 }
