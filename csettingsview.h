@@ -39,6 +39,7 @@ public:
 private:
     // TODO
     // autocomplete snippets
+    // show homepage at startup
     // hide/show various warnings (ask to save before closing)
 
     void SetupChoiceScript(QLayout *main_layout);

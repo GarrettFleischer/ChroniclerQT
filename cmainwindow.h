@@ -88,6 +88,7 @@ private slots:
     void ItemInserted(CBubble *);
     void ItemSelected(QGraphicsItem *selectedItem);
     void ShowSettings();
+    void ShowHomepage();
     void ShowAbout();
     void SceneLeftPressed();
     void SceneLeftReleased();
@@ -115,6 +116,7 @@ private:
     QAction *m_aboutAction;
     QAction *m_settingsAction;
     QAction *m_newProjectAction;
+    QAction *m_showHomepageAction;
 
     QMenu *m_fileMenu;
     QMenu *m_editMenu;

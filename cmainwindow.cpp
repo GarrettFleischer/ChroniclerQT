@@ -180,6 +180,14 @@ void CMainWindow::ShowSettings()
     }
 }
 
+void CMainWindow::ShowHomepage()
+{
+    if(m_tabView->indexOf(m_homepage) == -1)
+        m_tabView->insertTab(0, m_homepage, "Homepage");
+
+    m_tabView->setCurrentWidget(m_homepage);
+}
+
 
 void CMainWindow::SceneLeftPressed()
 {
@@ -279,6 +287,9 @@ void CMainWindow::CreateActions()
 
     m_aboutAction = new QAction(tr("A&bout"), this);
     connect(m_aboutAction, SIGNAL(triggered()), this, SLOT(ShowAbout()));
+
+    m_showHomepageAction = new QAction(tr("Show &homepage"), this);
+    connect(m_showHomepageAction, SIGNAL(triggered(bool)), this, SLOT(ShowHomepage()));
 }
 
 
@@ -286,6 +297,8 @@ void CMainWindow::CreateMenus()
 {
     m_fileMenu = menuBar()->addMenu(tr("&File"));
     m_fileMenu->addAction(m_exitAction);
+    m_fileMenu->addSeparator();
+    m_fileMenu->addAction(m_showHomepageAction);
     m_fileMenu->addSeparator();
     m_fileMenu->addAction(m_settingsAction);
 
