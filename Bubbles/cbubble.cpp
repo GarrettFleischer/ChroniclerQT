@@ -40,8 +40,12 @@ void CBubble::mouseReleaseEvent(QGraphicsSceneMouseEvent *evt)
 
 void CBubble::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 {
-    //scene()->clearSelection();
-    //setSelected(true);
+    if(!isSelected())
+    {
+        scene()->clearSelection();
+        setSelected(true);
+    }
+
     m_contextMenu->exec(event->screenPos());
 }
 
@@ -52,8 +56,8 @@ QVariant CBubble::itemChange(GraphicsItemChange change, const QVariant &value)
         emit Selected(this);
     else if (change == QGraphicsItem::ItemPositionChange)
     {
-//        foreach (Arrow *arrow, m_links)
-//            arrow->updatePosition();
+        //        foreach (Arrow *arrow, m_links)
+        //            arrow->updatePosition();
     }
 
     return value;
