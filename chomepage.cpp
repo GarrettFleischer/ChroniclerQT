@@ -24,8 +24,9 @@ CHomepage::CHomepage(CMainWindow *window, QSettings *settings)
 
     m_webView->load(QUrl("http://www.example.com"));
 
+    QStringList def({"C:/Chronicler/Dragon.chron", "C:/Chronicler/Test.chron"});
     // load the recently opened projects from the settings
-    m_recentView->addItems(m_settings->value("Homepage/RecentFiles").value<QStringList>());
+    m_recentView->addItems(m_settings->value("Homepage/RecentFiles", QVariant::fromValue(def)).value<QStringList>());
     connect(m_recentView, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(RecentItemSelected(QListWidgetItem*)));
 
     QHBoxLayout *main_layout = new QHBoxLayout(this);
