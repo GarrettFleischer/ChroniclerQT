@@ -64,6 +64,7 @@ class CGraphicsScene;
 class CBubble;
 class CGraphicsView;
 class CDockManager;
+class CSettingsView;
 
 
 class CMainWindow : public QMainWindow
@@ -84,14 +85,15 @@ private slots:
     void DeleteItem();
     void PointerGroupClicked(int id);
     void ItemInserted(CBubble *);
-    void FontChanged(const QFont &font);
     void ItemSelected(QGraphicsItem *selectedItem);
-    void About();
+    void ShowSettings();
+    void ShowAbout();
     void SceneLeftPressed();
     void SceneLeftReleased();
     void TabClosed(int);
     void DockAreaChanged(Qt::DockWidgetArea);
     void ToolBarAreaChanged(bool);
+    void SettingsChanged();
 
 
 private:
@@ -110,8 +112,11 @@ private:
     QAction *m_exitAction;
     QAction *m_deleteAction;
     QAction *m_aboutAction;
+    QAction *m_settingsAction;
+    QAction *m_newProjectAction;
 
     QMenu *m_fileMenu;
+    QMenu *m_editMenu;
     QMenu *m_itemMenu;
     QMenu *m_aboutMenu;
 
@@ -122,6 +127,7 @@ private:
     CDockManager *m_dockManager;
 
     QSettings *m_settings;
+    CSettingsView *m_settingsView;
 
 };
 

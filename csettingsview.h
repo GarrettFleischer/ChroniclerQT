@@ -32,6 +32,10 @@ public:
     int maxUndos();
     bool storeHistoryInProject();
 
+    bool pendingChanges();
+
+    void ApplyPendingChanges();
+
 private:
     // TODO
     // autocomplete snippets

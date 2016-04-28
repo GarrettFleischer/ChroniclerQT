@@ -21,11 +21,14 @@ Naming convention: Prefix all .h .cpp and .qml files with "C"
 
 **TODO:**  
 * Implement all existing features of GM:S version in Qt
- * Editable Story/Condition/Choice bubbles
+ * Editable Story/Condition/Choice\*/Action\* bubbles
  * Links between bubbles
  * .chron file import
  * CS code generation
  * CS code import
+* Save "Don't show again" warnings in settings.
+
+\* - not yet implemented.
 
 **Bugs:**  
 * Mouse cursor in improper state when adding connections to the scene

@@ -7,6 +7,7 @@
 #include <QTabWidget>
 #include <QFileInfo>
 #include <QSettings>
+#include <QMessageBox>
 
 #include "Connections/arrow.h"
 #include "cgraphicsscene.h"
@@ -21,7 +22,7 @@ const int InsertTextButton = 10;
 
 
 CMainWindow::CMainWindow(QSettings *settings)
-    : m_ShiftHeld(false), m_settings(settings)
+    : m_ShiftHeld(false), m_settings(settings), m_settingsView(0)
 {
     setWindowTitle(tr("Chronicler-Next"));
     setUnifiedTitleAndToolBarOnMac(true);
@@ -56,7 +57,7 @@ CMainWindow::CMainWindow(QSettings *settings)
     Qt::DockWidgetArea area = static_cast<Qt::DockWidgetArea>(m_settings->value("MainWindow/DockArea", static_cast<int>(Qt::LeftDockWidgetArea)).toInt());
     addDockWidget(area, m_dock);
 
-    //m_dock->setVisible(false);
+    m_dock->setVisible(false);
     m_dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 
     CHomepage *home = new CHomepage(this, m_settings);
@@ -68,15 +69,19 @@ CMainWindow::CMainWindow(QSettings *settings)
     connect(m_tabView, SIGNAL(tabCloseRequested(int)),
             this, SLOT(TabClosed(int)));
 
-    m_tabView->addTab(new CSettingsView(m_settings), "Settings");
     m_tabView->addTab(home,"Homepage");
 
-    m_tabView->addTab(m_view, "startup.scn");
+    //m_tabView->addTab(m_view, "startup.scn");
 
 
     setCentralWidget(m_tabView);
 
     CreateToolbars();
+
+    m_settingsView = new CSettingsView(m_settings);
+    SettingsChanged();
+    delete m_settingsView;
+    m_settingsView = 0;
 }
 
 void CMainWindow::LoadProject(const QString &filepath)
@@ -143,13 +148,6 @@ void CMainWindow::ItemInserted(CBubble *)
 }
 
 
-void CMainWindow::FontChanged(const QFont &font)
-{
-        m_scene->setFont(font);
-        m_dockManager->setFont(font);
-}
-
-
 void CMainWindow::ItemSelected(QGraphicsItem *selectedItem)
 {
     if(!m_scene->isRubberBandSelecting())
@@ -158,6 +156,23 @@ void CMainWindow::ItemSelected(QGraphicsItem *selectedItem)
             item->setZValue(item->zValue() - qPow(1, -10));
 
         selectedItem->setZValue(1);
+    }
+}
+
+void CMainWindow::ShowSettings()
+{
+    if(m_settingsView)
+    {
+        m_tabView->setCurrentWidget(m_settingsView);
+    }
+    else
+    {
+        m_settingsView = new CSettingsView(m_settings);
+        connect(m_settingsView, SIGNAL(SettingsChanged()),
+                this, SLOT(SettingsChanged()));
+
+        m_tabView->addTab(m_settingsView, "Settings");
+        m_tabView->setCurrentWidget(m_settingsView);
     }
 }
 
@@ -183,6 +198,33 @@ void CMainWindow::SceneLeftReleased()
 
 void CMainWindow::TabClosed(int index)
 {
+    if(m_tabView->widget(index) == m_settingsView)
+    {
+        if(m_settingsView->pendingChanges())
+        {
+            QCheckBox dontShow("Remember my choice and don't show again.");
+            dontShow.blockSignals(true);
+            QMessageBox msgBox;
+            msgBox.setText("Settings have been modified.");
+            msgBox.setInformativeText("Do you wish to apply these changes?");
+            msgBox.setStandardButtons(QMessageBox::Apply | QMessageBox::Discard | QMessageBox::Cancel);
+            msgBox.setDefaultButton(QMessageBox::Apply);
+            msgBox.setCheckBox(&dontShow);
+            int ret = msgBox.exec();
+
+            if(ret == QMessageBox::Apply)
+                m_settingsView->ApplyPendingChanges();
+            else if(ret == QMessageBox::Cancel)
+                return;
+
+            // TODO
+            // save dontShow value...
+        }
+
+        delete m_settingsView;
+        m_settingsView = 0;
+    }
+
     m_tabView->removeTab(index);
 }
 
@@ -197,8 +239,18 @@ void CMainWindow::ToolBarAreaChanged(bool)
     m_settings->setValue("MainWindow/ToolBarArea", static_cast<int>(toolBarArea(m_pointerToolBar)));
 }
 
+void CMainWindow::SettingsChanged()
+{
+    setFont(m_settingsView->font());
 
-void CMainWindow::About()
+    QPalette pal = palette();
+    pal.setColor(QPalette::WindowText, m_settingsView->fontColor());
+    pal.setColor(QPalette::Text, m_settingsView->fontColor());
+    setPalette(pal);
+}
+
+
+void CMainWindow::ShowAbout()
 {
     QMessageBox::about(this, tr("About Chronicler-Next"), tr("<b>Insert legal stuff here...</b>"));
 }
@@ -208,33 +260,20 @@ void CMainWindow::CreateActions()
 {
     m_deleteAction = new QAction(QIcon(":/images/delete.png"), tr("&Delete"), this);
     m_deleteAction->setShortcut(tr("Delete"));
-    m_deleteAction->setStatusTip(tr("Delete item from diagram"));
+    m_deleteAction->setStatusTip(tr("Delete selected bubble(S)"));
     connect(m_deleteAction, SIGNAL(triggered()), this, SLOT(DeleteItem()));
 
     m_exitAction = new QAction(tr("E&xit"), this);
     m_exitAction->setShortcuts(QKeySequence::Quit);
-    m_exitAction->setStatusTip(tr("Quit Scenediagram example"));
+    m_exitAction->setStatusTip(tr("Quit program"));
     connect(m_exitAction, SIGNAL(triggered()), this, SLOT(close()));
 
-    //    m_boldAction = new QAction(tr("Bold"), this);
-    //    m_boldAction->setCheckable(true);
-    //    QPixmap pixmap(":/images/bold.png");
-    //    m_boldAction->setIcon(QIcon(pixmap));
-    //    m_boldAction->setShortcut(tr("Ctrl+B"));
-    //    connect(m_boldAction, SIGNAL(triggered()), this, SLOT(HandleFontChange()));
-
-    //    m_italicAction = new QAction(QIcon(":/images/italic.png"), tr("Italic"), this);
-    //    m_italicAction->setCheckable(true);
-    //    m_italicAction->setShortcut(tr("Ctrl+I"));
-    //    connect(m_italicAction, SIGNAL(triggered()), this, SLOT(HandleFontChange()));
-
-    //    m_underlineAction = new QAction(QIcon(":/images/underline.png"), tr("Underline"), this);
-    //    m_underlineAction->setCheckable(true);
-    //    m_underlineAction->setShortcut(tr("Ctrl+U"));
-    //    connect(m_underlineAction, SIGNAL(triggered()), this, SLOT(HandleFontChange()));
+    m_settingsAction = new QAction(tr("&Settings"), this);
+    m_settingsAction->setShortcut(tr("Ctrl+P"));
+    connect(m_settingsAction, SIGNAL(triggered(bool)), this, SLOT(ShowSettings()));
 
     m_aboutAction = new QAction(tr("A&bout"), this);
-    connect(m_aboutAction, SIGNAL(triggered()), this, SLOT(About()));
+    connect(m_aboutAction, SIGNAL(triggered()), this, SLOT(ShowAbout()));
 }
 
 
@@ -242,6 +281,9 @@ void CMainWindow::CreateMenus()
 {
     m_fileMenu = menuBar()->addMenu(tr("&File"));
     m_fileMenu->addAction(m_exitAction);
+
+    m_editMenu = menuBar()->addMenu(tr("&Edit"));
+    m_editMenu->addAction(m_settingsAction);
 
     m_itemMenu = menuBar()->addMenu(tr("&Item"));
     m_itemMenu->addAction(m_deleteAction);
@@ -254,57 +296,6 @@ void CMainWindow::CreateMenus()
 
 void CMainWindow::CreateToolbars()
 {
-    //    m_fontCombo = new QFontComboBox();
-    //    connect(m_fontCombo, SIGNAL(currentFontChanged(QFont)),
-    //            this, SLOT(CurrentFontChanged(QFont)));
-    //    m_fontCombo->setCurrentText("Times New Roman");
-
-
-    //    m_fontSizeCombo = new QSpinBox;
-    //    m_fontSizeCombo->setRange(8, 42);
-    //    m_fontSizeCombo->setValue(11);
-    //    connect(m_fontSizeCombo, SIGNAL(valueChanged(QString)),
-    //            this, SLOT(FontSizeChanged(QString)));
-
-    //    m_fontColorToolButton = new QToolButton;
-    //    m_fontColorToolButton->setPopupMode(QToolButton::MenuButtonPopup);
-    //    m_fontColorToolButton->setMenu(CreateColorMenu(SLOT(TextColorChanged()), Qt::black));
-    //    m_textAction = m_fontColorToolButton->menu()->defaultAction();
-    //    m_fontColorToolButton->setIcon(CreateColorToolButtonIcon(":/images/textpointer.png", Qt::black));
-    //    m_fontColorToolButton->setAutoFillBackground(true);
-    //    connect(m_fontColorToolButton, SIGNAL(clicked()),
-    //            this, SLOT(TextButtonTriggered()));
-
-    //    m_fillColorToolButton = new QToolButton;
-    //    m_fillColorToolButton->setPopupMode(QToolButton::MenuButtonPopup);
-    //    m_fillColorToolButton->setMenu(CreateColorMenu(SLOT(ItemColorChanged()), Qt::white));
-    //    m_fillAction = m_fillColorToolButton->menu()->defaultAction();
-    //    m_fillColorToolButton->setIcon(CreateColorToolButtonIcon(
-    //                                       ":/images/floodfill.png", Qt::white));
-    //    connect(m_fillColorToolButton, SIGNAL(clicked()),
-    //            this, SLOT(FillButtonTriggered()));
-
-    //    m_lineColorToolButton = new QToolButton;
-    //    m_lineColorToolButton->setPopupMode(QToolButton::MenuButtonPopup);
-    //    m_lineColorToolButton->setMenu(CreateColorMenu(SLOT(LineColorChanged()), Qt::black));
-    //    m_lineAction = m_lineColorToolButton->menu()->defaultAction();
-    //    m_lineColorToolButton->setIcon(CreateColorToolButtonIcon(
-    //                                       ":/images/linecolor.png", Qt::black));
-    //    connect(m_lineColorToolButton, SIGNAL(clicked()),
-    //            this, SLOT(LineButtonTriggered()));
-
-    //    m_textToolBar = addToolBar(tr("Font"));
-    //    m_textToolBar->addWidget(m_fontCombo);
-    //    m_textToolBar->addWidget(m_fontSizeCombo);
-    //    m_textToolBar->addAction(m_boldAction);
-    //    m_textToolBar->addAction(m_italicAction);
-    //    m_textToolBar->addAction(m_underlineAction);
-
-    //    m_colorToolBar = addToolBar(tr("Color"));
-    //    m_colorToolBar->addWidget(m_fontColorToolButton);
-    //    m_colorToolBar->addWidget(m_fillColorToolButton);
-    //    m_colorToolBar->addWidget(m_lineColorToolButton);
-
     QToolButton *pointerButton = new QToolButton;
     pointerButton->setCheckable(true);
     pointerButton->setChecked(true);

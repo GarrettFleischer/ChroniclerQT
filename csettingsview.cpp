@@ -81,6 +81,16 @@ bool CSettingsView::storeHistoryInProject()
     return m_history->isChecked();
 }
 
+bool CSettingsView::pendingChanges()
+{
+    return m_apply->isEnabled();
+}
+
+void CSettingsView::ApplyPendingChanges()
+{
+    SettingsApplied();
+}
+
 void CSettingsView::SetupChoiceScript(QLayout *main_layout)
 {
     // ChoiceScript Group box
@@ -190,7 +200,7 @@ void CSettingsView::LoadSettings()
     m_csdir->setText(m_settings->value("Editor/CSDir").toString());
 
     // Load Editor
-    QFont font = static_cast<QFont>(m_settings->value("Editor/Font", QVariant::fromValue(QFont("Times New Roman", 11))).value<QFont>());
+    QFont font = static_cast<QFont>(m_settings->value("Editor/Font", QVariant::fromValue(QFont("Arial", 10))).value<QFont>());
     m_fontSize->setValue(font.pointSize());
     m_fontCombo->setCurrentFont(font);
     FontColorSelected(static_cast<QColor>(m_settings->value("Editor/FontColor", QVariant::fromValue(QColor(Qt::black))).value<QColor>()));
