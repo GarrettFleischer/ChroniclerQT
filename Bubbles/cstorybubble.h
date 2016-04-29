@@ -7,7 +7,6 @@
 
 #include "Bubbles/cbubble.h"
 #include "Misc/ctextitem.h"
-#include "Connections/clink.h"
 
 
 class CStoryBubble : public CBubble
@@ -24,6 +23,13 @@ public:
 
     void setStory(QString story) { m_story->setText(story); }
     QString getStory() { return m_story->Text(); }
+
+
+    virtual void AddLink(CConnection *link, int);
+    virtual void RemoveLink(CConnection *link);
+
+    virtual QList<CConnection *> links() override;
+
 
 protected:
     virtual void UpdatePolygon();
@@ -42,6 +48,7 @@ private:
     QPointF m_offset;
     QRectF m_lastBounds;
 
+    CConnection *m_link;
 };
 
 #endif // CSTORYBUBBLE_H

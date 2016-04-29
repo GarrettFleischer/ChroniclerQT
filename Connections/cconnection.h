@@ -18,7 +18,7 @@ class CConnection : public QObject, public QGraphicsItem
     Q_OBJECT
     
 public:
-    CConnection(CBubble *from, CBubble *to);
+    CConnection(CBubble *from, CBubble *to, QGraphicsScene *scn);
     ~CConnection();
     
     CBubble *from() const;
@@ -33,7 +33,7 @@ public:
     void updatePosition();
 
     virtual QRectF boundingRect() const;
-    virtual void paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *);
+    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *style, QWidget *widget);
     
 private:
     CBubble *m_from;

@@ -25,11 +25,13 @@ public:
     virtual QPainterPath shape() const;
     virtual QRectF boundingRect() const;
 
-    const QPointF & start() const;
+    const QPointF & start() const { return m_start; }
     void setStart(const QPointF &start);
 
-    const QPointF & end() const;
+    const QPointF & end() const { return m_end; }
     void setEnd(const QPointF &end);
+
+    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *);
 
 signals:
 
@@ -37,8 +39,6 @@ public slots:
 
 
 private:
-    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *);
-
     void UpdateShape();
 
     QPainterPath m_path;

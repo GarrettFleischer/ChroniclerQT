@@ -24,6 +24,15 @@ private:
     void AdjustMinSize();
 
     QStringList m_actions;
+
+    // CBubble interface
+public:
+    virtual void AddLink(CConnection *link, int position);
+    virtual void RemoveLink(CConnection *link);
+
+    // CBubble interface
+public:
+    virtual QList<CConnection *> links();
 };
 
 #endif // CACTIONBUBBLE_H

@@ -28,6 +28,18 @@ private:
     QList<CTextItem *> m_choices;
     QStringList m_choiceStrings;
 
+
+    // CBubble interface
+public:
+    virtual void RemoveLink(CConnection *link);
+
+    // CBubble interface
+public:
+    virtual void AddLink(CConnection *link, int position);
+
+    // CBubble interface
+public:
+    virtual QList<CConnection *> links();
 };
 
 #endif // CCHOICEBUBBLE_H

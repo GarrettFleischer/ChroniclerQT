@@ -38,3 +38,17 @@ void CActionBubble::AdjustMinSize()
     m_minSize.setWidth(100);
     m_minSize.setHeight(fm.height());
 }
+
+
+void CActionBubble::AddLink(CConnection *link, int position)
+{
+}
+
+void CActionBubble::RemoveLink(CConnection *link)
+{
+}
+
+QList<CConnection *> CActionBubble::links()
+{
+    return {};
+}

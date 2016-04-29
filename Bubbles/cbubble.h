@@ -50,7 +50,11 @@ public:
 
     void AddConnection(CConnection *connection);
     void RemoveConnection(CConnection *connection);
-    void RemoveLink(CConnection *link) = 0;
+
+    virtual void AddLink(CConnection *link, int position) = 0;
+    virtual void RemoveLink(CConnection *link) = 0;
+
+    virtual QList<CConnection *> links() { return {}; }
 
 protected:
     virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *evt);

@@ -63,3 +63,17 @@ void CConditionBubble::setCondition(QString condition)
     UpdatePolygon();
 }
 
+
+
+void CConditionBubble::RemoveLink(CConnection *link)
+{
+}
+
+void CConditionBubble::AddLink(CConnection *link, int position)
+{
+}
+
+QList<CConnection *> CConditionBubble::links()
+{
+    return {};
+}

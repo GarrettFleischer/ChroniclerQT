@@ -26,6 +26,18 @@ private:
     QString m_conditionText;
 
 
+
+    // CBubble interface
+public:
+    virtual void RemoveLink(CConnection *link);
+
+    // CBubble interface
+public:
+    virtual void AddLink(CConnection *link, int position);
+
+    // CBubble interface
+public:
+    virtual QList<CConnection *> links();
 };
 
 #endif // CACTIONBUBBLE_H

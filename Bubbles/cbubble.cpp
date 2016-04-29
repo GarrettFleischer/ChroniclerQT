@@ -7,6 +7,8 @@
 #include <QMenu>
 #include <QPainter>
 
+#include "Connections/cconnection.h"
+
 
 CBubble::CBubble(QMenu *contextMenu, const QPointF &pos, const Chronicler::CPalette &palette,const QFont &font, QGraphicsItem *parent)
     : QGraphicsPolygonItem(parent), m_contextMenu(contextMenu),
@@ -53,8 +55,11 @@ QVariant CBubble::itemChange(GraphicsItemChange change, const QVariant &value)
         emit Selected(this);
     else if (change == QGraphicsItem::ItemPositionChange)
     {
-        //        foreach (Arrow *arrow, m_links)
-        //            arrow->updatePosition();
+        for(CConnection *connection : m_connections)
+            connection->updatePosition();
+
+        for(CConnection *link : links())
+            link->updatePosition();
     }
 
     return value;

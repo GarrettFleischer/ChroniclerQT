@@ -74,3 +74,17 @@ void CChoiceBubble::setPalette(const Chronicler::CPalette &palette)
     for(CTextItem *itm : m_choices)
         itm->setColor(m_palette.font);
 }
+
+
+void CChoiceBubble::RemoveLink(CConnection *link)
+{
+}
+
+void CChoiceBubble::AddLink(CConnection *link, int position)
+{
+}
+
+QList<CConnection *> CChoiceBubble::links()
+{
+    return {};
+}

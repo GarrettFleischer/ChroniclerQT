@@ -1,4 +1,4 @@
-QT += widgets webkitwidgets
+QT += widgets webkitwidgets multimedia multimediawidgets
 
 RESOURCES   =	chroniclernext.qrc
 

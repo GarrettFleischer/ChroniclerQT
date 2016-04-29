@@ -1,15 +1,27 @@
 #include "cconnection.h"
+
+#include <QGraphicsScene>
+
 #include "cline.h"
 #include "Bubbles/cbubble.h"
 
-CConnection::CConnection(CBubble *from, CBubble *to)
-    : m_from(from), m_to(to), m_line(0)
-{}
+CConnection::CConnection(CBubble *from, CBubble *to, QGraphicsScene *scn)
+    : m_from(from), m_to(to)
+{
+    m_line = new CLine(QPointF(), QPointF());
+    scn->addItem(m_line);
+
+    m_from->AddLink(this, 0);
+    m_to->AddConnection(this);
+    updatePosition();
+}
 
 CConnection::~CConnection()
 {
-    m_from->RemoveLink(this);
-    m_to->RemoveConnection(this);
+    if(m_from)
+        m_from->RemoveLink(this);
+    if(m_to)
+        m_to->RemoveConnection(this);
 }
 
 CBubble *CConnection::from() const
@@ -46,13 +58,10 @@ void CConnection::setColor(const QColor &color)
 
 void CConnection::updatePosition()
 {
-    if(!m_line)
-        m_line = new CLine(QPointF(), QPointF(), this);
-
     if(m_from)
         m_line->setStart(m_from->scenePos());
     if(m_to)
-        m_line->setStart(m_to->scenePos());
+        m_line->setEnd(m_to->scenePos());
 }
 
 QRectF CConnection::boundingRect() const
@@ -63,5 +72,7 @@ QRectF CConnection::boundingRect() const
     return QRectF();
 }
 
-void CConnection::paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *)
-{}
+void CConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *style, QWidget *widget)
+{
+    //m_line->paint(painter, style, widget);
+}

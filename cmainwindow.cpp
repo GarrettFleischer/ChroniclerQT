@@ -62,7 +62,6 @@ CMainWindow::CMainWindow(QSettings *settings)
 
     m_homepage = new CHomepage(this, m_settings);
 
-
     m_tabView = new QTabWidget(this);
     m_tabView->setMovable(true);
     m_tabView->setTabsClosable(true);
@@ -80,16 +79,16 @@ CMainWindow::CMainWindow(QSettings *settings)
     SettingsChanged();
     delete m_settingsView;
     m_settingsView = 0;
+
+
 }
 
 void CMainWindow::LoadProject(const QString &filepath)
 {
-    QString project_name = QFileInfo(filepath).baseName();
-
-    setWindowTitle("Chronicler - " + project_name);
+    setWindowTitle("Chronicler - " + QFileInfo(filepath).baseName());
 
     m_dock->setVisible(true);
-    m_dock->setWindowTitle(project_name);
+    m_dock->setWindowTitle(QFileInfo(filepath).fileName());
     m_tabView->addTab(m_view, "startup.scn");
     m_tabView->setCurrentWidget(m_view);
 
@@ -262,6 +261,12 @@ void CMainWindow::SettingsChanged()
     pal.setColor(QPalette::Text, m_settingsView->fontColor());
     setPalette(pal);
 }
+
+//void CMainWindow::MediaStateChanged(int state)
+//{
+//    if(state == QMediaPlayer::StoppedState)
+//        setCentralWidget(m_tabView);
+//}
 
 
 void CMainWindow::ShowAbout()
