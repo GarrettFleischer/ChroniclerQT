@@ -262,13 +262,6 @@ void CMainWindow::SettingsChanged()
     setPalette(pal);
 }
 
-//void CMainWindow::MediaStateChanged(int state)
-//{
-//    if(state == QMediaPlayer::StoppedState)
-//        setCentralWidget(m_tabView);
-//}
-
-
 void CMainWindow::ShowAbout()
 {
     QMessageBox::about(this, tr("About Chronicler-Next"), tr("<b>Insert legal stuff here...</b>"));

@@ -97,7 +97,6 @@ private slots:
     void ToolBarAreaChanged(bool);
     void SettingsChanged();
 
-
 private:
     void CreateActions();
     void CreateMenus();
