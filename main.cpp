@@ -34,6 +34,8 @@ int main(int argv, char *args[])
         mp.setVideoOutput(&intro);
         mp.setMedia(QUrl::fromLocalFile(app.applicationDirPath() + "/GameSmithIntro.mp4"));
 
+        qDebug() << app.applicationDirPath() + "/GameSmithIntro.mp4";
+
         intro.setGeometry(100, 100, 1280, 720);
         intro.show();
 

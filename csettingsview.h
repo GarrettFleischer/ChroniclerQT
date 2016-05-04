@@ -23,6 +23,8 @@ class CSettingsView : public QWidget
 public:
     CSettingsView(QSettings *settings, QWidget *parent = 0);
 
+    QSettings *settings();
+
     QString choiceScriptDirectory();
 
     QFont font();
@@ -31,6 +33,7 @@ public:
     int maxAutosaves();
     int maxUndos();
     bool storeHistoryInProject();
+    int maxRecentFiles();
 
     bool pendingChanges();
 
@@ -63,9 +66,10 @@ private:
     QFont            m_font;
     QColor           m_fontColor;
 
-    QSpinBox *m_autosaves;
-    QSpinBox *m_undos;
-    QCheckBox *m_history;
+    QSpinBox    *m_autosaves;
+    QSpinBox    *m_undos;
+    QCheckBox   *m_history;
+    QSpinBox    *m_recent_files;
 
     QPushButton *m_apply;
     QPushButton *m_cancel;
@@ -80,11 +84,7 @@ private slots:
     void SettingsApplied();
     void SettingsCanceled();
 
-    void CSDirChanged();
-
-    void AutosavesChanged();
-    void UndosChanged();
-    void StoreHistoryChanged();
+    void SettingChanged();
 
     void FontChanged();
     void FontColorSelected(const QColor &);

@@ -51,6 +51,11 @@ CSettingsView::CSettingsView(QSettings *settings, QWidget *parent)
     vl_main->addStretch(1);
 }
 
+QSettings *CSettingsView::settings()
+{
+    return m_settings;
+}
+
 QString CSettingsView::choiceScriptDirectory()
 {
     return m_csdir->text();
@@ -81,6 +86,12 @@ bool CSettingsView::storeHistoryInProject()
     return m_history->isChecked();
 }
 
+int CSettingsView::maxRecentFiles()
+{
+    return m_recent_files->value();
+}
+
+
 bool CSettingsView::pendingChanges()
 {
     return m_apply->isEnabled();
@@ -102,7 +113,7 @@ void CSettingsView::SetupChoiceScript(QLayout *main_layout)
     // ChoiceScript directory
     m_csdir = new QLineEdit();
     connect(m_csdir, SIGNAL(textChanged(QString)),
-            this, SLOT(CSDirChanged()));
+            this, SLOT(SettingChanged()));
 
     // File picker button
     QPushButton *pb_dir = new QPushButton(QIcon(":/images/floodfill.png"), "");
@@ -169,7 +180,7 @@ void CSettingsView::SetupHistory(QLayout *main_layout)
     m_autosaves = new QSpinBox();
     m_autosaves->setRange(0, 100);
     connect(m_autosaves, SIGNAL(valueChanged(int)),
-            this, SLOT(AutosavesChanged()));
+            this, SLOT(SettingChanged()));
     hl_autosaves->addWidget(m_autosaves,0, Qt::AlignLeft);
     hl_autosaves->addStretch(1);
 
@@ -179,19 +190,25 @@ void CSettingsView::SetupHistory(QLayout *main_layout)
     m_undos = new QSpinBox();
     m_undos->setRange(0, 500);
     connect(m_undos, SIGNAL(valueChanged(int)),
-            this, SLOT(UndosChanged()));
+            this, SLOT(SettingChanged()));
     hl_undos->addWidget(m_undos, 0, Qt::AlignLeft);
 
     m_history = new QCheckBox("store history in project");
     connect(m_history, SIGNAL(stateChanged(int)),
-            this, SLOT(StoreHistoryChanged()));
+            this, SLOT(SettingChanged()));
     hl_undos->addWidget(m_history, 0, Qt::AlignLeft);
     hl_undos->addStretch(1);
 
+    // Max Recent Files
+    m_recent_files = new QSpinBox();
+    m_recent_files->setRange(0, 25);
+    connect(m_recent_files, SIGNAL(valueChanged(int)),
+            this, SLOT(SettingChanged()));
 
     // Add rows
     fl_history->addRow("max autosaves", hl_autosaves);
     fl_history->addRow("max undos", hl_undos);
+    fl_history->addRow("max recent files", m_recent_files);
 }
 
 void CSettingsView::LoadSettings()
@@ -209,6 +226,7 @@ void CSettingsView::LoadSettings()
     m_autosaves->setValue(m_settings->value("Editor/MaxAutosaves", 5).toInt());
     m_undos->setValue(m_settings->value("Editor/MaxUndos", 100).toInt());
     m_history->setCheckState(static_cast<Qt::CheckState>(m_settings->value("Editor/StoreHistory", Qt::Unchecked).toInt()));
+    m_recent_files->setValue(m_settings->value("Editor/MaxRecentFiles", 10).toInt());
 }
 
 void CSettingsView::SaveSettings()
@@ -224,6 +242,7 @@ void CSettingsView::SaveSettings()
     m_settings->setValue("Editor/MaxAutosaves", maxAutosaves());
     m_settings->setValue("Editor/MaxUndos", maxUndos());
     m_settings->setValue("Editor/StoreHistory", static_cast<int>(m_history->checkState()));
+    m_settings->setValue("Editor/MaxRecentFiles", maxRecentFiles());
 }
 
 void CSettingsView::MarkChanged(bool changed)
@@ -250,10 +269,7 @@ QIcon CSettingsView::ColorIcon(const QSize &size, const QColor &color)
     return QIcon(pixmap);
 }
 
-void CSettingsView::CSDirChanged()
-{
-    MarkChanged(true);
-}
+
 
 void CSettingsView::CSDirButtonPressed()
 {
@@ -293,17 +309,7 @@ void CSettingsView::SettingsCanceled()
     emit SettingsChanged();
 }
 
-void CSettingsView::AutosavesChanged()
-{
-    MarkChanged(true);
-}
-
-void CSettingsView::UndosChanged()
-{
-    MarkChanged(true);
-}
-
-void CSettingsView::StoreHistoryChanged()
+void CSettingsView::SettingChanged()
 {
     MarkChanged(true);
 }
@@ -313,7 +319,7 @@ void CSettingsView::FontChanged()
     m_font = m_fontCombo->currentFont();
     m_font.setPointSize(m_fontSize->value());
 
-    MarkChanged(true);
+    SettingChanged();
 }
 
 void CSettingsView::FontColorSelected(const QColor &color)
@@ -321,5 +327,5 @@ void CSettingsView::FontColorSelected(const QColor &color)
     m_fontColor = color;
     m_fontColorButton->setIcon(ColorIcon(QSize(20, 20), color));
 
-    MarkChanged(true);
+    SettingChanged();
 }
