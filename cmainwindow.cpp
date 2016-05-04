@@ -27,9 +27,14 @@ CMainWindow::CMainWindow(QSettings *settings)
     setWindowTitle(tr("Chronicler"));
     setUnifiedTitleAndToolBarOnMac(true);
 
+    // Load the settings...
+    m_settingsView = new CSettingsView(m_settings);
+    connect(m_settingsView, SIGNAL(SettingsChanged()),
+            this, SLOT(SettingsChanged()));
+    SettingsChanged();
+
     CreateActions();
     CreateMenus();
-
 
     m_scene = new CGraphicsScene(m_editMenu, this);
     connect(m_scene, SIGNAL(itemInserted(CBubble*)),
@@ -60,7 +65,7 @@ CMainWindow::CMainWindow(QSettings *settings)
     m_dock->setVisible(false);
     m_dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 
-    m_homepage = new CHomepage(this, m_settings);
+    m_homepage = new CHomepage(this, m_settingsView);
 
     m_tabView = new QTabWidget(this);
     m_tabView->setMovable(true);
@@ -73,12 +78,6 @@ CMainWindow::CMainWindow(QSettings *settings)
     setCentralWidget(m_tabView);
 
     CreateToolbars();
-
-    // Load the settings...
-    m_settingsView = new CSettingsView(m_settings);
-    SettingsChanged();
-    delete m_settingsView;
-    m_settingsView = 0;
 
 
 }
@@ -164,19 +163,10 @@ void CMainWindow::ItemSelected(QGraphicsItem *selectedItem)
 
 void CMainWindow::ShowSettings()
 {
-    if(m_settingsView)
-    {
-        m_tabView->setCurrentWidget(m_settingsView);
-    }
-    else
-    {
-        m_settingsView = new CSettingsView(m_settings);
-        connect(m_settingsView, SIGNAL(SettingsChanged()),
-                this, SLOT(SettingsChanged()));
+    if(m_tabView->indexOf(m_settingsView) == -1)
+        m_tabView->insertTab(0, m_settingsView, "Settings");
 
-        m_tabView->addTab(m_settingsView, "Settings");
-        m_tabView->setCurrentWidget(m_settingsView);
-    }
+    m_tabView->setCurrentWidget(m_settingsView);
 }
 
 void CMainWindow::ShowHomepage()
@@ -231,9 +221,6 @@ void CMainWindow::TabClosed(int index)
             // TODO
             // save dontShow value...
         }
-
-        delete m_settingsView;
-        m_settingsView = 0;
     }
 
     m_tabView->removeTab(index);

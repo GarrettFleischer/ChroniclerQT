@@ -56,9 +56,9 @@ private:
 
     QIcon ColorIcon(const QSize &size, const QColor &color);
 
-    QSettings *m_settings;
+    QSettings       *m_settings;
 
-    QLineEdit *m_csdir;
+    QLineEdit       *m_csdir;
 
     QFontComboBox   *m_fontCombo;
     QSpinBox        *m_fontSize;
@@ -66,13 +66,13 @@ private:
     QFont            m_font;
     QColor           m_fontColor;
 
-    QSpinBox    *m_autosaves;
-    QSpinBox    *m_undos;
-    QCheckBox   *m_history;
-    QSpinBox    *m_recent_files;
+    QSpinBox        *m_autosaves;
+    QSpinBox        *m_undos;
+    QCheckBox       *m_history;
+    QSpinBox        *m_recent_files;
 
-    QPushButton *m_apply;
-    QPushButton *m_cancel;
+    QPushButton     *m_apply;
+    QPushButton     *m_cancel;
 
 signals:
     void SettingsChanged();

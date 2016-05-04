@@ -19,13 +19,13 @@
 Q_DECLARE_METATYPE(QStringList)
 
 
-CHomepage::CHomepage(CMainWindow *window, QSettings *settings)
-    : QWidget((QWidget*)window), m_window(window), m_settings(settings), m_recentView(0), m_webView(0)
+CHomepage::CHomepage(CMainWindow *window, CSettingsView *settings)
+    : QWidget((QWidget*)window), m_window(window), m_webView(0), m_recentView(0), m_settings(settings)
 {
     QHBoxLayout *main_layout = new QHBoxLayout(this);
 
-    SetupMainWindow(main_layout);
     SetupSidebar(main_layout);
+    SetupMainWindow(main_layout);
 
     setLayout(main_layout);
 }
@@ -33,7 +33,8 @@ CHomepage::CHomepage(CMainWindow *window, QSettings *settings)
 void CHomepage::SetupSidebar(QHBoxLayout *main_layout)
 {
     m_recentView = new QListWidget();
-    QVBoxLayout *recent_layout = new QVBoxLayout();
+    QVBoxLayout *layout_recent = new QVBoxLayout();
+    QHBoxLayout *layout_buttons = new QHBoxLayout();
 
     if(m_settings->maxRecentFiles() > 0)
     {
@@ -43,13 +44,33 @@ void CHomepage::SetupSidebar(QHBoxLayout *main_layout)
         m_recentView->addItems(m_settings->settings()->value("Homepage/RecentFiles", QVariant::fromValue(def)).value<QStringList>());
         connect(m_recentView, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(RecentItemSelected(QListWidgetItem*)));
 
-        recent_layout->addWidget(new QLabel("Recent files"));
-        recent_layout->addWidget(m_recentView);
+        layout_recent->addWidget(new QLabel("Recent files"));
+        layout_recent->addWidget(m_recentView);
     }
 
-    QPushButton *btn_load = new QPushButton();
+    // Buttons
+    QPushButton *btn_new = new QPushButton(QIcon(":/images/floodfill.png"), "");
+    btn_new->setToolTip("New Project");
+    connect(btn_new, SIGNAL(clicked(bool)),
+            this, SLOT(NewProjectClicked()));
 
-    main_layout->addLayout(recent_layout, 1);
+    QPushButton *btn_load = new QPushButton(QIcon(":/images/sendtoback.png"), "");
+    btn_load->setToolTip("Load Project");
+    connect(btn_load, SIGNAL(clicked(bool)),
+            this, SLOT(LoadProjectCLicked()));
+
+    QPushButton *btn_import = new QPushButton(QIcon(":/images/bringtofront.png"), "");
+    btn_import->setToolTip("Import Choicescript");
+    connect(btn_import, SIGNAL(clicked(bool)),
+            this, SLOT(ImportProjectClicked()));
+
+    layout_buttons->addWidget(btn_new);
+    layout_buttons->addWidget(btn_load);
+    layout_buttons->addWidget(btn_import);
+    layout_recent->addLayout(layout_buttons);
+
+    // Add to main layout
+    main_layout->addLayout(layout_recent, 1);
 }
 
 void CHomepage::SetupMainWindow(QHBoxLayout *main_layout)
@@ -57,6 +78,7 @@ void CHomepage::SetupMainWindow(QHBoxLayout *main_layout)
     m_webView = new QWebView();
     m_webView->load(QUrl("http://www.example.com"));
 
+    // Add to main layout
     main_layout->addWidget(m_webView, 4);
 }
 
@@ -72,8 +94,23 @@ void CHomepage::RecentItemSelected(QListWidgetItem *item)
     for(int i = 0; i < m_recentView->count() && i < m_settings->maxRecentFiles(); ++i)
         labels << m_recentView->item(i)->text();
 
-    m_settings->setValue("Homepage/RecentFiles", QVariant::fromValue(labels));
+    m_settings->settings()->setValue("Homepage/RecentFiles", QVariant::fromValue(labels));
 
     // load the selected project
     m_window->LoadProject(item->text());
+}
+
+void CHomepage::NewProjectClicked()
+{
+
+}
+
+void CHomepage::LoadProjectCLicked()
+{
+
+}
+
+void CHomepage::ImportProjectClicked()
+{
+
 }

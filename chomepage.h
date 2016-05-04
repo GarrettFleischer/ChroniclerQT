@@ -20,7 +20,7 @@ class CHomepage : public QWidget
 {
     Q_OBJECT
 public:
-    explicit CHomepage(CMainWindow *window, QSettings *settings);
+    explicit CHomepage(CMainWindow *window, CSettingsView *settings);
 
 private:
     void SetupSidebar(QHBoxLayout *main_layout);
@@ -36,6 +36,10 @@ signals:
 
 private slots:
     void RecentItemSelected(QListWidgetItem *item);
+
+    void NewProjectClicked();
+    void LoadProjectCLicked();
+    void ImportProjectClicked();
 
 };
 

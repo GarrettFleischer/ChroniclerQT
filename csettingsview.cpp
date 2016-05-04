@@ -200,15 +200,18 @@ void CSettingsView::SetupHistory(QLayout *main_layout)
     hl_undos->addStretch(1);
 
     // Max Recent Files
+    QHBoxLayout *hl_recent = new QHBoxLayout();
     m_recent_files = new QSpinBox();
-    m_recent_files->setRange(0, 25);
+    m_recent_files->setRange(0, 100);
     connect(m_recent_files, SIGNAL(valueChanged(int)),
             this, SLOT(SettingChanged()));
+    hl_recent->addWidget(m_recent_files);
+    hl_recent->addStretch(1);
 
     // Add rows
     fl_history->addRow("max autosaves", hl_autosaves);
     fl_history->addRow("max undos", hl_undos);
-    fl_history->addRow("max recent files", m_recent_files);
+    fl_history->addRow("max recent files", hl_recent);
 }
 
 void CSettingsView::LoadSettings()
