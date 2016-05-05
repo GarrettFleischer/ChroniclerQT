@@ -88,13 +88,16 @@ private slots:
     void ItemInserted(CBubble *);
     void ItemSelected(QGraphicsItem *selectedItem);
     void ShowSettings();
+    void NewProject();
+    void OpenProject();
+    void ImportProject();
     void ShowHomepage();
     void ShowAbout();
     void SceneLeftPressed();
     void SceneLeftReleased();
     void TabClosed(int);
     void DockAreaChanged(Qt::DockWidgetArea);
-    void ToolBarAreaChanged(bool);
+    void PointerToolBarAreaChanged(bool);
     void SettingsChanged();
 
 private:
@@ -113,9 +116,12 @@ private:
     QAction *m_aboutAction;
     QAction *m_settingsAction;
     QAction *m_newProjectAction;
+    QAction *m_openProjectAction;
+    QAction *m_importProjectAction;
     QAction *m_showHomepageAction;
 
     QMenu *m_fileMenu;
+    QMenu *m_viewMenu;
     QMenu *m_editMenu;
     QMenu *m_aboutMenu;
 
@@ -127,7 +133,6 @@ private:
     QDockWidget *m_dock;
     CDockManager *m_dockManager;
 
-    QSettings *m_settings;
     CSettingsView *m_settingsView;
 
 };

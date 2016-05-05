@@ -1,5 +1,5 @@
-#ifndef CACTIONBUTTON_H
-#define CACTIONBUTTON_H
+#ifndef QACTIONBUTTON_H
+#define QACTIONBUTTON_H
 
 #include <QPushButton>
 
@@ -13,15 +13,16 @@ class QActionButton : public QPushButton
     Q_OBJECT
 
 public:
-    explicit QActionButton(QWidget *parent = 0, QAction *action = 0);
+    explicit QActionButton(QWidget *parent = 0, QAction *action = 0, bool showText = false);
 
     void setAction( QAction* action );
 
 private:
     QAction *m_action;
+    bool m_showText;
 
 private slots:
     void updateButtonStatusFromAction();
 };
 
-#endif // CACTIONBUTTON_H
+#endif // QACTIONBUTTON_H

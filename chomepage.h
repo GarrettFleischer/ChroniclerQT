@@ -11,6 +11,7 @@ class QStringList;
 class QListWidgetItem;
 class QSettings;
 class QHBoxLayout;
+class QAction;
 QT_END_NAMESPACE
 
 class CMainWindow;
@@ -20,7 +21,8 @@ class CHomepage : public QWidget
 {
     Q_OBJECT
 public:
-    explicit CHomepage(CMainWindow *window, CSettingsView *settings);
+    explicit CHomepage(CMainWindow *window, CSettingsView *settings,
+                       QAction *newProjectAction, QAction *openProjectAction, QAction *importProjectAction);
 
 private:
     void SetupSidebar(QHBoxLayout *main_layout);
@@ -32,15 +34,14 @@ private:
 
     CSettingsView *m_settings;
 
+    QAction *m_newProjectAction;
+    QAction *m_openProjectAction;
+    QAction *m_importProjectAction;
+
 signals:
 
 private slots:
     void RecentItemSelected(QListWidgetItem *item);
-
-    void NewProjectClicked();
-    void LoadProjectCLicked();
-    void ImportProjectClicked();
-
 };
 
 #endif // CHOMEPAGE_H

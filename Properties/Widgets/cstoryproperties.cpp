@@ -13,13 +13,13 @@
 CStoryProperties::CStoryProperties(QStringListModel *model, QWidget *parent)
     : CPropertiesWidget(model, parent), m_storyBubble(0), m_storyEdit(0)
 {
-    m_boldAction = new QAction(QIcon(":/images/bold.png"), tr(""), 0);
+    m_boldAction = new QAction(QIcon(":/images/icn_bold.png"), tr(""), 0);
     m_boldAction->setShortcut(tr("Ctrl+B"));
     m_boldAction->setToolTip(tr("Toggle bold tags around selection"));
     connect(m_boldAction, SIGNAL(triggered()),
             this, SLOT(BoldTriggered()));
 
-    m_italicAction = new QAction(QIcon(":/images/italic.png"), tr(""), 0);
+    m_italicAction = new QAction(QIcon(":/images/icn_italic.png"), tr(""), 0);
     m_italicAction->setShortcut(tr("Ctrl+I"));
     m_italicAction->setToolTip(tr("Toggle italic tags around selection"));
     connect(m_italicAction, SIGNAL(triggered()),

@@ -1,18 +1,18 @@
-#include "actionbutton.h"
+#include "qactionbutton.h"
 
 #include <QAction>
 
 
-CActionButton::CActionButton(QWidget *parent, QAction *action)
-    : QPushButton(parent), m_action(0)
+QActionButton::QActionButton(QWidget *parent, QAction *action, bool showText)
+    : QPushButton(parent), m_action(0), m_showText(showText)
 {
     setAction(action);
 }
 
-void CActionButton::setAction(QAction *action)
+void QActionButton::setAction(QAction *action)
 {
 
-    // if I've got already an action associated to the button
+    // if there is already an action associated to the button
     // remove all connections
     if( m_action && m_action != action ){
         disconnect(m_action, SIGNAL(changed()),
@@ -44,9 +44,10 @@ void CActionButton::setAction(QAction *action)
     }
 }
 
-void CActionButton::updateButtonStatusFromAction()
+void QActionButton::updateButtonStatusFromAction()
 {
-    setText(m_action->text());
+    ((m_showText) ? setText(m_action->text()) :
+                    setText(""));
     setStatusTip(m_action->statusTip());
     setToolTip(m_action->toolTip());
     setIcon(m_action->icon());

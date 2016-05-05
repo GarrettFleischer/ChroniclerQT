@@ -22,13 +22,13 @@ const int InsertTextButton = 10;
 
 
 CMainWindow::CMainWindow(QSettings *settings)
-    : m_ShiftHeld(false), m_settings(settings), m_settingsView(0)
+    : m_ShiftHeld(false)
 {
     setWindowTitle(tr("Chronicler"));
     setUnifiedTitleAndToolBarOnMac(true);
 
     // Load the settings...
-    m_settingsView = new CSettingsView(m_settings);
+    m_settingsView = new CSettingsView(settings);
     connect(m_settingsView, SIGNAL(SettingsChanged()),
             this, SLOT(SettingsChanged()));
     SettingsChanged();
@@ -57,15 +57,16 @@ CMainWindow::CMainWindow(QSettings *settings)
 
     m_dockManager = new CDockManager(lstModel, m_dock);
     m_dock->setWidget(m_dockManager);
-
-    // load the last dock widget area from the settings
-    Qt::DockWidgetArea area = static_cast<Qt::DockWidgetArea>(m_settings->value("MainWindow/DockArea", static_cast<int>(Qt::LeftDockWidgetArea)).toInt());
-    addDockWidget(area, m_dock);
-
     m_dock->setVisible(false);
     m_dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 
-    m_homepage = new CHomepage(this, m_settingsView);
+    // load the last dock widget area from the settings
+    Qt::DockWidgetArea area = (m_settingsView->settings()->value("MainWindow/DockArea",
+                                                                 static_cast<int>(Qt::LeftDockWidgetArea)).value<Qt::DockWidgetArea>());
+    addDockWidget(area, m_dock);
+
+
+    m_homepage = new CHomepage(this, m_settingsView, m_newProjectAction, m_openProjectAction, m_importProjectAction);
 
     m_tabView = new QTabWidget(this);
     m_tabView->setMovable(true);
@@ -169,6 +170,21 @@ void CMainWindow::ShowSettings()
     m_tabView->setCurrentWidget(m_settingsView);
 }
 
+void CMainWindow::NewProject()
+{
+    // TODO popup new project dialog
+}
+
+void CMainWindow::OpenProject()
+{
+    // TODO popup ".chron" file picker
+}
+
+void CMainWindow::ImportProject()
+{
+    // TODO popup "startup.txt" file picker
+}
+
 void CMainWindow::ShowHomepage()
 {
     if(m_tabView->indexOf(m_homepage) == -1)
@@ -229,13 +245,13 @@ void CMainWindow::TabClosed(int index)
 void CMainWindow::DockAreaChanged(Qt::DockWidgetArea area)
 {
     // reflect this change in the settings.
-    m_settings->setValue("MainWindow/DockArea", static_cast<int>(area));
+    m_settingsView->settings()->setValue("MainWindow/DockArea", static_cast<int>(area));
 }
 
-void CMainWindow::ToolBarAreaChanged(bool)
+void CMainWindow::PointerToolBarAreaChanged(bool)
 {
     // reflect this change in the settings.
-    m_settings->setValue("MainWindow/ToolBarArea", static_cast<int>(toolBarArea(m_pointerToolBar)));
+    m_settingsView->settings()->setValue("MainWindow/ToolBarArea", static_cast<int>(toolBarArea(m_pointerToolBar)));
 }
 
 void CMainWindow::SettingsChanged()
@@ -267,14 +283,26 @@ void CMainWindow::CreateActions()
     m_exitAction->setStatusTip(tr("Quit program"));
     connect(m_exitAction, SIGNAL(triggered()), this, SLOT(close()));
 
-    m_settingsAction = new QAction(tr("&Settings"), this);
+    m_settingsAction = new QAction(QIcon(":/images/icn_settings"), tr("&Settings"), this);
     m_settingsAction->setShortcut(tr("Ctrl+P"));
     connect(m_settingsAction, SIGNAL(triggered(bool)), this, SLOT(ShowSettings()));
 
     m_aboutAction = new QAction(tr("A&bout"), this);
     connect(m_aboutAction, SIGNAL(triggered()), this, SLOT(ShowAbout()));
 
-    m_showHomepageAction = new QAction(tr("Show &homepage"), this);
+    m_newProjectAction = new QAction(QIcon(":/images/icn_new"), tr("New Project"), this);
+    m_newProjectAction->setToolTip("Create New Project");
+    connect(m_newProjectAction, SIGNAL(triggered(bool)), this, SLOT(NewProject()));
+
+    m_openProjectAction = new QAction(QIcon(":/images/icn_load"), tr("Open Project"), this);
+    m_openProjectAction->setToolTip("Open Existing Project");
+    connect(m_openProjectAction, SIGNAL(triggered(bool)), this, SLOT(OpenProject()));
+
+    m_importProjectAction = new QAction(QIcon(":/images/icn_loadcs"), tr("Import Project"), this);
+    m_importProjectAction->setToolTip("Import ChoiceScript Project");
+    connect(m_importProjectAction, SIGNAL(triggered(bool)), this, SLOT(ImportProject()));
+
+    m_showHomepageAction = new QAction(QIcon(":/images/icn_home"), tr("Show &homepage"), this);
     connect(m_showHomepageAction, SIGNAL(triggered(bool)), this, SLOT(ShowHomepage()));
 }
 
@@ -282,11 +310,16 @@ void CMainWindow::CreateActions()
 void CMainWindow::CreateMenus()
 {
     m_fileMenu = menuBar()->addMenu(tr("&File"));
-    m_fileMenu->addAction(m_exitAction);
-    m_fileMenu->addSeparator();
-    m_fileMenu->addAction(m_showHomepageAction);
+    m_fileMenu->addAction(m_newProjectAction);
+    m_fileMenu->addAction(m_openProjectAction);
+    m_fileMenu->addAction(m_importProjectAction);
     m_fileMenu->addSeparator();
     m_fileMenu->addAction(m_settingsAction);
+    m_fileMenu->addSeparator();
+    m_fileMenu->addAction(m_exitAction);
+
+    m_viewMenu = menuBar()->addMenu(tr("&View"));
+    m_viewMenu->addAction(m_showHomepageAction);
 
     m_editMenu = menuBar()->addMenu(tr("&Edit"));
     m_editMenu->addAction(m_deleteAction);
@@ -301,7 +334,7 @@ void CMainWindow::CreateToolbars()
     QToolButton *tb_pointer = new QToolButton();
     tb_pointer->setCheckable(true);
     tb_pointer->setChecked(true);
-    tb_pointer->setIcon(QIcon(":/images/pointer.png"));
+    tb_pointer->setIcon(QIcon(":/images/icn_pointer.png"));
     tb_pointer->setToolTip("Selection tool");
     QToolButton *tb_link = new QToolButton();
     tb_link->setCheckable(true);
@@ -338,7 +371,7 @@ void CMainWindow::CreateToolbars()
             this, SLOT(PointerGroupClicked(int)));
 
 
-    Qt::ToolBarArea area = static_cast<Qt::ToolBarArea>(m_settings->value("MainWindow/ToolBarArea", static_cast<int>(Qt::RightToolBarArea)).toInt());
+    Qt::ToolBarArea area = static_cast<Qt::ToolBarArea>(m_settingsView->settings()->value("MainWindow/ToolBarArea", static_cast<int>(Qt::RightToolBarArea)).toInt());
     m_pointerToolBar = new QToolBar("Pointer type");
     m_pointerToolBar->addWidget(tb_pointer);
     m_pointerToolBar->addWidget(tb_link);
@@ -346,7 +379,8 @@ void CMainWindow::CreateToolbars()
     m_pointerToolBar->addWidget(tb_condition);
     m_pointerToolBar->addWidget(tb_choice);
     m_pointerToolBar->addWidget(tb_action);
+    m_pointerToolBar->setIconSize(QSize(32,32));
     addToolBar(area, m_pointerToolBar);
     connect(m_pointerToolBar, SIGNAL(topLevelChanged(bool)),
-            this, SLOT(ToolBarAreaChanged(bool)));
+            this, SLOT(PointerToolBarAreaChanged(bool)));
 }

@@ -12,15 +12,20 @@
 #include <QStringList>
 #include <QSettings>
 #include <QPushButton>
+#include <QAction>
 
 #include "cmainwindow.h"
 #include "csettingsview.h"
+#include "Misc/qactionbutton.h"
 
+
+// for QSettings
 Q_DECLARE_METATYPE(QStringList)
 
 
-CHomepage::CHomepage(CMainWindow *window, CSettingsView *settings)
-    : QWidget((QWidget*)window), m_window(window), m_webView(0), m_recentView(0), m_settings(settings)
+CHomepage::CHomepage(CMainWindow *window, CSettingsView *settings, QAction *newProjectAction, QAction *openProjectAction, QAction *importProjectAction)
+    : QWidget((QWidget*)window), m_window(window), m_webView(0), m_recentView(0), m_settings(settings),
+      m_newProjectAction(newProjectAction), m_openProjectAction(openProjectAction), m_importProjectAction(importProjectAction)
 {
     QHBoxLayout *main_layout = new QHBoxLayout(this);
 
@@ -50,23 +55,14 @@ void CHomepage::SetupSidebar(QHBoxLayout *main_layout)
 
     // Buttons
     const QSize icon_size(32, 32);
-    QPushButton *btn_new = new QPushButton(QIcon(":/images/icn_new.png"), "");
+    QActionButton *btn_new = new QActionButton(0, m_newProjectAction);
     btn_new->setIconSize(icon_size);
-    btn_new->setToolTip("New Project");
-    connect(btn_new, SIGNAL(clicked(bool)),
-            this, SLOT(NewProjectClicked()));
 
-    QPushButton *btn_load = new QPushButton(QIcon(":/images/icn_load.png"), "");
+    QActionButton *btn_load = new QActionButton(0, m_openProjectAction);
     btn_load->setIconSize(icon_size);
-    btn_load->setToolTip("Load Project");
-    connect(btn_load, SIGNAL(clicked(bool)),
-            this, SLOT(LoadProjectCLicked()));
 
-    QPushButton *btn_import = new QPushButton(QIcon(":/images/icn_loadcs.png"), "");
+    QActionButton *btn_import = new QActionButton(0, m_importProjectAction);
     btn_import->setIconSize(icon_size);
-    btn_import->setToolTip("Import Choicescript");
-    connect(btn_import, SIGNAL(clicked(bool)),
-            this, SLOT(ImportProjectClicked()));
 
     layout_buttons->addWidget(btn_new);
     layout_buttons->addWidget(btn_load);

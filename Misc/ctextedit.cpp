@@ -2,7 +2,7 @@
 
 
 CTextEdit::CTextEdit(QWidget * parent, QStringListModel * model, const QString & text)
-: QTextEdit(parent), m_completer(0), m_model(model), m_enabled(true), m_acceptsReturn(true)
+: QTextEdit(parent), m_completer(0), m_model(model), m_enabled(true), m_acceptsReturn(true), m_ctrlHeld(false)
 {
     m_filtered = new QStringListModel(this);
     setText(text);
@@ -139,7 +139,7 @@ void CTextEdit::focusInEvent(QFocusEvent *e)
 
 void CTextEdit::keyPressEvent(QKeyEvent *e)
 {
-    bool isEscape = (e->key() == Qt::Key_Escape);
+    const bool isEscape = (e->key() == Qt::Key_Escape);
     if(isEscape)
     {
         if(!m_completer->popup()->isHidden())
@@ -148,8 +148,8 @@ void CTextEdit::keyPressEvent(QKeyEvent *e)
             m_enabled = true;
     }
 
-    bool isReturn = (e->key() == Qt::Key_Return || e->key() == Qt::Key_Enter);
-    bool isTab = (e->key() == Qt::Key_Tab);
+    const bool isReturn = (e->key() == Qt::Key_Return || e->key() == Qt::Key_Enter);
+    const bool isTab = (e->key() == Qt::Key_Tab);
 
 
     if (m_completer && m_completer->popup()->isVisible()) {
@@ -171,18 +171,19 @@ void CTextEdit::keyPressEvent(QKeyEvent *e)
         QTextEdit::keyPressEvent(e);
 
 
-    const bool ctrlOrShift = e->modifiers() & (Qt::ControlModifier | Qt::ShiftModifier);
-    if (!m_completer || (ctrlOrShift && e->text().isEmpty()))
+    // exit if disabled, or one of the modifiers is pressed
+    const bool shiftMod = (e->modifiers() & Qt::ShiftModifier);
+    const bool ctrlMod = (e->modifiers() & Qt::ControlModifier);
+    if (!m_completer || ctrlMod || (shiftMod && e->text().isEmpty()))
         return;
 
-    bool hasModifier = (e->modifiers() != Qt::NoModifier) && !ctrlOrShift;
     QString completionPrefix = textUnderCursor().replace("*","\\*");
 
     QStringList filteredList = m_model->stringList().filter(QRegExp("*"+completionPrefix+"*", m_completer->caseSensitivity(), QRegExp::WildcardUnix));
     m_filtered->setStringList(filteredList);
 
 
-    if ((!m_enabled) || (hasModifier || e->text().isEmpty() || (completionPrefix.isEmpty() && !isEscape) ||
+    if ((!m_enabled) || (shiftMod || e->text().isEmpty() || (completionPrefix.isEmpty() && !isEscape) ||
                        (!filteredList.isEmpty() && completionPrefix == filteredList.first())))
     {
         m_completer->popup()->hide();

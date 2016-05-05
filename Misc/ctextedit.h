@@ -27,8 +27,8 @@ public:
     QCompleter *completer() const;
 
 protected:
-    void keyPressEvent(QKeyEvent *e) Q_DECL_OVERRIDE;
-    void focusInEvent(QFocusEvent *e) Q_DECL_OVERRIDE;
+    virtual void keyPressEvent(QKeyEvent *e) override;
+    virtual void focusInEvent(QFocusEvent *e) override;
 
 private:
     QString textUnderCursor() const;
@@ -36,12 +36,13 @@ private:
 
 protected:
     QCompleter * m_completer;
-    //QStringList * m_list;
     QStringListModel * m_model;
     QStringListModel * m_filtered;
     bool m_enabled;
 
     bool m_acceptsReturn;
+
+    bool m_ctrlHeld;
 
 private slots:
     void insertCompletion(const QString &completion);

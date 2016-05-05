@@ -29,5 +29,8 @@
         <file>images/icn_savecs.png</file>
         <file>images/icn_settings.png</file>
         <file>images/icn_load.png</file>
+        <file>images/icn_bold.png</file>
+        <file>images/icn_italic.png</file>
+        <file>images/icn_pointer.png</file>
     </qresource>
 </RCC>
