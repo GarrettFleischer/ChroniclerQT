@@ -369,7 +369,8 @@ void CMainWindow::CreateToolbars()
             this, SLOT(PointerGroupClicked(int)));
 
 
-    Qt::ToolBarArea area = static_cast<Qt::ToolBarArea>(m_settingsView->settings()->value("MainWindow/ToolBarArea", static_cast<int>(Qt::RightToolBarArea)).toInt());
+    Qt::ToolBarArea area = static_cast<Qt::ToolBarArea>(m_settingsView->settings()->value("MainWindow/ToolBarArea",
+                                                                                          static_cast<int>(Qt::RightToolBarArea)).toInt());
     m_pointerToolBar = new QToolBar("Pointer type");
     m_pointerToolBar->addWidget(tb_pointer);
     m_pointerToolBar->addWidget(tb_link);
