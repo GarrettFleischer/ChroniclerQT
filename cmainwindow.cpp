@@ -298,43 +298,54 @@ void CMainWindow::CreateMenus()
 
 void CMainWindow::CreateToolbars()
 {
-    QToolButton *pointerButton = new QToolButton();
-    pointerButton->setCheckable(true);
-    pointerButton->setChecked(true);
-    pointerButton->setIcon(QIcon(":/images/pointer.png"));
-    QToolButton *connectionPointerButton = new QToolButton();
-    connectionPointerButton->setCheckable(true);
-    connectionPointerButton->setIcon(QIcon(":/images/linepointer.png"));
+    QToolButton *tb_pointer = new QToolButton();
+    tb_pointer->setCheckable(true);
+    tb_pointer->setChecked(true);
+    tb_pointer->setIcon(QIcon(":/images/pointer.png"));
+    tb_pointer->setToolTip("Selection tool");
+    QToolButton *tb_link = new QToolButton();
+    tb_link->setCheckable(true);
+    tb_link->setIcon(QIcon(":/images/icn_link.png"));
+    tb_link->setToolTip("Link tool");
 
 
-    QToolButton *storyBubbleToolButton = new QToolButton();
-    storyBubbleToolButton->setCheckable(true);
-    storyBubbleToolButton->setIcon(QIcon(":/images/icn_story.png"));
-    QToolButton *conditionBubbleToolButton = new QToolButton();
-    conditionBubbleToolButton->setCheckable(true);
-    conditionBubbleToolButton->setIcon(QIcon(":/images/icn_condition.png"));
-    QToolButton *actionBubbleToolButton = new QToolButton();
-    actionBubbleToolButton->setCheckable(true);
-    actionBubbleToolButton->setIcon(QIcon(":/images/icn_choice.png"));
+    QToolButton *tb_story = new QToolButton();
+    tb_story->setCheckable(true);
+    tb_story->setIcon(QIcon(":/images/icn_story.png"));
+    tb_story->setToolTip("Story bubble");
+    QToolButton *tb_condition = new QToolButton();
+    tb_condition->setCheckable(true);
+    tb_condition->setIcon(QIcon(":/images/icn_condition.png"));
+    tb_condition->setToolTip("Condition bubble");
+    QToolButton *tb_choice = new QToolButton();
+    tb_choice->setCheckable(true);
+    tb_choice->setIcon(QIcon(":/images/icn_choice2.png"));
+    tb_choice->setToolTip("Choice bubble");
+    QToolButton *tb_action = new QToolButton();
+    tb_action->setCheckable(true);
+    tb_action->setIcon(QIcon(":/images/icn_action.png"));
+    tb_action->setToolTip("Action bubble");
 
 
     m_pointerTypeGroup = new QButtonGroup(this);
-    m_pointerTypeGroup->addButton(pointerButton, int(CGraphicsScene::Cursor));
-    m_pointerTypeGroup->addButton(connectionPointerButton, int(CGraphicsScene::InsertLine));
-    m_pointerTypeGroup->addButton(storyBubbleToolButton, int(CGraphicsScene::InsertStory));
-    m_pointerTypeGroup->addButton(conditionBubbleToolButton, int(CGraphicsScene::InsertCondition));
-    m_pointerTypeGroup->addButton(actionBubbleToolButton, int(CGraphicsScene::InsertChoice));
+    m_pointerTypeGroup->addButton(tb_pointer, int(CGraphicsScene::Cursor));
+    m_pointerTypeGroup->addButton(tb_link, int(CGraphicsScene::InsertLine));
+    m_pointerTypeGroup->addButton(tb_story, int(CGraphicsScene::InsertStory));
+    m_pointerTypeGroup->addButton(tb_condition, int(CGraphicsScene::InsertCondition));
+    m_pointerTypeGroup->addButton(tb_choice, int(CGraphicsScene::InsertChoice));
+    m_pointerTypeGroup->addButton(tb_action, int(CGraphicsScene::InsertAction));
     connect(m_pointerTypeGroup, SIGNAL(buttonClicked(int)),
             this, SLOT(PointerGroupClicked(int)));
 
 
     Qt::ToolBarArea area = static_cast<Qt::ToolBarArea>(m_settings->value("MainWindow/ToolBarArea", static_cast<int>(Qt::RightToolBarArea)).toInt());
     m_pointerToolBar = new QToolBar("Pointer type");
-    m_pointerToolBar->addWidget(pointerButton);
-    m_pointerToolBar->addWidget(connectionPointerButton);
-    m_pointerToolBar->addWidget(storyBubbleToolButton);
-    m_pointerToolBar->addWidget(conditionBubbleToolButton);
-    m_pointerToolBar->addWidget(actionBubbleToolButton);
+    m_pointerToolBar->addWidget(tb_pointer);
+    m_pointerToolBar->addWidget(tb_link);
+    m_pointerToolBar->addWidget(tb_story);
+    m_pointerToolBar->addWidget(tb_condition);
+    m_pointerToolBar->addWidget(tb_choice);
+    m_pointerToolBar->addWidget(tb_action);
     addToolBar(area, m_pointerToolBar);
     connect(m_pointerToolBar, SIGNAL(topLevelChanged(bool)),
             this, SLOT(ToolBarAreaChanged(bool)));

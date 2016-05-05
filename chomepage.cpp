@@ -49,17 +49,21 @@ void CHomepage::SetupSidebar(QHBoxLayout *main_layout)
     }
 
     // Buttons
-    QPushButton *btn_new = new QPushButton(QIcon(":/images/floodfill.png"), "");
+    const QSize icon_size(32, 32);
+    QPushButton *btn_new = new QPushButton(QIcon(":/images/icn_new.png"), "");
+    btn_new->setIconSize(icon_size);
     btn_new->setToolTip("New Project");
     connect(btn_new, SIGNAL(clicked(bool)),
             this, SLOT(NewProjectClicked()));
 
-    QPushButton *btn_load = new QPushButton(QIcon(":/images/sendtoback.png"), "");
+    QPushButton *btn_load = new QPushButton(QIcon(":/images/icn_load.png"), "");
+    btn_load->setIconSize(icon_size);
     btn_load->setToolTip("Load Project");
     connect(btn_load, SIGNAL(clicked(bool)),
             this, SLOT(LoadProjectCLicked()));
 
-    QPushButton *btn_import = new QPushButton(QIcon(":/images/bringtofront.png"), "");
+    QPushButton *btn_import = new QPushButton(QIcon(":/images/icn_loadcs.png"), "");
+    btn_import->setIconSize(icon_size);
     btn_import->setToolTip("Import Choicescript");
     connect(btn_import, SIGNAL(clicked(bool)),
             this, SLOT(ImportProjectClicked()));
@@ -67,6 +71,7 @@ void CHomepage::SetupSidebar(QHBoxLayout *main_layout)
     layout_buttons->addWidget(btn_new);
     layout_buttons->addWidget(btn_load);
     layout_buttons->addWidget(btn_import);
+    layout_buttons->addStretch(1);
     layout_recent->addLayout(layout_buttons);
 
     // Add to main layout
@@ -102,15 +107,15 @@ void CHomepage::RecentItemSelected(QListWidgetItem *item)
 
 void CHomepage::NewProjectClicked()
 {
-
+    // TODO popup new project dialog
 }
 
 void CHomepage::LoadProjectCLicked()
 {
-
+    // TODO popup ".chron" file picker
 }
 
 void CHomepage::ImportProjectClicked()
 {
-
+    // TODO popup "startup.txt" file picker
 }

@@ -5,7 +5,7 @@
 #include <QTextCursor>
 
 #include "Misc/ctextedit.h"
-#include "Misc/actionbutton.h"
+#include "Misc/qactionbutton.h"
 #include "Bubbles/cstorybubble.h"
 
 
@@ -25,8 +25,8 @@ CStoryProperties::CStoryProperties(QStringListModel *model, QWidget *parent)
     connect(m_italicAction, SIGNAL(triggered()),
             this, SLOT(ItalicTriggered()));
 
-    ActionButton *btn_bold = new ActionButton(0, m_boldAction);
-    ActionButton *btn_italic = new ActionButton(0, m_italicAction);
+    QActionButton *btn_bold = new QActionButton(0, m_boldAction);
+    QActionButton *btn_italic = new QActionButton(0, m_italicAction);
 
     QHBoxLayout *hl_font = new QHBoxLayout();
     hl_font->addWidget(btn_bold);

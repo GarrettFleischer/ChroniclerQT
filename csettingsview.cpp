@@ -21,7 +21,6 @@
 #include <QColorDialog>
 #include <QPixmap>
 #include <QPainter>
-//#include <QToolButton>
 
 CSettingsView::CSettingsView(QSettings *settings, QWidget *parent)
     : QWidget(parent), m_settings(settings)
@@ -116,7 +115,7 @@ void CSettingsView::SetupChoiceScript(QLayout *main_layout)
             this, SLOT(SettingChanged()));
 
     // File picker button
-    QPushButton *pb_dir = new QPushButton(QIcon(":/images/floodfill.png"), "");
+    QPushButton *pb_dir = new QPushButton(QIcon(":/images/icn_load.png"), "");
     connect(pb_dir, SIGNAL(clicked(bool)),
             this, SLOT(CSDirButtonPressed()));
 
@@ -282,7 +281,9 @@ void CSettingsView::CSDirButtonPressed()
     QDir dir(m_csdir->text());
     dir.cdUp();
 
-    m_csdir->setText(fd.getExistingDirectory(0, "ChoiceScript directory", dir.path()));
+    QString new_dir = fd.getExistingDirectory(0, "ChoiceScript directory", dir.path());
+    if(new_dir.length() > 0)
+        m_csdir->setText(new_dir);
 }
 
 void CSettingsView::FontColorButtonPressed()

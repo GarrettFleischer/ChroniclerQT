@@ -43,7 +43,7 @@ HEADERS += \
     Misc/ListView/clistview.h \
     Misc/ListView/clistmodel.h \
     csettingsview.h \
-    Misc/actionbutton.h
+    Misc/qactionbutton.h
 
 SOURCES += \
     Bubbles/cbubble.cpp \
@@ -75,4 +75,4 @@ SOURCES += \
     Misc/ListView/clistview.cpp \
     Misc/ListView/clistmodel.cpp \
     csettingsview.cpp \
-    Misc/actionbutton.cpp
+    Misc/qactionbutton.cpp

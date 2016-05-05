@@ -11,12 +11,23 @@
         <file>images/delete.png</file>
         <file>images/sendtoback.png</file>
         <file>images/linecolor.png</file>
-        <file>images/background1.png</file>
-        <file>images/background2.png</file>
-        <file>images/background3.png</file>
-        <file>images/background4.png</file>
         <file>images/icn_choice.png</file>
         <file>images/icn_condition.png</file>
         <file>images/icn_story.png</file>
+        <file>images/icn_action.png</file>
+        <file>images/icn_choice2.png</file>
+        <file>images/icn_choice3.png</file>
+        <file>images/icn_copy.png</file>
+        <file>images/icn_cslogo.png</file>
+        <file>images/icn_home.png</file>
+        <file>images/icn_link.png</file>
+        <file>images/icn_loadcs.png</file>
+        <file>images/icn_new.png</file>
+        <file>images/icn_palette.png</file>
+        <file>images/icn_play.png</file>
+        <file>images/icn_save.png</file>
+        <file>images/icn_savecs.png</file>
+        <file>images/icn_settings.png</file>
+        <file>images/icn_load.png</file>
     </qresource>
 </RCC>

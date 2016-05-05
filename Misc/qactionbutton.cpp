@@ -3,13 +3,13 @@
 #include <QAction>
 
 
-ActionButton::ActionButton(QWidget *parent, QAction *action)
+CActionButton::CActionButton(QWidget *parent, QAction *action)
     : QPushButton(parent), m_action(0)
 {
     setAction(action);
 }
 
-void ActionButton::setAction(QAction *action)
+void CActionButton::setAction(QAction *action)
 {
 
     // if I've got already an action associated to the button
@@ -44,7 +44,7 @@ void ActionButton::setAction(QAction *action)
     }
 }
 
-void ActionButton::updateButtonStatusFromAction()
+void CActionButton::updateButtonStatusFromAction()
 {
     setText(m_action->text());
     setStatusTip(m_action->statusTip());

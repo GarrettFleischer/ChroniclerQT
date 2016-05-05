@@ -1,5 +1,5 @@
-#ifndef ACTIONBUTTON_H
-#define ACTIONBUTTON_H
+#ifndef CACTIONBUTTON_H
+#define CACTIONBUTTON_H
 
 #include <QPushButton>
 
@@ -8,12 +8,12 @@ class QAction;
 QT_END_NAMESPACE
 
 
-class ActionButton : public QPushButton
+class QActionButton : public QPushButton
 {
     Q_OBJECT
 
 public:
-    explicit ActionButton(QWidget *parent = 0, QAction *action = 0);
+    explicit QActionButton(QWidget *parent = 0, QAction *action = 0);
 
     void setAction( QAction* action );
 
@@ -24,4 +24,4 @@ private slots:
     void updateButtonStatusFromAction();
 };
 
-#endif // ACTIONBUTTON_H
+#endif // CACTIONBUTTON_H
