@@ -6,7 +6,7 @@
 
 QT_BEGIN_NAMESPACE
 class QColor;
-class QPen;
+class QPainterPath;
 QT_END_NAMESPACE
 
 class CBubble;
@@ -18,7 +18,9 @@ class CConnection : public QObject, public QGraphicsItem
     Q_OBJECT
     
 public:
-    CConnection(CBubble *from, CBubble *to, QGraphicsScene *scn);
+    enum Anchor { RIGHT, DOWN, LEFT, UP };
+
+    CConnection(CBubble *from, CBubble *to);
     virtual ~CConnection();
     
     CBubble *from() const;
@@ -30,21 +32,31 @@ public:
     QColor color() const;
     void setColor(const QColor &color);
 
+    virtual QPainterPath shape() const;
     virtual QRectF boundingRect() const;
-    virtual void paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *);
+
+    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *);
     
 private:
+    void UpdateShape();
+
     CBubble *m_from;
     CBubble *m_to;
-    
-    CLine *m_line;
+    QPainterPath m_path;
+
+    Anchor m_startAnchor;
+    Anchor m_endAnchor;
 
     QColor m_color;
+    float m_width;
+    int m_offset;
     
 signals:
     
 public slots:
     void UpdatePosition();
+
+
 };
 
 #endif // CCONNECTION_H

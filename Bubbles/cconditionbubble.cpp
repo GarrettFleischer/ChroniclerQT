@@ -1,5 +1,9 @@
 #include "cconditionbubble.h"
 
+#include "Misc/ctextitem.h"
+#include "Connections/cconnection.h"
+
+
 CConditionBubble::CConditionBubble(QMenu *contextMenu, const QPointF &pos, const CPalette &palette, const QFont &font, QGraphicsItem *parent)
     : CBubble(contextMenu, pos, palette, font, parent)
 {
@@ -16,6 +20,12 @@ CConditionBubble::CConditionBubble(QMenu *contextMenu, const QPointF &pos, const
 
     setPolygon(QPolygonF(QRectF(-m_minSize.width()/2, -m_minSize.height()/2, m_minSize.width()*2, m_minSize.height()*2)));
     UpdatePolygon();
+}
+
+CConditionBubble::~CConditionBubble()
+{
+    delete m_trueLink;
+    delete m_falseLink;
 }
 
 
@@ -63,17 +73,28 @@ void CConditionBubble::setCondition(QString condition)
     UpdatePolygon();
 }
 
-
-
 void CConditionBubble::RemoveLink(CConnection *link)
 {
+    if(m_trueLink == link)
+        m_trueLink = 0;
+    if(m_falseLink == link)
+        m_falseLink = 0;
 }
 
 void CConditionBubble::AddLink(CConnection *link)
 {
+    if(m_trueLink != link && m_falseLink != link)
+    {
+        if(!m_trueLink)
+            m_trueLink = link;
+        else if(!m_falseLink)
+            m_falseLink = link;
+    }
+    else
+        delete link;
 }
 
 QList<CConnection *> CConditionBubble::links()
 {
-    return {};
+    return {m_trueLink, m_falseLink};
 }

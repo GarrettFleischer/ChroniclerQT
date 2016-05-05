@@ -16,6 +16,11 @@ CActionBubble::CActionBubble(QMenu *contextMenu, const QPointF &pos, const Chron
     UpdatePolygon();
 }
 
+CActionBubble::~CActionBubble()
+{
+    delete m_link;
+}
+
 
 void CActionBubble::UpdatePolygon()
 {
@@ -43,13 +48,22 @@ void CActionBubble::AdjustMinSize()
 
 void CActionBubble::AddLink(CConnection *link)
 {
+    if(m_link != 0)
+        delete m_link;
+
+    m_link = link;
 }
 
 void CActionBubble::RemoveLink(CConnection *link)
 {
+    if(m_link == link)
+        m_link = 0;
 }
 
 QList<CConnection *> CActionBubble::links()
 {
-    return {};
+    if(m_link)
+        return { m_link };
+    else
+        return {};
 }
