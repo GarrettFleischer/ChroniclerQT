@@ -5,9 +5,9 @@
 #include <QPointF>
 #include <QtMath>
 
-CLine::CLine(const QPointF &start, const QPointF &end, QObject *parent)
+CLine::CLine(const QPointF &start, const QPointF &end, Anchor anc_start, Anchor anc_end, QObject *parent)
     : QObject(parent), QGraphicsItem(), m_start(start), m_end(end),
-      m_startAnchor(DOWN), m_endAnchor(UP), m_offset(200), m_width(5)
+      m_startAnchor(anc_start), m_endAnchor(anc_end), m_offset(200), m_width(5)
 {
     UpdateShape();
 }

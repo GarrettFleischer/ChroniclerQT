@@ -7,7 +7,11 @@
 QT_BEGIN_NAMESPACE
 class QColor;
 class QPainterPath;
+class QGraphicsScene;
 QT_END_NAMESPACE
+
+#include "Misc/chronicler.h"
+using Chronicler::Anchor;
 
 class CBubble;
 class CLine;
@@ -18,9 +22,7 @@ class CConnection : public QObject, public QGraphicsItem
     Q_OBJECT
     
 public:
-    enum Anchor { RIGHT, DOWN, LEFT, UP };
-
-    CConnection(CBubble *from, CBubble *to);
+    CConnection(CBubble *from, CBubble *to, Anchor anc_from, Anchor anc_to, QGraphicsScene *scn);
     virtual ~CConnection();
     
     CBubble *from() const;
@@ -32,24 +34,14 @@ public:
     QColor color() const;
     void setColor(const QColor &color);
 
-    virtual QPainterPath shape() const;
     virtual QRectF boundingRect() const;
-
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *);
     
 private:
-    void UpdateShape();
-
     CBubble *m_from;
     CBubble *m_to;
-    QPainterPath m_path;
 
-    Anchor m_startAnchor;
-    Anchor m_endAnchor;
-
-    QColor m_color;
-    float m_width;
-    int m_offset;
+    CLine *m_line;
     
 signals:
     

@@ -10,14 +10,15 @@ class QPainterPath;
 class QPointF;
 QT_END_NAMESPACE
 
+#include "Misc/chronicler.h"
+using Chronicler::Anchor;
+
 
 class CLine : public QObject, public QGraphicsItem
 {
     Q_OBJECT
 public:
-    enum Anchor { RIGHT, DOWN, LEFT, UP };
-
-    explicit CLine(const QPointF &start, const QPointF &end, QObject *parent = 0);
+    explicit CLine(const QPointF &start, const QPointF &end, Anchor anc_start = Anchor::DOWN, Anchor anc_end = Anchor::UP, QObject *parent = 0);
     explicit CLine(const CLine & copy);
 
     CLine & operator=(const CLine & rhs);

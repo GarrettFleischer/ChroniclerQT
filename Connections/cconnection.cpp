@@ -1,14 +1,17 @@
 #include "cconnection.h"
 
 #include <QPointF>
+#include <QGraphicsScene>
 
 #include "cline.h"
 #include "Bubbles/cbubble.h"
 
-CConnection::CConnection(CBubble *from, CBubble *to)
+CConnection::CConnection(CBubble *from, CBubble *to, Anchor anc_from, Anchor anc_to, QGraphicsScene *scn)
     : m_from(0), m_to(0)
 {
-    setZValue(-999999);
+    m_line = new CLine(QPointF(), QPointF(), anc_from, anc_to);
+    m_line->setZValue(-999999);
+    scn->addItem(m_line);
 
     setFrom(from);
     setTo(to);
@@ -68,16 +71,6 @@ void CConnection::setTo(CBubble *to)
     UpdatePosition();
 }
 
-QColor CConnection::color() const
-{
-    return m_color;
-}
-
-void CConnection::setColor(const QColor &color)
-{
-    m_color = color;
-}
-
 void CConnection::UpdatePosition()
 {
     if(m_from)
@@ -97,34 +90,3 @@ QRectF CConnection::boundingRect() const
 void CConnection::paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *)
 {}
 
-
-void CConnection::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
-{
-    painter->setPen(QPen(QBrush(Qt::black), m_width));
-    painter->drawPath(m_path);
-}
-
-void CConnection::UpdateShape()
-{
-    m_path = QPainterPath();
-
-    QPointF start;
-    QPointF end;
-
-    // TODO: DEAL WITH OFFSETS BASED ON ANCHOR POSITION
-    qreal start_angle = (startAnchor * M_PI * 0.5);
-    qreal end_angle = (endAnchor * M_PI * 0.5);
-
-    QPointF p1(start.x(), start.y());
-    QPointF p2(end.x(), end.y());
-    p1.rx() += (qRound(qCos(start_angle)) * m_offset);
-    p1.ry() += (qRound(qSin(start_angle)) * m_offset);
-    p2.rx() += (qRound(qCos(end_angle)) * m_offset);
-    p2.ry() += (qRound(qSin(end_angle)) * m_offset);
-
-    m_path.moveTo(start);
-    m_path.cubicTo(p1, p2, end);
-
-    prepareGeometryChange();
-    update();
-}

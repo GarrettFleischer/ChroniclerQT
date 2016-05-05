@@ -2,6 +2,7 @@
 
 #include <QStringList>
 #include <QFontMetrics>
+#include "Connections/cconnection.h"
 
 CActionBubble::CActionBubble(QMenu *contextMenu, const QPointF &pos, const Chronicler::CPalette &palette, const QFont &font, QGraphicsItem *parent)
     : CBubble(contextMenu, pos, palette, font, parent)

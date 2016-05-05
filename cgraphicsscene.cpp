@@ -13,6 +13,10 @@
 #include "Connections/cconnection.h"
 
 
+#include "Misc/chronicler.h"
+using Chronicler::Anchor;
+
+
 CGraphicsScene::CGraphicsScene(QMenu *itemMenu, QObject *parent)
     : QGraphicsScene(parent), m_itemMenu(itemMenu), m_mode(Cursor), m_line(0), m_rubberBand(false)
 {
@@ -126,7 +130,7 @@ void CGraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
         if(startItem && endItem)
         {
-            addItem(new CConnection(startItem, endItem, this));
+            addItem(new CConnection(startItem, endItem, Anchor::DOWN, Anchor::UP, this));
         }
     }
 
