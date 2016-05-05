@@ -61,10 +61,9 @@ CMainWindow::CMainWindow(QSettings *settings)
     m_dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 
     // load the last dock widget area from the settings
-    Qt::DockWidgetArea area = (m_settingsView->settings()->value("MainWindow/DockArea",
-                                                                 static_cast<int>(Qt::LeftDockWidgetArea)).value<Qt::DockWidgetArea>());
+    Qt::DockWidgetArea area = static_cast<Qt::DockWidgetArea>(m_settingsView->settings()->value("MainWindow/DockArea",
+                                                                                                static_cast<int>(Qt::LeftDockWidgetArea)).toInt());
     addDockWidget(area, m_dock);
-
 
     m_homepage = new CHomepage(this, m_settingsView, m_newProjectAction, m_openProjectAction, m_importProjectAction);
 
@@ -102,8 +101,6 @@ void CMainWindow::keyPressEvent(QKeyEvent *evt)
 
     if(evt->key() == Qt::Key_Shift)
         m_ShiftHeld = true;
-    else if(evt->key() == Qt::Key_Delete)
-        DeleteItem();
 }
 
 void CMainWindow::keyReleaseEvent(QKeyEvent *evt)
@@ -275,12 +272,12 @@ void CMainWindow::CreateActions()
 {
     m_deleteAction = new QAction(QIcon(":/images/delete.png"), tr("&Delete"), this);
     m_deleteAction->setShortcut(tr("Delete"));
-    m_deleteAction->setStatusTip(tr("Delete selected bubble(S)"));
+    m_deleteAction->setToolTip(tr("Delete selected bubble(S)"));
     connect(m_deleteAction, SIGNAL(triggered()), this, SLOT(DeleteItem()));
 
-    m_exitAction = new QAction(tr("E&xit"), this);
+    m_exitAction = new QAction(QIcon(":/images/icn_exit.png"), tr("E&xit"), this);
     m_exitAction->setShortcuts(QKeySequence::Quit);
-    m_exitAction->setStatusTip(tr("Quit program"));
+    m_exitAction->setToolTip(tr("Quit program"));
     connect(m_exitAction, SIGNAL(triggered()), this, SLOT(close()));
 
     m_settingsAction = new QAction(QIcon(":/images/icn_settings"), tr("&Settings"), this);
@@ -291,10 +288,12 @@ void CMainWindow::CreateActions()
     connect(m_aboutAction, SIGNAL(triggered()), this, SLOT(ShowAbout()));
 
     m_newProjectAction = new QAction(QIcon(":/images/icn_new"), tr("New Project"), this);
+    m_newProjectAction->setShortcut(tr("Ctrl+N"));
     m_newProjectAction->setToolTip("Create New Project");
     connect(m_newProjectAction, SIGNAL(triggered(bool)), this, SLOT(NewProject()));
 
     m_openProjectAction = new QAction(QIcon(":/images/icn_load"), tr("Open Project"), this);
+    m_openProjectAction->setShortcut(tr("Ctrl+O"));
     m_openProjectAction->setToolTip("Open Existing Project");
     connect(m_openProjectAction, SIGNAL(triggered(bool)), this, SLOT(OpenProject()));
 
@@ -318,14 +317,14 @@ void CMainWindow::CreateMenus()
     m_fileMenu->addSeparator();
     m_fileMenu->addAction(m_exitAction);
 
-    m_viewMenu = menuBar()->addMenu(tr("&View"));
-    m_viewMenu->addAction(m_showHomepageAction);
-
     m_editMenu = menuBar()->addMenu(tr("&Edit"));
     m_editMenu->addAction(m_deleteAction);
 
-    m_aboutMenu = menuBar()->addMenu(tr("&Help"));
-    m_aboutMenu->addAction(m_aboutAction);
+    m_viewMenu = menuBar()->addMenu(tr("&View"));
+    m_viewMenu->addAction(m_showHomepageAction);
+
+    m_helpMenu = menuBar()->addMenu(tr("&Help"));
+    m_helpMenu->addAction(m_aboutAction);
 }
 
 
@@ -350,15 +349,14 @@ void CMainWindow::CreateToolbars()
     tb_condition->setCheckable(true);
     tb_condition->setIcon(QIcon(":/images/icn_condition.png"));
     tb_condition->setToolTip("Condition bubble");
-    QToolButton *tb_choice = new QToolButton();
-    tb_choice->setCheckable(true);
-    tb_choice->setIcon(QIcon(":/images/icn_choice2.png"));
-    tb_choice->setToolTip("Choice bubble");
     QToolButton *tb_action = new QToolButton();
     tb_action->setCheckable(true);
     tb_action->setIcon(QIcon(":/images/icn_action.png"));
     tb_action->setToolTip("Action bubble");
-
+    QToolButton *tb_choice = new QToolButton();
+    tb_choice->setCheckable(true);
+    tb_choice->setIcon(QIcon(":/images/icn_choice2.png"));
+    tb_choice->setToolTip("Choice bubble");
 
     m_pointerTypeGroup = new QButtonGroup(this);
     m_pointerTypeGroup->addButton(tb_pointer, int(CGraphicsScene::Cursor));
@@ -376,9 +374,9 @@ void CMainWindow::CreateToolbars()
     m_pointerToolBar->addWidget(tb_pointer);
     m_pointerToolBar->addWidget(tb_link);
     m_pointerToolBar->addWidget(tb_story);
-    m_pointerToolBar->addWidget(tb_condition);
     m_pointerToolBar->addWidget(tb_choice);
     m_pointerToolBar->addWidget(tb_action);
+    m_pointerToolBar->addWidget(tb_condition);
     m_pointerToolBar->setIconSize(QSize(32,32));
     addToolBar(area, m_pointerToolBar);
     connect(m_pointerToolBar, SIGNAL(topLevelChanged(bool)),

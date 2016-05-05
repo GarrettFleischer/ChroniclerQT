@@ -30,6 +30,7 @@ public:
     CBubble(QGraphicsItem *parent);
     CBubble(QMenu *contextMenu, const QPointF &pos, const CPalette &palette, const QFont &font = QFont(), QGraphicsItem *parent = 0);
 
+    virtual ~CBubble();
 
     virtual void setLabel(QString label) { m_label = label; }
     QString getLabel() const { return m_label; }
@@ -51,7 +52,7 @@ public:
     void AddConnection(CConnection *connection);
     void RemoveConnection(CConnection *connection);
 
-    virtual void AddLink(CConnection *link, int position) = 0;
+    virtual void AddLink(CConnection *link) = 0;
     virtual void RemoveLink(CConnection *link) = 0;
 
     virtual QList<CConnection *> links() { return {}; }
@@ -86,6 +87,7 @@ protected:
 signals:
     void Selected(QGraphicsItem *item);
     void ConnectionsChanged(int);
+    void PositionChanged();
 };
 
 #endif // CBUBBLE_H

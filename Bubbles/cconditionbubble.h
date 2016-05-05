@@ -33,7 +33,7 @@ public:
 
     // CBubble interface
 public:
-    virtual void AddLink(CConnection *link, int position);
+    virtual void AddLink(CConnection *link);
 
     // CBubble interface
 public:

@@ -23,6 +23,12 @@ CBubble::CBubble(QMenu *contextMenu, const QPointF &pos, const Chronicler::CPale
     setPos(pos);
 }
 
+CBubble::~CBubble()
+{
+    for(CConnection *connection : m_connections)
+        delete connection;
+}
+
 
 void CBubble::mouseMoveEvent(QGraphicsSceneMouseEvent *evt)
 {
@@ -54,13 +60,7 @@ QVariant CBubble::itemChange(GraphicsItemChange change, const QVariant &value)
     if (change == QGraphicsItem::ItemSelectedHasChanged && value.toBool())
         emit Selected(this);
     else if (change == QGraphicsItem::ItemPositionChange)
-    {
-        for(CConnection *connection : m_connections)
-            connection->updatePosition();
-
-        for(CConnection *link : links())
-            link->updatePosition();
-    }
+        emit PositionChanged();
 
     return value;
 }
@@ -93,6 +93,7 @@ void CBubble::AddConnection(CConnection *connection)
 {
     if(!m_connections.contains(connection))
     {
+        connect(this, SIGNAL(PositionChanged()), connection, SLOT(UpdatePosition()));
         m_connections.append(connection);
         emit ConnectionsChanged(m_connections.length());
     }

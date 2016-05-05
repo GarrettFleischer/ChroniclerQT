@@ -27,7 +27,7 @@ private:
 
     // CBubble interface
 public:
-    virtual void AddLink(CConnection *link, int position);
+    virtual void AddLink(CConnection *link);
     virtual void RemoveLink(CConnection *link);
 
     // CBubble interface

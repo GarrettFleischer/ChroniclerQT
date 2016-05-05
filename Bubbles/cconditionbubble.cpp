@@ -69,7 +69,7 @@ void CConditionBubble::RemoveLink(CConnection *link)
 {
 }
 
-void CConditionBubble::AddLink(CConnection *link, int position)
+void CConditionBubble::AddLink(CConnection *link)
 {
 }
 

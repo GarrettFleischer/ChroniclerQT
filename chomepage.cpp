@@ -100,18 +100,3 @@ void CHomepage::RecentItemSelected(QListWidgetItem *item)
     // load the selected project
     m_window->LoadProject(item->text());
 }
-
-void CHomepage::NewProjectClicked()
-{
-    // TODO popup new project dialog
-}
-
-void CHomepage::LoadProjectCLicked()
-{
-    // TODO popup ".chron" file picker
-}
-
-void CHomepage::ImportProjectClicked()
-{
-    // TODO popup "startup.txt" file picker
-}

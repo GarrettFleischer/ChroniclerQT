@@ -1,12 +1,7 @@
 #ifndef CUTILS_H
 #define CUTILS_H
 
-#include <QWidget>
-
-QT_BEGIN_NAMESPACE
-class QColor;
-QT_END_NAMESPACE
-
+#include <QColor>
 
 namespace Chronicler
 {

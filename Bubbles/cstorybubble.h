@@ -15,6 +15,7 @@ class CStoryBubble : public CBubble
 
 public:
     CStoryBubble(QMenu *contextMenu, const QPointF &pos, const Chronicler::CPalette &palette, const QFont &font = QFont(), QGraphicsItem *parent = 0);
+    virtual ~CStoryBubble();
 
     virtual void setFont(const QFont &font);
     virtual void setPalette(const Chronicler::CPalette &palette);
@@ -25,7 +26,7 @@ public:
     QString getStory() { return m_story->Text(); }
 
 
-    virtual void AddLink(CConnection *link, int);
+    virtual void AddLink(CConnection *link);
     virtual void RemoveLink(CConnection *link);
 
     virtual QList<CConnection *> links() override;

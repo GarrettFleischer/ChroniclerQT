@@ -19,7 +19,7 @@ class CConnection : public QObject, public QGraphicsItem
     
 public:
     CConnection(CBubble *from, CBubble *to, QGraphicsScene *scn);
-    ~CConnection();
+    virtual ~CConnection();
     
     CBubble *from() const;
     void setFrom(CBubble *from);
@@ -30,10 +30,8 @@ public:
     QColor color() const;
     void setColor(const QColor &color);
 
-    void updatePosition();
-
     virtual QRectF boundingRect() const;
-    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *style, QWidget *widget);
+    virtual void paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *);
     
 private:
     CBubble *m_from;
@@ -46,6 +44,7 @@ private:
 signals:
     
 public slots:
+    void UpdatePosition();
 };
 
 #endif // CCONNECTION_H

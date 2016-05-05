@@ -80,7 +80,7 @@ void CChoiceBubble::RemoveLink(CConnection *link)
 {
 }
 
-void CChoiceBubble::AddLink(CConnection *link, int position)
+void CChoiceBubble::AddLink(CConnection *link)
 {
 }
 

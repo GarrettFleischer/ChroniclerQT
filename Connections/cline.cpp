@@ -55,7 +55,7 @@ void CLine::setEnd(const QPointF &end)
 
 void CLine::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
-    painter->setPen(QPen(QBrush(Qt::red), m_width));
+    painter->setPen(QPen(QBrush(Qt::black), m_width));
     painter->drawPath(m_path);
 }
 

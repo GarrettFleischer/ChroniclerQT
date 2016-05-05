@@ -121,9 +121,9 @@ private:
     QAction *m_showHomepageAction;
 
     QMenu *m_fileMenu;
-    QMenu *m_viewMenu;
     QMenu *m_editMenu;
-    QMenu *m_aboutMenu;
+    QMenu *m_viewMenu;
+    QMenu *m_helpMenu;
 
     QToolBar *m_pointerToolBar;
     QButtonGroup *m_pointerTypeGroup;

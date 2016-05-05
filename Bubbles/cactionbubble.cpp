@@ -1,6 +1,7 @@
 #include "cactionbubble.h"
 
 #include <QStringList>
+#include <QFontMetrics>
 
 CActionBubble::CActionBubble(QMenu *contextMenu, const QPointF &pos, const Chronicler::CPalette &palette, const QFont &font, QGraphicsItem *parent)
     : CBubble(contextMenu, pos, palette, font, parent)
@@ -40,7 +41,7 @@ void CActionBubble::AdjustMinSize()
 }
 
 
-void CActionBubble::AddLink(CConnection *link, int position)
+void CActionBubble::AddLink(CConnection *link)
 {
 }
 
