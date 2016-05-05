@@ -270,7 +270,7 @@ void CMainWindow::ShowAbout()
 
 void CMainWindow::CreateActions()
 {
-    m_deleteAction = new QAction(QIcon(":/images/delete.png"), tr("&Delete"), this);
+    m_deleteAction = new QAction(QIcon(":/images/icn_trash.png"), tr("&Delete"), this);
     m_deleteAction->setShortcut(tr("Delete"));
     m_deleteAction->setToolTip(tr("Delete selected bubble(S)"));
     connect(m_deleteAction, SIGNAL(triggered()), this, SLOT(DeleteItem()));
@@ -284,7 +284,7 @@ void CMainWindow::CreateActions()
     m_settingsAction->setShortcut(tr("Ctrl+P"));
     connect(m_settingsAction, SIGNAL(triggered(bool)), this, SLOT(ShowSettings()));
 
-    m_aboutAction = new QAction(tr("A&bout"), this);
+    m_aboutAction = new QAction(QIcon(":/images/icn_info"), tr("A&bout"), this);
     connect(m_aboutAction, SIGNAL(triggered()), this, SLOT(ShowAbout()));
 
     m_newProjectAction = new QAction(QIcon(":/images/icn_new"), tr("New Project"), this);

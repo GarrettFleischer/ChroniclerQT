@@ -33,5 +33,7 @@
         <file>images/icn_italic.png</file>
         <file>images/icn_pointer.png</file>
         <file>images/icn_exit.png</file>
+        <file>images/icn_trash.png</file>
+        <file>images/icn_info.png</file>
     </qresource>
 </RCC>
