@@ -18,7 +18,7 @@ class CLine : public QObject, public QGraphicsItem
 {
     Q_OBJECT
 public:
-    explicit CLine(const QPointF &start, const QPointF &end, Anchor anc_start = Anchor::DOWN, Anchor anc_end = Anchor::UP, QObject *parent = 0);
+    explicit CLine(const QPointF &start, const QPointF &end, Anchor anc_start = Anchor::Down, Anchor anc_end = Anchor::Up, QObject *parent = 0);
     explicit CLine(const CLine & copy);
 
     CLine & operator=(const CLine & rhs);
@@ -27,10 +27,10 @@ public:
     virtual QRectF boundingRect() const;
 
     const QPointF & start() const { return m_start; }
-    void setStart(const QPointF &start, Anchor anchor = Anchor::DOWN);
+    void setStart(const QPointF &start, Anchor anchor = Anchor::Down);
 
     const QPointF & end() const { return m_end; }
-    void setEnd(const QPointF &end, Anchor anchor = Anchor::UP);
+    void setEnd(const QPointF &end, Anchor anchor = Anchor::Up);
 
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *);
 

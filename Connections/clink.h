@@ -22,7 +22,7 @@ class CLink : public QObject, public QGraphicsPolygonItem
     Q_PROPERTY(qreal scale MEMBER m_scale NOTIFY scaleChanged)
     
 public:
-    CLink(Anchor anchor = Anchor::DOWN, QGraphicsItem *parent = 0);
+    CLink(Anchor anchor = Anchor::Down, QGraphicsItem *parent = 0);
     
     void setPalette(const CPalette &palette);
     

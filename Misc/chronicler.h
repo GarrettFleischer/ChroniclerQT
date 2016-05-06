@@ -8,7 +8,8 @@ namespace Chronicler
 
     enum BubbleType { Story, Choice, Action, Condition  };
 
-    enum Anchor { RIGHT, DOWN, LEFT, UP };
+    enum Anchor { Right, Down, Left, Up };
+    enum AllowedAnchors { RightAnchor = 0, DownAnchor = 2, LeftAnchor = 4, UpAnchor = 8 };
 
     struct CPalette
     {

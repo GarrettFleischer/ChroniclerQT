@@ -17,6 +17,7 @@ QT_END_NAMESPACE
 #include "Misc/chronicler.h"
 using Chronicler::CPalette;
 using Chronicler::Anchor;
+using Chronicler::AllowedAnchors;
 using Chronicler::BubbleType;
 
 class CConnection;
@@ -55,10 +56,14 @@ public:
 
     virtual void AddLink(CConnection *link) = 0;
     virtual void RemoveLink(CConnection *link) = 0;
+    virtual QList<CConnection *> links() = 0;
 
-    virtual Anchor AnchorAtPosition(const QPointF &pos) = 0;
+    virtual Anchor OutputAnchorAtPosition(const QPointF &pos);
+    virtual Anchor InputAnchorAtPosition(const QPointF &pos);
 
-    virtual QList<CConnection *> links() { return {}; }
+    int allowedAnchors() const { return m_allowedAnchors; }
+    void setAllowedAnchors(int allowed);
+
 
 protected:
     virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *evt);
@@ -86,6 +91,11 @@ protected:
 
     QFont m_font;
     CPalette m_palette;
+
+    int m_allowedAnchors;
+
+private:
+    Anchor AnchorAtPosition(const QPointF &pos);
     
 signals:
     void Selected(QGraphicsItem *item);

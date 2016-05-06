@@ -33,8 +33,6 @@ public:
 
     virtual QList<CConnection *> links() override;
 
-    virtual Anchor AnchorAtPosition(const QPointF &pos);
-
 
 protected:
     virtual void UpdatePolygon();

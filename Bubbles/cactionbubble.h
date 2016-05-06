@@ -24,8 +24,6 @@ public:
     virtual void RemoveLink(CConnection *link);
     virtual QList<CConnection *> links();
 
-    virtual Anchor AnchorAtPosition(const QPointF &pos);
-
 protected:
     virtual void UpdatePolygon();
 

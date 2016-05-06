@@ -138,8 +138,8 @@ void CGraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
         if(startItem && endItem && startItem != endItem)
         {
-            Anchor start_anchor = startItem->AnchorAtPosition(m_line->start());
-            Anchor end_anchor = endItem->AnchorAtPosition(mouseEvent->scenePos());
+            Anchor start_anchor = startItem->OutputAnchorAtPosition(m_line->start());
+            Anchor end_anchor = endItem->InputAnchorAtPosition(mouseEvent->scenePos());
             addItem(new CConnection(startItem, endItem, start_anchor, end_anchor, this));
         }
     }

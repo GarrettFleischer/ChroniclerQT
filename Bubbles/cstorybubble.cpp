@@ -67,6 +67,7 @@ void CStoryBubble::mouseMoveEvent(QGraphicsSceneMouseEvent *evt)
                           qMax<float>(m_lastBounds.width() + delta.x(), m_minSize.width()),
                           qMax<float>(m_lastBounds.height() + delta.y(), m_minSize.height())));
         UpdatePolygon();
+        emit PositionChanged();
     }
     else
         CBubble::mouseMoveEvent(evt);
@@ -156,19 +157,4 @@ QList<CConnection *> CStoryBubble::links()
         return { m_link };
     else
         return {};
-}
-
-Anchor CStoryBubble::AnchorAtPosition(const QPointF &pos)
-{
-    qreal diff_x = qAbs(scenePos().x() - pos.x());
-    qreal diff_y = qAbs(scenePos().y() - pos.y());
-
-    if(pos.x() < scenePos().x() && diff_x > diff_y)
-        return Anchor::LEFT;
-    if(pos.x() > scenePos().x() && diff_x > diff_y)
-        return Anchor::RIGHT;
-    if(pos.y() > scenePos().y())
-        return Anchor::DOWN;
-
-    return Anchor::UP;
 }

@@ -79,16 +79,20 @@ void CConnection::UpdatePosition()
     if(m_from)
     {
         qreal angle = (startAnchor() * M_PI * 0.5);
-        m_line->setStart(QPointF(m_from->boundingRect().width() * 0.5 * qCos(angle),
-                                 m_from->boundingRect().height() * 0.5 * qSin(angle)) +
-                         m_from->scenePos(), startAnchor());
+        QPointF pos = m_from->sceneBoundingRect().center();
+        QSizeF size = m_from->sceneBoundingRect().size();
+        m_line->setStart(pos + QPointF(size.width() * 0.5 * qCos(angle),
+                                       size.height() * 0.5 * qSin(angle)),
+                         startAnchor());
     }
     if(m_to)
     {
         qreal angle = (endAnchor() * M_PI * 0.5);
-        m_line->setEnd(QPointF(m_to->boundingRect().width() * 0.5 * qCos(angle),
-                               m_to->boundingRect().height() * 0.5 * qSin(angle)) +
-                       m_to->scenePos(), endAnchor());
+        QPointF pos = m_to->sceneBoundingRect().center();
+        QSizeF size = m_to->sceneBoundingRect().size();
+        m_line->setEnd(pos + QPointF(size.width() * 0.5 * qCos(angle),
+                                     size.height() * 0.5 * qSin(angle)),
+                       endAnchor());
     }
 }
 

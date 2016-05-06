@@ -24,7 +24,8 @@ public:
     virtual void AddLink(CConnection *link);
     virtual QList<CConnection *> links();
 
-    virtual Anchor AnchorAtPosition(const QPointF &pos);
+    virtual Anchor OutputAnchorAtPosition(const QPointF &pos) override;
+    virtual Anchor InputAnchorAtPosition(const QPointF &) override;
 
 protected:
     virtual void UpdatePolygon();

@@ -20,8 +20,6 @@ public:
     void AddChoice(const QString &choice);
     void MoveChoice(int old_index, int new_index);
 
-    virtual Anchor AnchorAtPosition(const QPointF &pos);
-
 protected:
     virtual void UpdatePolygon();
     void AdjustMinSize();

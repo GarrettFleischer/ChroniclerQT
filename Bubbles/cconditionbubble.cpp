@@ -18,7 +18,7 @@ CConditionBubble::CConditionBubble(QMenu *contextMenu, const QPointF &pos, const
 
     AdjustMinSize();
 
-    setPolygon(QPolygonF(QRectF(-m_minSize.width()/2, -m_minSize.height()/2, m_minSize.width()*2, m_minSize.height()*2)));
+    setPolygon(QPolygonF(QRectF(-m_minSize.width()/2, -m_minSize.height()/2, m_minSize.width(), m_minSize.height())));
     UpdatePolygon();
 }
 
@@ -77,11 +77,11 @@ void CConditionBubble::RemoveLink(CConnection *link)
 {
     if(link)
     {
-        if(link->startAnchor() == Anchor::LEFT)
+        if(link->startAnchor() == Anchor::Left)
         {
             m_trueLink = 0;
         }
-        else if(link->startAnchor() == Anchor::RIGHT)
+        else if(link->startAnchor() == Anchor::Right)
         {
             m_falseLink = 0;
         }
@@ -92,14 +92,14 @@ void CConditionBubble::AddLink(CConnection *link)
 {
     if(link)
     {
-        if(link->startAnchor() == Anchor::LEFT)
+        if(link->startAnchor() == Anchor::Left)
         {
             if(m_trueLink != link)
                 delete m_trueLink;
 
             m_trueLink = link;
         }
-        else if(link->startAnchor() == Anchor::RIGHT)
+        else if(link->startAnchor() == Anchor::Right)
         {
             if(m_falseLink != link)
                 delete m_falseLink;
@@ -114,7 +114,15 @@ QList<CConnection *> CConditionBubble::links()
     return {m_trueLink, m_falseLink};
 }
 
-Chronicler::Anchor CConditionBubble::AnchorAtPosition(const QPointF &pos)
+Anchor CConditionBubble::OutputAnchorAtPosition(const QPointF &pos)
 {
+    if(pos.x() < sceneBoundingRect().center().x())
+        return Anchor::Left;
 
+    return Anchor::Right;
+}
+
+Chronicler::Anchor CConditionBubble::InputAnchorAtPosition(const QPointF &)
+{
+    return Anchor::Up;
 }

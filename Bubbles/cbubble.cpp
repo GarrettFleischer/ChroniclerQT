@@ -73,6 +73,22 @@ void CBubble::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget
     painter->drawPolygon(polygon(), Qt::WindingFill);
 }
 
+Anchor CBubble::AnchorAtPosition(const QPointF &pos)
+{
+    QPointF center = sceneBoundingRect().center();
+    qreal diff_x = qAbs(center.x() - pos.x());
+    qreal diff_y = qAbs(center.y() - pos.y());
+
+    if(pos.x() < center.x() && diff_x > diff_y)
+        return Anchor::Left;
+    if(pos.x() > center.x() && diff_x > diff_y)
+        return Anchor::Right;
+    if(pos.y() > center.y())
+        return Anchor::Down;
+
+    return Anchor::Up;
+}
+
 
 void CBubble::setFont(const QFont &font)
 {
@@ -104,4 +120,19 @@ void CBubble::RemoveConnection(CConnection *connection)
     m_connections.removeAll(connection);
 
     emit ConnectionsChanged(m_connections.length());
+}
+
+Anchor CBubble::OutputAnchorAtPosition(const QPointF &pos)
+{
+    return AnchorAtPosition(pos);
+}
+
+Anchor CBubble::InputAnchorAtPosition(const QPointF &pos)
+{
+    return AnchorAtPosition(pos);
+}
+
+void CBubble::setAllowedAnchors(int allowed)
+{
+    m_allowedAnchors = allowed;
 }

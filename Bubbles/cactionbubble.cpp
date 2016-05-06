@@ -49,7 +49,7 @@ void CActionBubble::AdjustMinSize()
 
 void CActionBubble::AddLink(CConnection *link)
 {
-    if(m_link != 0)
+    if(m_link != link)
         delete m_link;
 
     m_link = link;
@@ -69,7 +69,3 @@ QList<CConnection *> CActionBubble::links()
         return {};
 }
 
-Chronicler::Anchor CActionBubble::AnchorAtPosition(const QPointF &pos)
-{
-
-}
