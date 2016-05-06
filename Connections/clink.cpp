@@ -1,12 +1,13 @@
 #include "clink.h"
 
+#include <QTransform>
+#include <QtMath>
 
-
-CLink::CLink(Direction direction, QGraphicsItem *parent)
-    : QGraphicsPolygonItem(parent), m_hover(false), m_direction(direction), m_scale(1),
-      m_parent(dynamic_cast<CBubble *>(parent)), m_connection(NULL)
+CLink::CLink(Anchor anchor, QGraphicsItem *parent)
+    : QGraphicsPolygonItem(parent), m_hover(false), m_scale(1),
+      m_parent(dynamic_cast<CBubble *>(parent)), m_connection(0)
 {
-    UpdateShape();
+    setAnchor(anchor);
     setAcceptHoverEvents(true);
     
     setFlag(QGraphicsItem::ItemIsSelectable);
@@ -16,13 +17,17 @@ CLink::CLink(Direction direction, QGraphicsItem *parent)
     m_anim->setDuration(50);
 }
 
+void CLink::setPalette(const CPalette &palette)
+{
+    m_palette = palette;
+    update();
+}
+
 void CLink::hoverEnterEvent(QGraphicsSceneHoverEvent *)
 {
     m_anim->stop();
     m_anim->setEndValue(1.2);
     m_anim->start();
-    
-    m_hover = true;
 }
 
 void CLink::hoverLeaveEvent(QGraphicsSceneHoverEvent *)
@@ -30,8 +35,6 @@ void CLink::hoverLeaveEvent(QGraphicsSceneHoverEvent *)
     m_anim->stop();
     m_anim->setEndValue(1);
     m_anim->start();
-    
-    m_hover = false;
 }
 
 void CLink::mousePressEvent(QGraphicsSceneMouseEvent *)
@@ -39,70 +42,64 @@ void CLink::mousePressEvent(QGraphicsSceneMouseEvent *)
     emit clicked(this);
 }
 
+QVariant CLink::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value)
+{
+    if (change == QGraphicsItem::ItemPositionChange)
+        emit positionChanged();
+
+    return value;
+}
+
 void CLink::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
-//    QPen outline = (isSelected() ? QPen(QColor(255,200,0), 2) : QPen(m_lineColor, 1));
-    painter->setPen(QPen(m_lineColor, 1));
-    painter->setBrush(QBrush(m_color));
+    QPen outline = (isSelected() ? QPen(m_palette.select, 2) : QPen(m_palette.line, 1));
+    painter->setPen(outline);
+    painter->setBrush(QBrush(m_palette.fill));
     painter->drawPolygon(m_polygon, Qt::WindingFill);
 }
 
-const CConnection *CLink::connection() const
+Anchor CLink::anchor() const
 {
-    return m_connection;
+    return m_anchor;
 }
 
-void CLink::setLineColor(const QColor &lineColor)
+void CLink::setAnchor(Chronicler::Anchor anchor)
 {
-    m_lineColor = lineColor;
-    update();
+    m_anchor = anchor;
+    setPos(m_parent->boundingRect().width() * 0.5 * qCos(90 * m_anchor),
+           m_parent->boundingRect().height() * 0.5 * qSin(90 * m_anchor));
+    UpdateShape();
+}
+
+CConnection *CLink::connection()
+{
+    return m_connection;
 }
 
 void CLink::setConnection(CConnection *connection)
 {
     delete m_connection;
     m_connection = connection;
-}
-
-void CLink::setColor(const QColor &color)
-{
-    m_color = color;
-    update();
+    if(m_connection)
+    {
+        m_connection->setStartAnchor(m_anchor);
+        connect(this, SIGNAL(positionChanged()), m_connection, SLOT(UpdatePosition()));
+    }
 }
 
 void CLink::UpdateShape()
 {
-    int vert = (m_direction == Up || m_direction == Down) * 10;
-    int hor = (!vert) * 10;
-    int down = (m_direction == Down) * 10;
-    int right = (m_direction == Right) * 10;
-    QRectF b = QRectF((right - 10) * m_scale, (down - 10) * m_scale, (20 - hor) * m_scale, (20 - vert) * m_scale);
-    
+    const int size = 20;
+    QRectF b = QRectF(0, -size * m_scale * 0.5, size * m_scale * 0.7, size * m_scale);
+
     QPainterPath path;
-    switch(m_direction)
-    {
-    case Up:
-        path.moveTo(b.x(), b.y() + b.height());
-        path.lineTo(b.x()+ b.width(), b.y() + b.height());
-        break;
-        
-    case Left:
-        path.moveTo(b.x() + b.width(), b.y() + b.height());
-        path.lineTo(b.x() + b.width(), b.y());
-        break;
-        
-    case Down:
-        path.moveTo(b.x() + b.width(), b.y());
-        path.lineTo(b.x(), b.y());
-        break;
-        
-    case Right:
-        path.moveTo(b.x(), b.y());
-        path.lineTo(b.x(), b.y()+ b.height());
-        break;
-    }
-    
-    path.arcTo(b, 90 * int(m_direction), 180);
+    path.moveTo(b.topLeft());
+    path.lineTo(b.bottomLeft());
+    path.arcTo(b, 270, 180);
+
+    QTransform t;
+    t.rotate(90 * m_anchor);
+    path = t.map(path);
     
     m_polygon = path.toFillPolygon();
     setPolygon(m_polygon);

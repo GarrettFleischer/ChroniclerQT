@@ -27,12 +27,18 @@ public:
     virtual QRectF boundingRect() const;
 
     const QPointF & start() const { return m_start; }
-    void setStart(const QPointF &start);
+    void setStart(const QPointF &start, Anchor anchor = Anchor::DOWN);
 
     const QPointF & end() const { return m_end; }
-    void setEnd(const QPointF &end);
+    void setEnd(const QPointF &end, Anchor anchor = Anchor::UP);
 
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *);
+
+    Anchor startAnchor() const;
+    void setStartAnchor(const Anchor &startAnchor);
+
+    Anchor endAnchor() const;
+    void setEndAnchor(const Anchor &endAnchor);
 
 signals:
 
@@ -43,6 +49,7 @@ private:
     void UpdateShape();
 
     QPainterPath m_path;
+    QPainterPath m_arrow;
     QPointF m_start;
     QPointF m_end;
     Anchor m_startAnchor;

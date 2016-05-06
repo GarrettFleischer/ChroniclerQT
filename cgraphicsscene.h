@@ -76,21 +76,11 @@ public:
     QFont getFont() const { return m_font; }
 
     void setPalette(const CPalette &palette);
-//    QColor textColor() const { return m_textColor; }
-//    QColor itemColor() const { return m_itemColor; }
-//    QColor lineColor() const { return m_lineColor; }
-//    void setLineColor(const QColor &color);
-//    void setTextColor(const QColor &color);
-//    void setItemColor(const QColor &color);
-
 
     bool isRubberBandSelecting() const { return m_rubberBand; }
 
 public slots:
     void setMode(Mode mode);
-    
-private slots:
-//    void linkClicked(CLink *link);
 
 signals:
     void itemInserted(CBubble *item);
@@ -112,9 +102,6 @@ private:
     CLine *m_line;
     QFont m_font;
     CPalette m_palette;
-//    QColor m_textColor;
-//    QColor m_itemColor;
-//    QColor m_lineColor;
     bool m_rubberBand;
 };
 

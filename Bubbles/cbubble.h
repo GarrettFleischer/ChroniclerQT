@@ -16,6 +16,7 @@ QT_END_NAMESPACE
 
 #include "Misc/chronicler.h"
 using Chronicler::CPalette;
+using Chronicler::Anchor;
 using Chronicler::BubbleType;
 
 class CConnection;
@@ -54,6 +55,8 @@ public:
 
     virtual void AddLink(CConnection *link) = 0;
     virtual void RemoveLink(CConnection *link) = 0;
+
+    virtual Anchor AnchorAtPosition(const QPointF &pos) = 0;
 
     virtual QList<CConnection *> links() { return {}; }
 

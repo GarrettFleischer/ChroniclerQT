@@ -6,7 +6,7 @@
 namespace Chronicler
 {
 
-    enum BubbleType { Story, Condition, Action, Choice };
+    enum BubbleType { Story, Choice, Action, Condition  };
 
     enum Anchor { RIGHT, DOWN, LEFT, UP };
 

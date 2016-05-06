@@ -68,3 +68,8 @@ QList<CConnection *> CActionBubble::links()
     else
         return {};
 }
+
+Chronicler::Anchor CActionBubble::AnchorAtPosition(const QPointF &pos)
+{
+
+}

@@ -66,6 +66,11 @@ void CChoiceBubble::MoveChoice(int old_index, int new_index)
 
 }
 
+Chronicler::Anchor CChoiceBubble::AnchorAtPosition(const QPointF &pos)
+{
+
+}
+
 
 
 void CChoiceBubble::setPalette(const Chronicler::CPalette &palette)

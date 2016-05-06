@@ -12,6 +12,7 @@
 #include "Connections/cline.h"
 #include "Connections/cconnection.h"
 
+#include "Connections/clink.h"
 
 #include "Misc/chronicler.h"
 using Chronicler::Anchor;
@@ -20,10 +21,12 @@ using Chronicler::Anchor;
 CGraphicsScene::CGraphicsScene(QMenu *itemMenu, QObject *parent)
     : QGraphicsScene(parent), m_itemMenu(itemMenu), m_mode(Cursor), m_line(0), m_rubberBand(false)
 {
-    float maxsize = 15000.0;//std::numeric_limits<float>::max();
-    float minsize = -15000.0/2;//-std::numeric_limits<float>::max()/2;
+    float maxsize = 20000.0;//std::numeric_limits<float>::max();
+    float minsize = -20000.0/2;//-std::numeric_limits<float>::max()/2;
     setSceneRect(QRectF(minsize, minsize, maxsize, maxsize));
     setBackgroundBrush(QBrush(Qt::gray));//QColor(86,96,123)));
+
+    m_line = new CLine(QPointF(), QPointF());
 }
 
 void CGraphicsScene::setFont(const QFont &font)
@@ -61,6 +64,9 @@ void CGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     if (mouseEvent->button() == Qt::LeftButton)
     {
+        CBubble *clickItem = 0;
+        QList<QGraphicsItem *> clickItems = items(mouseEvent->scenePos());
+
         switch (m_mode)
         {
         case InsertStory:
@@ -76,9 +82,12 @@ void CGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
             break;
 
         case InsertLine:
-            if(items(mouseEvent->scenePos()).length() > 0)
+            for (int i = 0; i < clickItems.length() && !clickItem; ++i)
+                clickItem = qgraphicsitem_cast<CBubble *>(clickItems[i]);
+
+            if(clickItem)
             {
-                m_line = new CLine(mouseEvent->scenePos(), mouseEvent->scenePos());
+                m_line->setStart(mouseEvent->scenePos());
                 addItem(m_line);
             }
             break;
@@ -98,7 +107,7 @@ void CGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
 void CGraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
-    if (m_mode == InsertLine && m_line != 0)
+    if (m_mode == InsertLine)
         m_line->setEnd(mouseEvent->scenePos());
     else if (m_mode == Cursor)
         QGraphicsScene::mouseMoveEvent(mouseEvent);
@@ -106,7 +115,7 @@ void CGraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
 void CGraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
-    if (m_line != 0 && m_mode == InsertLine)
+    if (m_mode == InsertLine)
     {
         CBubble *startItem = 0;
         CBubble *endItem = 0;
@@ -124,20 +133,20 @@ void CGraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
             endItems.removeFirst();
         }
 
-        removeItem(m_line);
-        delete m_line;
-        m_line = 0;
+        if(items().contains(m_line))
+            removeItem(m_line);
 
-        if(startItem && endItem)
+        if(startItem && endItem && startItem != endItem)
         {
-            addItem(new CConnection(startItem, endItem, Anchor::DOWN, Anchor::UP, this));
+            Anchor start_anchor = startItem->AnchorAtPosition(m_line->start());
+            Anchor end_anchor = endItem->AnchorAtPosition(mouseEvent->scenePos());
+            addItem(new CConnection(startItem, endItem, start_anchor, end_anchor, this));
         }
     }
 
-    QGraphicsScene::mouseReleaseEvent(mouseEvent);
-
     m_rubberBand = false;
 
+    QGraphicsScene::mouseReleaseEvent(mouseEvent);
     emit leftReleased();
 }
 

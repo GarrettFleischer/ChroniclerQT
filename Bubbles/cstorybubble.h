@@ -8,6 +8,8 @@
 #include "Bubbles/cbubble.h"
 #include "Misc/ctextitem.h"
 
+class CConnection;
+
 
 class CStoryBubble : public CBubble
 {
@@ -30,6 +32,8 @@ public:
     virtual void RemoveLink(CConnection *link);
 
     virtual QList<CConnection *> links() override;
+
+    virtual Anchor AnchorAtPosition(const QPointF &pos);
 
 
 protected:

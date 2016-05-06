@@ -24,6 +24,8 @@ public:
     virtual void AddLink(CConnection *link);
     virtual QList<CConnection *> links();
 
+    virtual Anchor AnchorAtPosition(const QPointF &pos);
+
 protected:
     virtual void UpdatePolygon();
     void AdjustMinSize();

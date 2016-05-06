@@ -2,9 +2,12 @@
 
 #include <QPointF>
 #include <QGraphicsScene>
+#include <QtMath>
 
 #include "cline.h"
 #include "Bubbles/cbubble.h"
+
+#include <QDebug>
 
 CConnection::CConnection(CBubble *from, CBubble *to, Anchor anc_from, Anchor anc_to, QGraphicsScene *scn)
     : m_from(0), m_to(0)
@@ -74,19 +77,46 @@ void CConnection::setTo(CBubble *to)
 void CConnection::UpdatePosition()
 {
     if(m_from)
-        m_line->setStart(m_from->scenePos());
+    {
+        qreal angle = (startAnchor() * M_PI * 0.5);
+        m_line->setStart(QPointF(m_from->boundingRect().width() * 0.5 * qCos(angle),
+                                 m_from->boundingRect().height() * 0.5 * qSin(angle)) +
+                         m_from->scenePos(), startAnchor());
+    }
     if(m_to)
-        m_line->setEnd(m_to->scenePos());
+    {
+        qreal angle = (endAnchor() * M_PI * 0.5);
+        m_line->setEnd(QPointF(m_to->boundingRect().width() * 0.5 * qCos(angle),
+                               m_to->boundingRect().height() * 0.5 * qSin(angle)) +
+                       m_to->scenePos(), endAnchor());
+    }
 }
 
 QRectF CConnection::boundingRect() const
 {
-    if(m_line)
-        return m_line->boundingRect();
-
-    return QRectF();
+    return m_line->boundingRect();
 }
 
 void CConnection::paint(QPainter *, const QStyleOptionGraphicsItem *, QWidget *)
 {}
+
+Anchor CConnection::startAnchor() const
+{
+    return m_line->startAnchor();
+}
+
+void CConnection::setStartAnchor(Chronicler::Anchor anchor)
+{
+    m_line->setStartAnchor(anchor);
+}
+
+Anchor CConnection::endAnchor() const
+{
+    return m_line->endAnchor();
+}
+
+void CConnection::setEndAnchor(Chronicler::Anchor anchor)
+{
+    m_line->setEndAnchor(anchor);
+}
 

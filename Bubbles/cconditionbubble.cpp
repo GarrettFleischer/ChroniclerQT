@@ -5,7 +5,7 @@
 
 
 CConditionBubble::CConditionBubble(QMenu *contextMenu, const QPointF &pos, const CPalette &palette, const QFont &font, QGraphicsItem *parent)
-    : CBubble(contextMenu, pos, palette, font, parent)
+    : CBubble(contextMenu, pos, palette, font, parent), m_trueLink(0), m_falseLink(0)
 {
     m_type = Chronicler::Condition;
 
@@ -75,26 +75,46 @@ void CConditionBubble::setCondition(QString condition)
 
 void CConditionBubble::RemoveLink(CConnection *link)
 {
-    if(m_trueLink == link)
-        m_trueLink = 0;
-    if(m_falseLink == link)
-        m_falseLink = 0;
+    if(link)
+    {
+        if(link->startAnchor() == Anchor::LEFT)
+        {
+            m_trueLink = 0;
+        }
+        else if(link->startAnchor() == Anchor::RIGHT)
+        {
+            m_falseLink = 0;
+        }
+    }
 }
 
 void CConditionBubble::AddLink(CConnection *link)
 {
-    if(m_trueLink != link && m_falseLink != link)
+    if(link)
     {
-        if(!m_trueLink)
+        if(link->startAnchor() == Anchor::LEFT)
+        {
+            if(m_trueLink != link)
+                delete m_trueLink;
+
             m_trueLink = link;
-        else if(!m_falseLink)
+        }
+        else if(link->startAnchor() == Anchor::RIGHT)
+        {
+            if(m_falseLink != link)
+                delete m_falseLink;
+
             m_falseLink = link;
+        }
     }
-    else
-        delete link;
 }
 
 QList<CConnection *> CConditionBubble::links()
 {
     return {m_trueLink, m_falseLink};
+}
+
+Chronicler::Anchor CConditionBubble::AnchorAtPosition(const QPointF &pos)
+{
+
 }

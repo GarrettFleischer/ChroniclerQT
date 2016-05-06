@@ -57,7 +57,7 @@ CMainWindow::CMainWindow(QSettings *settings)
 
     m_dockManager = new CDockManager(lstModel, m_dock);
     m_dock->setWidget(m_dockManager);
-    m_dock->setVisible(false);
+    //m_dock->setVisible(false);
     m_dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 
     // load the last dock widget area from the settings
@@ -73,7 +73,8 @@ CMainWindow::CMainWindow(QSettings *settings)
     connect(m_tabView, SIGNAL(tabCloseRequested(int)),
             this, SLOT(TabClosed(int)));
 
-    m_tabView->addTab(m_homepage,"Homepage");
+    //m_tabView->addTab(m_homepage,"Homepage");
+    m_tabView->addTab(m_view, "startup.scn");
 
     setCentralWidget(m_tabView);
 

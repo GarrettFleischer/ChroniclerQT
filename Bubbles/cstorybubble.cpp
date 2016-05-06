@@ -1,7 +1,10 @@
 #include "cstorybubble.h"
 
 #include <QPainterPath>
+#include <QtMath>
+
 #include "Connections/cconnection.h"
+//#include "Connections/clink.h"
 
 
 CStoryBubble::CStoryBubble(QMenu *contextMenu, const QPointF &pos, const CPalette &palette, const QFont &font, QGraphicsItem *parent)
@@ -141,7 +144,7 @@ void CStoryBubble::RemoveLink(CConnection *link)
 
 void CStoryBubble::AddLink(CConnection *link)
 {
-    if(m_link != 0)
+    if(m_link != link)
         delete m_link;
 
     m_link = link;
@@ -153,4 +156,19 @@ QList<CConnection *> CStoryBubble::links()
         return { m_link };
     else
         return {};
+}
+
+Anchor CStoryBubble::AnchorAtPosition(const QPointF &pos)
+{
+    qreal diff_x = qAbs(scenePos().x() - pos.x());
+    qreal diff_y = qAbs(scenePos().y() - pos.y());
+
+    if(pos.x() < scenePos().x() && diff_x > diff_y)
+        return Anchor::LEFT;
+    if(pos.x() > scenePos().x() && diff_x > diff_y)
+        return Anchor::RIGHT;
+    if(pos.y() > scenePos().y())
+        return Anchor::DOWN;
+
+    return Anchor::UP;
 }

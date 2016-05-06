@@ -36,7 +36,12 @@ public:
 
     virtual QRectF boundingRect() const;
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *);
-    
+
+    Anchor startAnchor() const;
+    void setStartAnchor(Anchor anchor);
+    Anchor endAnchor() const;
+    void setEndAnchor(Anchor anchor);
+
 private:
     CBubble *m_from;
     CBubble *m_to;
