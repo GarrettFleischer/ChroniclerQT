@@ -20,9 +20,7 @@ HEADERS += \
     Bubbles/cchoicebubble.h \
     Bubbles/cconditionbubble.h \
     Bubbles/cstorybubble.h \
-    Connections/arrow.h \
     Connections/cconnection.h \
-    Connections/clink.h \
     Misc/clineedit.h \
     Misc/ctextedit.h \
     Misc/ctextitem.h \
@@ -51,9 +49,7 @@ SOURCES += \
     Bubbles/cchoicebubble.cpp \
     Bubbles/cconditionbubble.cpp \
     Bubbles/cstorybubble.cpp \
-    Connections/arrow.cpp \
     Connections/cconnection.cpp \
-    Connections/clink.cpp \
     Misc/clineedit.cpp \
     Misc/ctextedit.cpp \
     Misc/ctextitem.cpp \
