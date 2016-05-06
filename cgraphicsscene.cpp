@@ -1,5 +1,4 @@
 #include "cgraphicsscene.h"
-#include "Connections/arrow.h"
 
 #include <QTextCursor>
 #include <QGraphicsSceneMouseEvent>
@@ -8,11 +7,8 @@
 #include "Bubbles/cstorybubble.h"
 #include "Bubbles/cconditionbubble.h"
 #include "Bubbles/cchoicebubble.h"
-//#include "Connections/clink.h"
 #include "Connections/cline.h"
 #include "Connections/cconnection.h"
-
-#include "Connections/clink.h"
 
 #include "Misc/chronicler.h"
 using Chronicler::Anchor;
