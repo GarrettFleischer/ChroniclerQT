@@ -24,7 +24,7 @@ public:
 
     virtual QRectF boundingRect() const { return m_bounds; }
     virtual void Resize(const QRectF &bounds) { m_bounds = bounds; update(); }
-    QRectF textBounds(const QSizeF &minimum = QSizeF(0,0)) const;// { return m_textBounds; }
+    QRectF textBounds(const QSizeF &minimum = QSizeF(0,0)) const;
 
 private:
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *);

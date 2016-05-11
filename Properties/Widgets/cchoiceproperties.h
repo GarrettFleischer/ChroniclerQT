@@ -4,7 +4,7 @@
 #include "cpropertieswidget.h"
 
 QT_BEGIN_NAMESPACE
-class QListWidget;
+class QListView;
 QT_END_NAMESPACE
 
 class CChoiceBubble;
@@ -16,12 +16,11 @@ public:
     explicit CChoiceProperties(QStringListModel *model, QWidget *parent = 0);
 
     virtual void setBubble(CBubble *bbl);
-    virtual void setFont(const QFont &font);
 
 private:
     CChoiceBubble *m_choiceBubble;
 
-    QListWidget *m_choices;
+    QListView *m_choices;
 
 signals:
 

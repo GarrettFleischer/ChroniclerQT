@@ -5,19 +5,18 @@
 #include <QGraphicsTextItem>
 #include <QGraphicsSceneMouseEvent>
 
-#include "Bubbles/cbubble.h"
+#include "Bubbles/csinglelinkbubble.h"
 #include "Misc/ctextitem.h"
 
 class CConnection;
 
 
-class CStoryBubble : public CBubble
+class CStoryBubble : public CSingleLinkBubble
 {
     Q_OBJECT
 
 public:
     CStoryBubble(QMenu *contextMenu, const QPointF &pos, const Chronicler::CPalette &palette, const QFont &font = QFont(), QGraphicsItem *parent = 0);
-    virtual ~CStoryBubble();
 
     virtual void setFont(const QFont &font);
     virtual void setPalette(const Chronicler::CPalette &palette);
@@ -26,13 +25,6 @@ public:
 
     void setStory(QString story) { m_story->setText(story); }
     QString getStory() { return m_story->Text(); }
-
-
-    virtual void AddLink(CConnection *link);
-    virtual void RemoveLink(CConnection *link);
-
-    virtual QList<CConnection *> links() override;
-
 
 protected:
     virtual void UpdatePolygon();
@@ -50,8 +42,6 @@ private:
     bool m_resize;
     QPointF m_offset;
     QRectF m_lastBounds;
-
-    CConnection *m_link;
 };
 
 #endif // CSTORYBUBBLE_H

@@ -1,45 +1,33 @@
 #ifndef CCHOICEBUBBLE_H
 #define CCHOICEBUBBLE_H
 
+#include "clistbubble.h"
 
-#include "cbubble.h"
-#include "Misc/ctextitem.h"
+class CTextItem;
 
-class CChoiceBubble : public CBubble
+
+class CChoiceBubble : public CListBubble
 {
     Q_OBJECT
 
 public:
     CChoiceBubble(QMenu *contextMenu, const QPointF &pos, const CPalette &palette, const QFont &font = QFont(), QGraphicsItem *parent = 0);
 
-    virtual void setFont(const QFont &font);
-    virtual void setPalette(const Chronicler::CPalette &palette);
+    virtual void setPalette(const Chronicler::CPalette &palette) override;
 
-    QStringList getChoices() { return m_choiceStrings; }
-
-    void AddChoice(const QString &choice);
-    void MoveChoice(int old_index, int new_index);
+    virtual void AddLink(CConnection *link);
+    virtual void RemoveLink(CConnection *link);
+    virtual QList<CConnection *> links();
 
 protected:
-    virtual void UpdatePolygon();
-    void AdjustMinSize();
+    virtual void UpdatePolygon() override;
 
 private:
-    QList<CTextItem *> m_choices;
-    QStringList m_choiceStrings;
+    CTextItem *m_modelView;
 
+protected slots:
+    virtual void ModelUpdated() override;
 
-    // CBubble interface
-public:
-    virtual void RemoveLink(CConnection *link);
-
-    // CBubble interface
-public:
-    virtual void AddLink(CConnection *link);
-
-    // CBubble interface
-public:
-    virtual QList<CConnection *> links();
 };
 
 #endif // CCHOICEBUBBLE_H

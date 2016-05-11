@@ -15,7 +15,6 @@ public:
 
 public:
     virtual void setBubble(CBubble *bbl);
-    virtual void setFont(const QFont &font);
 
 protected:
     CConditionBubble *m_conditionBubble;

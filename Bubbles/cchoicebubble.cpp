@@ -1,33 +1,55 @@
 #include "cchoicebubble.h"
 
+#include "Misc/cstringlistmodel.h"
+#include "Misc/ctextitem.h"
+
 CChoiceBubble::CChoiceBubble(QMenu *contextMenu, const QPointF &pos, const Chronicler::CPalette &palette, const QFont &font, QGraphicsItem *parent)
-    : CBubble(contextMenu, pos, palette, font, parent)
+    : CListBubble(contextMenu, pos, palette, font, parent)
 {
     m_type = Chronicler::Choice;
 
     m_palette.fill = QColor(151,118,166);
 
-    m_choices.append(new CTextItem("", QRectF(), this));
-    m_choices[0]->SetStyle(Qt::AlignHCenter);
+    QRectF min_bounds(-m_minSize.width()/2, -m_minSize.height()/2, m_minSize.width()*2, m_minSize.height()*2);
+    m_modelView = new CTextItem("", min_bounds, this);
 
-    m_choiceStrings.append("Code");
-    m_choiceStrings.append("Eat");
-    m_choiceStrings.append("Sleep");
-    m_choiceStrings.append("In that order...");
+    QStringList test;
+    test.append("Code");
+    test.append("Eat");
+    test.append("Sleep");
+    test.append("In that order...");
 
-    AdjustMinSize();
+    m_model->setStringList(test);
 
-    setPolygon(QPolygonF(QRectF(-m_minSize.width()/2, -m_minSize.height()/2, m_minSize.width()*2, m_minSize.height()*2)));
-    UpdatePolygon();
+}
+
+void CChoiceBubble::setPalette(const Chronicler::CPalette &palette)
+{
+    CBubble::setPalette(palette);
+    m_modelView->setColor(palette.font);
 }
 
 
+void CChoiceBubble::AddLink(CConnection *link)
+{
+
+}
+
+void CChoiceBubble::RemoveLink(CConnection *link)
+{
+
+}
+
+QList<CConnection *> CChoiceBubble::links()
+{
+    return {};
+}
 
 void CChoiceBubble::UpdatePolygon()
 {
     qreal padding = 10;
-    QRectF tb = m_choices[0]->textBounds(m_minSize);
-    m_choices[0]->Resize(tb);
+    QRectF tb = m_modelView->textBounds(m_minSize);
+    m_modelView->Resize(tb);
 
     QRectF b(tb.x() - padding, tb.y() - padding,
              tb.width() + padding*2, tb.height() + padding*2);
@@ -38,51 +60,12 @@ void CChoiceBubble::UpdatePolygon()
     setPolygon(path.toFillPolygon());
 }
 
-void CChoiceBubble::AdjustMinSize()
+void CChoiceBubble::ModelUpdated()
 {
-    QFontMetrics fm(m_font);
+    QString txt;
+    for(QString action : m_model->stringList())
+        txt += action + '\n';
 
-    m_minSize.setWidth(100);
-    m_minSize.setHeight(fm.height());
-}
-
-void CChoiceBubble::setFont(const QFont &font)
-{
-    CBubble::setFont(font);
-    for(CTextItem *itm : m_choices)
-        itm->setFont(m_font);
+    m_modelView->setText(txt);
     UpdatePolygon();
-}
-
-
-void CChoiceBubble::AddChoice(const QString &choice)
-{
-    m_choices.append(new CTextItem(choice, QRectF(), this));
-    UpdatePolygon();
-}
-
-void CChoiceBubble::MoveChoice(int old_index, int new_index)
-{
-
-}
-
-void CChoiceBubble::setPalette(const Chronicler::CPalette &palette)
-{
-    CBubble::setPalette(palette);
-    for(CTextItem *itm : m_choices)
-        itm->setColor(m_palette.font);
-}
-
-
-void CChoiceBubble::RemoveLink(CConnection *link)
-{
-}
-
-void CChoiceBubble::AddLink(CConnection *link)
-{
-}
-
-QList<CConnection *> CChoiceBubble::links()
-{
-    return {};
 }

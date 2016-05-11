@@ -20,8 +20,6 @@ public:
 public:
     virtual void setBubble(CBubble *bbl);
 
-    virtual void setFont(const QFont &font);
-
 private:
     void TagSelectedText(const QString &tag);
 

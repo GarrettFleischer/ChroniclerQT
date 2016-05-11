@@ -7,8 +7,10 @@
 #include "Bubbles/cstorybubble.h"
 #include "Bubbles/cconditionbubble.h"
 #include "Bubbles/cchoicebubble.h"
+#include "Bubbles/cactionbubble.h"
 #include "Connections/cline.h"
 #include "Connections/cconnection.h"
+
 
 #include "Misc/chronicler.h"
 using Chronicler::Anchor;
@@ -153,6 +155,8 @@ void CGraphicsScene::AddBubble(BubbleType type, const QPointF &pos)
         bbl = new CStoryBubble(m_itemMenu, pos, m_palette, m_font);
     else if(type == Chronicler::Condition)
         bbl = new CConditionBubble(m_itemMenu, pos, m_palette, m_font);
+    else if(type == Chronicler::Action)
+        bbl = new CActionBubble(m_itemMenu, pos, m_palette, m_font);
     else
         bbl = new CChoiceBubble(m_itemMenu, pos, m_palette, m_font);
 

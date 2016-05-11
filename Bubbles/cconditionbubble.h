@@ -1,5 +1,5 @@
-#ifndef CACTIONBUBBLE_H
-#define CACTIONBUBBLE_H
+#ifndef CCONDITIONBUBBLE_H
+#define CCONDITIONBUBBLE_H
 
 #include "cbubble.h"
 
@@ -40,4 +40,4 @@ private:
 
 };
 
-#endif // CACTIONBUBBLE_H
+#endif // CCONDITIONBUBBLE_H

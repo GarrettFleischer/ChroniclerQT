@@ -76,7 +76,7 @@ void CBubble::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget
 Anchor CBubble::AnchorAtPosition(const QPointF &pos)
 {
     QPointF center = sceneBoundingRect().center();
-    qreal diff_x = qAbs(center.x() - pos.x()) * 0.75;
+    qreal diff_x = qAbs(center.x() - pos.x());
     qreal diff_y = qAbs(center.y() - pos.y());
 
     if(pos.x() < center.x() && diff_x > diff_y)

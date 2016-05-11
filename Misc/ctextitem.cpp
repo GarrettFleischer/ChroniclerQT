@@ -26,8 +26,8 @@ QRectF CTextItem::textBounds(const QSizeF &minimum) const
     QSizeF size(minimum);
     QStringList lines = m_text.split("\n", QString::KeepEmptyParts);
 
-    qreal height = 0;
-    foreach(QString text, lines)
+    qreal height = fm.height() * lines.length() * 1.46;
+    for(QString text : lines)
     {
         if(text.isEmpty())
             text = "W";
@@ -35,8 +35,6 @@ QRectF CTextItem::textBounds(const QSizeF &minimum) const
         qreal width = fm.width(text);
         if(width > size.width())
             size.setWidth(width);
-
-        height += fm.height();
     }
     if(height > size.height())
         size.setHeight(height);

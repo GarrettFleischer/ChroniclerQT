@@ -63,13 +63,6 @@ void CStoryProperties::setBubble(CBubble *bbl)
     }
 }
 
-
-void CStoryProperties::setFont(const QFont &font)
-{
-    CPropertiesWidget::setFont(font);
-    m_storyEdit->setFont(font);
-}
-
 void CStoryProperties::TagSelectedText(const QString &tag)
 {
     QTextCursor c = m_storyEdit->textCursor();

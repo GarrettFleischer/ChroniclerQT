@@ -8,7 +8,7 @@
 
 
 CStoryBubble::CStoryBubble(QMenu *contextMenu, const QPointF &pos, const CPalette &palette, const QFont &font, QGraphicsItem *parent)
-    : CBubble(contextMenu, pos, palette, font, parent), m_resize(false), m_link(0)
+    : CSingleLinkBubble(contextMenu, pos, palette, font, parent), m_resize(false)
 {
     m_type = Chronicler::Story;
     
@@ -27,11 +27,6 @@ CStoryBubble::CStoryBubble(QMenu *contextMenu, const QPointF &pos, const CPalett
     setAcceptHoverEvents(true);
 
     UpdatePolygon();
-}
-
-CStoryBubble::~CStoryBubble()
-{
-    delete m_link;
 }
 
 void CStoryBubble::mousePressEvent(QGraphicsSceneMouseEvent *evt)
@@ -134,27 +129,4 @@ void CStoryBubble::setPalette(const Chronicler::CPalette &palette)
     m_title->setColor(palette.font);
     m_story->setColor(palette.font);
     CBubble::setPalette(palette);
-}
-
-
-void CStoryBubble::RemoveLink(CConnection *link)
-{
-    if(m_link == link)
-        m_link = 0;
-}
-
-void CStoryBubble::AddLink(CConnection *link)
-{
-    if(m_link != link)
-        delete m_link;
-
-    m_link = link;
-}
-
-QList<CConnection *> CStoryBubble::links()
-{
-    if(m_link)
-        return { m_link };
-    else
-        return {};
 }

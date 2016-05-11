@@ -27,7 +27,6 @@ CConditionProperties::CConditionProperties(QStringListModel *model, QWidget *par
     setBubble(0);
 }
 
-
 void CConditionProperties::setBubble(CBubble *bbl)
 {
     CPropertiesWidget::setBubble(bbl);
@@ -43,14 +42,6 @@ void CConditionProperties::setBubble(CBubble *bbl)
         m_conditionEdit->setText(tr(""));
     }
 }
-
-
-void CConditionProperties::setFont(const QFont &font)
-{
-    CPropertiesWidget::setFont(font);
-    m_conditionEdit->setFont(font);
-}
-
 
 void CConditionProperties::ConditionChanged()
 {

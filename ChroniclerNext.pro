@@ -37,11 +37,13 @@ HEADERS += \
     Properties/Widgets/cpropertieswidget.h \
     Properties/Widgets/cstoryproperties.h \
     Misc/chronicler.h \
-    Bubbles/cactionbubble.h \
-    Misc/ListView/clistview.h \
-    Misc/ListView/clistmodel.h \
     csettingsview.h \
-    Misc/qactionbutton.h
+    Misc/qactionbutton.h \
+    Bubbles/csinglelinkbubble.h \
+    Bubbles/cactionbubble.h \
+    Misc/clistview.h \
+    Misc/cstringlistmodel.h \
+    Bubbles/clistbubble.h
 
 SOURCES += \
     Bubbles/cbubble.cpp \
@@ -67,8 +69,10 @@ SOURCES += \
     Properties/Widgets/cpropertieswidget.cpp \
     Properties/Widgets/cstoryproperties.cpp \
     Misc/chronicler.cpp \
-    Bubbles/cactionbubble.cpp \
-    Misc/ListView/clistview.cpp \
-    Misc/ListView/clistmodel.cpp \
     csettingsview.cpp \
-    Misc/qactionbutton.cpp
+    Misc/qactionbutton.cpp \
+    Bubbles/csinglelinkbubble.cpp \
+    Bubbles/cactionbubble.cpp \
+    Misc/clistview.cpp \
+    Misc/cstringlistmodel.cpp \
+    Bubbles/clistbubble.cpp

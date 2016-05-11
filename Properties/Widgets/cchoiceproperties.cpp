@@ -1,6 +1,7 @@
 #include "cchoiceproperties.h"
 
-#include <QListWidget>
+#include <QListView>
+#include "Misc/cstringlistmodel.h"
 
 #include "Bubbles/cchoicebubble.h"
 
@@ -8,9 +9,12 @@
 CChoiceProperties::CChoiceProperties(QStringListModel *model, QWidget *parent)
     : CPropertiesWidget(model, parent)
 {
-    m_choices = new QListWidget();
-    m_choices->setDragDropMode(QAbstractItemView::DragDrop);
+    m_choices = new QListView();
+    m_choices->setDragDropMode(QAbstractItemView::InternalMove);
     m_choices->setDefaultDropAction(Qt::MoveAction);
+    m_choices->setEditTriggers(QAbstractItemView::DoubleClicked);
+    m_choices->setDragDropOverwriteMode(false);
+    m_choices->setDropIndicatorShown(true);
 
     m_layout->addWidget(m_choices);
 }
@@ -23,18 +27,12 @@ void CChoiceProperties::setBubble(CBubble *bbl)
     m_choiceBubble = qgraphicsitem_cast<CChoiceBubble *>(bbl);
     if(m_choiceBubble)
     {
-        m_choices->clear();
-        m_choices->addItems(m_choiceBubble->getChoices());
+        m_choices->setModel(m_choiceBubble->model());
     }
     else
     {
-        m_choices->clear();
+        m_choices->setModel(0);
     }
-}
-
-void CChoiceProperties::setFont(const QFont &font)
-{
-
 }
 
 void CChoiceProperties::ChoicesChanged(const QStringList &list)

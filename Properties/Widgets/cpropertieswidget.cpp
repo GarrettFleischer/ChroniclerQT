@@ -94,14 +94,6 @@ void CPropertiesWidget::setBubble(CBubble *bbl)
     }
 }
 
-void CPropertiesWidget::setFont(const QFont &font)
-{
-    QWidget::setFont(font);
-    m_labelEdit->setFont(font);
-    m_lockEdit->setFont(font);
-    m_orderEdit->setFont(font);
-}
-
 void CPropertiesWidget::LabelChanged(QString label)
 {
     if(m_bubble)
