@@ -5,6 +5,7 @@
 #include "Widgets/cstoryproperties.h"
 #include "Widgets/cconditionproperties.h"
 #include "Widgets/cchoiceproperties.h"
+#include "Widgets/cactionproperties.h"
 #include "Bubbles/cbubble.h"
 
 
@@ -22,14 +23,18 @@ CPropertiesManager::CPropertiesManager(QStringListModel *model, QWidget *parent)
     m_choiceProperties->setEnabled(false);
     m_choiceProperties->hide();
 
+    m_actionProperties = new CActionProperties(model, parent);
+    m_actionProperties->setEnabled(false);
+    m_actionProperties->hide();
+
     
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->addWidget(m_storyProperties);
     layout->addWidget(m_conditionProperties);
     layout->addWidget(m_choiceProperties);
+    layout->addWidget(m_actionProperties);
     setLayout(layout);
 
-    //m_tabView->addTab(this, "Properties");
 //    QPalette Pal(palette());
 //    Pal.setColor(QPalette::Background, Qt::gray);//QColor(86,96,123));
 //    setAutoFillBackground(true);
@@ -51,6 +56,7 @@ void CPropertiesManager::setBubble(CBubble *bbl)
         m_storyProperties->hide();
         m_conditionProperties->hide();
         m_choiceProperties->hide();
+        m_actionProperties->hide();
 
         switch(bbl->getType())
         {
@@ -68,6 +74,11 @@ void CPropertiesManager::setBubble(CBubble *bbl)
             m_choiceProperties->setBubble(bbl);
             m_choiceProperties->show();
         break;
+
+        case Chronicler::Action:
+            m_actionProperties->setBubble(bbl);
+            m_actionProperties->show();
+        break;
         }
     }
     else
@@ -75,12 +86,16 @@ void CPropertiesManager::setBubble(CBubble *bbl)
         m_storyProperties->setBubble(0);
         m_conditionProperties->setBubble(0);
         m_choiceProperties->setBubble(0);
+        m_actionProperties->setBubble(0);
     }
 }
 
 
-void CPropertiesManager::setFont(const QFont &font)
-{
-    QWidget::setFont(font);
-    m_storyProperties->setFont(font);
-}
+//void CPropertiesManager::setFont(const QFont &font)
+//{
+//    QWidget::setFont(font);
+//    m_storyProperties->setFont(font);
+//    m_conditionProperties->setFont(font);
+//    m_choiceProperties->setFont(font);
+//    m_actionProperties->setFont(font);
+//}

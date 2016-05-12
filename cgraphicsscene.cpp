@@ -76,7 +76,11 @@ void CGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
             AddBubble(Chronicler::Choice, mouseEvent->scenePos());
             break;
 
-        case InsertLine:
+        case InsertAction:
+            AddBubble(Chronicler::Action, mouseEvent->scenePos());
+            break;
+
+        case InsertConnection:
             for (int i = 0; i < clickItems.length() && !clickItem; ++i)
                 clickItem = qgraphicsitem_cast<CBubble *>(clickItems[i]);
 
@@ -85,9 +89,6 @@ void CGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
                 m_line->setStart(mouseEvent->scenePos());
                 addItem(m_line);
             }
-            break;
-
-        default:
             break;
         }
 
@@ -102,7 +103,7 @@ void CGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
 void CGraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
-    if (m_mode == InsertLine)
+    if (m_mode == InsertConnection)
         m_line->setEnd(mouseEvent->scenePos());
     else if (m_mode == Cursor)
         QGraphicsScene::mouseMoveEvent(mouseEvent);
@@ -110,7 +111,7 @@ void CGraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
 void CGraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
-    if (m_mode == InsertLine)
+    if (m_mode == InsertConnection)
     {
         CBubble *startItem = 0;
         CBubble *endItem = 0;

@@ -10,7 +10,6 @@ CChoiceBubble::CChoiceBubble(QMenu *contextMenu, const QPointF &pos, const Chron
 
     m_palette.fill = QColor(151,118,166);
 
-
     m_modelView = new CTextItem("", QRectF(), this);
     m_modelView->SetStyle(Qt::AlignCenter);
 

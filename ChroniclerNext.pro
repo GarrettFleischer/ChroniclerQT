@@ -42,7 +42,8 @@ HEADERS += \
     Bubbles/csinglelinkbubble.h \
     Bubbles/cactionbubble.h \
     Misc/clistview.h \
-    Misc/cstringlistmodel.h
+    Misc/cstringlistmodel.h \
+    Properties/Widgets/cactionproperties.h
 
 SOURCES += \
     Bubbles/cbubble.cpp \
@@ -73,4 +74,5 @@ SOURCES += \
     Bubbles/csinglelinkbubble.cpp \
     Bubbles/cactionbubble.cpp \
     Misc/clistview.cpp \
-    Misc/cstringlistmodel.cpp
+    Misc/cstringlistmodel.cpp \
+    Properties/Widgets/cactionproperties.cpp

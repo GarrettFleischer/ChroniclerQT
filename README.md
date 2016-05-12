@@ -14,7 +14,7 @@ C++, Qt
 **Installation:**  
 1. Install Qt Creator (5.5 *not* 5.6) with the MinGW 32bit compiler.  
 2. Import ChroniclerQT project  
-3. Configure kits to use MinGW 32bit instead of MVSC.  
+3. Configure kits to use MinGW 32bit instead of MSVC.  
 4. Build->Release  
 
 **Contribution Guidelines:**  

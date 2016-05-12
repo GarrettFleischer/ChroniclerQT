@@ -28,7 +28,7 @@ public:
     virtual Anchor InputAnchorAtPosition(const QPointF &) override;
 
 protected:
-    virtual void UpdatePolygon();
+    virtual void UpdatePolygon() override;
     void AdjustMinSize();
 
 private:

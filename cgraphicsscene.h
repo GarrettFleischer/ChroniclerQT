@@ -68,7 +68,7 @@ class CGraphicsScene : public QGraphicsScene
     Q_OBJECT
 
 public:
-    enum Mode { InsertItem, InsertLine, InsertText, Cursor, InsertStory, InsertCondition, InsertChoice, InsertAction };
+    enum Mode { InsertConnection, Cursor, InsertStory, InsertCondition, InsertChoice, InsertAction };
 
     explicit CGraphicsScene(QMenu *itemMenu, QObject *parent = 0);
 

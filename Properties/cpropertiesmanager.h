@@ -11,6 +11,7 @@ QT_END_NAMESPACE
 class CStoryProperties;
 class CConditionProperties;
 class CChoiceProperties;
+class CActionProperties;
 class CBubble;
 
 class CPropertiesManager : public QWidget
@@ -20,16 +21,15 @@ class CPropertiesManager : public QWidget
 public:
     explicit CPropertiesManager(QStringListModel *model, QWidget *parent = 0);
 
-public:
     void setBubble(CBubble *bbl);
-
-    virtual void setFont(const QFont &font);
+//    virtual void setFont(const QFont &font) override;
 
 private:
 
     CStoryProperties *m_storyProperties;
     CConditionProperties *m_conditionProperties;
     CChoiceProperties *m_choiceProperties;
+    CActionProperties *m_actionProperties;
 
 signals:
 

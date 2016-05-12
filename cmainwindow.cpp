@@ -131,7 +131,7 @@ void CMainWindow::PointerGroupClicked(int id)
 {
     m_scene->setMode(CGraphicsScene::Mode(id));
 
-    if(id == int(CGraphicsScene::InsertLine))
+    if(id == int(CGraphicsScene::InsertConnection))
         m_view->setDragMode(QGraphicsView::NoDrag);
     else
         m_view->setDragMode(QGraphicsView::ScrollHandDrag);
@@ -361,7 +361,7 @@ void CMainWindow::CreateToolbars()
 
     m_pointerTypeGroup = new QButtonGroup(this);
     m_pointerTypeGroup->addButton(tb_pointer, int(CGraphicsScene::Cursor));
-    m_pointerTypeGroup->addButton(tb_link, int(CGraphicsScene::InsertLine));
+    m_pointerTypeGroup->addButton(tb_link, int(CGraphicsScene::InsertConnection));
     m_pointerTypeGroup->addButton(tb_story, int(CGraphicsScene::InsertStory));
     m_pointerTypeGroup->addButton(tb_condition, int(CGraphicsScene::InsertCondition));
     m_pointerTypeGroup->addButton(tb_choice, int(CGraphicsScene::InsertChoice));

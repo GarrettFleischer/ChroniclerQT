@@ -14,6 +14,13 @@ CActionBubble::CActionBubble(QMenu *contextMenu, const QPointF &pos, const Chron
 
     QRectF min_bounds(-m_minSize.width()/2, -m_minSize.height()/2, m_minSize.width()*2, m_minSize.height()*2);
     m_actionsView = new CTextItem("", min_bounds, this);
+    m_actionsView->SetStyle(Qt::AlignCenter);
+
+    QStringList test;
+    test.append("Action 1");
+    test.append("Action 2");
+    test.append("Action 3");
+    test.append("Action 4");
 
     m_actions = new CStringListModel(this);
     connect(m_actions, SIGNAL(rowsInserted(QModelIndex,int,int)),
@@ -27,23 +34,17 @@ CActionBubble::CActionBubble(QMenu *contextMenu, const QPointF &pos, const Chron
     connect(m_actions, SIGNAL(modelReset()),
             this, SLOT(ModelUpdated()));
 
+    m_actions->setStringList(test);
+
     AdjustMinSize();
-    setPolygon(QPolygonF(QRectF(-m_minSize.width()/2, -m_minSize.height()/2, m_minSize.width()*2, m_minSize.height()*2)));
+    m_bounds = QRectF(-m_minSize.width()/2, -m_minSize.height()/2, m_minSize.width(), m_minSize.height());
+    UpdatePolygon();
 }
 
 void CActionBubble::UpdatePolygon()
 {
-    QRectF tb = m_actionsView->textBounds(m_minSize);
-    m_actionsView->Resize(tb);
-
-    const qreal padding = 10;
-    QRectF b(tb.x() - padding, tb.y() - padding,
-             tb.width() + padding*2, tb.height() + padding*2);
-
-    QPainterPath path;
-    path.addRoundedRect(b, 10, 10);
-
-    setPolygon(path.toFillPolygon());
+    CBubble::UpdatePolygon();
+    m_actionsView->Resize(boundingRect());
 }
 
 void CActionBubble::ModelUpdated()
@@ -76,8 +77,5 @@ CStringListModel *CActionBubble::actions()
 
 void CActionBubble::AdjustMinSize()
 {
-    QFontMetrics fm(m_font);
-
-    m_minSize.setWidth(100);
-    m_minSize.setHeight(fm.height());
+    m_minSize.setHeight(m_actionsView->textBounds(m_minSize).height());
 }
