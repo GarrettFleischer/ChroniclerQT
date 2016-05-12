@@ -13,9 +13,9 @@ C++, Qt
 
 **Installation:**  
 1. Install Qt Creator (5.5 *not* 5.6) with the MinGW 32bit compiler.  
-2. Import ChroniclerQT project
-3. Configure kits to use MinGW 32bit instead of MVSC.
-3. Build->Release  
+2. Import ChroniclerQT project  
+3. Configure kits to use MinGW 32bit instead of MVSC.  
+4. Build->Release  
 
 **Contribution Guidelines:**  
 Naming convention: Prefix all .h .cpp files with "C"
@@ -29,6 +29,7 @@ Naming convention: Prefix all .h .cpp files with "C"
 * Add section for "Don't show again" warnings in settings.
 * .chronx Project saving and loading.
 * Actual HTML news page for homepage.
+* Implement project properties.
 
 **Completed**
  * Editable Story, Condition, and Action bubbles
