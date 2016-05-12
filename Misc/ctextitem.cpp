@@ -32,7 +32,7 @@ QRectF CTextItem::textBounds(const QSizeF &minimum) const
         if(text.isEmpty())
             text = "W";
 
-        qreal width = fm.width(text);
+        qreal width = fm.width(text);// * 1.3;
         if(width > size.width())
             size.setWidth(width);
     }

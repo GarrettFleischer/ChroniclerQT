@@ -27,15 +27,10 @@ void CChoiceProperties::setBubble(CBubble *bbl)
     m_choiceBubble = qgraphicsitem_cast<CChoiceBubble *>(bbl);
     if(m_choiceBubble)
     {
-        m_choices->setModel(m_choiceBubble->model());
+        m_choices->setModel(m_choiceBubble->choices());
     }
     else
     {
         m_choices->setModel(0);
     }
-}
-
-void CChoiceProperties::ChoicesChanged(const QStringList &list)
-{
-
 }

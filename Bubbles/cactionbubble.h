@@ -16,7 +16,7 @@ public:
     virtual void setPalette(const Chronicler::CPalette &palette) override;
     virtual void setFont(const QFont &font) override;
 
-    CStringListModel *model();
+    CStringListModel *actions();
 
 protected:
     virtual void UpdatePolygon() override;
@@ -24,10 +24,10 @@ protected:
 private:
     void AdjustMinSize();
 
-    CStringListModel *m_model;
+    CStringListModel *m_actions;
     CTextItem *m_actionsView;
 
-protected slots:
+private slots:
     void ModelUpdated();
 };
 

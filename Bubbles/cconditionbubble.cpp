@@ -12,13 +12,14 @@ CConditionBubble::CConditionBubble(QMenu *contextMenu, const QPointF &pos, const
     m_palette.fill = QColor(151,118,166);
 
     m_condition = new CTextItem("", QRectF(), this);
-    m_condition->SetStyle(Qt::AlignHCenter);
+    m_condition->SetStyle(Qt::AlignCenter);
     
     setCursor(Qt::PointingHandCursor);
 
     AdjustMinSize();
 
-    setPolygon(QPolygonF(QRectF(-m_minSize.width()/2, -m_minSize.height()/2, m_minSize.width(), m_minSize.height())));
+    m_bounds = QRectF(-m_minSize.width()/2, -m_minSize.height()/2, m_minSize.width(), m_minSize.height());
+    //setPolygon(QPolygonF(m_bounds));
     UpdatePolygon();
 }
 
@@ -31,24 +32,15 @@ CConditionBubble::~CConditionBubble()
 
 void CConditionBubble::UpdatePolygon()
 {
-    qreal padding = 10;
-    QRectF tb = m_condition->textBounds(m_minSize);
-    m_condition->Resize(tb);
-
-    QRectF b(tb.x() - padding, tb.y() - padding,
-             tb.width() + padding*2, tb.height() + padding*2);
-
-    QPainterPath path;
-    path.addRoundedRect(b, 10, 10);
-
-    setPolygon(path.toFillPolygon());
+    CBubble::UpdatePolygon();
+    m_condition->Resize(boundingRect());
 }
 
 void CConditionBubble::AdjustMinSize()
 {
     QFontMetrics fm(m_font);
 
-    m_minSize.setWidth(100);
+//    m_minSize.setWidth(100);
     m_minSize.setHeight(fm.height());
 }
 
@@ -56,6 +48,7 @@ void CConditionBubble::setFont(const QFont &font)
 {
     CBubble::setFont(font);
     m_condition->setFont(m_font);
+    AdjustMinSize();
     UpdatePolygon();
 }
 
@@ -70,7 +63,7 @@ void CConditionBubble::setCondition(QString condition)
     m_conditionText = condition;
     QString txt = QString("*if ( ").append(condition).append(" )");
     m_condition->setText(txt);
-    UpdatePolygon();
+    //UpdatePolygon();
 }
 
 void CConditionBubble::RemoveLink(CConnection *link)

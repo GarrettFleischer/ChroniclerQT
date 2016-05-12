@@ -34,6 +34,7 @@ private:
     QString m_text;
     QRectF m_bounds;
     QRectF m_textBounds;
+    QRectF m_calcBounds;
     QFont m_font;
     QColor m_color;
     int m_style;

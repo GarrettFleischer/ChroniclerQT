@@ -15,16 +15,16 @@ CActionBubble::CActionBubble(QMenu *contextMenu, const QPointF &pos, const Chron
     QRectF min_bounds(-m_minSize.width()/2, -m_minSize.height()/2, m_minSize.width()*2, m_minSize.height()*2);
     m_actionsView = new CTextItem("", min_bounds, this);
 
-    m_model = new CStringListModel(this);
-    connect(m_model, SIGNAL(rowsInserted(QModelIndex,int,int)),
+    m_actions = new CStringListModel(this);
+    connect(m_actions, SIGNAL(rowsInserted(QModelIndex,int,int)),
             this, SLOT(ModelUpdated()));
-    connect(m_model, SIGNAL(rowsMoved(QModelIndex,int,int,QModelIndex,int)),
+    connect(m_actions, SIGNAL(rowsMoved(QModelIndex,int,int,QModelIndex,int)),
             this, SLOT(ModelUpdated()));
-    connect(m_model, SIGNAL(rowsRemoved(QModelIndex,int,int)),
+    connect(m_actions, SIGNAL(rowsRemoved(QModelIndex,int,int)),
             this, SLOT(ModelUpdated()));
-    connect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)),
+    connect(m_actions, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)),
             this, SLOT(ModelUpdated()));
-    connect(m_model, SIGNAL(modelReset()),
+    connect(m_actions, SIGNAL(modelReset()),
             this, SLOT(ModelUpdated()));
 
     AdjustMinSize();
@@ -49,7 +49,7 @@ void CActionBubble::UpdatePolygon()
 void CActionBubble::ModelUpdated()
 {
     QString txt;
-    for(QString action : m_model->stringList())
+    for(QString action : m_actions->stringList())
         txt += action + '\n';
 
     m_actionsView->setText(txt);
@@ -69,9 +69,9 @@ void CActionBubble::setFont(const QFont &font)
     UpdatePolygon();
 }
 
-CStringListModel *CActionBubble::model()
+CStringListModel *CActionBubble::actions()
 {
-    return m_model;
+    return m_actions;
 }
 
 void CActionBubble::AdjustMinSize()

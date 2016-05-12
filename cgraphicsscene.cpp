@@ -29,16 +29,13 @@ CGraphicsScene::CGraphicsScene(QMenu *itemMenu, QObject *parent)
 
 void CGraphicsScene::setFont(const QFont &font)
 {
-    if(m_font != font)
-    {
-        m_font = font;
+    m_font = font;
 
-        for(QGraphicsItem *item : items())
-        {
-            CBubble *bbl = qgraphicsitem_cast<CBubble *>(item);
-            if(bbl)
-                bbl->setFont(m_font);
-        }
+    for(QGraphicsItem *item : items())
+    {
+        CBubble *bbl = qgraphicsitem_cast<CBubble *>(item);
+        if(bbl)
+            bbl->setFont(m_font);
     }
 }
 

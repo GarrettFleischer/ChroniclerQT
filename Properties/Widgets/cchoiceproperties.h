@@ -24,9 +24,6 @@ private:
 
 signals:
 
-protected slots:
-    virtual void ChoicesChanged(const QStringList &list);
-
 };
 
 #endif // CCHOICEPROPERTIES_H

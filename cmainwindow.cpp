@@ -44,6 +44,7 @@ CMainWindow::CMainWindow(QSettings *settings)
             this, SLOT(SceneLeftReleased()));
     connect(m_scene, SIGNAL(leftPressed()),
             this, SLOT(SceneLeftPressed()));
+    m_scene->setFont(m_settingsView->font());
 
     m_view = new CGraphicsView(m_scene);
 

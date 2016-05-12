@@ -29,19 +29,10 @@ public:
 protected:
     virtual void UpdatePolygon();
 
-    virtual void mousePressEvent(QGraphicsSceneMouseEvent *evt);
-    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *evt);
-    virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *evt);
-
-    virtual void hoverMoveEvent(QGraphicsSceneHoverEvent *evt);
-
 private:
     CTextItem * m_title;
     CTextItem * m_story;
-    
-    bool m_resize;
-    QPointF m_offset;
-    QRectF m_lastBounds;
+
 };
 
 #endif // CSTORYBUBBLE_H

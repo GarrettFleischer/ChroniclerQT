@@ -8,7 +8,7 @@
 
 
 CStoryBubble::CStoryBubble(QMenu *contextMenu, const QPointF &pos, const CPalette &palette, const QFont &font, QGraphicsItem *parent)
-    : CSingleLinkBubble(contextMenu, pos, palette, font, parent), m_resize(false)
+    : CSingleLinkBubble(contextMenu, pos, palette, font, parent)//, m_resize(false)
 {
     m_type = Chronicler::Story;
     
@@ -24,59 +24,8 @@ CStoryBubble::CStoryBubble(QMenu *contextMenu, const QPointF &pos, const CPalett
     m_story->SetStyle(Qt::AlignLeft);
     
     setCursor(Qt::PointingHandCursor);
-    setAcceptHoverEvents(true);
 
     UpdatePolygon();
-}
-
-void CStoryBubble::mousePressEvent(QGraphicsSceneMouseEvent *evt)
-{
-    CBubble::mousePressEvent(evt);
-    
-
-    QRectF b = sceneBoundingRect();
-    QRectF resizeRect(QPointF(b.x() + b.width() - 20, b.y() + b.height() - 20), QSizeF(20,20));
-
-    if(resizeRect.contains(evt->scenePos()))
-    {
-        m_resize = true;
-        m_offset = evt->scenePos();
-        m_lastBounds = boundingRect();
-    }
-}
-
-void CStoryBubble::mouseReleaseEvent(QGraphicsSceneMouseEvent *evt)
-{
-    CBubble::mouseReleaseEvent(evt);
-    setCursor(Qt::PointingHandCursor);
-    m_resize = false;
-}
-
-void CStoryBubble::mouseMoveEvent(QGraphicsSceneMouseEvent *evt)
-{
-    if(m_resize)
-    {
-        QPointF delta(evt->scenePos() - m_offset);
-        // to update boundingRect....
-        setPolygon(QRectF(m_lastBounds.x(), m_lastBounds.y(),
-                          qMax<float>(m_lastBounds.width() + delta.x(), m_minSize.width()),
-                          qMax<float>(m_lastBounds.height() + delta.y(), m_minSize.height())));
-        UpdatePolygon();
-        emit PositionChanged();
-    }
-    else
-        CBubble::mouseMoveEvent(evt);
-}
-
-void CStoryBubble::hoverMoveEvent(QGraphicsSceneHoverEvent *evt)
-{
-    QRectF b = sceneBoundingRect();
-    QRectF resizeRect(QPointF(b.x() + b.width() - 20, b.y() + b.height() - 20), QSizeF(20,20));
-
-    if(resizeRect.contains(evt->scenePos()))
-        setCursor(Qt::SizeFDiagCursor);
-    else
-        setCursor(Qt::PointingHandCursor);
 }
 
 

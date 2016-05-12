@@ -13,11 +13,12 @@
 CBubble::CBubble(QMenu *contextMenu, const QPointF &pos, const Chronicler::CPalette &palette,const QFont &font, QGraphicsItem *parent)
     : QGraphicsPolygonItem(parent), m_contextMenu(contextMenu),
       m_minSize(QSizeF(150,150)), m_order(0), m_locked(false),
-      m_font(font), m_palette(palette)
+      m_font(font), m_palette(palette), m_resize(false)
 {
     setFlag(QGraphicsItem::ItemIsMovable, true);
     setFlag(QGraphicsItem::ItemIsSelectable, true);
     setFlag(QGraphicsItem::ItemSendsGeometryChanges, true);
+    setAcceptHoverEvents(true);
     
     setCursor(Qt::PointingHandCursor);
     setPos(pos);
@@ -29,17 +30,58 @@ CBubble::~CBubble()
         delete connection;
 }
 
+void CBubble::mousePressEvent(QGraphicsSceneMouseEvent *evt)
+{
+    QRectF b = sceneBoundingRect();
+    QRectF resizeRect(QPointF(b.x() + b.width() - 20, b.y() + b.height() - 20), QSizeF(20,20));
+
+    if(resizeRect.contains(evt->scenePos()))
+    {
+        m_resize = true;
+        m_offset = evt->scenePos();
+        m_lastBounds = boundingRect();
+    }
+}
 
 void CBubble::mouseMoveEvent(QGraphicsSceneMouseEvent *evt)
 {
-    QGraphicsPolygonItem::mouseMoveEvent(evt);
-    setCursor(Qt::ClosedHandCursor);
+    if(m_resize)
+    {
+        QPointF delta(evt->scenePos() - m_offset);
+        // to update boundingRect....
+//        setPolygon(QRectF(m_lastBounds.x(), m_lastBounds.y(),
+//                          qMax<float>(m_lastBounds.width() + delta.x(), m_minSize.width()),
+//                          qMax<float>(m_lastBounds.height() + delta.y(), m_minSize.height())));
+        m_bounds = QRectF(m_lastBounds.x(), m_lastBounds.y(),
+                          qMax<float>(m_lastBounds.width() + delta.x(), m_minSize.width()),
+                          qMax<float>(m_lastBounds.height() + delta.y(), m_minSize.height()));
+        setPolygon(m_bounds);
+        UpdatePolygon();
+        emit PositionChanged();
+    }
+    else
+    {
+        QGraphicsPolygonItem::mouseMoveEvent(evt);
+        setCursor(Qt::ClosedHandCursor);
+    }
 }
 
 void CBubble::mouseReleaseEvent(QGraphicsSceneMouseEvent *evt)
 {
     QGraphicsPolygonItem::mouseReleaseEvent(evt);
     setCursor(Qt::PointingHandCursor);
+    m_resize = false;
+}
+
+void CBubble::hoverMoveEvent(QGraphicsSceneHoverEvent *evt)
+{
+    QRectF b = sceneBoundingRect();
+    QRectF resizeRect(QPointF(b.x() + b.width() - 20, b.y() + b.height() - 20), QSizeF(20,20));
+
+    if(resizeRect.contains(evt->scenePos()))
+        setCursor(Qt::SizeFDiagCursor);
+    else
+        setCursor(Qt::PointingHandCursor);
 }
 
 
@@ -71,6 +113,20 @@ void CBubble::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget
     painter->setPen(outline);
     painter->setBrush(QBrush(m_palette.fill));
     painter->drawPolygon(polygon(), Qt::WindingFill);
+}
+
+void CBubble::UpdatePolygon()
+{
+    QPointF padding(10, 10);
+
+    QRectF b(m_bounds.topLeft(), m_bounds.bottomRight() + padding);
+
+    QPainterPath path;
+    path.setFillRule(Qt::WindingFill);
+    path.addRoundedRect(b, 10, 10);
+    path.addRect(QRectF(b.center(), b.bottomRight())); // Bottom right corner not rounded
+
+    setPolygon(path.simplified().toFillPolygon());
 }
 
 Anchor CBubble::AnchorAtPosition(const QPointF &pos)

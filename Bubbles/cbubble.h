@@ -66,14 +66,17 @@ public:
 
 
 protected:
-    virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *evt);
-    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *evt);
+    virtual void mousePressEvent(QGraphicsSceneMouseEvent *evt) override;
+    virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *evt) override;
+    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *evt) override;
+
+    virtual void hoverMoveEvent(QGraphicsSceneHoverEvent *evt) override;
     
     virtual void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
     virtual QVariant itemChange(GraphicsItemChange change, const QVariant &value);
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *);
 
-    virtual void UpdatePolygon() = 0;
+    virtual void UpdatePolygon();
 
 
     BubbleType m_type;
@@ -94,6 +97,10 @@ protected:
 
     int m_allowedAnchors;
 
+    bool m_resize;
+    QPointF m_offset;
+    QRectF m_lastBounds;
+
 private:
     Anchor AnchorAtPosition(const QPointF &pos);
     
@@ -101,6 +108,7 @@ signals:
     void Selected(QGraphicsItem *item);
     void ConnectionsChanged(int);
     void PositionChanged();
+
 };
 
 #endif // CBUBBLE_H
