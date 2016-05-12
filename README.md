@@ -3,36 +3,41 @@
 Chronicler is a cross-platform visual code editor for [ChoiceScript](https://www.choiceofgames.com/make-your-own-games/choicescript-intro/). It allows both beginners and veteran novelists alike to design interactive fiction with a flowchart-like layout rather than typing code in a text editor.
 
 **Technologies:**  
-C++, Qt, QML, Javascript
+C++, Qt
 
 **Screenshots:**  
 [Choice of the Dragon](https://www.choiceofgames.com/dragon/) example Chronicler project.  
-![](https://dl.dropboxusercontent.com/s/y6ygh2ma8bkyjwq/Chronicler1.png?dl=0)  
-![](https://dl.dropboxusercontent.com/s/12unpg8wvym6bix/Chronicler7.png?dl=0)  
-![](https://dl.dropboxusercontent.com/s/s4qjfcttlua7tu1/Chronicler5.png?dl=0)  
+![](https://www.dropbox.com/s/eyinct3xuxvnzg0/Chronicler2_051216_1.png?dl=1)  
+![](https://www.dropbox.com/s/e07s82ayi48xwbs/Chronicler2_051216_2.png?dl=1)  
+![](https://www.dropbox.com/s/rn2odnysk0n62ju/Chronicler2_051216_3.png?dl=1)  
 
 **Installation:**  
-1. Install Qt Creator (5.5)  
-2. Import ChroniclerQT project  
+1. Install Qt Creator (5.5 *not* 5.6) with the MinGW 32bit compiler.  
+2. Import ChroniclerQT project
+3. Configure kits to use MinGW 32bit instead of MVSC.
 3. Build->Release  
 
 **Contribution Guidelines:**  
-Naming convention: Prefix all .h .cpp and .qml files with "C"
+Naming convention: Prefix all .h .cpp files with "C"
 
 **TODO:**  
 * Implement all existing features of GM:S version in Qt
- * Editable Story/Condition/Choice\*/Action\* bubbles
- * Links between bubbles
+ * Choice bubbles
  * .chron file import
  * CS code generation
  * CS code import
-* Save "Don't show again" warnings in settings.
+* Add section for "Don't show again" warnings in settings.
+* .chronx Project saving and loading.
+* Actual HTML news page for homepage.
 
-\* - not yet implemented.
+**Completed**
+ * Editable Story, Condition, and Action bubbles
+ * Links between bubbles.
+ * Settings menu
 
 **Bugs:**  
 * Mouse cursor in improper state when adding connections to the scene
-* Font changes only apply to existing objects
+* Font changes only apply to existing bubbles
 
 **Contributors:**  
 [Garrett Fleischer](https://www.linkedin.com/in/garrett-fleischer-57a230b7)
