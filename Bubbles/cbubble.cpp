@@ -10,6 +10,13 @@
 #include "Connections/cconnection.h"
 
 
+CBubble::CBubble(QGraphicsItem *parent)
+    : QGraphicsPolygonItem(parent), m_contextMenu(0),
+      m_minSize(QSizeF(150,150)), m_order(0), m_locked(false),
+      m_font(QFont()), m_palette(CPalette()), m_resize(false)
+{}
+
+
 CBubble::CBubble(QMenu *contextMenu, const QPointF &pos, const Chronicler::CPalette &palette,const QFont &font, QGraphicsItem *parent)
     : QGraphicsPolygonItem(parent), m_contextMenu(contextMenu),
       m_minSize(QSizeF(150,150)), m_order(0), m_locked(false),
@@ -83,13 +90,16 @@ void CBubble::hoverMoveEvent(QGraphicsSceneHoverEvent *evt)
 
 void CBubble::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 {
-    if(!isSelected())
+    if(m_contextMenu)
     {
-        scene()->clearSelection();
-        setSelected(true);
-    }
+        if(!isSelected())
+        {
+            scene()->clearSelection();
+            setSelected(true);
+        }
 
-    m_contextMenu->exec(event->screenPos());
+        m_contextMenu->exec(event->screenPos());
+    }
 }
 
 

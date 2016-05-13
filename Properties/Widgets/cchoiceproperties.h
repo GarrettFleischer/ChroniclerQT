@@ -24,6 +24,10 @@ private:
 
 signals:
 
+private slots:
+    void UpPressed();
+    void DownPressed();
+
 };
 
 #endif // CCHOICEPROPERTIES_H

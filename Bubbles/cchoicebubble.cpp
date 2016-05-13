@@ -13,19 +13,11 @@ CChoiceBubble::CChoiceBubble(QMenu *contextMenu, const QPointF &pos, const Chron
 
     m_palette.fill = QColor(151,118,166);
 
-//    m_modelView = new CTextItem("", QRectF(), this);
-//    m_modelView->SetStyle(Qt::AlignCenter);
-
-//    QStringList test;
-//    test.append("Code");
-//    test.append("Eat");
-//    test.append("Sleep");
-//    test.append("In that order...");
     choiceList test;
-    test.append(new CChoice(contextMenu, pos, palette, font, this, "Code"));
-    test.append(new CChoice(contextMenu, pos, palette, font, this, "Eat"));
-    test.append(new CChoice(contextMenu, pos, palette, font, this, "Sleep"));
-    test.append(new CChoice(contextMenu, pos, palette, font, this, "In that order..."));
+    test.append(new CChoice(m_palette, font, this, "Code"));
+    test.append(new CChoice(m_palette, font, this, "Eat"));
+    test.append(new CChoice(m_palette, font, this, "Sleep"));
+    test.append(new CChoice(m_palette, font, this, "In that order..."));
 
     m_choices = new CChoiceModel(choiceList(), this);
     connect(m_choices, SIGNAL(rowsInserted(QModelIndex,int,int)),
@@ -49,7 +41,8 @@ CChoiceBubble::CChoiceBubble(QMenu *contextMenu, const QPointF &pos, const Chron
 void CChoiceBubble::setPalette(const Chronicler::CPalette &palette)
 {
     CBubble::setPalette(palette);
-//    m_modelView->setColor(palette.font);
+    for(CChoice *choice : m_choices->choices())
+        choice->setPalette(palette);
 }
 
 void CChoiceBubble::setFont(const QFont &font)
@@ -92,9 +85,12 @@ void CChoiceBubble::UpdatePolygon()
 
     for(CChoice *choice : choices)
     {
-        choice->setWidth(boundingRect().width() - 12);
-        choice->setPos(5, height);
-        height += choice->boundingRect().height();
+        if(choice)
+        {
+            choice->setWidth(boundingRect().width() - 12);
+            choice->setPos(5, height);
+            height += choice->boundingRect().height();
+        }
     }
 }
 
@@ -118,31 +114,16 @@ void CChoiceBubble::ModelUpdated()
 
     for(CChoice *choice : choices)
     {
-        choice->setPos(0, height);
-        height += choice->boundingRect().height();
+        if(choice)
+        {
+            choice->setPos(0, height);
+            height += choice->boundingRect().height();
+        }
     }
-
-//    for(int i = 0; i < choices.length(); ++i)
-//    {
-//        if(i < choices.length())
-//        {
-//            m_choiceBubbles[i]->setChoice(choices[i]);
-//            m_choiceBubbles[i]->setPos(0, height);
-//            height += m_choiceBubbles[i]->boundingRect().height();
-//        }
-//        else
-//        {
-//            QPointF pos(10, height);
-//            CChoice *c = new CChoice(m_contextMenu, pos, m_palette, m_font, this);
-//            c->setChoice(choices[i]);
-//            connect(this, SIGNAL(PositionChanged()), c, SIGNAL(PositionChanged()));
-//            m_choiceBubbles.append(c);
-//            height += c->boundingRect().height();
-//        }
-//    }
 
     AdjustMinSize();
     UpdatePolygon();
+    emit PositionChanged();
 }
 
 
