@@ -1,7 +1,7 @@
 #include "cchoiceproperties.h"
 
 #include <QListView>
-#include "Misc/cstringlistmodel.h"
+#include "Misc/cchoicemodel.h"
 
 #include "Bubbles/cchoicebubble.h"
 

@@ -3,7 +3,7 @@
 
 #include "cbubble.h"
 
-class CStringListModel;
+class CChoiceModel;
 class CChoice;
 
 class CChoiceBubble : public CBubble
@@ -11,6 +11,8 @@ class CChoiceBubble : public CBubble
     Q_OBJECT
 
 public:
+    typedef QList<CChoice *> choiceList;
+
     CChoiceBubble(QMenu *contextMenu, const QPointF &pos, const CPalette &palette, const QFont &font = QFont(), QGraphicsItem *parent = 0);
 
     virtual void setPalette(const Chronicler::CPalette &palette) override;
@@ -23,7 +25,7 @@ public:
     virtual void RemoveLink(CConnection *);
     virtual QList<CConnection *> links();
 
-    CStringListModel *choices();
+    CChoiceModel *choices();
 
 protected:
     virtual void UpdatePolygon() override;
@@ -31,8 +33,7 @@ protected:
 private:
     virtual void AdjustMinSize();
 
-    CStringListModel *m_choices;
-    QList<CChoice *> m_choiceBubbles;
+    CChoiceModel *m_choices;
 
 private slots:
     void ModelUpdated();

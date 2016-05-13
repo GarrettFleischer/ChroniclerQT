@@ -10,13 +10,15 @@
 #include <QGraphicsSceneMouseEvent>
 
 
-CChoice::CChoice(QMenu *contextMenu, const QPointF &pos, const Chronicler::CPalette &palette, const QFont &font, QGraphicsItem *parent)
+CChoice::CChoice(QMenu *contextMenu, const QPointF &pos, const Chronicler::CPalette &palette, const QFont &font, QGraphicsItem *parent, const QString &choice)
     : CSingleLinkBubble(contextMenu, pos, palette, font, parent)
 {
     setFlag(QGraphicsItem::ItemIsMovable, false);
     setFlag(QGraphicsItem::ItemIsSelectable, false);
 
-    m_choice = new CTextItem("", m_bounds, this);
+    connect(qgraphicsitem_cast<CBubble *>(parent), SIGNAL(PositionChanged()), this, SIGNAL(PositionChanged()));
+
+    m_choice = new CTextItem(choice, m_bounds, this);
     m_choice->SetStyle(Qt::AlignCenter);
 
     AdjustMinSize();

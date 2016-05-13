@@ -43,7 +43,8 @@ HEADERS += \
     Bubbles/cactionbubble.h \
     Misc/clistview.h \
     Misc/cstringlistmodel.h \
-    Properties/Widgets/cactionproperties.h
+    Properties/Widgets/cactionproperties.h \
+    Misc/cchoicemodel.h
 
 SOURCES += \
     Bubbles/cbubble.cpp \
@@ -75,4 +76,5 @@ SOURCES += \
     Bubbles/cactionbubble.cpp \
     Misc/clistview.cpp \
     Misc/cstringlistmodel.cpp \
-    Properties/Widgets/cactionproperties.cpp
+    Properties/Widgets/cactionproperties.cpp \
+    Misc/cchoicemodel.cpp
