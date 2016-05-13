@@ -119,3 +119,19 @@ void CChoiceModel::MoveDown(const int index)
     if(index >= 0 && index < m_choices.length() - 1)
         MoveUp(index + 1);
 }
+
+void CChoiceModel::AddItem(CChoice *choice)
+{
+    const int index = m_choices.length();
+    beginInsertRows(QModelIndex(), index, index);
+    m_choices.append(choice);
+    endInsertRows();
+}
+
+void CChoiceModel::RemoveItem(const int index)
+{
+    beginRemoveRows(QModelIndex(), index, index);
+    delete m_choices[index];
+    m_choices.removeAt(index);
+    endRemoveRows();
+}

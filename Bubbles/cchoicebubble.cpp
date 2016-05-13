@@ -75,6 +75,7 @@ CChoiceModel *CChoiceBubble::choices()
 
 void CChoiceBubble::UpdatePolygon()
 {
+    m_bounds.setHeight(qMax(m_bounds.height(), m_minSize.height()));
     CBubble::UpdatePolygon();
 
     choiceList choices = m_choices->choices();

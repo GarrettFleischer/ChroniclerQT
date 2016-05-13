@@ -32,6 +32,8 @@ public:
 
     void MoveUp(const int index);
     void MoveDown(const int index);
+    void AddItem(CChoice *choice);
+    void RemoveItem(const int index);
 
 private:
     QList<CChoice *> m_choices;

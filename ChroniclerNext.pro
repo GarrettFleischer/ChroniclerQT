@@ -44,7 +44,8 @@ HEADERS += \
     Misc/clistview.h \
     Misc/cstringlistmodel.h \
     Properties/Widgets/cactionproperties.h \
-    Misc/cchoicemodel.h
+    Misc/cchoicemodel.h \
+    Properties/Widgets/clistpropertieswidget.h
 
 SOURCES += \
     Bubbles/cbubble.cpp \
@@ -77,4 +78,5 @@ SOURCES += \
     Misc/clistview.cpp \
     Misc/cstringlistmodel.cpp \
     Properties/Widgets/cactionproperties.cpp \
-    Misc/cchoicemodel.cpp
+    Misc/cchoicemodel.cpp \
+    Properties/Widgets/clistpropertieswidget.cpp

@@ -24,5 +24,10 @@
         <file>images/icn_exit.png</file>
         <file>images/icn_trash.png</file>
         <file>images/icn_info.png</file>
+        <file>images/icn_undo.png</file>
+        <file>images/icn_redo.png</file>
+        <file>images/icn_add.png</file>
+        <file>images/icn_up.png</file>
+        <file>images/icn_down.png</file>
     </qresource>
 </RCC>

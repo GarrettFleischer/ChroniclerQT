@@ -1,17 +1,14 @@
 #ifndef CCHOICEPROPERTIES_H
 #define CCHOICEPROPERTIES_H
 
-#include "cpropertieswidget.h"
-
-QT_BEGIN_NAMESPACE
-class QListView;
-QT_END_NAMESPACE
+#include "clistpropertieswidget.h"
 
 class CChoiceBubble;
 
-class CChoiceProperties : public CPropertiesWidget
+class CChoiceProperties : public CListPropertiesWidget
 {
     Q_OBJECT
+
 public:
     explicit CChoiceProperties(QStringListModel *model, QWidget *parent = 0);
 
@@ -20,14 +17,16 @@ public:
 private:
     CChoiceBubble *m_choiceBubble;
 
-    QListView *m_choices;
+//    QListView *m_choices;
 
-signals:
 
-private slots:
-    void UpPressed();
-    void DownPressed();
 
+    // CListPropertiesWidget interface
+protected slots:
+    virtual void MoveUp() override;
+    virtual void MoveDown() override;
+    virtual void AddItem() override;
+    virtual void RemoveItem() override;
 };
 
 #endif // CCHOICEPROPERTIES_H
