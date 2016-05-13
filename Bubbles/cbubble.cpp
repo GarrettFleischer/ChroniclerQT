@@ -48,10 +48,6 @@ void CBubble::mouseMoveEvent(QGraphicsSceneMouseEvent *evt)
     if(m_resize)
     {
         QPointF delta(evt->scenePos() - m_offset);
-        // to update boundingRect....
-//        setPolygon(QRectF(m_lastBounds.x(), m_lastBounds.y(),
-//                          qMax<float>(m_lastBounds.width() + delta.x(), m_minSize.width()),
-//                          qMax<float>(m_lastBounds.height() + delta.y(), m_minSize.height())));
         m_bounds = QRectF(m_lastBounds.x(), m_lastBounds.y(),
                           qMax<float>(m_lastBounds.width() + delta.x(), m_minSize.width()),
                           qMax<float>(m_lastBounds.height() + delta.y(), m_minSize.height()));

@@ -59,6 +59,9 @@ void CGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     if (mouseEvent->button() == Qt::LeftButton)
     {
+        for(QGraphicsItem *item : selectedItems())
+            item->setSelected(false);
+
         CBubble *clickItem = 0;
         QList<QGraphicsItem *> clickItems = items(mouseEvent->scenePos());
 
@@ -136,7 +139,8 @@ void CGraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
         {
             Anchor start_anchor = startItem->OutputAnchorAtPosition(m_line->start());
             Anchor end_anchor = endItem->InputAnchorAtPosition(mouseEvent->scenePos());
-            addItem(new CConnection(startItem, endItem, start_anchor, end_anchor, this));
+            if(start_anchor != Anchor::None && end_anchor != Anchor::None)
+                addItem(new CConnection(startItem, endItem, start_anchor, end_anchor, this));
         }
     }
 

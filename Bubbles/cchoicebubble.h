@@ -4,8 +4,7 @@
 #include "cbubble.h"
 
 class CStringListModel;
-class CTextItem;
-
+class CChoice;
 
 class CChoiceBubble : public CBubble
 {
@@ -17,8 +16,11 @@ public:
     virtual void setPalette(const Chronicler::CPalette &palette) override;
     virtual void setFont(const QFont &font) override;
 
-    virtual void AddLink(CConnection *link);
-    virtual void RemoveLink(CConnection *link);
+    virtual Chronicler::Anchor OutputAnchorAtPosition(const QPointF &) override;
+    virtual Chronicler::Anchor InputAnchorAtPosition(const QPointF &pos) override;
+
+    virtual void AddLink(CConnection *);
+    virtual void RemoveLink(CConnection *);
     virtual QList<CConnection *> links();
 
     CStringListModel *choices();
@@ -30,11 +32,10 @@ private:
     virtual void AdjustMinSize();
 
     CStringListModel *m_choices;
-    CTextItem *m_modelView;
+    QList<CChoice *> m_choiceBubbles;
 
 private slots:
     void ModelUpdated();
-
 };
 
 #endif // CCHOICEBUBBLE_H

@@ -39,8 +39,6 @@ void CConditionBubble::UpdatePolygon()
 void CConditionBubble::AdjustMinSize()
 {
     QFontMetrics fm(m_font);
-
-//    m_minSize.setWidth(100);
     m_minSize.setHeight(fm.height());
 }
 
