@@ -46,6 +46,8 @@ void CConnection::setFrom(CBubble *from)
     {
         m_from->AddLink(this);
         connect(m_from, SIGNAL(PositionChanged()), this, SLOT(UpdatePosition()));
+
+        m_line->setPalette(m_from->getPalette());
     }
 
     UpdatePosition();
@@ -82,8 +84,7 @@ void CConnection::UpdatePosition()
         QPointF pos = m_from->sceneBoundingRect().center();
         QSizeF size = m_from->sceneBoundingRect().size();
         m_line->setStart(pos + QPointF(size.width() * 0.5 * qCos(angle),
-                                       size.height() * 0.5 * qSin(angle)),
-                         startAnchor());
+                                       size.height() * 0.5 * qSin(angle)));
     }
     if(m_to)
     {
@@ -91,8 +92,7 @@ void CConnection::UpdatePosition()
         QPointF pos = m_to->sceneBoundingRect().center();
         QSizeF size = m_to->sceneBoundingRect().size();
         m_line->setEnd(pos + QPointF(size.width() * 0.5 * qCos(angle),
-                                     size.height() * 0.5 * qSin(angle)),
-                       endAnchor());
+                                     size.height() * 0.5 * qSin(angle)));
     }
 }
 

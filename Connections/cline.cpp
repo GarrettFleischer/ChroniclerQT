@@ -42,27 +42,38 @@ QRectF CLine::boundingRect() const
     return bounds;
 }
 
-void CLine::setStart(const QPointF &start, Anchor anchor)
+Chronicler::CPalette CLine::palette() const
+{
+    return m_palette;
+}
+
+void CLine::setPalette(const Chronicler::CPalette &palette)
+{
+    m_palette = palette;
+    update();
+}
+
+void CLine::setStart(const QPointF &start)
 {
     m_start = start;
-    m_startAnchor = anchor;
     UpdateShape();
 }
 
-void CLine::setEnd(const QPointF &end, Chronicler::Anchor anchor)
+void CLine::setEnd(const QPointF &end)
 {
     m_end = end;
-    m_endAnchor = anchor;
     UpdateShape();
 }
 
 void CLine::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
-    painter->setPen(QPen(QBrush(Qt::black), m_width));
+    painter->setPen(QPen(QBrush(m_palette.line), m_width));
+    painter->drawPath(m_path);
+    painter->setPen(QPen(QBrush(m_palette.fill), m_width/2));
     painter->drawPath(m_path);
 
-    painter->setPen(QPen(QBrush(Qt::black), 1));
-    painter->setBrush(QBrush(Qt::black));
+//    painter->setPen(QPen(QBrush(m_palette.line), 1));
+    painter->setBrush(QBrush(m_palette.fill));
     painter->drawPath(m_arrow);
 }
 
@@ -76,6 +87,7 @@ void CLine::UpdateShape()
 
     QPointF p1(m_start.x(), m_start.y());
     QPointF p2(m_end.x(), m_end.y());
+    m_offset = sqrt(pow(p2.x() - p1.x(), 2) + pow(p2.y() - p1.y(), 2)) * 0.5;
     p1.rx() += (qRound(qCos(start_angle)) * m_offset);
     p1.ry() += (qRound(qSin(start_angle)) * m_offset);
     p2.rx() += (qRound(qCos(end_angle)) * m_offset);

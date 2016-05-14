@@ -12,6 +12,7 @@ QT_END_NAMESPACE
 
 #include "Misc/chronicler.h"
 using Chronicler::Anchor;
+using Chronicler::CPalette;
 
 
 class CLine : public QObject, public QGraphicsItem
@@ -26,11 +27,14 @@ public:
     virtual QPainterPath shape() const;
     virtual QRectF boundingRect() const;
 
+    CPalette palette() const;
+    void setPalette(const CPalette &palette);
+
     const QPointF & start() const { return m_start; }
-    void setStart(const QPointF &start, Anchor anchor = Anchor::Down);
+    void setStart(const QPointF &start);
 
     const QPointF & end() const { return m_end; }
-    void setEnd(const QPointF &end, Anchor anchor = Anchor::Up);
+    void setEnd(const QPointF &end);
 
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *);
 
@@ -48,14 +52,15 @@ public slots:
 private:
     void UpdateShape();
 
-    QPainterPath m_path;
-    QPainterPath m_arrow;
-    QPointF m_start;
-    QPointF m_end;
-    Anchor m_startAnchor;
-    Anchor m_endAnchor;
-    int m_offset;
-    float m_width;
+    QPainterPath    m_path;
+    QPainterPath    m_arrow;
+    QPointF         m_start;
+    QPointF         m_end;
+    Anchor          m_startAnchor;
+    Anchor          m_endAnchor;
+    CPalette        m_palette;
+    int             m_offset;
+    float           m_width;
 
 };
 

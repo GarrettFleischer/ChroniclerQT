@@ -15,6 +15,8 @@
 #include "Misc/chronicler.h"
 using Chronicler::Anchor;
 
+#include <QDebug>
+
 
 CGraphicsScene::CGraphicsScene(QMenu *editMenu, QObject *parent)
     : QGraphicsScene(parent), m_editMenu(editMenu), m_mode(Cursor), m_line(0), m_rubberBand(false)
@@ -90,9 +92,13 @@ void CGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
             if(clickItem)
             {
                 Anchor out = clickItem->OutputAnchorAtPosition(mouseEvent->scenePos());
-                m_line->setStart(mouseEvent->scenePos());
-                m_line->setStartAnchor(out);
-                addItem(m_line);
+                if(out != Anchor::None)
+                {
+                    m_line->setStart(mouseEvent->scenePos());
+                    m_line->setStartAnchor(out);
+                    m_line->setPalette(clickItem->getPalette());
+                    addItem(m_line);
+                }
             }
             break;
         }
@@ -109,7 +115,18 @@ void CGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 void CGraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     if (m_mode == InsertConnection)
+    {
+        CBubble *hoverItem = 0;
+        QList<QGraphicsItem *> hoverItems = items(mouseEvent->scenePos());
+
+        for (int i = 0; i < hoverItems.length() && !hoverItem; ++i)
+            hoverItem = qgraphicsitem_cast<CBubble *>(hoverItems[i]);
+
+        if(hoverItem)
+            m_line->setEndAnchor(hoverItem->InputAnchorAtPosition(mouseEvent->scenePos()));
+
         m_line->setEnd(mouseEvent->scenePos());
+    }
     else if (m_mode == Cursor)
         QGraphicsScene::mouseMoveEvent(mouseEvent);
 }
@@ -136,14 +153,16 @@ void CGraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
         }
 
         if(items().contains(m_line))
+        {
             removeItem(m_line);
 
-        if(startItem && endItem && startItem != endItem)
-        {
-            Anchor start_anchor = startItem->OutputAnchorAtPosition(m_line->start());
-            Anchor end_anchor = endItem->InputAnchorAtPosition(mouseEvent->scenePos());
-            if(start_anchor != Anchor::None && end_anchor != Anchor::None)
-                addItem(new CConnection(startItem, endItem, start_anchor, end_anchor, this));
+            if(startItem && endItem && startItem != endItem)
+            {
+                Anchor start_anchor = m_line->startAnchor();
+                Anchor end_anchor = m_line->endAnchor();
+                if(start_anchor != Anchor::None && end_anchor != Anchor::None)
+                    addItem(new CConnection(startItem, endItem, start_anchor, end_anchor, this));
+            }
         }
     }
 
