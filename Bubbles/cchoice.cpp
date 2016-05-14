@@ -73,10 +73,34 @@ void CChoice::AdjustMinSize()
     m_minSize.setHeight(fm.height());
 }
 
+
+void CChoice::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
+{
+    CSingleLinkBubble::contextMenuEvent(event);
+    event->ignore();
+}
+
 void CChoice::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     CSingleLinkBubble::mousePressEvent(event);
-//    parentItem()->setSelected(true);
+    event->ignore();
+}
+
+void CChoice::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
+{
+    CSingleLinkBubble::mouseMoveEvent(event);
+    event->ignore();
+}
+
+void CChoice::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
+{
+    CSingleLinkBubble::hoverMoveEvent(event);
+    event->ignore();
+}
+
+void CChoice::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+{
+    CSingleLinkBubble::mouseReleaseEvent(event);
     event->ignore();
 }
 
@@ -88,32 +112,11 @@ Chronicler::Anchor CChoice::OutputAnchorAtPosition(const QPointF &pos)
     return Chronicler::Right;
 }
 
+// Inputs are applied to the CChoiceBubble that contains this choice.
 Chronicler::Anchor CChoice::InputAnchorAtPosition(const QPointF &)
 {
     return Chronicler::None;
 }
 
 
-void CChoice::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
-{
-    CSingleLinkBubble::contextMenuEvent(event);
-    event->ignore();
-}
 
-void CChoice::hoverMoveEvent(QGraphicsSceneHoverEvent *event)
-{
-    CSingleLinkBubble::hoverMoveEvent(event);
-    event->ignore();
-}
-
-void CChoice::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
-{
-    CSingleLinkBubble::mouseMoveEvent(event);
-    event->ignore();
-}
-
-void CChoice::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
-{
-    CSingleLinkBubble::mouseReleaseEvent(event);
-    event->ignore();
-}

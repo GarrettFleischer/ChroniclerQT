@@ -62,7 +62,6 @@ void CListPropertiesWidget::SelectedChanged(QModelIndex current)
     }
 }
 
-
 void CListPropertiesWidget::setBubble(CBubble *bbl)
 {
     CPropertiesWidget::setBubble(bbl);

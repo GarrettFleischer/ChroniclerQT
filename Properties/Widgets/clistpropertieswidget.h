@@ -2,13 +2,14 @@
 #define CLISTPROPERTIESWIDGET_H
 
 #include "cpropertieswidget.h"
-
 #include <QModelIndex>
 
 QT_BEGIN_NAMESPACE
 class QListView;
 class QPushButton;
 QT_END_NAMESPACE
+
+class CListModel;
 
 
 class CListPropertiesWidget : public CPropertiesWidget
@@ -21,7 +22,8 @@ public:
     virtual void setBubble(CBubble *bbl) override;
 
 protected:
-    QListView *m_modelView;
+    QListView  *m_modelView;
+    CListModel *m_listModel;
 
     QPushButton *m_upButton;
     QPushButton *m_downButton;

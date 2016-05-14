@@ -7,30 +7,47 @@
 
 
 CActionProperties::CActionProperties(QStringListModel *model, QWidget *parent)
-    : CPropertiesWidget(model, parent)
-{
-    m_actions = new QListView();
-    m_actions->setDragDropMode(QAbstractItemView::InternalMove);
-    m_actions->setDefaultDropAction(Qt::MoveAction);
-    m_actions->setEditTriggers(QAbstractItemView::DoubleClicked);
-    m_actions->setDragDropOverwriteMode(false);
-    m_actions->setDropIndicatorShown(true);
-
-    m_layout->addWidget(m_actions);
-}
+    : CListPropertiesWidget(model, parent)
+{}
 
 
 void CActionProperties::setBubble(CBubble *bbl)
 {
-    CPropertiesWidget::setBubble(bbl);
+    CListPropertiesWidget::setBubble(bbl);
 
     m_actionBubble = qgraphicsitem_cast<CActionBubble *>(bbl);
     if(m_actionBubble)
     {
-        m_actions->setModel(m_actionBubble->actions());
+        m_modelView->setModel(m_actionBubble->actions());
     }
     else
     {
-        m_actions->setModel(0);
+        m_modelView->setModel(0);
     }
+}
+
+
+void CActionProperties::MoveUp()
+{
+    const int index = m_modelView->currentIndex().row();
+    m_actionBubble->actions()->MoveUp(index);
+    m_modelView->setCurrentIndex(m_actionBubble->actions()->index(index - 1));
+}
+
+void CActionProperties::MoveDown()
+{
+    const int index = m_modelView->currentIndex().row();
+    m_actionBubble->actions()->MoveDown(index);
+    m_modelView->setCurrentIndex(m_actionBubble->actions()->index(index + 1));
+}
+
+void CActionProperties::AddItem()
+{
+    m_actionBubble->actions()->AddItem("");
+    m_modelView->edit(QModelIndex(m_modelView->model()->index(m_modelView->model()->rowCount() - 1, 0)));
+}
+
+void CActionProperties::RemoveItem()
+{
+    m_actionBubble->actions()->RemoveItem(m_modelView->currentIndex().row());
 }

@@ -21,8 +21,7 @@ C++, Qt
 Naming convention: Prefix all .h .cpp files with "C"
 
 **TODO:**  
-* Implement all existing features of GM:S version in Qt
- * Choice bubbles
+* Implement all existing features of GM:S version in Qt  
  * .chron file import
  * CS code generation
  * CS code import
@@ -32,7 +31,7 @@ Naming convention: Prefix all .h .cpp files with "C"
 * Implement project properties.
 
 **Completed**
- * Editable Story, Condition, and Action bubbles
+ * Editable Story, Condition, Choice, and Action bubbles
  * Links between bubbles.
  * Settings menu
 

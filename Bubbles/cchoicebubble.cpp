@@ -34,7 +34,7 @@ CChoiceBubble::CChoiceBubble(QMenu *contextMenu, const QPointF &pos, const Chron
     m_choices->setChoices(test);
 
     AdjustMinSize();
-    m_bounds = QRectF(0, 0, m_minSize.width(), m_minSize.height());
+    m_bounds = QRectF(-m_minSize.width() / 2, -m_minSize.height() / 2, m_minSize.width(), m_minSize.height());
     UpdatePolygon();
 }
 
@@ -53,19 +53,20 @@ void CChoiceBubble::setFont(const QFont &font)
 }
 
 
+// Links are not attached directly, but rather to the CChoice sub-bubbles.
 void CChoiceBubble::AddLink(CConnection *)
-{
-
-}
-
+{}
 void CChoiceBubble::RemoveLink(CConnection *)
-{
-
-}
+{}
 
 QList<CConnection *> CChoiceBubble::links()
 {
-    return {};
+    QList<CConnection *> links;
+
+    for(CChoice *choice : m_choices->choices())
+        links.append(choice->links());
+
+    return links;
 }
 
 CChoiceModel *CChoiceBubble::choices()
@@ -86,12 +87,9 @@ void CChoiceBubble::UpdatePolygon()
 
     for(CChoice *choice : choices)
     {
-        if(choice)
-        {
-            choice->setWidth(boundingRect().width() - 12);
-            choice->setPos(5, height);
-            height += choice->boundingRect().height();
-        }
+        choice->setWidth(boundingRect().width() - 5);
+        choice->setPos(m_bounds.x() + 2, height);
+        height += choice->boundingRect().height();
     }
 }
 
@@ -114,13 +112,7 @@ void CChoiceBubble::ModelUpdated()
     qreal height = 0;
 
     for(CChoice *choice : choices)
-    {
-        if(choice)
-        {
-            choice->setPos(0, height);
-            height += choice->boundingRect().height();
-        }
-    }
+        height += choice->boundingRect().height();
 
     AdjustMinSize();
     UpdatePolygon();

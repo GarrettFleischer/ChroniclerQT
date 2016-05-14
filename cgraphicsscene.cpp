@@ -7,17 +7,17 @@
 #include "Bubbles/cstorybubble.h"
 #include "Bubbles/cconditionbubble.h"
 #include "Bubbles/cchoicebubble.h"
+#include "Bubbles/cchoice.h"
 #include "Bubbles/cactionbubble.h"
 #include "Connections/cline.h"
 #include "Connections/cconnection.h"
-
 
 #include "Misc/chronicler.h"
 using Chronicler::Anchor;
 
 
-CGraphicsScene::CGraphicsScene(QMenu *itemMenu, QObject *parent)
-    : QGraphicsScene(parent), m_itemMenu(itemMenu), m_mode(Cursor), m_line(0), m_rubberBand(false)
+CGraphicsScene::CGraphicsScene(QMenu *editMenu, QObject *parent)
+    : QGraphicsScene(parent), m_editMenu(editMenu), m_mode(Cursor), m_line(0), m_rubberBand(false)
 {
     float maxsize = 20000.0;//std::numeric_limits<float>::max();
     float minsize = -20000.0/2;//-std::numeric_limits<float>::max()/2;
@@ -89,7 +89,9 @@ void CGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
             if(clickItem)
             {
+                Anchor out = clickItem->OutputAnchorAtPosition(mouseEvent->scenePos());
                 m_line->setStart(mouseEvent->scenePos());
+                m_line->setStartAnchor(out);
                 addItem(m_line);
             }
             break;
@@ -128,7 +130,8 @@ void CGraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
         QList<QGraphicsItem *> endItems = items(m_line->end());
         while (endItems.count() && !endItem)
         {
-            endItem = qgraphicsitem_cast<CBubble *>(endItems.first());
+            if(!dynamic_cast<CChoice *>(endItems.first()))
+                endItem = qgraphicsitem_cast<CBubble *>(endItems.first());
             endItems.removeFirst();
         }
 
@@ -154,13 +157,13 @@ void CGraphicsScene::AddBubble(BubbleType type, const QPointF &pos)
 {
     CBubble *bbl;
     if(type == Chronicler::Story)
-        bbl = new CStoryBubble(m_itemMenu, pos, m_palette, m_font);
+        bbl = new CStoryBubble(m_editMenu, pos, m_palette, m_font);
     else if(type == Chronicler::Condition)
-        bbl = new CConditionBubble(m_itemMenu, pos, m_palette, m_font);
+        bbl = new CConditionBubble(m_editMenu, pos, m_palette, m_font);
     else if(type == Chronicler::Action)
-        bbl = new CActionBubble(m_itemMenu, pos, m_palette, m_font);
+        bbl = new CActionBubble(m_editMenu, pos, m_palette, m_font);
     else
-        bbl = new CChoiceBubble(m_itemMenu, pos, m_palette, m_font);
+        bbl = new CChoiceBubble(m_editMenu, pos, m_palette, m_font);
 
     connect(bbl, SIGNAL(Selected(QGraphicsItem*)), this, SIGNAL(itemSelected(QGraphicsItem*)));
     addItem(bbl);
