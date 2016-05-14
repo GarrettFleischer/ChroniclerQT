@@ -126,6 +126,8 @@ void CBubble::UpdatePolygon()
     QPointF padding(10, 10);
 
     QRectF b(m_bounds.topLeft(), m_bounds.bottomRight() + padding);
+    b.setWidth(qMax(b.width(), m_minSize.width()));
+    b.setHeight(qMax(b.height(), m_minSize.height()));
 
     QPainterPath path;
     path.setFillRule(Qt::WindingFill);

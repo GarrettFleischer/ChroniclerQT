@@ -29,6 +29,7 @@ Naming convention: Prefix all .h .cpp files with "C"
 * .chronx Project saving and loading.
 * Actual HTML news page for homepage.
 * Implement project properties.
+* Add Palette creator to toolbar.
 
 **Completed**
  * Editable Story, Condition, Choice, and Action bubbles

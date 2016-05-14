@@ -11,7 +11,8 @@ CChoiceBubble::CChoiceBubble(QMenu *contextMenu, const QPointF &pos, const Chron
 {
     m_type = Chronicler::Choice;
 
-    m_palette.fill = QColor(151,118,166);
+    //m_palette.fill = QColor(151,118,166);
+    m_palette.fill = QColor(104, 160, 210);
 
     choiceList test;
     test.append(new CChoice(m_palette, font, this, "Code"));

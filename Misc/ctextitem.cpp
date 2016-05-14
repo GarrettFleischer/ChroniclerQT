@@ -26,7 +26,7 @@ QRectF CTextItem::textBounds(const QSizeF &minimum) const
     QSizeF size(minimum);
     QStringList lines = m_text.split("\n", QString::KeepEmptyParts);
 
-    qreal height = fm.height() * lines.length() * 1.46;
+    qreal height = fm.height() * lines.length();// * 1.46;
     for(QString text : lines)
     {
         if(text.isEmpty())

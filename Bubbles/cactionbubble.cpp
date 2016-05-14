@@ -1,6 +1,7 @@
 #include "cactionbubble.h"
 
 #include <QFontMetrics>
+#include <QRectF>
 #include "Connections/cconnection.h"
 #include "Misc/ctextitem.h"
 #include "Misc/cstringlistmodel.h"
@@ -10,11 +11,10 @@ CActionBubble::CActionBubble(QMenu *contextMenu, const QPointF &pos, const Chron
 {
     m_type = Chronicler::Action;
 
-    m_palette.fill = QColor(151,118,166);
+    m_palette.fill = QColor(161,88,136);
 
-    QRectF min_bounds(-m_minSize.width()/2, -m_minSize.height()/2, m_minSize.width()*2, m_minSize.height()*2);
-    m_actionsView = new CTextItem("", min_bounds, this);
-    m_actionsView->SetStyle(Qt::AlignCenter);
+    m_actionsView = new CTextItem("", QRectF(), this);
+    m_actionsView->SetStyle(Qt::AlignAbsolute | Qt::AlignVCenter);
 
     QStringList test;
     test.append("Action 1");
@@ -44,16 +44,19 @@ CActionBubble::CActionBubble(QMenu *contextMenu, const QPointF &pos, const Chron
 void CActionBubble::UpdatePolygon()
 {
     CBubble::UpdatePolygon();
-    m_actionsView->Resize(boundingRect());
+    QRectF b = boundingRect();
+    const int off = 10;
+    m_actionsView->Resize(QRectF(b.x() + off, b.y() + off, b.width() - off * 2, b.height() - off * 2));
 }
 
 void CActionBubble::ModelUpdated()
 {
     QString txt;
     for(QString action : m_actions->stringList())
-        txt += action + '\n';
+        txt += " " + action + '\n';
 
     m_actionsView->setText(txt);
+    AdjustMinSize();
     UpdatePolygon();
 }
 
@@ -77,5 +80,5 @@ CStringListModel *CActionBubble::actions()
 
 void CActionBubble::AdjustMinSize()
 {
-    m_minSize.setHeight(m_actionsView->textBounds(m_minSize).height());
+    m_minSize.setHeight(m_actionsView->textBounds(QSizeF(100,100)).height());
 }

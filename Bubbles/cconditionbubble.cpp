@@ -17,9 +17,7 @@ CConditionBubble::CConditionBubble(QMenu *contextMenu, const QPointF &pos, const
     setCursor(Qt::PointingHandCursor);
 
     AdjustMinSize();
-
     m_bounds = QRectF(-m_minSize.width()/2, -m_minSize.height()/2, m_minSize.width(), m_minSize.height());
-    //setPolygon(QPolygonF(m_bounds));
     UpdatePolygon();
 }
 
@@ -61,7 +59,8 @@ void CConditionBubble::setCondition(QString condition)
     m_conditionText = condition;
     QString txt = QString("*if ( ").append(condition).append(" )");
     m_condition->setText(txt);
-    //UpdatePolygon();
+    AdjustMinSize();
+    UpdatePolygon();
 }
 
 void CConditionBubble::RemoveLink(CConnection *link)
