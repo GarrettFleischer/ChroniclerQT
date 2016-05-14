@@ -119,9 +119,12 @@ void CGraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
         CBubble *hoverItem = 0;
         QList<QGraphicsItem *> hoverItems = items(mouseEvent->scenePos());
 
-        for (int i = 0; i < hoverItems.length() && !hoverItem; ++i)
-            hoverItem = qgraphicsitem_cast<CBubble *>(hoverItems[i]);
-
+        while (hoverItems.count() && !hoverItem)
+        {
+            if(!dynamic_cast<CChoice *>(hoverItems.first()))
+                hoverItem = qgraphicsitem_cast<CBubble *>(hoverItems.first());
+            hoverItems.removeFirst();
+        }
         if(hoverItem)
             m_line->setEndAnchor(hoverItem->InputAnchorAtPosition(mouseEvent->scenePos()));
 
