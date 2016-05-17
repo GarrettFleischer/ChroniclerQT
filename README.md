@@ -30,6 +30,7 @@ Naming convention: Prefix all .h .cpp files with "C"
 * Actual HTML news page for homepage.
 * Implement project properties.
 * Add Palette creator to toolbar.
+* Add playtest and debugging tools to toolbar.
 
 **Completed**
  * Editable Story, Condition, Choice, and Action bubbles
