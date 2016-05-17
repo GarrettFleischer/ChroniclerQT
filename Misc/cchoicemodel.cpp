@@ -9,6 +9,10 @@
 #include "Bubbles/cchoice.h"
 
 
+CChoiceModel::CChoiceModel(QObject *parent)
+    : QAbstractListModel(parent)
+{}
+
 CChoiceModel::CChoiceModel(const QList<CChoice *> &choices, QObject *parent)
     : QAbstractListModel(parent), m_choices(choices)
 {}

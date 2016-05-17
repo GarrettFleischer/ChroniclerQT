@@ -55,7 +55,7 @@ CMainWindow::CMainWindow(QSettings *settings)
     connect(m_dock, SIGNAL(dockLocationChanged(Qt::DockWidgetArea)),
             this, SLOT(DockAreaChanged(Qt::DockWidgetArea)));
 
-    m_dockManager = new CDockManager(lstModel, m_dock);
+    m_dockManager = new CDockManager(lstModel, m_editMenu, m_dock);
     m_dock->setWidget(m_dockManager);
     m_dock->setVisible(false);
     m_dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);

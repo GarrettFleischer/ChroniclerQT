@@ -23,7 +23,6 @@ public:
 
 protected:
     QListView  *m_modelView;
-    CListModel *m_listModel;
 
     QPushButton *m_upButton;
     QPushButton *m_downButton;

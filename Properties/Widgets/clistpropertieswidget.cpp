@@ -68,4 +68,5 @@ void CListPropertiesWidget::setBubble(CBubble *bbl)
 
     m_upButton->setEnabled(false);
     m_downButton->setEnabled(false);
+    m_removeButton->setEnabled(false);
 }

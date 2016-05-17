@@ -17,11 +17,6 @@ public:
 private:
     CChoiceBubble *m_choiceBubble;
 
-//    QListView *m_choices;
-
-
-
-    // CListPropertiesWidget interface
 protected slots:
     virtual void MoveUp() override;
     virtual void MoveDown() override;

@@ -41,6 +41,17 @@ void CGraphicsScene::setFont(const QFont &font)
     }
 }
 
+QString CGraphicsScene::name()
+{
+    return m_name;
+}
+
+void CGraphicsScene::setName(const QString &name)
+{
+    m_name = name;
+    emit nameChanged();
+}
+
 void CGraphicsScene::setPalette(const CPalette &palette)
 {
     m_palette = palette;

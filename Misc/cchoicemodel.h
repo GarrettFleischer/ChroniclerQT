@@ -13,6 +13,7 @@ class CChoiceModel : public QAbstractListModel
     Q_OBJECT
 
 public:
+    explicit CChoiceModel(QObject *parent = 0);
     explicit CChoiceModel(const QList<CChoice *> &choices, QObject *parent = 0);
 
     virtual int rowCount(const QModelIndex &) const override;

@@ -7,6 +7,7 @@
 QT_BEGIN_NAMESPACE
 class QTabWidget;
 class QStringListModel;
+class QMenu;
 QT_END_NAMESPACE
 
 class CPropertiesManager;
@@ -19,7 +20,7 @@ class CDockManager : public QWidget
     Q_OBJECT
 
 public:
-    explicit CDockManager(QStringListModel *model, QWidget *parent = 0);
+    explicit CDockManager(QStringListModel *model, QMenu *editMenu, QWidget *parent = 0);
 
     virtual QSize sizeHint() const;
 

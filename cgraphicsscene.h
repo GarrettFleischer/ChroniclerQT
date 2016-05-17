@@ -38,8 +38,8 @@
 **
 ****************************************************************************/
 
-#ifndef DIAGRAMSCENE_H
-#define DIAGRAMSCENE_H
+#ifndef CGRAPHICSSCENE_H
+#define CGRAPHICSSCENE_H
 
 #include <QGraphicsScene>
 
@@ -75,18 +75,12 @@ public:
     void setFont(const QFont &font);
     QFont getFont() const { return m_font; }
 
+    QString name();
+    void setName(const QString &name);
+
     void setPalette(const CPalette &palette);
 
     bool isRubberBandSelecting() const { return m_rubberBand; }
-
-public slots:
-    void setMode(Mode mode);
-
-signals:
-    void itemInserted(CBubble *item);
-    void itemSelected(QGraphicsItem *item);
-    void leftPressed();
-    void leftReleased();
 
 protected:
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
@@ -96,6 +90,7 @@ protected:
 private:
     void AddBubble(BubbleType type, const QPointF &pos);
 
+    QString m_name;
     QMenu *m_editMenu;
     Mode m_mode;
     QPointF m_startPoint;
@@ -103,10 +98,17 @@ private:
     QFont m_font;
     CPalette m_palette;
     bool m_rubberBand;
+
+signals:
+    void itemInserted(CBubble *item);
+    void itemSelected(QGraphicsItem *item);
+    void leftPressed();
+    void leftReleased();
+    void nameChanged();
+
+public slots:
+    void setMode(Mode mode);
+
 };
 
-
-
-
-
-#endif // DIAGRAMSCENE_H
+#endif // CGRAPHICSSCENE_H

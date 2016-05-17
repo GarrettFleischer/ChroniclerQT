@@ -7,7 +7,7 @@
 #include "cpropertiesmanager.h"
 #include "cprojectview.h"
 
-CDockManager::CDockManager(QStringListModel *model, QWidget *parent)
+CDockManager::CDockManager(QStringListModel *model, QMenu *editMenu, QWidget *parent)
     : QWidget(parent)
 {
     setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Ignored);
@@ -16,7 +16,7 @@ CDockManager::CDockManager(QStringListModel *model, QWidget *parent)
     m_tabView->setTabPosition(QTabWidget::South);
 
     m_properties = new CPropertiesManager(model);
-    m_project = new CProjectView();
+    m_project = new CProjectView(editMenu);
 
     m_tabView->addTab(m_project, "Project");
     m_tabView->addTab(m_properties, "Properties");
