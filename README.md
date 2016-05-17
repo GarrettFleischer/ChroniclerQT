@@ -20,8 +20,7 @@ C++, Qt
 **Contribution Guidelines:**  
 Naming convention: Prefix all .h .cpp files with "C"
 
-**TODO:**  
- -- *NOTE:* This section moved to https://github.com/GarrettFleischer/ChroniclerQT/issues
+-- ***NOTE:*** TODO, BUGS, and COMPLETE sections moved to https://github.com/GarrettFleischer/ChroniclerQT/issues
 
 **Contributors:**  
 [Garrett Fleischer](https://www.linkedin.com/in/garrett-fleischer-57a230b7)
