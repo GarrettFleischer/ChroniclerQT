@@ -21,25 +21,7 @@ C++, Qt
 Naming convention: Prefix all .h .cpp files with "C"
 
 **TODO:**  
-* Implement all existing features of GM:S version in Qt  
- * .chron file import
- * CS code generation
- * CS code import
-* Add section for "Don't show again" warnings in settings.
-* .chronx Project saving and loading.
-* Actual HTML news page for homepage.
-* Implement project properties.
-* Add Palette creator to toolbar.
-* Add playtest and debugging tools to toolbar.
-
-**Completed**
- * Editable Story, Condition, Choice, and Action bubbles
- * Links between bubbles.
- * Settings menu
-
-**Bugs:**  
-* Mouse cursor in improper state when adding connections to the scene
-* Font changes only apply to existing bubbles
+ -- *NOTE:* This section moved to https://github.com/GarrettFleischer/ChroniclerQT/issues
 
 **Contributors:**  
 [Garrett Fleischer](https://www.linkedin.com/in/garrett-fleischer-57a230b7)
