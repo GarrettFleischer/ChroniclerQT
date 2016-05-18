@@ -1,11 +1,11 @@
 #include "chronicler.h"
 
-static Chronicler::SharedWidgets shared_singleton = Chronicler::SharedWidgets();
+static Chronicler::SharedInstances shared_singleton = Chronicler::SharedInstances();
 
 namespace Chronicler
 {
 
-    SharedWidgets &shared()
+    SharedInstances &shared()
     {
         return shared_singleton;
     }

@@ -72,6 +72,10 @@ void CGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     if (mouseEvent->button() == Qt::LeftButton)
     {
+        if(!(mouseEvent->modifiers() & Qt::ControlModifier) && selectedItems().size() == 1)
+            for(QGraphicsItem *item : items())
+                item->setSelected(false);
+
         CBubble *clickItem = 0;
         QList<QGraphicsItem *> clickItems = items(mouseEvent->scenePos());
 
@@ -108,6 +112,9 @@ void CGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
                     addItem(m_line);
                 }
             }
+            break;
+
+        case Cursor:
             break;
         }
 

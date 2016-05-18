@@ -38,7 +38,7 @@ namespace Chronicler
 
 
     // Do NOT instantiate this struct, use shared() singleton access.
-    struct SharedWidgets
+    struct SharedInstances
     {
         QTabWidget *sceneTabs;
 
@@ -69,7 +69,7 @@ namespace Chronicler
         QAction *showHomepageAction;
     };
 
-    SharedWidgets &shared();
+    SharedInstances &shared();
 
 }
 

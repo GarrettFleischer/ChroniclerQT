@@ -93,7 +93,6 @@ private slots:
     void ImportProject();
     void ShowHomepage();
     void ShowAbout();
-    void SceneLeftPressed();
     void SceneLeftReleased();
     void TabClosed(int);
     void DockAreaChanged(Qt::DockWidgetArea);

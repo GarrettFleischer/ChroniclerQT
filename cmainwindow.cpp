@@ -45,8 +45,6 @@ CMainWindow::CMainWindow(QSettings *settings)
             this, SLOT(ItemSelected(QGraphicsItem*)));
     connect(m_scene, SIGNAL(leftReleased()),
             this, SLOT(SceneLeftReleased()));
-    connect(m_scene, SIGNAL(leftPressed()),
-            this, SLOT(SceneLeftPressed()));
     m_scene->setFont(shared().settingsView->font());
 
     m_view = new CGraphicsView(m_scene);
@@ -194,12 +192,6 @@ void CMainWindow::ShowHomepage()
     shared().sceneTabs->setCurrentWidget(shared().homepage);
 }
 
-
-void CMainWindow::SceneLeftPressed()
-{
-    //shared().dockManager->setBubble(0, true);
-}
-
 void CMainWindow::SceneLeftReleased()
 {
     if(!shared().dock->isHidden())
@@ -211,7 +203,7 @@ void CMainWindow::SceneLeftReleased()
         shared().dockManager->setBubble(bbl);
     }
     else
-        shared().dockManager->setBubble(0);
+        shared().dockManager->setBubble(0, selected.size());
 }
 
 void CMainWindow::TabClosed(int index)
@@ -221,7 +213,7 @@ void CMainWindow::TabClosed(int index)
         if(shared().settingsView->pendingChanges())
         {
             QCheckBox dontShow("Remember my choice and don't show again.");
-            dontShow.blockSignals(true);
+            dontShow.blockSignals(true); // performance
             QMessageBox msgBox;
             msgBox.setText("Settings have been modified.");
             msgBox.setInformativeText("Do you wish to apply these changes?");
