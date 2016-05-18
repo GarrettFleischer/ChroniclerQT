@@ -47,6 +47,7 @@ CProjectView::CProjectView(QMenu *editMenu, QWidget *parent)
     m_modelView->setModel(m_sceneModel);
     m_modelView->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::EditKeyPressed);
     connect(m_modelView, SIGNAL(clicked(QModelIndex)), this, SLOT(SelectedChanged(QModelIndex)));
+    connect(m_sceneModel, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), this, SLOT(DataChanged(QModelIndex,QModelIndex,QVector<int>)));
 
     QHBoxLayout *hl_viewButtons = new QHBoxLayout();
     hl_viewButtons->addWidget(m_modelView);
@@ -93,6 +94,11 @@ void CProjectView::SelectedChanged(QModelIndex current)
         m_downButton->setEnabled(false);
         m_removeButton->setEnabled(false);
     }
+}
+
+void CProjectView::DataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)
+{
+
 }
 
 void CProjectView::MoveUp()

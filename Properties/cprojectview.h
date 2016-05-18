@@ -48,8 +48,12 @@ private:
     // TODO
     // member variable for project history
 
+signals:
+    sceneSelected(CGraphicsScene *);
+
 private slots:
     void SelectedChanged(QModelIndex current);
+    void DataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
 
     void MoveUp();
     void MoveDown();

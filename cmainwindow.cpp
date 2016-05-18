@@ -16,6 +16,9 @@
 #include "Properties/cdockmanager.h"
 #include "csettingsview.h"
 
+#include "Misc/chronicler.h"
+using Chronicler::shared;
+
 
 const int InsertTextButton = 10;
 
@@ -27,15 +30,15 @@ CMainWindow::CMainWindow(QSettings *settings)
     setUnifiedTitleAndToolBarOnMac(true);
 
     // Load the settings...
-    m_settingsView = new CSettingsView(settings);
-    connect(m_settingsView, SIGNAL(SettingsChanged()),
+    shared().settingsView = new CSettingsView(settings);
+    connect(shared().settingsView, SIGNAL(SettingsChanged()),
             this, SLOT(SettingsChanged()));
     SettingsChanged();
 
     CreateActions();
     CreateMenus();
 
-    m_scene = new CGraphicsScene(m_editMenu, this);
+    m_scene = new CGraphicsScene(shared().editMenu, this);
     connect(m_scene, SIGNAL(itemInserted(CBubble*)),
             this, SLOT(ItemInserted(CBubble*)));
     connect(m_scene, SIGNAL(itemSelected(QGraphicsItem*)),
@@ -44,39 +47,39 @@ CMainWindow::CMainWindow(QSettings *settings)
             this, SLOT(SceneLeftReleased()));
     connect(m_scene, SIGNAL(leftPressed()),
             this, SLOT(SceneLeftPressed()));
-    m_scene->setFont(m_settingsView->font());
+    m_scene->setFont(shared().settingsView->font());
 
     m_view = new CGraphicsView(m_scene);
 
     QStringList lst = QStringList() << "*set" << "*action" << "*create" << "*if" << "*elseif" << "${name}" << "${title}" << "${strength}";
     QStringListModel * lstModel = new QStringListModel(lst, this);
 
-    m_dock = new QDockWidget("Project", this);
-    connect(m_dock, SIGNAL(dockLocationChanged(Qt::DockWidgetArea)),
+    shared().dock = new QDockWidget("Project", this);
+    connect(shared().dock, SIGNAL(dockLocationChanged(Qt::DockWidgetArea)),
             this, SLOT(DockAreaChanged(Qt::DockWidgetArea)));
 
-    m_dockManager = new CDockManager(lstModel, m_editMenu, m_dock);
-    m_dock->setWidget(m_dockManager);
-    m_dock->setVisible(false);
-    m_dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
+    shared().dockManager = new CDockManager(lstModel, shared().editMenu, shared().dock);
+    shared().dock->setWidget(shared().dockManager);
+    shared().dock->setVisible(false);
+    shared().dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
 
     // load the last dock widget area from the settings
-    Qt::DockWidgetArea area = static_cast<Qt::DockWidgetArea>(m_settingsView->settings()->value("MainWindow/DockArea",
+    Qt::DockWidgetArea area = static_cast<Qt::DockWidgetArea>(shared().settingsView->settings()->value("MainWindow/DockArea",
                                                                                                 static_cast<int>(Qt::LeftDockWidgetArea)).toInt());
-    addDockWidget(area, m_dock);
+    addDockWidget(area, shared().dock);
 
-    m_homepage = new CHomepage(this, m_settingsView, m_newProjectAction, m_openProjectAction, m_importProjectAction);
+    shared().homepage = new CHomepage(this, shared().settingsView, shared().newProjectAction, shared().openProjectAction, shared().importProjectAction);
 
-    m_tabView = new QTabWidget(this);
-    m_tabView->setMovable(true);
-    m_tabView->setTabsClosable(true);
-    connect(m_tabView, SIGNAL(tabCloseRequested(int)),
+    shared().sceneTabs = new QTabWidget(this);
+    shared().sceneTabs->setMovable(true);
+    shared().sceneTabs->setTabsClosable(true);
+    connect(shared().sceneTabs, SIGNAL(tabCloseRequested(int)),
             this, SLOT(TabClosed(int)));
 
-    m_tabView->addTab(m_homepage,"Homepage");
-    //m_tabView->addTab(m_view, "startup.scn");
+    shared().sceneTabs->addTab(shared().homepage, "Homepage");
+    //shared().sceneTabs->addTab(m_view, "startup.scn");
 
-    setCentralWidget(m_tabView);
+    setCentralWidget(shared().sceneTabs);
 
     CreateToolbars();
 
@@ -87,12 +90,12 @@ void CMainWindow::LoadProject(const QString &filepath)
 {
     setWindowTitle("Chronicler - " + QFileInfo(filepath).baseName());
 
-    m_dock->setVisible(true);
-    m_dock->setWindowTitle(QFileInfo(filepath).fileName());
-    m_tabView->addTab(m_view, "startup.scn");
-    m_tabView->setCurrentWidget(m_view);
+    shared().dock->setVisible(true);
+    shared().dock->setWindowTitle(QFileInfo(filepath).fileName());
+    shared().sceneTabs->addTab(m_view, "startup.scn");
+    shared().sceneTabs->setCurrentWidget(m_view);
 
-    m_tabView->removeTab(m_tabView->indexOf(m_homepage));
+    shared().sceneTabs->removeTab(shared().sceneTabs->indexOf(shared().homepage));
 }
 
 
@@ -111,7 +114,7 @@ void CMainWindow::keyReleaseEvent(QKeyEvent *evt)
     if(evt->key() == Qt::Key_Shift)
     {
         m_ShiftHeld = false;
-        m_pointerTypeGroup->button(int(CGraphicsScene::Cursor))->setChecked(true);
+        shared().pointerTypeGroup->button(int(CGraphicsScene::Cursor))->setChecked(true);
         m_scene->setMode(CGraphicsScene::Cursor);
         m_view->setDragMode(QGraphicsView::ScrollHandDrag);
     }
@@ -120,7 +123,7 @@ void CMainWindow::keyReleaseEvent(QKeyEvent *evt)
 
 void CMainWindow::DeleteItem()
 {
-    m_dockManager->setBubble(0);
+    shared().dockManager->setBubble(0);
 
     foreach (QGraphicsItem *item, m_scene->selectedItems())
         delete item;
@@ -142,7 +145,7 @@ void CMainWindow::ItemInserted(CBubble *)
 {
     if(!m_ShiftHeld)
     {
-        m_pointerTypeGroup->button(int(CGraphicsScene::Cursor))->setChecked(true);
+        shared().pointerTypeGroup->button(int(CGraphicsScene::Cursor))->setChecked(true);
         m_scene->setMode(CGraphicsScene::Cursor);
         m_view->setDragMode(QGraphicsView::ScrollHandDrag);
     }
@@ -162,10 +165,10 @@ void CMainWindow::ItemSelected(QGraphicsItem *selectedItem)
 
 void CMainWindow::ShowSettings()
 {
-    if(m_tabView->indexOf(m_settingsView) == -1)
-        m_tabView->insertTab(0, m_settingsView, "Settings");
+    if(shared().sceneTabs->indexOf(shared().settingsView) == -1)
+        shared().sceneTabs->insertTab(0, shared().settingsView, "Settings");
 
-    m_tabView->setCurrentWidget(m_settingsView);
+    shared().sceneTabs->setCurrentWidget(shared().settingsView);
 }
 
 void CMainWindow::NewProject()
@@ -185,37 +188,37 @@ void CMainWindow::ImportProject()
 
 void CMainWindow::ShowHomepage()
 {
-    if(m_tabView->indexOf(m_homepage) == -1)
-        m_tabView->insertTab(0, m_homepage, "Homepage");
+    if(shared().sceneTabs->indexOf(shared().homepage) == -1)
+        shared().sceneTabs->insertTab(0, shared().homepage, "Homepage");
 
-    m_tabView->setCurrentWidget(m_homepage);
+    shared().sceneTabs->setCurrentWidget(shared().homepage);
 }
 
 
 void CMainWindow::SceneLeftPressed()
 {
-    //m_dockManager->setBubble(0, true);
+    //shared().dockManager->setBubble(0, true);
 }
 
 void CMainWindow::SceneLeftReleased()
 {
-    if(!m_dock->isHidden())
-        m_dock->activateWindow();
+    if(!shared().dock->isHidden())
+        shared().dock->activateWindow();
     QList<QGraphicsItem *> selected = m_scene->selectedItems();
     if(selected.size() == 1)
     {
         CBubble *bbl = dynamic_cast<CBubble *>(selected.first());
-        m_dockManager->setBubble(bbl);
+        shared().dockManager->setBubble(bbl);
     }
     else
-        m_dockManager->setBubble(0);
+        shared().dockManager->setBubble(0);
 }
 
 void CMainWindow::TabClosed(int index)
 {
-    if(m_tabView->widget(index) == m_settingsView)
+    if(shared().sceneTabs->widget(index) == shared().settingsView)
     {
-        if(m_settingsView->pendingChanges())
+        if(shared().settingsView->pendingChanges())
         {
             QCheckBox dontShow("Remember my choice and don't show again.");
             dontShow.blockSignals(true);
@@ -228,7 +231,7 @@ void CMainWindow::TabClosed(int index)
             int ret = msgBox.exec();
 
             if(ret == QMessageBox::Apply)
-                m_settingsView->ApplyPendingChanges();
+                shared().settingsView->ApplyPendingChanges();
             else if(ret == QMessageBox::Cancel)
                 return;
 
@@ -237,29 +240,29 @@ void CMainWindow::TabClosed(int index)
         }
     }
 
-    m_tabView->removeTab(index);
+    shared().sceneTabs->removeTab(index);
 }
 
 void CMainWindow::DockAreaChanged(Qt::DockWidgetArea area)
 {
     // reflect this change in the settings.
-    m_settingsView->settings()->setValue("MainWindow/DockArea", static_cast<int>(area));
+    shared().settingsView->settings()->setValue("MainWindow/DockArea", static_cast<int>(area));
 }
 
 void CMainWindow::PointerToolBarAreaChanged(bool)
 {
     // reflect this change in the settings.
-    m_settingsView->settings()->setValue("MainWindow/ToolBarArea", static_cast<int>(toolBarArea(m_pointerToolBar)));
+    shared().settingsView->settings()->setValue("MainWindow/ToolBarArea", static_cast<int>(toolBarArea(shared().pointerToolBar)));
 }
 
 void CMainWindow::SettingsChanged()
 {
     // Update font and font color.
-    setFont(m_settingsView->font());
+    setFont(shared().settingsView->font());
 
     QPalette pal = palette();
-    pal.setColor(QPalette::WindowText, m_settingsView->fontColor());
-    pal.setColor(QPalette::Text, m_settingsView->fontColor());
+    pal.setColor(QPalette::WindowText, shared().settingsView->fontColor());
+    pal.setColor(QPalette::Text, shared().settingsView->fontColor());
     setPalette(pal);
 }
 
@@ -271,61 +274,61 @@ void CMainWindow::ShowAbout()
 
 void CMainWindow::CreateActions()
 {
-    m_deleteAction = new QAction(QIcon(":/images/icn_trash.png"), tr("&Delete"), this);
-    m_deleteAction->setShortcut(tr("Delete"));
-    m_deleteAction->setToolTip(tr("Delete selected bubble(S)"));
-    connect(m_deleteAction, SIGNAL(triggered()), this, SLOT(DeleteItem()));
+    shared().deleteAction = new QAction(QIcon(":/images/icn_trash.png"), tr("&Delete"), this);
+    shared().deleteAction->setShortcut(tr("Delete"));
+    shared().deleteAction->setToolTip(tr("Delete selected bubble(S)"));
+    connect(shared().deleteAction, SIGNAL(triggered()), this, SLOT(DeleteItem()));
 
-    m_exitAction = new QAction(QIcon(":/images/icn_exit.png"), tr("E&xit"), this);
-    m_exitAction->setShortcuts(QKeySequence::Quit);
-    m_exitAction->setToolTip(tr("Quit program"));
-    connect(m_exitAction, SIGNAL(triggered()), this, SLOT(close()));
+    shared().exitAction = new QAction(QIcon(":/images/icn_exit.png"), tr("E&xit"), this);
+    shared().exitAction->setShortcuts(QKeySequence::Quit);
+    shared().exitAction->setToolTip(tr("Quit program"));
+    connect(shared().exitAction, SIGNAL(triggered()), this, SLOT(close()));
 
-    m_settingsAction = new QAction(QIcon(":/images/icn_settings"), tr("&Settings"), this);
-    m_settingsAction->setShortcut(tr("Ctrl+P"));
-    connect(m_settingsAction, SIGNAL(triggered(bool)), this, SLOT(ShowSettings()));
+    shared().settingsAction = new QAction(QIcon(":/images/icn_settings"), tr("&Settings"), this);
+    shared().settingsAction->setShortcut(tr("Ctrl+P"));
+    connect(shared().settingsAction, SIGNAL(triggered(bool)), this, SLOT(ShowSettings()));
 
-    m_aboutAction = new QAction(QIcon(":/images/icn_info"), tr("A&bout"), this);
-    connect(m_aboutAction, SIGNAL(triggered()), this, SLOT(ShowAbout()));
+    shared().aboutAction = new QAction(QIcon(":/images/icn_info"), tr("A&bout"), this);
+    connect(shared().aboutAction, SIGNAL(triggered()), this, SLOT(ShowAbout()));
 
-    m_newProjectAction = new QAction(QIcon(":/images/icn_new"), tr("New Project"), this);
-    m_newProjectAction->setShortcut(tr("Ctrl+N"));
-    m_newProjectAction->setToolTip("Create New Project");
-    connect(m_newProjectAction, SIGNAL(triggered(bool)), this, SLOT(NewProject()));
+    shared().newProjectAction = new QAction(QIcon(":/images/icn_new"), tr("New Project"), this);
+    shared().newProjectAction->setShortcut(tr("Ctrl+N"));
+    shared().newProjectAction->setToolTip("Create New Project");
+    connect(shared().newProjectAction, SIGNAL(triggered(bool)), this, SLOT(NewProject()));
 
-    m_openProjectAction = new QAction(QIcon(":/images/icn_load"), tr("Open Project"), this);
-    m_openProjectAction->setShortcut(tr("Ctrl+O"));
-    m_openProjectAction->setToolTip("Open Existing Project");
-    connect(m_openProjectAction, SIGNAL(triggered(bool)), this, SLOT(OpenProject()));
+    shared().openProjectAction = new QAction(QIcon(":/images/icn_load"), tr("Open Project"), this);
+    shared().openProjectAction->setShortcut(tr("Ctrl+O"));
+    shared().openProjectAction->setToolTip("Open Existing Project");
+    connect(shared().openProjectAction, SIGNAL(triggered(bool)), this, SLOT(OpenProject()));
 
-    m_importProjectAction = new QAction(QIcon(":/images/icn_loadcs"), tr("Import Project"), this);
-    m_importProjectAction->setToolTip("Import ChoiceScript Project");
-    connect(m_importProjectAction, SIGNAL(triggered(bool)), this, SLOT(ImportProject()));
+    shared().importProjectAction = new QAction(QIcon(":/images/icn_loadcs"), tr("Import Project"), this);
+    shared().importProjectAction->setToolTip("Import ChoiceScript Project");
+    connect(shared().importProjectAction, SIGNAL(triggered(bool)), this, SLOT(ImportProject()));
 
-    m_showHomepageAction = new QAction(QIcon(":/images/icn_home"), tr("Show &homepage"), this);
-    connect(m_showHomepageAction, SIGNAL(triggered(bool)), this, SLOT(ShowHomepage()));
+    shared().showHomepageAction = new QAction(QIcon(":/images/icn_home"), tr("Show &homepage"), this);
+    connect(shared().showHomepageAction, SIGNAL(triggered(bool)), this, SLOT(ShowHomepage()));
 }
 
 
 void CMainWindow::CreateMenus()
 {
-    m_fileMenu = menuBar()->addMenu(tr("&File"));
-    m_fileMenu->addAction(m_newProjectAction);
-    m_fileMenu->addAction(m_openProjectAction);
-    m_fileMenu->addAction(m_importProjectAction);
-    m_fileMenu->addSeparator();
-    m_fileMenu->addAction(m_settingsAction);
-    m_fileMenu->addSeparator();
-    m_fileMenu->addAction(m_exitAction);
+    shared().fileMenu = menuBar()->addMenu(tr("&File"));
+    shared().fileMenu->addAction(shared().newProjectAction);
+    shared().fileMenu->addAction(shared().openProjectAction);
+    shared().fileMenu->addAction(shared().importProjectAction);
+    shared().fileMenu->addSeparator();
+    shared().fileMenu->addAction(shared().settingsAction);
+    shared().fileMenu->addSeparator();
+    shared().fileMenu->addAction(shared().exitAction);
 
-    m_editMenu = menuBar()->addMenu(tr("&Edit"));
-    m_editMenu->addAction(m_deleteAction);
+    shared().editMenu = menuBar()->addMenu(tr("&Edit"));
+    shared().editMenu->addAction(shared().deleteAction);
 
-    m_viewMenu = menuBar()->addMenu(tr("&View"));
-    m_viewMenu->addAction(m_showHomepageAction);
+    shared().viewMenu = menuBar()->addMenu(tr("&View"));
+    shared().viewMenu->addAction(shared().showHomepageAction);
 
-    m_helpMenu = menuBar()->addMenu(tr("&Help"));
-    m_helpMenu->addAction(m_aboutAction);
+    shared().helpMenu = menuBar()->addMenu(tr("&Help"));
+    shared().helpMenu->addAction(shared().aboutAction);
 }
 
 
@@ -359,28 +362,28 @@ void CMainWindow::CreateToolbars()
     tb_choice->setIcon(QIcon(":/images/icn_choice2.png"));
     tb_choice->setToolTip("Choice bubble");
 
-    m_pointerTypeGroup = new QButtonGroup(this);
-    m_pointerTypeGroup->addButton(tb_pointer, int(CGraphicsScene::Cursor));
-    m_pointerTypeGroup->addButton(tb_link, int(CGraphicsScene::InsertConnection));
-    m_pointerTypeGroup->addButton(tb_story, int(CGraphicsScene::InsertStory));
-    m_pointerTypeGroup->addButton(tb_condition, int(CGraphicsScene::InsertCondition));
-    m_pointerTypeGroup->addButton(tb_choice, int(CGraphicsScene::InsertChoice));
-    m_pointerTypeGroup->addButton(tb_action, int(CGraphicsScene::InsertAction));
-    connect(m_pointerTypeGroup, SIGNAL(buttonClicked(int)),
+    shared().pointerTypeGroup = new QButtonGroup(this);
+    shared().pointerTypeGroup->addButton(tb_pointer, int(CGraphicsScene::Cursor));
+    shared().pointerTypeGroup->addButton(tb_link, int(CGraphicsScene::InsertConnection));
+    shared().pointerTypeGroup->addButton(tb_story, int(CGraphicsScene::InsertStory));
+    shared().pointerTypeGroup->addButton(tb_condition, int(CGraphicsScene::InsertCondition));
+    shared().pointerTypeGroup->addButton(tb_choice, int(CGraphicsScene::InsertChoice));
+    shared().pointerTypeGroup->addButton(tb_action, int(CGraphicsScene::InsertAction));
+    connect(shared().pointerTypeGroup, SIGNAL(buttonClicked(int)),
             this, SLOT(PointerGroupClicked(int)));
 
 
-    Qt::ToolBarArea area = static_cast<Qt::ToolBarArea>(m_settingsView->settings()->value("MainWindow/ToolBarArea",
+    Qt::ToolBarArea area = static_cast<Qt::ToolBarArea>(shared().settingsView->settings()->value("MainWindow/ToolBarArea",
                                                                                           static_cast<int>(Qt::RightToolBarArea)).toInt());
-    m_pointerToolBar = new QToolBar("Pointer type");
-    m_pointerToolBar->addWidget(tb_pointer);
-    m_pointerToolBar->addWidget(tb_link);
-    m_pointerToolBar->addWidget(tb_story);
-    m_pointerToolBar->addWidget(tb_choice);
-    m_pointerToolBar->addWidget(tb_action);
-    m_pointerToolBar->addWidget(tb_condition);
-    m_pointerToolBar->setIconSize(QSize(32,32));
-    addToolBar(area, m_pointerToolBar);
-    connect(m_pointerToolBar, SIGNAL(topLevelChanged(bool)),
+    shared().pointerToolBar = new QToolBar("Pointer type");
+    shared().pointerToolBar->addWidget(tb_pointer);
+    shared().pointerToolBar->addWidget(tb_link);
+    shared().pointerToolBar->addWidget(tb_story);
+    shared().pointerToolBar->addWidget(tb_choice);
+    shared().pointerToolBar->addWidget(tb_action);
+    shared().pointerToolBar->addWidget(tb_condition);
+    shared().pointerToolBar->setIconSize(QSize(32,32));
+    addToolBar(area, shared().pointerToolBar);
+    connect(shared().pointerToolBar, SIGNAL(topLevelChanged(bool)),
             this, SLOT(PointerToolBarAreaChanged(bool)));
 }

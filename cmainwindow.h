@@ -107,33 +107,8 @@ private:
 
     bool m_ShiftHeld;
 
-    QTabWidget *m_tabView;
     CGraphicsScene *m_scene;
     CGraphicsView *m_view;
-
-    QAction *m_exitAction;
-    QAction *m_deleteAction;
-    QAction *m_aboutAction;
-    QAction *m_settingsAction;
-    QAction *m_newProjectAction;
-    QAction *m_openProjectAction;
-    QAction *m_importProjectAction;
-    QAction *m_showHomepageAction;
-
-    QMenu *m_fileMenu;
-    QMenu *m_editMenu;
-    QMenu *m_viewMenu;
-    QMenu *m_helpMenu;
-
-    QToolBar *m_pointerToolBar;
-    QButtonGroup *m_pointerTypeGroup;
-
-    CHomepage *m_homepage;
-
-    QDockWidget *m_dock;
-    CDockManager *m_dockManager;
-
-    CSettingsView *m_settingsView;
 
 };
 
