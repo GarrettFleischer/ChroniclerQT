@@ -1,7 +1,7 @@
-#include "clistviewwidget.h"
+#include "clistview.h"
 
-CListViewWidget::CListViewWidget(QWidget *parent)
-    : QWidget(parent)
+CListView::CListView(QWidget *parent)
+    : QListView(parent)
 {
 
 }

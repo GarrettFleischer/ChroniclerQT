@@ -1,40 +1,12 @@
 #ifndef CLISTVIEW_H
 #define CLISTVIEW_H
 
-#include <QWidget>
+#include <QListView>
 
-QT_BEGIN_NAMESPACE
-class QListView;
-class QPushButton;
-QT_END_NAMESPACE
-
-
-class CListViewWidget : public QWidget
+class CListView : public QListView
 {
-    Q_OBJECT
-
 public:
-    CListViewWidget(QWidget *parent);
-
-private:
-    // view/model
-    QListView  *m_modelView;
-//    CSceneModel *m_sceneModel;
-
-    // list buttons
-    QPushButton *m_upButton;
-    QPushButton *m_downButton;
-    QPushButton *m_addButton;
-    QPushButton *m_removeButton;
-
-private slots:
-//    void SelectedChanged(QModelIndex current);
-
-//    void MoveUp();
-//    void MoveDown();
-//    void AddItem();
-//    void RemoveItem();
-
+    CListView(QWidget *parent);
 };
 
 #endif // CLISTVIEW_H
