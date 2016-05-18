@@ -45,8 +45,7 @@ HEADERS += \
     Properties/Widgets/cactionproperties.h \
     Misc/cchoicemodel.h \
     Properties/Widgets/clistpropertieswidget.h \
-    Misc/cscenemodel.h \
-    Misc/clistviewwidget.h
+    Misc/cscenemodel.h
 
 SOURCES += \
     Bubbles/cbubble.cpp \
@@ -80,5 +79,4 @@ SOURCES += \
     Properties/Widgets/cactionproperties.cpp \
     Misc/cchoicemodel.cpp \
     Properties/Widgets/clistpropertieswidget.cpp \
-    Misc/cscenemodel.cpp \
-    Misc/clistviewwidget.cpp
+    Misc/cscenemodel.cpp
