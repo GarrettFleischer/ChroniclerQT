@@ -91,28 +91,6 @@ void CMainWindow::LoadProject(const QString &filepath)
 }
 
 
-void CMainWindow::keyPressEvent(QKeyEvent *evt)
-{
-    QMainWindow::keyPressEvent(evt);
-
-    if(evt->key() == Qt::Key_Shift)
-        m_ShiftHeld = true;
-}
-
-void CMainWindow::keyReleaseEvent(QKeyEvent *evt)
-{
-    QMainWindow::keyReleaseEvent(evt);
-
-    if(evt->key() == Qt::Key_Shift)
-    {
-        m_ShiftHeld = false;
-        shared().pointerTypeGroup->button(int(CGraphicsScene::Cursor))->setChecked(true);
-        m_scene->setMode(CGraphicsScene::Cursor);
-        m_view->setDragMode(QGraphicsView::ScrollHandDrag);
-    }
-}
-
-
 void CMainWindow::DeleteItem()
 {
     shared().dockManager->setBubble(0);
@@ -125,11 +103,6 @@ void CMainWindow::DeleteItem()
 void CMainWindow::PointerGroupClicked(int id)
 {
     m_scene->setMode(CGraphicsScene::Mode(id));
-
-    if(id == int(CGraphicsScene::InsertConnection))
-        m_view->setDragMode(QGraphicsView::NoDrag);
-    else
-        m_view->setDragMode(QGraphicsView::ScrollHandDrag);
 }
 
 void CMainWindow::ShowSettings()

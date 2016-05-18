@@ -10,26 +10,13 @@
 
 CGraphicsView::CGraphicsView(QGraphicsScene *scene, QWidget *parent)
     : QGraphicsView(scene, parent), m_scale(1.0), m_minScale(0.05), m_maxScale(5.0),
-      m_modifiers(Qt::NoModifier), m_zoom_factor_base(1.0015), m_shift(false)
+      m_modifiers(Qt::NoModifier), m_zoom_factor_base(1.0015)
 {
     setMouseTracking(true);
     setDragMode(ScrollHandDrag);
     setRenderHint(QPainter::Antialiasing, true);
     //setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     //setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-}
-
-void CGraphicsView::mousePressEvent(QMouseEvent *evt)
-{
-    QGraphicsView::mousePressEvent(evt);
-}
-
-void CGraphicsView::mouseReleaseEvent(QMouseEvent *evt)
-{
-    QGraphicsView::mouseReleaseEvent(evt);
-
-    if(!m_shift)
-        setDragMode(ScrollHandDrag);
 }
 
 void CGraphicsView::mouseMoveEvent(QMouseEvent *evt)
@@ -59,28 +46,6 @@ void CGraphicsView::wheelEvent(QWheelEvent *evt)
     }
     else
         QGraphicsView::wheelEvent(evt);
-}
-
-void CGraphicsView::keyPressEvent(QKeyEvent *evt)
-{
-    if(evt->key() == Qt::Key_Shift)
-    {
-        m_shift = true;
-        setDragMode(RubberBandDrag);
-    }
-
-    QGraphicsView::keyPressEvent(evt);
-}
-
-void CGraphicsView::keyReleaseEvent(QKeyEvent *evt)
-{
-    if(evt->key() == Qt::Key_Shift)
-    {
-        m_shift = false;
-        setDragMode(ScrollHandDrag);
-    }
-
-    QGraphicsView::keyReleaseEvent(evt);
 }
 
 

@@ -77,10 +77,6 @@ public:
 
    void LoadProject(const QString & filepath);
 
-protected:
-   virtual void keyPressEvent(QKeyEvent *evt);
-   virtual void keyReleaseEvent(QKeyEvent *evt);
-
 
 private slots:
     void DeleteItem();

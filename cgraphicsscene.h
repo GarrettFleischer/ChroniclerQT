@@ -86,6 +86,7 @@ protected:
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
     virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent);
+    virtual void keyPressEvent(QKeyEvent *event) override;
 
 private:
     void AddBubble(BubbleType type, const QPointF &pos, bool shift);

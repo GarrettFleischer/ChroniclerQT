@@ -5,6 +5,7 @@
 #include <QAbstractButton>
 #include <QDockWidget>
 #include <QtMath>
+#include <QKeyEvent>
 
 #include "cgraphicsview.h"
 
@@ -74,11 +75,12 @@ void CGraphicsScene::setMode(Mode mode)
 {
     m_mode = mode;
 
+    views().first()->setDragMode(QGraphicsView::ScrollHandDrag);
+
     if(mode == Cursor)
-    {
         shared().pointerTypeGroup->button(int(CGraphicsScene::Cursor))->setChecked(true);
-        views().first()->setDragMode(QGraphicsView::ScrollHandDrag);
-    }
+    else if(mode == InsertConnection)
+        views().first()->setDragMode(QGraphicsView::NoDrag);
 }
 
 void CGraphicsScene::ItemSelected(QGraphicsItem *selectedItem)
@@ -86,6 +88,7 @@ void CGraphicsScene::ItemSelected(QGraphicsItem *selectedItem)
     if(!m_rubberBand)
     {
         // decrease all z values by a ridiculously small number
+        // to preserve current stacking order & help prevent integer overflow
         foreach (QGraphicsItem *item, items())
             item->setZValue(item->zValue() - qPow(1, -10));
 
@@ -228,6 +231,13 @@ void CGraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
     emit leftReleased();
 }
 
+void CGraphicsScene::keyPressEvent(QKeyEvent *event)
+{
+    if(event->key() == Qt::Key_Shift)
+        views().first()->setDragMode(QGraphicsView::RubberBandDrag);
+}
+
+
 void CGraphicsScene::AddBubble(BubbleType type, const QPointF &pos, bool shift)
 {
     CBubble *bbl;
@@ -249,3 +259,4 @@ void CGraphicsScene::AddBubble(BubbleType type, const QPointF &pos, bool shift)
 
     emit itemInserted(bbl);
 }
+
