@@ -1,5 +1,8 @@
 #include "Bubbles/cbubble.h"
 
+#include <stdexcept>
+using std::logic_error;
+
 #include <QGraphicsPixmapItem>
 #include <QList>
 #include <QGraphicsScene>
@@ -12,16 +15,17 @@
 #include "Misc/chronicler.h"
 using Chronicler::shared;
 
+QList<uint> CBubble::m_UIDs = QList<uint>();
 
-CBubble::CBubble(QGraphicsItem *parent)
-    : QGraphicsPolygonItem(parent),
-      m_minSize(QSizeF(150,150)), m_order(0), m_locked(false),
-      m_font(QFont()), m_palette(CPalette()), m_resize(false)
-{}
+//CBubble::CBubble(QGraphicsItem *parent)
+//    : QGraphicsPolygonItem(parent),
+//      m_minSize(QSizeF(150,150)), m_order(0), m_locked(false),
+//      m_font(QFont()), m_palette(CPalette()), m_resize(false)
+//{}
 
 
-CBubble::CBubble(const QPointF &pos, const Chronicler::CPalette &palette, const QFont &font, QGraphicsItem *parent)
-    : QGraphicsPolygonItem(parent),
+CBubble::CBubble(const QPointF &pos, const Chronicler::CPalette &palette, const QFont &font, QGraphicsItem *parent, uint uid)
+    : QGraphicsPolygonItem(parent), m_UID(uid),
       m_minSize(QSizeF(150,150)), m_order(0), m_locked(false),
       m_font(font), m_palette(palette), m_resize(false)
 {
@@ -32,10 +36,19 @@ CBubble::CBubble(const QPointF &pos, const Chronicler::CPalette &palette, const 
     
     setCursor(Qt::PointingHandCursor);
     setPos(pos);
+
+    if(m_UIDs.contains(m_UID))
+        throw logic_error("Error! UID must be unique.");
+    else
+        m_UIDs.append(m_UID);
 }
 
 CBubble::~CBubble()
 {
+    // Free up this UID for reuse
+    m_UIDs.removeOne(m_UID);
+
+    // Detach connections before deleting to prevent segfault.
     QList<CConnection *> tmp = m_connections;
 
     for(CConnection *connection : m_connections)
@@ -140,6 +153,15 @@ void CBubble::UpdatePolygon()
     path.addRect(QRectF(b.center(), b.bottomRight())); // Bottom right corner not rounded
 
     setPolygon(path.simplified().toFillPolygon());
+}
+
+uint CBubble::GenerateUID()
+{
+    uint lowest = 0;
+    while(m_UIDs.contains(lowest))
+        ++lowest;
+
+    return lowest;
 }
 
 Anchor CBubble::AnchorAtPosition(const QPointF &pos)

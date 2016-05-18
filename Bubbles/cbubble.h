@@ -29,8 +29,8 @@ class CBubble : public QObject, public QGraphicsPolygonItem
 
 public:
 
-    CBubble(QGraphicsItem *parent);
-    CBubble(const QPointF &pos, const CPalette &palette, const QFont &font = QFont(), QGraphicsItem *parent = 0);
+//    CBubble(QGraphicsItem *parent);
+    CBubble(const QPointF &pos, const CPalette &palette, const QFont &font = QFont(), QGraphicsItem *parent = 0, uint uid = GenerateUID());
 
     virtual ~CBubble();
 
@@ -78,6 +78,9 @@ protected:
 
     virtual void UpdatePolygon();
 
+    static uint GenerateUID();
+
+    const uint m_UID;
 
     BubbleType m_type;
 
@@ -101,6 +104,7 @@ protected:
 
 private:
     Anchor AnchorAtPosition(const QPointF &pos);
+    static QList<uint> m_UIDs;
     
 signals:
     void Selected(QGraphicsItem *item);

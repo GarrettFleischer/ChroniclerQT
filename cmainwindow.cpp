@@ -84,7 +84,7 @@ void CMainWindow::LoadProject(const QString &filepath)
 
     shared().dock->setVisible(true);
     shared().dock->setWindowTitle(QFileInfo(filepath).fileName());
-    shared().sceneTabs->addTab(m_view, "startup.scn");
+    shared().sceneTabs->addTab(m_view, "startup");
     shared().sceneTabs->setCurrentWidget(m_view);
 
     shared().sceneTabs->removeTab(shared().sceneTabs->indexOf(shared().homepage));
