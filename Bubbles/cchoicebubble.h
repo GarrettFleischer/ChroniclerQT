@@ -21,9 +21,9 @@ public:
     virtual Chronicler::Anchor OutputAnchorAtPosition(const QPointF &) override;
     virtual Chronicler::Anchor InputAnchorAtPosition(const QPointF &pos) override;
 
-    virtual void AddLink(CConnection *);
-    virtual void RemoveLink(CConnection *);
-    virtual QList<CConnection *> links();
+    virtual void AddLink(CConnection *) override;
+    virtual void RemoveLink(CConnection *) override;
+    virtual QList<CConnection *> links() override;
 
     CChoiceModel *choices();
 

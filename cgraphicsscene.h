@@ -88,7 +88,7 @@ protected:
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent);
 
 private:
-    void AddBubble(BubbleType type, const QPointF &pos);
+    void AddBubble(BubbleType type, const QPointF &pos, bool shift);
 
     QString m_name;
     Mode m_mode;
@@ -107,6 +107,9 @@ signals:
 
 public slots:
     void setMode(Mode mode);
+
+private slots:
+    void ItemSelected(QGraphicsItem *selectedItem);
 
 };
 

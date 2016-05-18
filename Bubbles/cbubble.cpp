@@ -36,7 +36,12 @@ CBubble::CBubble(const QPointF &pos, const Chronicler::CPalette &palette, const 
 
 CBubble::~CBubble()
 {
+    QList<CConnection *> tmp = m_connections;
+
     for(CConnection *connection : m_connections)
+        connection->setTo(0);
+
+    for(CConnection *connection : tmp)
         delete connection;
 }
 

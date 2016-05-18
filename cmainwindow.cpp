@@ -39,12 +39,6 @@ CMainWindow::CMainWindow(QSettings *settings)
     CreateMenus();
 
     m_scene = new CGraphicsScene(this);
-    connect(m_scene, SIGNAL(itemInserted(CBubble*)),
-            this, SLOT(ItemInserted(CBubble*)));
-    connect(m_scene, SIGNAL(itemSelected(QGraphicsItem*)),
-            this, SLOT(ItemSelected(QGraphicsItem*)));
-    connect(m_scene, SIGNAL(leftReleased()),
-            this, SLOT(SceneLeftReleased()));
     m_scene->setFont(shared().settingsView->font());
 
     m_view = new CGraphicsView(m_scene);
@@ -138,29 +132,6 @@ void CMainWindow::PointerGroupClicked(int id)
         m_view->setDragMode(QGraphicsView::ScrollHandDrag);
 }
 
-
-void CMainWindow::ItemInserted(CBubble *)
-{
-    if(!m_ShiftHeld)
-    {
-        shared().pointerTypeGroup->button(int(CGraphicsScene::Cursor))->setChecked(true);
-        m_scene->setMode(CGraphicsScene::Cursor);
-        m_view->setDragMode(QGraphicsView::ScrollHandDrag);
-    }
-}
-
-
-void CMainWindow::ItemSelected(QGraphicsItem *selectedItem)
-{
-    if(!m_scene->isRubberBandSelecting())
-    {
-        foreach (QGraphicsItem *item, m_scene->items())
-            item->setZValue(item->zValue() - qPow(1, -10));
-
-        selectedItem->setZValue(1);
-    }
-}
-
 void CMainWindow::ShowSettings()
 {
     if(shared().sceneTabs->indexOf(shared().settingsView) == -1)
@@ -190,20 +161,6 @@ void CMainWindow::ShowHomepage()
         shared().sceneTabs->insertTab(0, shared().homepage, "Homepage");
 
     shared().sceneTabs->setCurrentWidget(shared().homepage);
-}
-
-void CMainWindow::SceneLeftReleased()
-{
-    if(!shared().dock->isHidden())
-        shared().dock->activateWindow();
-    QList<QGraphicsItem *> selected = m_scene->selectedItems();
-    if(selected.size() == 1)
-    {
-        CBubble *bbl = dynamic_cast<CBubble *>(selected.first());
-        shared().dockManager->setBubble(bbl);
-    }
-    else
-        shared().dockManager->setBubble(0, selected.size());
 }
 
 void CMainWindow::TabClosed(int index)

@@ -85,15 +85,12 @@ protected:
 private slots:
     void DeleteItem();
     void PointerGroupClicked(int id);
-    void ItemInserted(CBubble *);
-    void ItemSelected(QGraphicsItem *selectedItem);
     void ShowSettings();
     void NewProject();
     void OpenProject();
     void ImportProject();
     void ShowHomepage();
     void ShowAbout();
-    void SceneLeftReleased();
     void TabClosed(int);
     void DockAreaChanged(Qt::DockWidgetArea);
     void PointerToolBarAreaChanged(bool);
