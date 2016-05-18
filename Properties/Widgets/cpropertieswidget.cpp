@@ -8,8 +8,10 @@
 #include "Misc/clineedit.h"
 
 
-CPropertiesWidget::CPropertiesWidget(QStringListModel *model, QWidget *parent)
-    : QWidget(parent), m_bubble(0), m_model(model), m_labelEdit(0), m_lockEdit(0), m_orderEdit(0)
+
+
+CPropertiesWidget::CPropertiesWidget(QWidget *parent)
+    : QWidget(parent), m_bubble(0), m_labelEdit(0), m_lockEdit(0), m_orderEdit(0)
 {
     // WIDGETS
         // Title

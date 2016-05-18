@@ -17,7 +17,7 @@ class CListPropertiesWidget : public CPropertiesWidget
     Q_OBJECT
 
 public:
-    CListPropertiesWidget(QStringListModel *model, QWidget *parent);
+    CListPropertiesWidget(QWidget *parent);
 
     virtual void setBubble(CBubble *bbl) override;
 

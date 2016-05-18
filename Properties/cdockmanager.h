@@ -20,7 +20,7 @@ class CDockManager : public QWidget
     Q_OBJECT
 
 public:
-    explicit CDockManager(QStringListModel *model, QMenu *editMenu, QWidget *parent = 0);
+    explicit CDockManager(QWidget *parent = 0);
 
     virtual QSize sizeHint() const;
 
@@ -30,7 +30,6 @@ private:
     QTabWidget *m_tabView;
 
     CPropertiesManager *m_properties;
-    CProjectView *m_project;
 
 signals:
 

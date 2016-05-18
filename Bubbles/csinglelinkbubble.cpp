@@ -3,8 +3,8 @@
 #include "Connections/cconnection.h"
 
 
-CSingleLinkBubble::CSingleLinkBubble(QMenu *contextMenu, const QPointF &pos, const Chronicler::CPalette &palette, const QFont &font, QGraphicsItem *parent)
-    : CBubble(contextMenu, pos, palette, font, parent), m_link(0)
+CSingleLinkBubble::CSingleLinkBubble(const QPointF &pos, const Chronicler::CPalette &palette, const QFont &font, QGraphicsItem *parent)
+    : CBubble(pos, palette, font, parent), m_link(0)
 {}
 
 CSingleLinkBubble::~CSingleLinkBubble()

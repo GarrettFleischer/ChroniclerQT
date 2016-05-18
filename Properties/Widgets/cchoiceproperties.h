@@ -10,7 +10,7 @@ class CChoiceProperties : public CListPropertiesWidget
     Q_OBJECT
 
 public:
-    explicit CChoiceProperties(QStringListModel *model, QWidget *parent = 0);
+    explicit CChoiceProperties(QWidget *parent = 0);
 
     virtual void setBubble(CBubble *bbl);
 

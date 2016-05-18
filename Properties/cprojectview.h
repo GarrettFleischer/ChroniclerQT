@@ -18,7 +18,7 @@ class CProjectView : public QWidget
 {
     Q_OBJECT
 public:
-    CProjectView(QMenu *editMenu, QWidget *parent = 0);
+    CProjectView(QWidget *parent = 0);
 
     void Save();
     void SaveAs();
@@ -38,9 +38,6 @@ private:
     QPushButton *m_downButton;
     QPushButton *m_addButton;
     QPushButton *m_removeButton;
-
-    // for scene instantiation
-    QMenu *m_editMenu;
 
     // project data
     QString m_path;

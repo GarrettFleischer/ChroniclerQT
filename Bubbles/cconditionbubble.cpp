@@ -4,8 +4,8 @@
 #include "Connections/cconnection.h"
 
 
-CConditionBubble::CConditionBubble(QMenu *contextMenu, const QPointF &pos, const CPalette &palette, const QFont &font, QGraphicsItem *parent)
-    : CBubble(contextMenu, pos, palette, font, parent), m_trueLink(0), m_falseLink(0)
+CConditionBubble::CConditionBubble(const QPointF &pos, const CPalette &palette, const QFont &font, QGraphicsItem *parent)
+    : CBubble(pos, palette, font, parent), m_trueLink(0), m_falseLink(0)
 {
     m_type = Chronicler::Condition;
 

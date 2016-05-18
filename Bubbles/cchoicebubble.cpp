@@ -6,8 +6,8 @@
 #include "Misc/cchoicemodel.h"
 #include "cchoice.h"
 
-CChoiceBubble::CChoiceBubble(QMenu *contextMenu, const QPointF &pos, const Chronicler::CPalette &palette, const QFont &font, QGraphicsItem *parent)
-    : CBubble(contextMenu, pos, palette, font, parent)
+CChoiceBubble::CChoiceBubble(const QPointF &pos, const Chronicler::CPalette &palette, const QFont &font, QGraphicsItem *parent)
+    : CBubble(pos, palette, font, parent)
 {
     m_type = Chronicler::Choice;
 

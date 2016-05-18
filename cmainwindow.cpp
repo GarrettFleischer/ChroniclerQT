@@ -38,7 +38,7 @@ CMainWindow::CMainWindow(QSettings *settings)
     CreateActions();
     CreateMenus();
 
-    m_scene = new CGraphicsScene(shared().editMenu, this);
+    m_scene = new CGraphicsScene(this);
     connect(m_scene, SIGNAL(itemInserted(CBubble*)),
             this, SLOT(ItemInserted(CBubble*)));
     connect(m_scene, SIGNAL(itemSelected(QGraphicsItem*)),
@@ -52,13 +52,13 @@ CMainWindow::CMainWindow(QSettings *settings)
     m_view = new CGraphicsView(m_scene);
 
     QStringList lst = QStringList() << "*set" << "*action" << "*create" << "*if" << "*elseif" << "${name}" << "${title}" << "${strength}";
-    QStringListModel * lstModel = new QStringListModel(lst, this);
+    shared().actionsModel = new QStringListModel(lst, this);
 
     shared().dock = new QDockWidget("Project", this);
     connect(shared().dock, SIGNAL(dockLocationChanged(Qt::DockWidgetArea)),
             this, SLOT(DockAreaChanged(Qt::DockWidgetArea)));
 
-    shared().dockManager = new CDockManager(lstModel, shared().editMenu, shared().dock);
+    shared().dockManager = new CDockManager(shared().dock);
     shared().dock->setWidget(shared().dockManager);
     shared().dock->setVisible(false);
     shared().dock->setAllowedAreas(Qt::LeftDockWidgetArea | Qt::RightDockWidgetArea);
@@ -68,7 +68,7 @@ CMainWindow::CMainWindow(QSettings *settings)
                                                                                                 static_cast<int>(Qt::LeftDockWidgetArea)).toInt());
     addDockWidget(area, shared().dock);
 
-    shared().homepage = new CHomepage(this, shared().settingsView, shared().newProjectAction, shared().openProjectAction, shared().importProjectAction);
+    shared().homepage = new CHomepage(this);
 
     shared().sceneTabs = new QTabWidget(this);
     shared().sceneTabs->setMovable(true);

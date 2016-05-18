@@ -21,22 +21,16 @@ class CHomepage : public QWidget
 {
     Q_OBJECT
 public:
-    explicit CHomepage(CMainWindow *window, CSettingsView *settings,
-                       QAction *newProjectAction, QAction *openProjectAction, QAction *importProjectAction);
+    explicit CHomepage(CMainWindow *window);
 
 private:
     void SetupSidebar(QHBoxLayout *main_layout);
     void SetupMainWindow(QHBoxLayout *main_layout);
 
     CMainWindow *m_window;
+
     QWebView * m_webView;
     QListWidget *m_recentView;
-
-    CSettingsView *m_settings;
-
-    QAction *m_newProjectAction;
-    QAction *m_openProjectAction;
-    QAction *m_importProjectAction;
 
 signals:
 

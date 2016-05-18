@@ -8,8 +8,8 @@
 #include "Bubbles/cchoice.h"
 
 
-CChoiceProperties::CChoiceProperties(QStringListModel *model, QWidget *parent)
-    : CListPropertiesWidget(model, parent)
+CChoiceProperties::CChoiceProperties(QWidget *parent)
+    : CListPropertiesWidget(parent)
 {}
 
 

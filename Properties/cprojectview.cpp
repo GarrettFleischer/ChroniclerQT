@@ -14,8 +14,8 @@
 #include "Misc/cscenemodel.h"
 #include "cgraphicsscene.h"
 
-CProjectView::CProjectView(QMenu *editMenu, QWidget *parent)
-    : QWidget(parent), m_editMenu(editMenu)
+CProjectView::CProjectView(QWidget *parent)
+    : QWidget(parent)
 {
     m_upButton = new QPushButton(QIcon(":/images/icn_up"), "");
     m_upButton->setEnabled(false);
@@ -39,7 +39,7 @@ CProjectView::CProjectView(QMenu *editMenu, QWidget *parent)
     vl_buttons->addWidget(m_removeButton);
     vl_buttons->addStretch(1);
 
-    CGraphicsScene *startup = new CGraphicsScene(m_editMenu, this);
+    CGraphicsScene *startup = new CGraphicsScene(this);
     startup->setName("startup");
     m_sceneModel = new CSceneModel(startup, this);
 
@@ -113,7 +113,7 @@ void CProjectView::MoveDown()
 
 void CProjectView::AddItem()
 {
-    m_sceneModel->AddItem(new CGraphicsScene(m_editMenu, this));
+    m_sceneModel->AddItem(new CGraphicsScene(this));
     m_modelView->edit(QModelIndex(m_sceneModel->index(m_sceneModel->rowCount() - 1, 0)));
 }
 

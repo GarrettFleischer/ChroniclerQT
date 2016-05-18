@@ -6,13 +6,13 @@
 #include "Misc/clineedit.h"
 #include "Bubbles/cconditionbubble.h"
 
-CConditionProperties::CConditionProperties(QStringListModel *model, QWidget *parent)
-    : CPropertiesWidget(model, parent), m_conditionBubble(0), m_conditionEdit(0)
+CConditionProperties::CConditionProperties(QWidget *parent)
+    : CPropertiesWidget(parent), m_conditionBubble(0), m_conditionEdit(0)
 {
     // Condition Widget
     QLabel *lblConditionStart = new QLabel(tr("*if ("), this);
     QLabel *lblConditionEnd = new QLabel(tr(")"), this);
-    m_conditionEdit = new CLineEdit(this, m_model);
+    m_conditionEdit = new CLineEdit(this, shared().actionsModel);
     connect(m_conditionEdit, SIGNAL(textChanged()), this, SLOT(ConditionChanged()));
 
     // Condition Layout

@@ -30,7 +30,7 @@ class CBubble : public QObject, public QGraphicsPolygonItem
 public:
 
     CBubble(QGraphicsItem *parent);
-    CBubble(QMenu *contextMenu, const QPointF &pos, const CPalette &palette, const QFont &font = QFont(), QGraphicsItem *parent = 0);
+    CBubble(const QPointF &pos, const CPalette &palette, const QFont &font = QFont(), QGraphicsItem *parent = 0);
 
     virtual ~CBubble();
 
@@ -80,8 +80,6 @@ protected:
 
 
     BubbleType m_type;
-
-    QMenu *m_contextMenu;
 
     QRectF m_bounds;
     QSizeF m_minSize;

@@ -19,7 +19,7 @@ class CPropertiesManager : public QWidget
     Q_OBJECT
 
 public:
-    explicit CPropertiesManager(QStringListModel *model, QWidget *parent = 0);
+    explicit CPropertiesManager(QWidget *parent = 0);
 
     void setBubble(CBubble *bbl);
 //    virtual void setFont(const QFont &font) override;

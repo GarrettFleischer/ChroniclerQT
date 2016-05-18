@@ -14,18 +14,20 @@ QT_END_NAMESPACE
 class CBubble;
 class CLineEdit;
 
+#include "Misc/chronicler.h"
+using Chronicler::shared;
+
 class CPropertiesWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit CPropertiesWidget(QStringListModel *model, QWidget *parent = 0);
+    explicit CPropertiesWidget(QWidget *parent = 0);
 
     virtual void setBubble(CBubble *bbl);
 
 protected:
     CBubble *m_bubble;
 
-    QStringListModel *m_model;
     QLineEdit *m_labelEdit;
 
     QCheckBox *m_lockEdit;

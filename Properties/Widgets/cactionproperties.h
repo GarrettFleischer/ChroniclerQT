@@ -14,7 +14,7 @@ class CActionProperties : public CListPropertiesWidget
     Q_OBJECT
 
 public:
-    explicit CActionProperties(QStringListModel *model, QWidget *parent = 0);
+    explicit CActionProperties(QWidget *parent = 0);
 
     virtual void setBubble(CBubble *bbl) override;
 

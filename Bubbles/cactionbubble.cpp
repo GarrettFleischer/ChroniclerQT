@@ -6,8 +6,8 @@
 #include "Misc/ctextitem.h"
 #include "Misc/cstringlistmodel.h"
 
-CActionBubble::CActionBubble(QMenu *contextMenu, const QPointF &pos, const Chronicler::CPalette &palette, const QFont &font, QGraphicsItem *parent)
-    : CSingleLinkBubble(contextMenu, pos, palette, font, parent)
+CActionBubble::CActionBubble(const QPointF &pos, const Chronicler::CPalette &palette, const QFont &font, QGraphicsItem *parent)
+    : CSingleLinkBubble(pos, palette, font, parent)
 {
     m_type = Chronicler::Action;
 

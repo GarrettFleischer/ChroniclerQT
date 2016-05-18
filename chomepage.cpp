@@ -18,14 +18,16 @@
 #include "csettingsview.h"
 #include "Misc/qactionbutton.h"
 
+#include "Misc/chronicler.h"
+using Chronicler::shared;
+
 
 // for QSettings
 Q_DECLARE_METATYPE(QStringList)
 
 
-CHomepage::CHomepage(CMainWindow *window, CSettingsView *settings, QAction *newProjectAction, QAction *openProjectAction, QAction *importProjectAction)
-    : QWidget((QWidget*)window), m_window(window), m_webView(0), m_recentView(0), m_settings(settings),
-      m_newProjectAction(newProjectAction), m_openProjectAction(openProjectAction), m_importProjectAction(importProjectAction)
+CHomepage::CHomepage(CMainWindow *window)
+    : QWidget((QWidget*)window), m_window(window), m_webView(0), m_recentView(0)
 {
     QHBoxLayout *main_layout = new QHBoxLayout(this);
 
@@ -41,12 +43,12 @@ void CHomepage::SetupSidebar(QHBoxLayout *main_layout)
     QVBoxLayout *layout_recent = new QVBoxLayout();
     QHBoxLayout *layout_buttons = new QHBoxLayout();
 
-    if(m_settings->maxRecentFiles() > 0)
+    if(shared().settingsView->maxRecentFiles() > 0)
     {
         QStringList def({"C:/Chronicler/Dragon.chron", "C:/Chronicler/Test.chron"}); // fake default projects
 
         // load the recently opened projects from the settings
-        m_recentView->addItems(m_settings->settings()->value("Homepage/RecentFiles", QVariant::fromValue(def)).value<QStringList>());
+        m_recentView->addItems(shared().settingsView->settings()->value("Homepage/RecentFiles", QVariant::fromValue(def)).value<QStringList>());
         connect(m_recentView, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(RecentItemSelected(QListWidgetItem*)));
 
         layout_recent->addWidget(new QLabel("Recent files"));
@@ -55,13 +57,13 @@ void CHomepage::SetupSidebar(QHBoxLayout *main_layout)
 
     // Buttons
     const QSize icon_size(32, 32);
-    QActionButton *btn_new = new QActionButton(0, m_newProjectAction);
+    QActionButton *btn_new = new QActionButton(0, shared().newProjectAction);
     btn_new->setIconSize(icon_size);
 
-    QActionButton *btn_load = new QActionButton(0, m_openProjectAction);
+    QActionButton *btn_load = new QActionButton(0, shared().openProjectAction);
     btn_load->setIconSize(icon_size);
 
-    QActionButton *btn_import = new QActionButton(0, m_importProjectAction);
+    QActionButton *btn_import = new QActionButton(0, shared().importProjectAction);
     btn_import->setIconSize(icon_size);
 
     layout_buttons->addWidget(btn_new);
@@ -92,10 +94,10 @@ void CHomepage::RecentItemSelected(QListWidgetItem *item)
 
     // save the updated list to settings
     QStringList labels;
-    for(int i = 0; i < m_recentView->count() && i < m_settings->maxRecentFiles(); ++i)
+    for(int i = 0; i < m_recentView->count() && i < shared().settingsView->maxRecentFiles(); ++i)
         labels << m_recentView->item(i)->text();
 
-    m_settings->settings()->setValue("Homepage/RecentFiles", QVariant::fromValue(labels));
+    shared().settingsView->settings()->setValue("Homepage/RecentFiles", QVariant::fromValue(labels));
 
     // load the selected project
     m_window->LoadProject(item->text());

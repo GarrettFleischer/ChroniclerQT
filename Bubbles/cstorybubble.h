@@ -16,7 +16,7 @@ class CStoryBubble : public CSingleLinkBubble
     Q_OBJECT
 
 public:
-    CStoryBubble(QMenu *contextMenu, const QPointF &pos, const Chronicler::CPalette &palette, const QFont &font = QFont(), QGraphicsItem *parent = 0);
+    CStoryBubble(const QPointF &pos, const Chronicler::CPalette &palette, const QFont &font = QFont(), QGraphicsItem *parent = 0);
 
     virtual void setFont(const QFont &font);
     virtual void setPalette(const Chronicler::CPalette &palette);

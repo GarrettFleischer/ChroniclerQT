@@ -6,8 +6,8 @@
 #include "Bubbles/cactionbubble.h"
 
 
-CActionProperties::CActionProperties(QStringListModel *model, QWidget *parent)
-    : CListPropertiesWidget(model, parent)
+CActionProperties::CActionProperties(QWidget *parent)
+    : CListPropertiesWidget(parent)
 {}
 
 

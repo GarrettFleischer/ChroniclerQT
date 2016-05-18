@@ -18,8 +18,8 @@ using Chronicler::Anchor;
 #include <QDebug>
 
 
-CGraphicsScene::CGraphicsScene(QMenu *editMenu, QObject *parent)
-    : QGraphicsScene(parent), m_editMenu(editMenu), m_mode(Cursor), m_line(0), m_rubberBand(false)
+CGraphicsScene::CGraphicsScene(QObject *parent)
+    : QGraphicsScene(parent), m_mode(Cursor), m_line(0), m_rubberBand(false)
 {
     float maxsize = 20000.0;//std::numeric_limits<float>::max();
     float minsize = -20000.0/2;//-std::numeric_limits<float>::max()/2;
@@ -72,9 +72,6 @@ void CGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     if (mouseEvent->button() == Qt::LeftButton)
     {
-        for(QGraphicsItem *item : selectedItems())
-            item->setSelected(false);
-
         CBubble *clickItem = 0;
         QList<QGraphicsItem *> clickItems = items(mouseEvent->scenePos());
 
@@ -190,13 +187,13 @@ void CGraphicsScene::AddBubble(BubbleType type, const QPointF &pos)
 {
     CBubble *bbl;
     if(type == Chronicler::Story)
-        bbl = new CStoryBubble(m_editMenu, pos, m_palette, m_font);
+        bbl = new CStoryBubble(pos, m_palette, m_font);
     else if(type == Chronicler::Condition)
-        bbl = new CConditionBubble(m_editMenu, pos, m_palette, m_font);
+        bbl = new CConditionBubble(pos, m_palette, m_font);
     else if(type == Chronicler::Action)
-        bbl = new CActionBubble(m_editMenu, pos, m_palette, m_font);
+        bbl = new CActionBubble(pos, m_palette, m_font);
     else
-        bbl = new CChoiceBubble(m_editMenu, pos, m_palette, m_font);
+        bbl = new CChoiceBubble(pos, m_palette, m_font);
 
     connect(bbl, SIGNAL(Selected(QGraphicsItem*)), this, SIGNAL(itemSelected(QGraphicsItem*)));
     addItem(bbl);

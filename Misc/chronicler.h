@@ -10,14 +10,15 @@ class QMenu;
 class QToolBar;
 class QButtonGroup;
 class QDockWidget;
+class QStringListModel;
 QT_END_NAMESPACE
 
 class CGraphicsScene;
 class CGraphicsView;
 class CHomepage;
 class CSettingsView;
+class CProjectView;
 class CDockManager;
-
 
 namespace Chronicler
 {
@@ -43,12 +44,15 @@ namespace Chronicler
 
         CHomepage *homepage;
         CSettingsView *settingsView;
+        CProjectView *projectView;
 
         QDockWidget *dock;
         CDockManager *dockManager;
 
         QToolBar *pointerToolBar;
         QButtonGroup *pointerTypeGroup;
+
+        QStringListModel *actionsModel;
 
         QMenu *fileMenu;
         QMenu *editMenu;

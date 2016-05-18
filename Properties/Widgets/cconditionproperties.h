@@ -11,7 +11,7 @@ class CConditionProperties : public CPropertiesWidget
     Q_OBJECT
 
 public:
-    CConditionProperties(QStringListModel *model, QWidget *parent = 0);
+    CConditionProperties(QWidget *parent = 0);
 
 public:
     virtual void setBubble(CBubble *bbl);

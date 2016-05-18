@@ -9,8 +9,8 @@
 
 
 
-CListPropertiesWidget::CListPropertiesWidget(QStringListModel *model, QWidget *parent)
-    : CPropertiesWidget(model, parent)
+CListPropertiesWidget::CListPropertiesWidget(QWidget *parent)
+    : CPropertiesWidget(parent)
 {
     m_upButton = new QPushButton(QIcon(":/images/icn_up"), "");
     m_upButton->setEnabled(false);

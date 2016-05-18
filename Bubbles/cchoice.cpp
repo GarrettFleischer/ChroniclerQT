@@ -11,7 +11,7 @@
 
 
 CChoice::CChoice(const Chronicler::CPalette &palette, const QFont &font, QGraphicsItem *parent, const QString &choice)
-    : CSingleLinkBubble(0, QPointF(), palette, font, parent)
+    : CSingleLinkBubble(QPointF(), palette, font, parent)
 {
     setFlag(QGraphicsItem::ItemIsMovable, false);
     setFlag(QGraphicsItem::ItemIsSelectable, false);

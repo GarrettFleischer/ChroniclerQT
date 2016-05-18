@@ -9,16 +9,19 @@
 
 #include "Connections/cconnection.h"
 
+#include "Misc/chronicler.h"
+using Chronicler::shared;
+
 
 CBubble::CBubble(QGraphicsItem *parent)
-    : QGraphicsPolygonItem(parent), m_contextMenu(0),
+    : QGraphicsPolygonItem(parent),
       m_minSize(QSizeF(150,150)), m_order(0), m_locked(false),
       m_font(QFont()), m_palette(CPalette()), m_resize(false)
 {}
 
 
-CBubble::CBubble(QMenu *contextMenu, const QPointF &pos, const Chronicler::CPalette &palette,const QFont &font, QGraphicsItem *parent)
-    : QGraphicsPolygonItem(parent), m_contextMenu(contextMenu),
+CBubble::CBubble(const QPointF &pos, const Chronicler::CPalette &palette, const QFont &font, QGraphicsItem *parent)
+    : QGraphicsPolygonItem(parent),
       m_minSize(QSizeF(150,150)), m_order(0), m_locked(false),
       m_font(font), m_palette(palette), m_resize(false)
 {
@@ -90,16 +93,13 @@ void CBubble::hoverMoveEvent(QGraphicsSceneHoverEvent *evt)
 
 void CBubble::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 {
-    if(m_contextMenu)
+    if(!isSelected())
     {
-        if(!isSelected())
-        {
-            scene()->clearSelection();
-            setSelected(true);
-        }
-
-        m_contextMenu->exec(event->screenPos());
+        scene()->clearSelection();
+        setSelected(true);
     }
+
+    shared().editMenu->exec(event->screenPos());
 }
 
 

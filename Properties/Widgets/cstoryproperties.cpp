@@ -10,8 +10,8 @@
 
 
 
-CStoryProperties::CStoryProperties(QStringListModel *model, QWidget *parent)
-    : CPropertiesWidget(model, parent), m_storyBubble(0), m_storyEdit(0)
+CStoryProperties::CStoryProperties(QWidget *parent)
+    : CPropertiesWidget(parent), m_storyBubble(0), m_storyEdit(0)
 {
     m_boldAction = new QAction(QIcon(":/images/icn_bold.png"), tr(""), 0);
     m_boldAction->setShortcut(tr("Ctrl+B"));
@@ -34,7 +34,7 @@ CStoryProperties::CStoryProperties(QStringListModel *model, QWidget *parent)
     hl_font->addStretch(1);
 
     // Story Widget
-    m_storyEdit = new CTextEdit(this, m_model);
+    m_storyEdit = new CTextEdit(this, shared().actionsModel);
     m_storyEdit->addAction(m_boldAction);
     m_storyEdit->addAction(m_italicAction);
     connect(m_storyEdit, SIGNAL(textChanged()),

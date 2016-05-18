@@ -9,21 +9,21 @@
 #include "Bubbles/cbubble.h"
 
 
-CPropertiesManager::CPropertiesManager(QStringListModel *model, QWidget *parent)
+CPropertiesManager::CPropertiesManager(QWidget *parent)
     : QWidget(parent)
 {
-    m_storyProperties = new CStoryProperties(model, parent);
+    m_storyProperties = new CStoryProperties(parent);
     m_storyProperties->setEnabled(false);
 
-    m_conditionProperties = new CConditionProperties(model, parent);
+    m_conditionProperties = new CConditionProperties(parent);
     m_conditionProperties->setEnabled(false);
     m_conditionProperties->hide();
 
-    m_choiceProperties = new CChoiceProperties(model, parent);
+    m_choiceProperties = new CChoiceProperties(parent);
     m_choiceProperties->setEnabled(false);
     m_choiceProperties->hide();
 
-    m_actionProperties = new CActionProperties(model, parent);
+    m_actionProperties = new CActionProperties(parent);
     m_actionProperties->setEnabled(false);
     m_actionProperties->hide();
 

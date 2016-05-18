@@ -70,7 +70,7 @@ class CGraphicsScene : public QGraphicsScene
 public:
     enum Mode { InsertConnection, Cursor, InsertStory, InsertCondition, InsertChoice, InsertAction };
 
-    explicit CGraphicsScene(QMenu *editMenu, QObject *parent = 0);
+    explicit CGraphicsScene(QObject *parent = 0);
 
     void setFont(const QFont &font);
     QFont getFont() const { return m_font; }
@@ -91,7 +91,6 @@ private:
     void AddBubble(BubbleType type, const QPointF &pos);
 
     QString m_name;
-    QMenu *m_editMenu;
     Mode m_mode;
     QPointF m_startPoint;
     CLine *m_line;

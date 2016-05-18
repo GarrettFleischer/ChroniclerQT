@@ -7,8 +7,8 @@
 //#include "Connections/clink.h"
 
 
-CStoryBubble::CStoryBubble(QMenu *contextMenu, const QPointF &pos, const CPalette &palette, const QFont &font, QGraphicsItem *parent)
-    : CSingleLinkBubble(contextMenu, pos, palette, font, parent)//, m_resize(false)
+CStoryBubble::CStoryBubble(const QPointF &pos, const CPalette &palette, const QFont &font, QGraphicsItem *parent)
+    : CSingleLinkBubble(pos, palette, font, parent)//, m_resize(false)
 {
     m_type = Chronicler::Story;
     
