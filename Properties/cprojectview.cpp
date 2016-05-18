@@ -2,10 +2,14 @@
 
 #include <QListView>
 #include <QPushButton>
-#include <QItemSelectionModel>
+#include <QLabel>
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
+
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QByteArray>
 
 #include "Misc/cscenemodel.h"
 #include "cgraphicsscene.h"
@@ -35,9 +39,12 @@ CProjectView::CProjectView(QMenu *editMenu, QWidget *parent)
     vl_buttons->addWidget(m_removeButton);
     vl_buttons->addStretch(1);
 
+    CGraphicsScene *startup = new CGraphicsScene(m_editMenu, this);
+    startup->setName("startup");
+    m_sceneModel = new CSceneModel(startup, this);
 
     m_modelView = new QListView();
-    m_modelView->setModel((m_sceneModel = new CSceneModel(this)));
+    m_modelView->setModel(m_sceneModel);
     m_modelView->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::EditKeyPressed);
     connect(m_modelView, SIGNAL(clicked(QModelIndex)), this, SLOT(SelectedChanged(QModelIndex)));
 
@@ -46,6 +53,7 @@ CProjectView::CProjectView(QMenu *editMenu, QWidget *parent)
     hl_viewButtons->addLayout(vl_buttons);
 
     QVBoxLayout *l_main = new QVBoxLayout(this);
+    l_main->addWidget(new QLabel("Scenes"));
     l_main->addLayout(hl_viewButtons);
 }
 

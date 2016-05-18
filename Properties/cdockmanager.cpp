@@ -19,7 +19,7 @@ CDockManager::CDockManager(QStringListModel *model, QMenu *editMenu, QWidget *pa
     m_project = new CProjectView(editMenu);
 
     m_tabView->addTab(m_project, "Project");
-    m_tabView->addTab(m_properties, "Properties");
+    m_tabView->addTab(m_properties, "Bubble");
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget(m_tabView);

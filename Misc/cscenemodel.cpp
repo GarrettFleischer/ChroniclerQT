@@ -2,13 +2,11 @@
 
 #include "cgraphicsscene.h"
 
-CSceneModel::CSceneModel(QObject *parent)
+CSceneModel::CSceneModel(CGraphicsScene *startup, QObject *parent)
     : QAbstractListModel(parent)
-{}
-
-CSceneModel::CSceneModel(const QList<CGraphicsScene *> &scenes, QObject *parent)
-    : QAbstractListModel(parent), m_scenes(scenes)
-{}
+{
+    m_scenes.append(startup);
+}
 
 int CSceneModel::rowCount(const QModelIndex &) const
 {
@@ -39,9 +37,9 @@ bool CSceneModel::setData(const QModelIndex &index, const QVariant &value, int r
     return false;
 }
 
-Qt::ItemFlags CSceneModel::flags(const QModelIndex &) const
+Qt::ItemFlags CSceneModel::flags(const QModelIndex &index) const
 {
-    return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
+    return Qt::ItemIsEnabled | Qt::ItemIsSelectable | ((index.row() > 0) ? Qt::ItemIsEditable : Qt::NoItemFlags);
 }
 
 
@@ -59,7 +57,7 @@ QList<CGraphicsScene *> CSceneModel::scenes()
 
 void CSceneModel::MoveUp(const int index)
 {
-    if(index > 0 && index < m_scenes.length())
+    if(index > 1 && index < m_scenes.length())
     {
         beginMoveRows(QModelIndex(), index, index, QModelIndex(), index - 1);
         m_scenes.swap(index, index - 1);
@@ -69,7 +67,7 @@ void CSceneModel::MoveUp(const int index)
 
 void CSceneModel::MoveDown(const int index)
 {
-    if(index >= 0 && index < m_scenes.length() - 1)
+    if(index > 0 && index < m_scenes.length() - 1)
         MoveUp(index + 1);
 }
 
@@ -83,8 +81,11 @@ void CSceneModel::AddItem(CGraphicsScene *scene)
 
 void CSceneModel::RemoveItem(const int index)
 {
-    beginRemoveRows(QModelIndex(), index, index);
-    delete m_scenes[index];
-    m_scenes.removeAt(index);
-    endRemoveRows();
+    if(index > 0)
+    {
+        beginRemoveRows(QModelIndex(), index, index);
+        delete m_scenes[index];
+        m_scenes.removeAt(index);
+        endRemoveRows();
+    }
 }

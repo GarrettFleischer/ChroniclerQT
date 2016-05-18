@@ -41,12 +41,12 @@ HEADERS += \
     Misc/qactionbutton.h \
     Bubbles/csinglelinkbubble.h \
     Bubbles/cactionbubble.h \
-    Misc/clistview.h \
     Misc/cstringlistmodel.h \
     Properties/Widgets/cactionproperties.h \
     Misc/cchoicemodel.h \
     Properties/Widgets/clistpropertieswidget.h \
-    Misc/cscenemodel.h
+    Misc/cscenemodel.h \
+    Misc/clistviewwidget.h
 
 SOURCES += \
     Bubbles/cbubble.cpp \
@@ -76,9 +76,9 @@ SOURCES += \
     Misc/qactionbutton.cpp \
     Bubbles/csinglelinkbubble.cpp \
     Bubbles/cactionbubble.cpp \
-    Misc/clistview.cpp \
     Misc/cstringlistmodel.cpp \
     Properties/Widgets/cactionproperties.cpp \
     Misc/cchoicemodel.cpp \
     Properties/Widgets/clistpropertieswidget.cpp \
-    Misc/cscenemodel.cpp
+    Misc/cscenemodel.cpp \
+    Misc/clistviewwidget.cpp

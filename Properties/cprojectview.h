@@ -5,7 +5,6 @@
 
 QT_BEGIN_NAMESPACE
 class QListView;
-class CSceneModel;
 class QPushButton;
 class QMenu;
 QT_END_NAMESPACE
@@ -13,7 +12,7 @@ QT_END_NAMESPACE
 #include <QModelIndex>
 
 class CGraphicsScene;
-
+class CSceneModel;
 
 class CProjectView : public QWidget
 {
