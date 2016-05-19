@@ -35,8 +35,9 @@ CHomepage::CHomepage(QWidget *parent)
 {
     QHBoxLayout *main_layout = new QHBoxLayout(this);
 
-    m_downloader = new FileDownloader(QUrl("https://dtldtg.bn1301.livefilestore.com/y3mwdSQzjyFAnbG_xAvZ_6Npe_EUZgmA_AqZ9Q1RggqVmySzAoi-eHofxeZ08pvJkNMyzrcDtyHM4isyviD3POLHDP8TfaHVgOmjO2nU4AtRh-NTPgDnGB4RalR5zNCEDPZdk0EuUL-gQg5rW4KontM1g/Chronicler_news.html?download&psid=1"), this);
-    connect(m_downloader, SIGNAL(downloaded()), this, SLOT(Downloaded()));
+    QString news = "https://dtldtg.bn1301.livefilestore.com/y3mwdSQzjyFAnbG_xAvZ_6Npe_EUZgmA_AqZ9Q1RggqVmySzAoi-eHofxeZ08pvJkNMyzrcDtyHM4isyviD3POLHDP8TfaHVgOmjO2nU4AtRh-NTPgDnGB4RalR5zNCEDPZdk0EuUL-gQg5rW4KontM1g/Chronicler_news.html?download&psid=1";
+    m_downloader = new FileDownloader(QUrl(news), SLOT(Downloaded()), this);
+//    connect(m_downloader, SIGNAL(downloaded()), this, SLOT(Downloaded()));
 
     SetupSidebar(main_layout);
     SetupMainWindow(main_layout);

@@ -220,6 +220,11 @@ void CMainWindow::CreateActions()
 
     shared().showHomepageAction = new QAction(QIcon(":/images/icn_home"), tr("Show &homepage"), this);
     connect(shared().showHomepageAction, SIGNAL(triggered(bool)), this, SLOT(ShowHomepage()));
+
+    // Disable unavailable actions
+    shared().newProjectAction->setEnabled(false);
+    shared().openProjectAction->setEnabled(false);
+    shared().importProjectAction->setEnabled(false);
 }
 
 
