@@ -13,14 +13,18 @@
 #include <QSettings>
 #include <QPushButton>
 #include <QAction>
+#include <QCoreApplication>
 
 #include "Properties/cprojectview.h"
 #include "csettingsview.h"
 #include "Misc/qactionbutton.h"
 
+#include "Misc/filedownloader.h"
+
 #include "Misc/chronicler.h"
 using Chronicler::shared;
 
+#include <QDebug>
 
 // for QSettings
 Q_DECLARE_METATYPE(QStringList)
@@ -30,6 +34,9 @@ CHomepage::CHomepage(QWidget *parent)
     : QWidget(parent), m_webView(0), m_recentView(0)
 {
     QHBoxLayout *main_layout = new QHBoxLayout(this);
+
+    m_downloader = new FileDownloader(QUrl("http://www.dropbox.com/s/vcwqsk8cjprp04x/Example%20Domain.html?dl=1"), this);
+    connect(m_downloader, SIGNAL(downloaded()), this, SLOT(Downloaded()));
 
     SetupSidebar(main_layout);
     SetupMainWindow(main_layout);
@@ -79,7 +86,7 @@ void CHomepage::SetupSidebar(QHBoxLayout *main_layout)
 void CHomepage::SetupMainWindow(QHBoxLayout *main_layout)
 {
     m_webView = new QWebView();
-    m_webView->load(QUrl("http://www.example.com"));
+    m_webView->load(QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + "/news.html"));
 
     // Add to main layout
     main_layout->addWidget(m_webView, 4);
@@ -101,4 +108,9 @@ void CHomepage::RecentItemSelected(QListWidgetItem *item)
 
     // load the selected project
     shared().projectView->Load(item->text());
+}
+
+void CHomepage::Downloaded()
+{
+    qDebug() << m_downloader->downloadedData();
 }

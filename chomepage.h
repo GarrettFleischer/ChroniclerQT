@@ -15,6 +15,7 @@ QT_END_NAMESPACE
 
 class CMainWindow;
 class CSettingsView;
+class FileDownloader;
 
 class CHomepage : public QWidget
 {
@@ -30,10 +31,13 @@ private:
     QWebView * m_webView;
     QListWidget *m_recentView;
 
+    FileDownloader *m_downloader;
+
 signals:
 
 private slots:
     void RecentItemSelected(QListWidgetItem *item);
+    void Downloaded();
 };
 
 #endif // CHOMEPAGE_H
