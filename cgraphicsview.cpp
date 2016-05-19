@@ -7,9 +7,11 @@
 #include <QtMath>
 #include <QtGlobal>
 
+#include "cgraphicsscene.h"
 
-CGraphicsView::CGraphicsView(QGraphicsScene *scene, QWidget *parent)
-    : QGraphicsView(scene, parent), m_scale(1.0), m_minScale(0.05), m_maxScale(5.0),
+
+CGraphicsView::CGraphicsView(CGraphicsScene *scene, QWidget *parent)
+    : QGraphicsView(scene, parent), m_scene(scene), m_scale(1.0), m_minScale(0.05), m_maxScale(5.0),
       m_modifiers(Qt::NoModifier), m_zoom_factor_base(1.0015)
 {
     setMouseTracking(true);
@@ -17,6 +19,11 @@ CGraphicsView::CGraphicsView(QGraphicsScene *scene, QWidget *parent)
     setRenderHint(QPainter::Antialiasing, true);
     //setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     //setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+}
+
+CGraphicsScene *CGraphicsView::cScene()
+{
+    return m_scene;
 }
 
 void CGraphicsView::mouseMoveEvent(QMouseEvent *evt)

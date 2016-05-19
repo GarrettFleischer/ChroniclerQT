@@ -13,6 +13,7 @@ class QDockWidget;
 class QStringListModel;
 QT_END_NAMESPACE
 
+class CMainWindow;
 class CGraphicsScene;
 class CGraphicsView;
 class CHomepage;
@@ -40,6 +41,8 @@ namespace Chronicler
     // Do NOT instantiate this struct, use shared() singleton access.
     struct SharedInstances
     {
+        CMainWindow *mainWindow;
+
         QTabWidget *sceneTabs;
 
         CHomepage *homepage;

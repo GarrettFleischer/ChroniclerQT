@@ -3,12 +3,12 @@
 
 #include <QAbstractListModel>
 
-class CGraphicsScene;
+class CGraphicsView;
 
 class CSceneModel : public QAbstractListModel
 {
 public:
-    explicit CSceneModel(CGraphicsScene *startup, QObject *parent = 0);
+    explicit CSceneModel(CGraphicsView *startup, QObject *parent = 0);
 
     virtual int rowCount(const QModelIndex &index = QModelIndex()) const override;
 
@@ -17,16 +17,16 @@ public:
 
     virtual Qt::ItemFlags flags(const QModelIndex &index) const override;
 
-    void setScenes(const QList<CGraphicsScene *> &scenes);
-    QList<CGraphicsScene *> scenes();
+    void setViews(const QList<CGraphicsView *> &views);
+    QList<CGraphicsView *> views();
 
     void MoveUp(const int index);
     void MoveDown(const int index);
-    void AddItem(CGraphicsScene *scene);
+    void AddItem(CGraphicsView *view);
     void RemoveItem(const int index);
 
 private:
-    QList<CGraphicsScene *> m_scenes;
+    QList<CGraphicsView *> m_scenes;
 
 };
 

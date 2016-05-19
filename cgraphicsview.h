@@ -3,11 +3,15 @@
 
 #include <QGraphicsView>
 
+class CGraphicsScene;
+
 
 class CGraphicsView : public QGraphicsView
 {
 public:
-    CGraphicsView(QGraphicsScene *scene, QWidget *parent = 0);
+    CGraphicsView(CGraphicsScene *scene, QWidget *parent = 0);
+
+    CGraphicsScene *cScene();
 
 protected:
     virtual void mouseMoveEvent(QMouseEvent *);
@@ -15,6 +19,8 @@ protected:
 
 private:
     void GentleZoom(double factor, const QPointF &mouse_pos);
+
+    CGraphicsScene *m_scene;
 
     double m_scale;
     double m_minScale;

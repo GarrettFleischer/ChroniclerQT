@@ -11,20 +11,21 @@ QT_END_NAMESPACE
 
 #include <QModelIndex>
 
-class CGraphicsScene;
+class CGraphicsView;
 class CSceneModel;
 
 class CProjectView : public QWidget
 {
     Q_OBJECT
+
 public:
     CProjectView(QWidget *parent = 0);
 
     void Save();
     void SaveAs();
-    void Load(const QString &file);
+    void Load(const QString &filepath);
 
-    QList<CGraphicsScene *> scenes();
+    QList<CGraphicsView *> views();
 
 private:
     void CreateBubbles();
@@ -46,7 +47,7 @@ private:
     // member variable for project history
 
 signals:
-    sceneSelected(CGraphicsScene *);
+    sceneSelected(CGraphicsView *);
 
 private slots:
     void SelectedChanged(QModelIndex current);

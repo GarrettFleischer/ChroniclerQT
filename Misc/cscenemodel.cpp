@@ -1,8 +1,9 @@
 #include "cscenemodel.h"
 
+#include "cgraphicsview.h"
 #include "cgraphicsscene.h"
 
-CSceneModel::CSceneModel(CGraphicsScene *startup, QObject *parent)
+CSceneModel::CSceneModel(CGraphicsView *startup, QObject *parent)
     : QAbstractListModel(parent)
 {
     m_scenes.append(startup);
@@ -19,7 +20,7 @@ QVariant CSceneModel::data(const QModelIndex &index, int role) const
         return QVariant();
 
     if (role == Qt::DisplayRole || role == Qt::EditRole)
-        return QVariant(m_scenes[index.row()]->name());
+        return QVariant(m_scenes[index.row()]->cScene()->name());
 
     return QVariant();
 }
@@ -28,7 +29,7 @@ bool CSceneModel::setData(const QModelIndex &index, const QVariant &value, int r
 {
     if (index.isValid() && (role == Qt::EditRole || role == Qt::DisplayRole))
     {
-        m_scenes[index.row()]->setName(value.toString());
+        m_scenes[index.row()]->cScene()->setName(value.toString());
 
         emit dataChanged(index, index);
         return true;
@@ -43,14 +44,14 @@ Qt::ItemFlags CSceneModel::flags(const QModelIndex &index) const
 }
 
 
-void CSceneModel::setScenes(const QList<CGraphicsScene *> &scenes)
+void CSceneModel::setViews(const QList<CGraphicsView *> &views)
 {
     beginResetModel();
-    m_scenes = scenes;
+    m_scenes = views;
     endResetModel();
 }
 
-QList<CGraphicsScene *> CSceneModel::scenes()
+QList<CGraphicsView *> CSceneModel::views()
 {
     return m_scenes;
 }
@@ -71,11 +72,11 @@ void CSceneModel::MoveDown(const int index)
         MoveUp(index + 1);
 }
 
-void CSceneModel::AddItem(CGraphicsScene *scene)
+void CSceneModel::AddItem(CGraphicsView *view)
 {
     const int index = m_scenes.length();
     beginInsertRows(QModelIndex(), index, index);
-    m_scenes.append(scene);
+    m_scenes.append(view);
     endInsertRows();
 }
 

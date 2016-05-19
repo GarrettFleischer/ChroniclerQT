@@ -1,7 +1,6 @@
 #ifndef CHOMEPAGE_H
 #define CHOMEPAGE_H
 
-#include <QObject>
 #include <QWidget>
 
 QT_BEGIN_NAMESPACE
@@ -20,14 +19,13 @@ class CSettingsView;
 class CHomepage : public QWidget
 {
     Q_OBJECT
+
 public:
-    explicit CHomepage(CMainWindow *window);
+    explicit CHomepage(QWidget *parent = 0);
 
 private:
     void SetupSidebar(QHBoxLayout *main_layout);
     void SetupMainWindow(QHBoxLayout *main_layout);
-
-    CMainWindow *m_window;
 
     QWebView * m_webView;
     QListWidget *m_recentView;

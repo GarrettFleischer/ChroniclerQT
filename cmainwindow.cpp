@@ -5,7 +5,6 @@
 #include <QtGlobal>
 #include <limits>
 #include <QTabWidget>
-#include <QFileInfo>
 #include <QSettings>
 #include <QMessageBox>
 
@@ -15,6 +14,7 @@
 #include "chomepage.h"
 #include "Properties/cdockmanager.h"
 #include "csettingsview.h"
+#include "Properties/cprojectview.h"
 
 #include "Misc/chronicler.h"
 using Chronicler::shared;
@@ -24,10 +24,11 @@ const int InsertTextButton = 10;
 
 
 CMainWindow::CMainWindow(QSettings *settings)
-    : m_ShiftHeld(false)
 {
     setWindowTitle(tr("Chronicler"));
     setUnifiedTitleAndToolBarOnMac(true);
+
+    shared().mainWindow = this;
 
     // Load the settings...
     shared().settingsView = new CSettingsView(settings);
@@ -37,11 +38,6 @@ CMainWindow::CMainWindow(QSettings *settings)
 
     CreateActions();
     CreateMenus();
-
-    m_scene = new CGraphicsScene(this);
-    m_scene->setFont(shared().settingsView->font());
-
-    m_view = new CGraphicsView(m_scene);
 
     QStringList lst = QStringList() << "*set" << "*action" << "*create" << "*if" << "*elseif" << "${name}" << "${title}" << "${strength}";
     shared().actionsModel = new QStringListModel(lst, this);
@@ -78,31 +74,26 @@ CMainWindow::CMainWindow(QSettings *settings)
 
 }
 
-void CMainWindow::LoadProject(const QString &filepath)
-{
-    setWindowTitle("Chronicler - " + QFileInfo(filepath).baseName());
-
-    shared().dock->setVisible(true);
-    shared().dock->setWindowTitle(QFileInfo(filepath).fileName());
-    shared().sceneTabs->addTab(m_view, "startup");
-    shared().sceneTabs->setCurrentWidget(m_view);
-
-    shared().sceneTabs->removeTab(shared().sceneTabs->indexOf(shared().homepage));
-}
-
 
 void CMainWindow::DeleteItem()
 {
     shared().dockManager->setBubble(0);
 
-    foreach (QGraphicsItem *item, m_scene->selectedItems())
-        delete item;
+    CGraphicsView *view = dynamic_cast<CGraphicsView *>(shared().sceneTabs->currentWidget());
+
+    if(view)
+        for(QGraphicsItem *item : view->cScene()->selectedItems())
+            delete item;
 }
 
 
 void CMainWindow::PointerGroupClicked(int id)
 {
-    m_scene->setMode(CGraphicsScene::Mode(id));
+    CGraphicsView *view = dynamic_cast<CGraphicsView *>(shared().sceneTabs->currentWidget());
+    if(view)
+        view->cScene()->setMode(CGraphicsScene::Mode(id));
+    else
+        shared().pointerTypeGroup->button(int(CGraphicsScene::Cursor))->setChecked(true);
 }
 
 void CMainWindow::ShowSettings()

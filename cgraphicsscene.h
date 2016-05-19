@@ -70,7 +70,7 @@ class CGraphicsScene : public QGraphicsScene
 public:
     enum Mode { InsertConnection, Cursor, InsertStory, InsertCondition, InsertChoice, InsertAction };
 
-    explicit CGraphicsScene(QObject *parent = 0);
+    explicit CGraphicsScene(const QString &name, QObject *parent = 0);
 
     void setFont(const QFont &font);
     QFont getFont() const { return m_font; }

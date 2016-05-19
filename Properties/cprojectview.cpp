@@ -1,5 +1,7 @@
 #include "cprojectview.h"
 
+#include <QFileInfo>
+
 #include <QListView>
 #include <QPushButton>
 #include <QLabel>
@@ -11,8 +13,18 @@
 #include <QJsonObject>
 #include <QByteArray>
 
+#include <QDockWidget>
+#include <QTabWidget>
+
 #include "Misc/cscenemodel.h"
 #include "cgraphicsscene.h"
+#include "cgraphicsview.h"
+#include "chomepage.h"
+#include "cmainwindow.h"
+
+
+#include "Misc/chronicler.h"
+using Chronicler::shared;
 
 CProjectView::CProjectView(QWidget *parent)
     : QWidget(parent)
@@ -39,15 +51,14 @@ CProjectView::CProjectView(QWidget *parent)
     vl_buttons->addWidget(m_removeButton);
     vl_buttons->addStretch(1);
 
-    CGraphicsScene *startup = new CGraphicsScene(this);
-    startup->setName("startup");
+    CGraphicsView *startup = new CGraphicsView(new CGraphicsScene("startup"), this);
     m_sceneModel = new CSceneModel(startup, this);
 
     m_modelView = new QListView();
     m_modelView->setModel(m_sceneModel);
     m_modelView->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::EditKeyPressed);
     connect(m_modelView, SIGNAL(clicked(QModelIndex)), this, SLOT(SelectedChanged(QModelIndex)));
-    connect(m_sceneModel, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), this, SLOT(DataChanged(QModelIndex,QModelIndex,QVector<int>)));
+    connect(m_sceneModel, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), this, SLOT(DataChanged(QModelIndex,QModelIndex)));
 
     QHBoxLayout *hl_viewButtons = new QHBoxLayout();
     hl_viewButtons->addWidget(m_modelView);
@@ -68,14 +79,25 @@ void CProjectView::SaveAs()
 
 }
 
-void CProjectView::Load(const QString &file)
+void CProjectView::Load(const QString &filepath)
 {
+    shared().mainWindow->setWindowTitle("Chronicler - " + QFileInfo(filepath).baseName());
+    shared().dock->setVisible(true);
+    shared().dock->setWindowTitle(QFileInfo(filepath).fileName());
+    shared().sceneTabs->removeTab(shared().sceneTabs->indexOf(shared().homepage));
 
+    // TODO
+    // Load data from file and instantiate all scenes & bubbles...
+
+    // grab the startup view
+    CGraphicsView *view = m_sceneModel->views().first();
+    shared().sceneTabs->addTab(view, view->cScene()->name());
+    shared().sceneTabs->setCurrentWidget(view);
 }
 
-QList<CGraphicsScene *> CProjectView::scenes()
+QList<CGraphicsView *> CProjectView::views()
 {
-    return m_sceneModel->scenes();
+    return m_sceneModel->views();
 }
 
 
@@ -87,6 +109,12 @@ void CProjectView::SelectedChanged(QModelIndex current)
         m_upButton->setEnabled(true);
         m_downButton->setEnabled(true);
         m_removeButton->setEnabled(true);
+
+        CGraphicsView *view = m_sceneModel->views()[current.row()];
+
+        if(shared().sceneTabs->indexOf(view) == -1)
+            shared().sceneTabs->addTab(view, view->cScene()->name());
+        shared().sceneTabs->setCurrentWidget(view);
     }
     else
     {
@@ -98,7 +126,13 @@ void CProjectView::SelectedChanged(QModelIndex current)
 
 void CProjectView::DataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)
 {
-
+    for(int i = topLeft.row(); i <= bottomRight.row(); ++i)
+    {
+        CGraphicsView *view = m_sceneModel->views()[i];
+        int tab = shared().sceneTabs->indexOf(view);
+        if(tab != -1)
+            shared().sceneTabs->setTabText(tab, view->cScene()->name());
+    }
 }
 
 void CProjectView::MoveUp()
@@ -113,7 +147,7 @@ void CProjectView::MoveDown()
 
 void CProjectView::AddItem()
 {
-    m_sceneModel->AddItem(new CGraphicsScene(this));
+    m_sceneModel->AddItem(new CGraphicsView(new CGraphicsScene("Scene " + QString().setNum(m_sceneModel->rowCount())), this));
     m_modelView->edit(QModelIndex(m_sceneModel->index(m_sceneModel->rowCount() - 1, 0)));
 }
 

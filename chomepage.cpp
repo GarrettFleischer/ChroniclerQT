@@ -14,7 +14,7 @@
 #include <QPushButton>
 #include <QAction>
 
-#include "cmainwindow.h"
+#include "Properties/cprojectview.h"
 #include "csettingsview.h"
 #include "Misc/qactionbutton.h"
 
@@ -26,8 +26,8 @@ using Chronicler::shared;
 Q_DECLARE_METATYPE(QStringList)
 
 
-CHomepage::CHomepage(CMainWindow *window)
-    : QWidget((QWidget*)window), m_window(window), m_webView(0), m_recentView(0)
+CHomepage::CHomepage(QWidget *parent)
+    : QWidget(parent), m_webView(0), m_recentView(0)
 {
     QHBoxLayout *main_layout = new QHBoxLayout(this);
 
@@ -100,5 +100,5 @@ void CHomepage::RecentItemSelected(QListWidgetItem *item)
     shared().settingsView->settings()->setValue("Homepage/RecentFiles", QVariant::fromValue(labels));
 
     // load the selected project
-    m_window->LoadProject(item->text());
+    shared().projectView->Load(item->text());
 }

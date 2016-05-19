@@ -75,32 +75,30 @@ class CMainWindow : public QMainWindow
 public:
    CMainWindow(QSettings *settings);
 
-   void LoadProject(const QString & filepath);
-
 
 private slots:
-    void DeleteItem();
+
     void PointerGroupClicked(int id);
+
+    void ShowAbout();
     void ShowSettings();
+    void ShowHomepage();
+
     void NewProject();
     void OpenProject();
     void ImportProject();
-    void ShowHomepage();
-    void ShowAbout();
+
+    void DeleteItem();
     void TabClosed(int);
+    void SettingsChanged();
+
     void DockAreaChanged(Qt::DockWidgetArea);
     void PointerToolBarAreaChanged(bool);
-    void SettingsChanged();
 
 private:
     void CreateActions();
     void CreateMenus();
     void CreateToolbars();
-
-    bool m_ShiftHeld;
-
-    CGraphicsScene *m_scene;
-    CGraphicsView *m_view;
 
 };
 

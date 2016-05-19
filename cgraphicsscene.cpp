@@ -24,8 +24,8 @@ using Chronicler::Anchor;
 using Chronicler::shared;
 
 
-CGraphicsScene::CGraphicsScene(QObject *parent)
-    : QGraphicsScene(parent), m_mode(Cursor), m_line(0), m_rubberBand(false)
+CGraphicsScene::CGraphicsScene(const QString &name, QObject *parent)
+    : QGraphicsScene(parent), m_name(name), m_mode(Cursor), m_line(0), m_rubberBand(false)
 {
     float maxsize = 20000.0;//std::numeric_limits<float>::max();
     float minsize = -20000.0/2;//-std::numeric_limits<float>::max()/2;
