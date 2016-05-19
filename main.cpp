@@ -16,7 +16,7 @@ int main(int argv, char *args[])
 
     QApplication app(argv, args);
 
-    QSettings settings(QSettings::IniFormat, QSettings::UserScope, "Chronicler", "Chronicler");
+    QSettings settings(QSettings::IniFormat, QSettings::UserScope, "Chronicler-Next", "Chronicler");
 
     bool showIntro = settings.value("MainWindow/ShowIntro", false).toBool();
 

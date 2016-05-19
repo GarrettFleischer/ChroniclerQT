@@ -13,7 +13,9 @@
 #include <QSettings>
 #include <QPushButton>
 #include <QAction>
-#include <QCoreApplication>
+#include <QStandardPaths>
+#include <QFile>
+
 
 #include "Properties/cprojectview.h"
 #include "csettingsview.h"
@@ -24,8 +26,6 @@
 #include "Misc/chronicler.h"
 using Chronicler::shared;
 
-#include <QDebug>
-
 // for QSettings
 Q_DECLARE_METATYPE(QStringList)
 
@@ -35,7 +35,7 @@ CHomepage::CHomepage(QWidget *parent)
 {
     QHBoxLayout *main_layout = new QHBoxLayout(this);
 
-    m_downloader = new FileDownloader(QUrl("http://www.dropbox.com/s/vcwqsk8cjprp04x/Example%20Domain.html?dl=1"), this);
+    m_downloader = new FileDownloader(QUrl("https://dtldtg.bn1301.livefilestore.com/y3mwdSQzjyFAnbG_xAvZ_6Npe_EUZgmA_AqZ9Q1RggqVmySzAoi-eHofxeZ08pvJkNMyzrcDtyHM4isyviD3POLHDP8TfaHVgOmjO2nU4AtRh-NTPgDnGB4RalR5zNCEDPZdk0EuUL-gQg5rW4KontM1g/Chronicler_news.html?download&psid=1"), this);
     connect(m_downloader, SIGNAL(downloaded()), this, SLOT(Downloaded()));
 
     SetupSidebar(main_layout);
@@ -86,7 +86,7 @@ void CHomepage::SetupSidebar(QHBoxLayout *main_layout)
 void CHomepage::SetupMainWindow(QHBoxLayout *main_layout)
 {
     m_webView = new QWebView();
-    m_webView->load(QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + "/news.html"));
+//    m_webView->load(QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + "/news.html"));
 
     // Add to main layout
     main_layout->addWidget(m_webView, 4);
@@ -112,5 +112,12 @@ void CHomepage::RecentItemSelected(QListWidgetItem *item)
 
 void CHomepage::Downloaded()
 {
-    qDebug() << m_downloader->downloadedData();
+    QString news = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/Chronicler_news.html";
+
+    QFile file(news);
+    file.open(QFile::WriteOnly);
+    file.write(m_downloader->downloadedData());
+    file.close();
+
+    m_webView->load(QUrl::fromLocalFile(news));
 }
