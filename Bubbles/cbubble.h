@@ -17,7 +17,6 @@ QT_END_NAMESPACE
 #include "Misc/chronicler.h"
 using Chronicler::CPalette;
 using Chronicler::Anchor;
-using Chronicler::AllowedAnchors;
 using Chronicler::BubbleType;
 
 class CConnection;
@@ -59,9 +58,6 @@ public:
     virtual Anchor OutputAnchorAtPosition(const QPointF &pos);
     virtual Anchor InputAnchorAtPosition(const QPointF &pos);
 
-    int allowedAnchors() const { return m_allowedAnchors; }
-    void setAllowedAnchors(int allowed);
-
     uint UID();
 
     virtual void Read(QByteArray &ra);
@@ -97,8 +93,6 @@ protected:
 
     QFont m_font;
     CPalette m_palette;
-
-    int m_allowedAnchors;
 
     bool m_resize;
     QPointF m_offset;

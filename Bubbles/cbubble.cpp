@@ -216,11 +216,6 @@ Anchor CBubble::InputAnchorAtPosition(const QPointF &pos)
     return AnchorAtPosition(pos);
 }
 
-void CBubble::setAllowedAnchors(int allowed)
-{
-    m_allowedAnchors = allowed;
-}
-
 uint CBubble::UID()
 {
     return m_UID;
@@ -229,23 +224,22 @@ uint CBubble::UID()
 void CBubble::Read(QByteArray &ra)
 {
     QDataStream ds(&ra, QIODevice::ReadOnly);
-    QRectF b;
+    QPointF pos;
     int num_links;
 
     ds >> m_UID
        >> m_label >> m_order >> m_locked
-       >> m_font >> m_palette
-       >> m_minSize >> b
+       >> m_palette
+       >> m_minSize >> m_bounds >> pos
        >> num_links;
 
     for(int i = 0; i < num_links; ++i)
     {
-        CConnection *c = new CConnection(0, 0, Anchor::Down, Anchor::Up, scene());
+        CConnection *c = new CConnection(scene());
         c->Read(ra);
     }
 
-    setPos(b.topLeft());
-    m_bounds = QRectF(-m_minSize.width()/2, -m_minSize.height()/2, b.width(), b.height());
+    setPos(pos);
     UpdatePolygon();
 }
 
@@ -258,8 +252,8 @@ QByteArray CBubble::Write()
 
     ds << m_UID
        << m_label << m_order << m_locked
-       << m_font << m_palette
-       << m_minSize << sceneBoundingRect()
+       << m_palette
+       << m_minSize << m_bounds << scenePos()
        << tmp.length();
 
     for(CConnection *link : tmp)
