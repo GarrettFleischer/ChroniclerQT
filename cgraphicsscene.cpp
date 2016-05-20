@@ -33,6 +33,8 @@ CGraphicsScene::CGraphicsScene(const QString &name, QObject *parent)
     setBackgroundBrush(QBrush(Qt::gray));
 
     m_line = new CLine(QPointF(), QPointF());
+    m_line->hide();
+    addItem(m_line);
 
     connect(this, SIGNAL(itemSelected(QGraphicsItem*)), this, SLOT(ItemSelected(QGraphicsItem*)));
 
@@ -125,7 +127,10 @@ void CGraphicsScene::setMode(Mode mode)
         views().first()->setDragMode(QGraphicsView::ScrollHandDrag);
 
         if(mode == Cursor)
+        {
             shared().pointerTypeGroup->button(int(CGraphicsScene::Cursor))->setChecked(true);
+            m_line->hide();
+        }
         else if(mode == InsertConnection)
             views().first()->setDragMode(QGraphicsView::NoDrag);
     }
@@ -154,7 +159,7 @@ void CGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
                 item->setSelected(false);
 
         CBubble *clickItem = 0;
-        QList<QGraphicsItem *> clickItems = items(mouseEvent->scenePos());
+//        QList<QGraphicsItem *> clickItems = items(mouseEvent->scenePos());
 
         switch (m_mode)
         {
@@ -175,9 +180,10 @@ void CGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
             break;
 
         case InsertConnection:
-            for (int i = 0; i < clickItems.length() && !clickItem; ++i)
-                clickItem = qgraphicsitem_cast<CBubble *>(clickItems[i]);
+//            for (int i = 0; i < clickItems.length() && !clickItem; ++i)
+//                clickItem = qgraphicsitem_cast<CBubble *>(clickItems[i]);
 
+            clickItem = BubbleAt(mouseEvent->scenePos(), true);
             if(clickItem)
             {
                 Anchor out = clickItem->OutputAnchorAtPosition(mouseEvent->scenePos());
@@ -186,7 +192,7 @@ void CGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
                     m_line->setStart(mouseEvent->scenePos());
                     m_line->setStartAnchor(out);
                     m_line->setPalette(clickItem->getPalette());
-                    addItem(m_line);
+                    m_line->show();
                 }
             }
             break;
@@ -230,21 +236,24 @@ void CGraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     if (m_mode == InsertConnection)
     {
-        CBubble *startItem = BubbleAt(m_line->start(), true);
-        CBubble *endItem = BubbleAt(m_line->end());
-
-        if(items().contains(m_line))
+        if(m_line->isVisible())
         {
-            removeItem(m_line);
+            m_line->hide();
+
+            CBubble *startItem = BubbleAt(m_line->start(), true);
+            CBubble *endItem = BubbleAt(m_line->end());
 
             if(startItem && endItem && startItem != endItem)
             {
                 Anchor start_anchor = m_line->startAnchor();
                 Anchor end_anchor = m_line->endAnchor();
                 if(start_anchor != Anchor::None && end_anchor != Anchor::None)
-                    AddConnection(startItem, endItem, start_anchor, end_anchor, (mouseEvent->modifiers() & Qt::ShiftModifier));
+                    AddConnection(startItem, endItem, start_anchor, end_anchor);
             }
         }
+
+        if(!(mouseEvent->modifiers() & Qt::ShiftModifier))
+            setMode(Cursor);
     }
 
     m_rubberBand = false;
@@ -279,7 +288,7 @@ void CGraphicsScene::keyPressEvent(QKeyEvent *event)
 
 void CGraphicsScene::keyReleaseEvent(QKeyEvent *event)
 {
-    if(event->key() == Qt::Key_Shift)
+    if(event->key() == Qt::Key_Shift && !m_line->isVisible())
         setMode(Cursor);
 //        views().first()->setDragMode(QGraphicsView::ScrollHandDrag);
 }
@@ -313,15 +322,12 @@ CBubble * CGraphicsScene::AddBubble(BubbleType type, const QPointF &pos, bool sh
     return bbl;
 }
 
-CConnection *CGraphicsScene::AddConnection(CBubble *start, CBubble *end, Anchor start_anchor, Anchor end_anchor, bool shift)
+CConnection *CGraphicsScene::AddConnection(CBubble *start, CBubble *end, Anchor start_anchor, Anchor end_anchor)
 {
     CConnection *con = new CConnection(start, end, start_anchor, end_anchor, this);
     addItem(con);
 
     m_connections.append(con);
-
-    if(!shift)
-        setMode(CGraphicsScene::Cursor);
 
     return con;
 }
