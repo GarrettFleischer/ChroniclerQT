@@ -73,6 +73,49 @@ void CGraphicsScene::setPalette(const CPalette &palette)
     }
 }
 
+QList<CBubble *> CGraphicsScene::bubbles()
+{
+    return m_bubbles;
+}
+
+QList<CConnection *> CGraphicsScene::connections()
+{
+    return m_connections;
+}
+
+// Grabs the bubble with the highest z value at the given point
+CBubble *CGraphicsScene::BubbleAt(const QPointF &point, bool choiceAllowed)
+{
+    CBubble *bubble = 0;
+
+    for(CBubble *current : m_bubbles)
+    {
+        if(current->polygon().containsPoint(point - current->scenePos(), Qt::WindingFill))
+        {
+            if(!bubble || current->zValue() > bubble->zValue())
+                bubble = current;
+        }
+    }
+
+    if(choiceAllowed)
+    {
+        // Grab the choice out of the choice bubble
+        CChoiceBubble *cbbl = dynamic_cast<CChoiceBubble *>(bubble);
+        if(cbbl)
+        {
+            for(CChoice *choice : cbbl->choiceBubbles())
+            {
+                if(choice->polygon().containsPoint(point - choice->scenePos(), Qt::WindingFill))
+                {
+                    bubble = choice;
+                    break;
+                }
+            }
+        }
+    }
+    return bubble;
+}
+
 void CGraphicsScene::setMode(Mode mode)
 {
     m_mode = mode;
@@ -165,15 +208,15 @@ void CGraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     if (m_mode == InsertConnection)
     {
-        CBubble *hoverItem = 0;
-        QList<QGraphicsItem *> hoverItems = items(mouseEvent->scenePos());
+        CBubble *hoverItem = BubbleAt(mouseEvent->scenePos());
+//        QList<QGraphicsItem *> hoverItems = items(mouseEvent->scenePos());
 
-        while (hoverItems.count() && !hoverItem)
-        {
-            if(!dynamic_cast<CChoice *>(hoverItems.first()))
-                hoverItem = qgraphicsitem_cast<CBubble *>(hoverItems.first());
-            hoverItems.removeFirst();
-        }
+//        while (hoverItems.count() && !hoverItem)
+//        {
+//            if(!dynamic_cast<CChoice *>(hoverItems.first()))
+//                hoverItem = qgraphicsitem_cast<CBubble *>(hoverItems.first());
+//            hoverItems.removeFirst();
+//        }
         if(hoverItem)
             m_line->setEndAnchor(hoverItem->InputAnchorAtPosition(mouseEvent->scenePos()));
 
@@ -187,22 +230,8 @@ void CGraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     if (m_mode == InsertConnection)
     {
-        CBubble *startItem = 0;
-        CBubble *endItem = 0;
-
-        QList<QGraphicsItem *> startItems = items(m_line->start());
-        while (startItems.count() && !startItem)
-        {
-            startItem = qgraphicsitem_cast<CBubble *>(startItems.first());
-            startItems.removeFirst();
-        }
-        QList<QGraphicsItem *> endItems = items(m_line->end());
-        while (endItems.count() && !endItem)
-        {
-            if(!dynamic_cast<CChoice *>(endItems.first()))
-                endItem = qgraphicsitem_cast<CBubble *>(endItems.first());
-            endItems.removeFirst();
-        }
+        CBubble *startItem = BubbleAt(m_line->start(), true);
+        CBubble *endItem = BubbleAt(m_line->end());
 
         if(items().contains(m_line))
         {
@@ -213,17 +242,21 @@ void CGraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
                 Anchor start_anchor = m_line->startAnchor();
                 Anchor end_anchor = m_line->endAnchor();
                 if(start_anchor != Anchor::None && end_anchor != Anchor::None)
-                    addItem(new CConnection(startItem, endItem, start_anchor, end_anchor, this));
+                    AddConnection(startItem, endItem, start_anchor, end_anchor, (mouseEvent->modifiers() & Qt::ShiftModifier));
             }
         }
     }
 
     m_rubberBand = false;
 
+    // calculate selected bubbles...
     QGraphicsScene::mouseReleaseEvent(mouseEvent);
 
+    // set the dock as the active widget
     if(!shared().dock->isHidden())
         shared().dock->activateWindow();
+
+    // update the bubble properties with the selected bubble
     QList<QGraphicsItem *> selected = selectedItems();
     if(selected.size() == 1)
     {
@@ -231,7 +264,7 @@ void CGraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
         shared().dockManager->setBubble(bbl);
     }
     else
-        shared().dockManager->setBubble(0, selected.size());
+        shared().dockManager->setBubble(0, (selected.size() > 0)); // switch to project view if none selected
 
     emit leftReleased();
 }
@@ -247,7 +280,8 @@ void CGraphicsScene::keyPressEvent(QKeyEvent *event)
 void CGraphicsScene::keyReleaseEvent(QKeyEvent *event)
 {
     if(event->key() == Qt::Key_Shift)
-        views().first()->setDragMode(QGraphicsView::ScrollHandDrag);
+        setMode(Cursor);
+//        views().first()->setDragMode(QGraphicsView::ScrollHandDrag);
 }
 
 
@@ -269,11 +303,26 @@ CBubble * CGraphicsScene::AddBubble(BubbleType type, const QPointF &pos, bool sh
     addItem(bbl);
     bbl->setSelected(true);
 
+    m_bubbles.append(bbl);
+
     if(!shift)
         setMode(CGraphicsScene::Cursor);
 
     emit itemInserted(bbl);
 
     return bbl;
+}
+
+CConnection *CGraphicsScene::AddConnection(CBubble *start, CBubble *end, Anchor start_anchor, Anchor end_anchor, bool shift)
+{
+    CConnection *con = new CConnection(start, end, start_anchor, end_anchor, this);
+    addItem(con);
+
+    m_connections.append(con);
+
+    if(!shift)
+        setMode(CGraphicsScene::Cursor);
+
+    return con;
 }
 

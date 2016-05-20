@@ -26,6 +26,7 @@ public:
     virtual QList<CConnection *> links() override;
 
     CChoiceModel *choices();
+    choiceList choiceBubbles();
 
 protected:
     virtual void UpdatePolygon() override;

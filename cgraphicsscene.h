@@ -55,6 +55,7 @@ class QWheelEvent;
 QT_END_NAMESPACE
 
 class CBubble;
+class CConnection;
 class CStartBubble;
 class CLink;
 class CLine;
@@ -83,6 +84,14 @@ public:
 
     bool isRubberBandSelecting() const { return m_rubberBand; }
 
+    CBubble *AddBubble(BubbleType type, const QPointF &pos, bool shift);
+    CConnection *AddConnection(CBubble *start, CBubble *end, Chronicler::Anchor start_anchor, Chronicler::Anchor end_anchor, bool shift);
+
+    QList<CBubble *> bubbles();
+    QList<CConnection *> connections();
+
+    CBubble *BubbleAt(const QPointF &point, bool choiceAllowed = false);
+
 protected:
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
     virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);
@@ -91,8 +100,6 @@ protected:
     virtual void keyReleaseEvent(QKeyEvent *event) override;
 
 private:
-    CBubble *AddBubble(BubbleType type, const QPointF &pos, bool shift);
-
     QString m_name;
     Mode m_mode;
     QPointF m_startPoint;
@@ -102,6 +109,9 @@ private:
     bool m_rubberBand;
 
     CStartBubble *m_startBubble;
+
+    QList<CBubble *> m_bubbles;
+    QList<CConnection *> m_connections;
 
 signals:
     void itemInserted(CBubble *item);
