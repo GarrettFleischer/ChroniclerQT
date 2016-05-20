@@ -22,8 +22,8 @@ CConnection::CConnection(CBubble *from, CBubble *to, Anchor anc_from, Anchor anc
     m_line->setZValue(-999999);
     scn->addItem(m_line);
 
-    setFrom(0);
-    setTo(0);
+    setFrom(from);
+    setTo(to);
 }
 
 CConnection::~CConnection()
@@ -142,12 +142,15 @@ void CConnection::Read(QByteArray &ra)
 {
     QDataStream ds(&ra, QIODevice::ReadOnly);
 
-    Anchor start, end;
+    int start, end;
 
     ds >> start
        >> end
        >> m_fromUID
        >> m_toUID;
+
+    m_line->setStartAnchor(Anchor(start));
+    m_line->setEndAnchor(Anchor(end));
 }
 
 QByteArray CConnection::Write()

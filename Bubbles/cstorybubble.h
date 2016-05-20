@@ -32,7 +32,6 @@ protected:
 private:
     CTextItem * m_title;
     CTextItem * m_story;
-
 };
 
 #endif // CSTORYBUBBLE_H

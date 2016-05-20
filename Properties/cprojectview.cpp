@@ -95,6 +95,7 @@ void CProjectView::Load(const QString &filepath)
     CGraphicsView *view = m_sceneModel->views().first();
     shared().sceneTabs->addTab(view, view->cScene()->name());
     shared().sceneTabs->setCurrentWidget(view);
+    view->centerOn(view->scene()->sceneRect().center());
 }
 
 QList<CGraphicsView *> CProjectView::views()
@@ -115,7 +116,7 @@ CBubble *CProjectView::BubbleWithUID(uint uid)
         }
     }
 
-    return bubble;
+    return 0;
 }
 
 

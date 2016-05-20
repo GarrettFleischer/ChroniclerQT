@@ -27,10 +27,10 @@ using Chronicler::shared;
 CGraphicsScene::CGraphicsScene(const QString &name, QObject *parent)
     : QGraphicsScene(parent), m_name(name), m_mode(Cursor), m_line(0), m_rubberBand(false)
 {
-    float maxsize = 20000.0;//std::numeric_limits<float>::max();
-    float minsize = -20000.0/2;//-std::numeric_limits<float>::max()/2;
+    float maxsize = 25000.0;
+    float minsize = -maxsize/2;
     setSceneRect(QRectF(minsize, minsize, maxsize, maxsize));
-    setBackgroundBrush(QBrush(Qt::gray));//QColor(86,96,123)));
+    setBackgroundBrush(QBrush(Qt::gray));
 
     m_line = new CLine(QPointF(), QPointF());
 
@@ -240,8 +240,14 @@ void CGraphicsScene::keyPressEvent(QKeyEvent *event)
 {
     if(event->key() == Qt::Key_Shift)
         views().first()->setDragMode(QGraphicsView::RubberBandDrag);
-    if(event->key() == Qt::Key_Escape)
+    else if(event->key() == Qt::Key_Escape)
         setMode(Cursor);
+}
+
+void CGraphicsScene::keyReleaseEvent(QKeyEvent *event)
+{
+    if(event->key() == Qt::Key_Shift)
+        views().first()->setDragMode(QGraphicsView::ScrollHandDrag);
 }
 
 

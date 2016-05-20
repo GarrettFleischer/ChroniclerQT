@@ -40,19 +40,6 @@ CBubble::CBubble(const QPointF &pos, const Chronicler::CPalette &palette, const 
         m_UIDs.append(m_UID);
 }
 
-CBubble::CBubble(const QJsonObject &json, QGraphicsItem *parent)
-    : QGraphicsPolygonItem(parent), m_UID(json["UID"].toInt())
-{
-    m_label = json["label"].toString();
-    m_order = json["order"].toInt();
-    m_locked = json["locked"].toBool();
-    m_font = json["font"].toVariant().value<QFont>();
-    m_palette = json["palette"].toVariant().value<CPalette>();
-    m_minSize = json["min_size"].toVariant().value<QSizeF>();
-    m_bounds = json["bounds"].toVariant().value<QRectF>();
-    //    json["links"];
-}
-
 CBubble::~CBubble()
 {
     // Free up this UID for reuse
@@ -234,7 +221,7 @@ void CBubble::setAllowedAnchors(int allowed)
     m_allowedAnchors = allowed;
 }
 
-const uint CBubble::UID()
+uint CBubble::UID()
 {
     return m_UID;
 }

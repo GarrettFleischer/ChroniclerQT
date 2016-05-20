@@ -13,6 +13,12 @@ CStartBubble::CStartBubble(const QPointF &pos, const Chronicler::CPalette &palet
     UpdatePolygon();
 }
 
+void CStartBubble::mousePressEvent(QGraphicsSceneMouseEvent *)
+{}
+
+void CStartBubble::hoverMoveEvent(QGraphicsSceneHoverEvent *)
+{}
+
 void CStartBubble::UpdatePolygon()
 {
     CSingleLinkBubble::UpdatePolygon();

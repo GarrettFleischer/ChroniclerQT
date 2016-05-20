@@ -29,7 +29,6 @@ class CBubble : public QObject, public QGraphicsPolygonItem
 
 public:
     CBubble(const QPointF &pos, const CPalette &palette, const QFont &font = QFont(), QGraphicsItem *parent = 0, uint uid = GenerateUID());
-    CBubble(const QJsonObject &json, QGraphicsItem *parent);
 
     virtual ~CBubble();
 
@@ -65,7 +64,7 @@ public:
 
     uint UID();
 
-    virtual void Read(QJsonObject &json);
+    virtual void Read(QByteArray &ra);
     virtual QByteArray Write();
 
 protected:

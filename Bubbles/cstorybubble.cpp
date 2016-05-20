@@ -28,7 +28,6 @@ CStoryBubble::CStoryBubble(const QPointF &pos, const CPalette &palette, const QF
     UpdatePolygon();
 }
 
-
 void CStoryBubble::UpdatePolygon()
 {
     QRectF b = boundingRect();
@@ -79,3 +78,7 @@ void CStoryBubble::setPalette(const Chronicler::CPalette &palette)
     m_story->setColor(palette.font);
     CBubble::setPalette(palette);
 }
+
+
+
+
