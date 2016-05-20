@@ -13,6 +13,7 @@ QT_END_NAMESPACE
 
 class CGraphicsView;
 class CSceneModel;
+class CBubble;
 
 class CProjectView : public QWidget
 {
@@ -26,6 +27,8 @@ public:
     void Load(const QString &filepath);
 
     QList<CGraphicsView *> views();
+
+    CBubble *BubbleWithUID(uint uid);
 
 private:
     void CreateBubbles();

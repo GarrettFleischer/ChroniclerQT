@@ -7,17 +7,23 @@
 #include "cline.h"
 #include "Bubbles/cbubble.h"
 
-#include <QDebug>
+#include "Properties/cprojectview.h"
+#include "Misc/chronicler.h"
+using Chronicler::shared;
+
+CConnection::CConnection(QGraphicsScene *scn)
+    : CConnection(0, 0, Anchor::Down, Anchor::Up, scn)
+{}
 
 CConnection::CConnection(CBubble *from, CBubble *to, Anchor anc_from, Anchor anc_to, QGraphicsScene *scn)
-    : m_from(0), m_to(0)
+    : m_from(0), m_to(0), m_fromUID(-1), m_toUID(-1)
 {
     m_line = new CLine(QPointF(), QPointF(), anc_from, anc_to);
     m_line->setZValue(-999999);
     scn->addItem(m_line);
 
-    setFrom(from);
-    setTo(to);
+    setFrom(0);
+    setTo(0);
 }
 
 CConnection::~CConnection()
@@ -122,5 +128,38 @@ Anchor CConnection::endAnchor() const
 void CConnection::setEndAnchor(Chronicler::Anchor anchor)
 {
     m_line->setEndAnchor(anchor);
+}
+
+void CConnection::ConnectToUIDs()
+{
+    if(m_fromUID != -1)
+        setFrom(shared().projectView->BubbleWithUID(m_fromUID));
+    if(m_toUID != -1)
+        setTo(shared().projectView->BubbleWithUID(m_toUID));
+}
+
+void CConnection::Read(QByteArray &ra)
+{
+    QDataStream ds(&ra, QIODevice::ReadOnly);
+
+    Anchor start, end;
+
+    ds >> start
+       >> end
+       >> m_fromUID
+       >> m_toUID;
+}
+
+QByteArray CConnection::Write()
+{
+    QByteArray ra;
+    QDataStream ds(&ra, QIODevice::WriteOnly);
+
+    ds << m_line->startAnchor()
+       << m_line->endAnchor()
+       << m_from->UID()
+       << m_to->UID();
+
+    return ra;
 }
 

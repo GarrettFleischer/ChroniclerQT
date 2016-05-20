@@ -59,7 +59,6 @@ private:
     Anchor          m_startAnchor;
     Anchor          m_endAnchor;
     CPalette        m_palette;
-    int             m_offset;
     float           m_width;
 
 };

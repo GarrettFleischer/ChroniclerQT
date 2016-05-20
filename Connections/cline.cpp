@@ -8,13 +8,13 @@
 
 CLine::CLine(const QPointF &start, const QPointF &end, Anchor anc_start, Anchor anc_end, QObject *parent)
     : QObject(parent), QGraphicsItem(), m_start(start), m_end(end),
-      m_startAnchor(anc_start), m_endAnchor(anc_end), m_offset(200), m_width(5)
+      m_startAnchor(anc_start), m_endAnchor(anc_end), m_width(5)
 {
     UpdateShape();
 }
 
 CLine::CLine(const CLine &copy)
-    : QObject(copy.parent()), QGraphicsItem(), m_path(copy.m_path), m_offset(copy.m_offset), m_width(copy.m_width)
+    : QObject(copy.parent()), QGraphicsItem(), m_path(copy.m_path), m_width(copy.m_width)
 {
     UpdateShape();
 }
@@ -87,17 +87,17 @@ void CLine::UpdateShape()
 
     QPointF p1(m_start.x(), m_start.y());
     QPointF p2(m_end.x(), m_end.y());
-    m_offset = sqrt(pow(p2.x() - p1.x(), 2) + pow(p2.y() - p1.y(), 2)) * 0.5;
-    p1.rx() += (qRound(qCos(start_angle)) * m_offset);
-    p1.ry() += (qRound(qSin(start_angle)) * m_offset);
-    p2.rx() += (qRound(qCos(end_angle)) * m_offset);
-    p2.ry() += (qRound(qSin(end_angle)) * m_offset);
+    const qreal offset = qMax(sqrt(pow(p2.x() - p1.x(), 2) + pow(p2.y() - p1.y(), 2)) * 0.5, 65.0);
+    p1.rx() += (qRound(qCos(start_angle)) * offset);
+    p1.ry() += (qRound(qSin(start_angle)) * offset);
+    p2.rx() += (qRound(qCos(end_angle)) * offset);
+    p2.ry() += (qRound(qSin(end_angle)) * offset);
 
     m_path.moveTo(m_start);
     m_path.cubicTo(p1, p2, m_end);
 
     // create and rotate arrow
-    const int size = 15;
+    const qreal size = 15;
     QRectF box(-size * 0.5, -size * 0.5, size, size);
     m_arrow = QPainterPath();
     QPointF arrow_start(box.left(), box.center().y());

@@ -28,9 +28,8 @@ class CBubble : public QObject, public QGraphicsPolygonItem
     Q_OBJECT
 
 public:
-
-//    CBubble(QGraphicsItem *parent);
     CBubble(const QPointF &pos, const CPalette &palette, const QFont &font = QFont(), QGraphicsItem *parent = 0, uint uid = GenerateUID());
+    CBubble(const QJsonObject &json, QGraphicsItem *parent);
 
     virtual ~CBubble();
 
@@ -64,6 +63,10 @@ public:
     int allowedAnchors() const { return m_allowedAnchors; }
     void setAllowedAnchors(int allowed);
 
+    uint UID();
+
+    virtual void Read(QJsonObject &json);
+    virtual QByteArray Write();
 
 protected:
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *evt) override;
@@ -80,7 +83,7 @@ protected:
 
     static uint GenerateUID();
 
-    const uint m_UID;
+    uint m_UID;
 
     BubbleType m_type;
 

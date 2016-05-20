@@ -22,6 +22,7 @@ class CConnection : public QObject, public QGraphicsItem
     Q_OBJECT
     
 public:
+    CConnection(QGraphicsScene *scn);
     CConnection(CBubble *from, CBubble *to, Anchor anc_from, Anchor anc_to, QGraphicsScene *scn);
     virtual ~CConnection();
     
@@ -42,11 +43,19 @@ public:
     Anchor endAnchor() const;
     void setEndAnchor(Anchor anchor);
 
+    void ConnectToUIDs();
+
+    void Read(QByteArray &ra);
+    QByteArray Write();
+
 private:
     CBubble *m_from;
     CBubble *m_to;
 
     CLine *m_line;
+
+    int m_fromUID;
+    int m_toUID;
     
 signals:
     

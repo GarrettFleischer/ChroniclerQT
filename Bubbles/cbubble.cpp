@@ -9,6 +9,10 @@ using std::logic_error;
 #include <QGraphicsSceneContextMenuEvent>
 #include <QMenu>
 #include <QPainter>
+#include <QDataStream>
+#include <QByteArray>
+#include <QFont>
+#include <QSizeF>
 
 #include "Connections/cconnection.h"
 
@@ -16,13 +20,6 @@ using std::logic_error;
 using Chronicler::shared;
 
 QList<uint> CBubble::m_UIDs = QList<uint>();
-
-//CBubble::CBubble(QGraphicsItem *parent)
-//    : QGraphicsPolygonItem(parent),
-//      m_minSize(QSizeF(150,150)), m_order(0), m_locked(false),
-//      m_font(QFont()), m_palette(CPalette()), m_resize(false)
-//{}
-
 
 CBubble::CBubble(const QPointF &pos, const Chronicler::CPalette &palette, const QFont &font, QGraphicsItem *parent, uint uid)
     : QGraphicsPolygonItem(parent), m_UID(uid),
@@ -43,17 +40,26 @@ CBubble::CBubble(const QPointF &pos, const Chronicler::CPalette &palette, const 
         m_UIDs.append(m_UID);
 }
 
+CBubble::CBubble(const QJsonObject &json, QGraphicsItem *parent)
+    : QGraphicsPolygonItem(parent), m_UID(json["UID"].toInt())
+{
+    m_label = json["label"].toString();
+    m_order = json["order"].toInt();
+    m_locked = json["locked"].toBool();
+    m_font = json["font"].toVariant().value<QFont>();
+    m_palette = json["palette"].toVariant().value<CPalette>();
+    m_minSize = json["min_size"].toVariant().value<QSizeF>();
+    m_bounds = json["bounds"].toVariant().value<QRectF>();
+    //    json["links"];
+}
+
 CBubble::~CBubble()
 {
     // Free up this UID for reuse
     m_UIDs.removeOne(m_UID);
 
-    // Detach connections before deleting to prevent segfault.
+    // make a copy to prevent invalid iterator when connections are removed.
     QList<CConnection *> tmp = m_connections;
-
-    for(CConnection *connection : m_connections)
-        connection->setTo(0);
-
     for(CConnection *connection : tmp)
         delete connection;
 }
@@ -226,4 +232,51 @@ Anchor CBubble::InputAnchorAtPosition(const QPointF &pos)
 void CBubble::setAllowedAnchors(int allowed)
 {
     m_allowedAnchors = allowed;
+}
+
+const uint CBubble::UID()
+{
+    return m_UID;
+}
+
+void CBubble::Read(QByteArray &ra)
+{
+    QDataStream ds(&ra, QIODevice::ReadOnly);
+    QRectF b;
+    int num_links;
+
+    ds >> m_UID
+       >> m_label >> m_order >> m_locked
+       >> m_font >> m_palette
+       >> m_minSize >> b
+       >> num_links;
+
+    for(int i = 0; i < num_links; ++i)
+    {
+        CConnection *c = new CConnection(0, 0, Anchor::Down, Anchor::Up, scene());
+        c->Read(ra);
+    }
+
+    setPos(b.topLeft());
+    m_bounds = QRectF(-m_minSize.width()/2, -m_minSize.height()/2, b.width(), b.height());
+    UpdatePolygon();
+}
+
+QByteArray CBubble::Write()
+{
+    QByteArray ra;
+    QDataStream ds(&ra, QIODevice::WriteOnly);
+
+    QList<CConnection *> tmp = links();
+
+    ds << m_UID
+       << m_label << m_order << m_locked
+       << m_font << m_palette
+       << m_minSize << sceneBoundingRect()
+       << tmp.length();
+
+    for(CConnection *link : tmp)
+        ds << link->Write();
+
+    return ra;
 }

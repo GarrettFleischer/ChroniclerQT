@@ -55,6 +55,7 @@ class QWheelEvent;
 QT_END_NAMESPACE
 
 class CBubble;
+class CStartBubble;
 class CLink;
 class CLine;
 
@@ -89,7 +90,7 @@ protected:
     virtual void keyPressEvent(QKeyEvent *event) override;
 
 private:
-    void AddBubble(BubbleType type, const QPointF &pos, bool shift);
+    CBubble *AddBubble(BubbleType type, const QPointF &pos, bool shift);
 
     QString m_name;
     Mode m_mode;
@@ -98,6 +99,8 @@ private:
     QFont m_font;
     CPalette m_palette;
     bool m_rubberBand;
+
+    CStartBubble *m_startBubble;
 
 signals:
     void itemInserted(CBubble *item);

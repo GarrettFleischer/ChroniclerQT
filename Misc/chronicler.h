@@ -24,7 +24,7 @@ class CDockManager;
 namespace Chronicler
 {
 
-    enum BubbleType { Story, Choice, Action, Condition  };
+    enum BubbleType { Story, Choice, Action, Condition, Start };
 
     enum Anchor { Right, Down, Left, Up, None };
     enum AllowedAnchors { NoAnchor = 0, RightAnchor = 1, DownAnchor = 2, LeftAnchor = 4, UpAnchor = 8 };
@@ -35,6 +35,16 @@ namespace Chronicler
         QColor line = Qt::black;
         QColor select = QColor(255,200,0);
         QColor font = Qt::white;
+
+        friend QDataStream & operator<<(QDataStream &stream, CPalette p)
+        {
+            return stream << p.fill << p.line << p.select << p.font;
+        }
+
+        friend QDataStream & operator>>(QDataStream &stream, CPalette p)
+        {
+            return stream >> p.fill >> p.line >> p.select >> p.font;
+        }
     };
 
 

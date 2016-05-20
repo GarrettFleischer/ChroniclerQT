@@ -46,7 +46,8 @@ HEADERS += \
     Misc/cchoicemodel.h \
     Properties/Widgets/clistpropertieswidget.h \
     Misc/cscenemodel.h \
-    Misc/filedownloader.h
+    Misc/filedownloader.h \
+    Bubbles/cstartbubble.h
 
 SOURCES += \
     Bubbles/cbubble.cpp \
@@ -81,4 +82,5 @@ SOURCES += \
     Misc/cchoicemodel.cpp \
     Properties/Widgets/clistpropertieswidget.cpp \
     Misc/cscenemodel.cpp \
-    Misc/filedownloader.cpp
+    Misc/filedownloader.cpp \
+    Bubbles/cstartbubble.cpp

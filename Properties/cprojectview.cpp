@@ -22,6 +22,8 @@
 #include "chomepage.h"
 #include "cmainwindow.h"
 
+#include "Bubbles/cbubble.h"
+
 
 #include "Misc/chronicler.h"
 using Chronicler::shared;
@@ -98,6 +100,22 @@ void CProjectView::Load(const QString &filepath)
 QList<CGraphicsView *> CProjectView::views()
 {
     return m_sceneModel->views();
+}
+
+CBubble *CProjectView::BubbleWithUID(uint uid)
+{
+    CBubble *bubble = 0;
+
+    for(CGraphicsView *view : m_sceneModel->views())
+    {
+        for(QGraphicsItem *item : view->items())
+        {
+            if((bubble = dynamic_cast<CBubble *>(item)) && (bubble->UID() == uid))
+                return bubble;
+        }
+    }
+
+    return bubble;
 }
 
 

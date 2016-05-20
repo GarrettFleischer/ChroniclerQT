@@ -9,7 +9,7 @@ class CSingleLinkBubble : public CBubble
 {
 public:
     CSingleLinkBubble(const QPointF &pos, const CPalette &palette, const QFont &font, QGraphicsItem *parent);
-    ~CSingleLinkBubble();
+    virtual ~CSingleLinkBubble();
 
     virtual void AddLink(CConnection *link) override;
     virtual void RemoveLink(CConnection *link) override;

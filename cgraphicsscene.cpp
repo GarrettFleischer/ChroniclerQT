@@ -11,6 +11,7 @@
 
 #include "Properties/cdockmanager.h"
 
+#include "Bubbles/cstartbubble.h"
 #include "Bubbles/cstorybubble.h"
 #include "Bubbles/cconditionbubble.h"
 #include "Bubbles/cchoicebubble.h"
@@ -23,7 +24,6 @@
 using Chronicler::Anchor;
 using Chronicler::shared;
 
-
 CGraphicsScene::CGraphicsScene(const QString &name, QObject *parent)
     : QGraphicsScene(parent), m_name(name), m_mode(Cursor), m_line(0), m_rubberBand(false)
 {
@@ -35,6 +35,8 @@ CGraphicsScene::CGraphicsScene(const QString &name, QObject *parent)
     m_line = new CLine(QPointF(), QPointF());
 
     connect(this, SIGNAL(itemSelected(QGraphicsItem*)), this, SLOT(ItemSelected(QGraphicsItem*)));
+
+    m_startBubble = dynamic_cast<CStartBubble *>(AddBubble(Chronicler::Start, sceneRect().center(), false));
 }
 
 void CGraphicsScene::setFont(const QFont &font)
@@ -75,12 +77,15 @@ void CGraphicsScene::setMode(Mode mode)
 {
     m_mode = mode;
 
-    views().first()->setDragMode(QGraphicsView::ScrollHandDrag);
+    if(views().size())
+    {
+        views().first()->setDragMode(QGraphicsView::ScrollHandDrag);
 
-    if(mode == Cursor)
-        shared().pointerTypeGroup->button(int(CGraphicsScene::Cursor))->setChecked(true);
-    else if(mode == InsertConnection)
-        views().first()->setDragMode(QGraphicsView::NoDrag);
+        if(mode == Cursor)
+            shared().pointerTypeGroup->button(int(CGraphicsScene::Cursor))->setChecked(true);
+        else if(mode == InsertConnection)
+            views().first()->setDragMode(QGraphicsView::NoDrag);
+    }
 }
 
 void CGraphicsScene::ItemSelected(QGraphicsItem *selectedItem)
@@ -235,10 +240,12 @@ void CGraphicsScene::keyPressEvent(QKeyEvent *event)
 {
     if(event->key() == Qt::Key_Shift)
         views().first()->setDragMode(QGraphicsView::RubberBandDrag);
+    if(event->key() == Qt::Key_Escape)
+        setMode(Cursor);
 }
 
 
-void CGraphicsScene::AddBubble(BubbleType type, const QPointF &pos, bool shift)
+CBubble * CGraphicsScene::AddBubble(BubbleType type, const QPointF &pos, bool shift)
 {
     CBubble *bbl;
     if(type == Chronicler::Story)
@@ -247,8 +254,10 @@ void CGraphicsScene::AddBubble(BubbleType type, const QPointF &pos, bool shift)
         bbl = new CConditionBubble(pos, m_palette, m_font);
     else if(type == Chronicler::Action)
         bbl = new CActionBubble(pos, m_palette, m_font);
-    else
+    else if(type == Chronicler::Choice)
         bbl = new CChoiceBubble(pos, m_palette, m_font);
+    else
+        bbl = new CStartBubble(pos, m_palette, m_font);
 
     connect(bbl, SIGNAL(Selected(QGraphicsItem*)), this, SIGNAL(itemSelected(QGraphicsItem*)));
     addItem(bbl);
@@ -258,5 +267,7 @@ void CGraphicsScene::AddBubble(BubbleType type, const QPointF &pos, bool shift)
         setMode(CGraphicsScene::Cursor);
 
     emit itemInserted(bbl);
+
+    return bbl;
 }
 
