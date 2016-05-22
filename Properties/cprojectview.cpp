@@ -9,9 +9,12 @@
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 
-#include <QJsonDocument>
-#include <QJsonObject>
-#include <QByteArray>
+#include <QFile>
+#include <QSaveFile>
+#include <QFileDialog>
+#include <QAction>
+
+#include <QMessageBox>
 
 #include <QDockWidget>
 #include <QTabWidget>
@@ -27,6 +30,10 @@
 
 #include "Misc/chronicler.h"
 using Chronicler::shared;
+
+
+const QString CProjectView::currentVersion = "0.7.0.0";
+
 
 CProjectView::CProjectView(QWidget *parent)
     : QWidget(parent)
@@ -73,12 +80,49 @@ CProjectView::CProjectView(QWidget *parent)
 
 void CProjectView::Save()
 {
+    QByteArray ba;
+    QDataStream ds(&ba, QIODevice::WriteOnly);
 
+    ds << m_version
+       << m_name
+       << m_sceneModel->rowCount();
+    for(CGraphicsView *view : m_sceneModel->views())
+        ds << view->cScene();
+
+
+    QSaveFile file(m_path);
+    file.write(ba);
+
+    while(!file.commit())
+    {
+        QMessageBox msgBox;
+        msgBox.setText("Error writing to file!");
+        msgBox.setInformativeText("Ensure that the path is valid and that you have enough disk space.");
+        msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Retry | QMessageBox::Cancel);
+        msgBox.setDefaultButton(QMessageBox::Retry);
+        int ret = msgBox.exec();
+
+        if(ret == QMessageBox::Save)
+            SaveAs();
+        else if(ret == QMessageBox::Cancel)
+            break;
+    }
+
+    shared().saveProjectAction->setEnabled(true);
 }
 
 void CProjectView::SaveAs()
 {
+    QString dir = QFileInfo(m_path).absolutePath();
+    QFileDialog dialog(this, "Save As", dir, ".chronx");
+    dialog.setFileMode(QFileDialog::AnyFile);
+    dialog.setAcceptMode(QFileDialog::AcceptSave);
 
+    if(dialog.exec())
+    {
+        m_path = dialog.selectedFiles().first();
+        Save();
+    }
 }
 
 void CProjectView::Load(const QString &filepath)

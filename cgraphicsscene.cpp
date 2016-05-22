@@ -118,6 +118,32 @@ CBubble *CGraphicsScene::BubbleAt(const QPointF &point, bool choiceAllowed)
     return bubble;
 }
 
+QDataStream &operator <<(QDataStream &ds, const CGraphicsScene &scene)
+{
+    ds << scene.m_bubbles.length();
+    for(CBubble *bbl : scene.m_bubbles)
+        ds << bbl->Write();
+
+    return ds;
+}
+
+QDataStream &operator >>(QDataStream &ds, CGraphicsScene &scene)
+{
+    int len;
+    ds >> len;
+
+    for(int i = 0; i < len; ++i)
+    {
+        int t;
+        ds >> t;
+
+        CBubble *bbl = scene.AddBubble(Chronicler::BubbleType(t), QPointF(), false);
+        bbl->Read(ds);
+    }
+
+    return ds;
+}
+
 void CGraphicsScene::setMode(Mode mode)
 {
     m_mode = mode;
@@ -336,5 +362,15 @@ CConnection *CGraphicsScene::AddConnection()
     addItem(m_connections.last());
 
     return m_connections.last();
+}
+
+void CGraphicsScene::RemoveBubble(CBubble *bubble)
+{
+    m_bubbles.removeAll(bubble);
+}
+
+void CGraphicsScene::RemoveConnection(CConnection *connection)
+{
+    m_connections.removeAll(connection);
 }
 

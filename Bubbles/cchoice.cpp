@@ -79,7 +79,6 @@ void CChoice::AdjustMinSize()
 
 void CChoice::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 {
-    CSingleLinkBubble::contextMenuEvent(event);
     event->ignore();
 }
 

@@ -15,6 +15,7 @@ using std::logic_error;
 #include <QSizeF>
 
 #include "Connections/cconnection.h"
+#include "cgraphicsscene.h"
 
 #include "Misc/chronicler.h"
 using Chronicler::shared;
@@ -42,6 +43,8 @@ CBubble::CBubble(const QPointF &pos, const Chronicler::CPalette &palette, const 
 
 CBubble::~CBubble()
 {
+    dynamic_cast<CGraphicsScene *>(scene())->RemoveBubble(this);
+
     // Free up this UID for reuse
     m_UIDs.removeOne(m_UID);
 

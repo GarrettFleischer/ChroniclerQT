@@ -8,6 +8,8 @@
 #include "Bubbles/cbubble.h"
 
 #include "Properties/cprojectview.h"
+//#include "cgraphicsscene.h"
+
 #include "Misc/chronicler.h"
 using Chronicler::shared;
 
@@ -28,6 +30,8 @@ CConnection::CConnection(CBubble *from, CBubble *to, Anchor anc_from, Anchor anc
 
 CConnection::~CConnection()
 {
+//    dynamic_cast<CGraphicsScene *>(scene())->RemoveConnection(this);
+
     setFrom(0);
     setTo(0);
 

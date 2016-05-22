@@ -78,6 +78,8 @@ namespace Chronicler
         QAction *newProjectAction;
         QAction *openProjectAction;
         QAction *importProjectAction;
+        QAction *saveProjectAction;
+        QAction *saveAsProjectAction;
         QAction *showHomepageAction;
     };
 

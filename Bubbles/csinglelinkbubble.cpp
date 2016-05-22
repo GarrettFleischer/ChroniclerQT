@@ -2,6 +2,7 @@
 
 #include "Connections/cconnection.h"
 #include "cgraphicsscene.h"
+#include "cgraphicsscene.h"
 
 
 CSingleLinkBubble::CSingleLinkBubble(const QPointF &pos, const Chronicler::CPalette &palette, const QFont &font, QGraphicsItem *parent)
@@ -17,7 +18,10 @@ CSingleLinkBubble::~CSingleLinkBubble()
 void CSingleLinkBubble::AddLink(CConnection *link)
 {
     if(m_link != link)
+    {
+        dynamic_cast<CGraphicsScene *>(scene())->RemoveConnection(m_link);
         delete m_link;
+    }
 
     m_link = link;
 }

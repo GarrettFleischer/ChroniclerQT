@@ -88,10 +88,16 @@ public:
     CConnection *AddConnection(CBubble *start, CBubble *end, Chronicler::Anchor start_anchor, Chronicler::Anchor end_anchor);
     CConnection *AddConnection();
 
+    void RemoveBubble(CBubble *bubble);
+    void RemoveConnection(CConnection *connection);
+
     QList<CBubble *> bubbles();
     QList<CConnection *> connections();
 
     CBubble *BubbleAt(const QPointF &point, bool choiceAllowed = false);
+
+    friend QDataStream & operator <<(QDataStream &ds, const CGraphicsScene &scene);
+    friend QDataStream & operator >>(QDataStream &ds, CGraphicsScene &scene);
 
 protected:
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);

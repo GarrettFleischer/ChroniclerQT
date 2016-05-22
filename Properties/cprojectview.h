@@ -20,6 +20,8 @@ class CProjectView : public QWidget
     Q_OBJECT
 
 public:
+    static const QString currentVersion;
+
     CProjectView(QWidget *parent = 0);
 
     void Save();
@@ -44,6 +46,10 @@ private:
     QPushButton *m_removeButton;
 
     // project data
+    QString m_version;
+    QString m_name;
+
+    // for quicksave
     QString m_path;
 
     // TODO
