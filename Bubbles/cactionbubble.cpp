@@ -16,11 +16,11 @@ CActionBubble::CActionBubble(const QPointF &pos, const Chronicler::CPalette &pal
     m_actionsView = new CTextItem("", QRectF(), this);
     m_actionsView->SetStyle(Qt::AlignAbsolute | Qt::AlignVCenter);
 
-    QStringList test;
-    test.append("Action 1");
-    test.append("Action 2");
-    test.append("Action 3");
-    test.append("Action 4");
+//    QStringList test;
+//    test.append("Action 1");
+//    test.append("Action 2");
+//    test.append("Action 3");
+//    test.append("Action 4");
 
     m_actions = new CStringListModel(this);
     connect(m_actions, SIGNAL(rowsInserted(QModelIndex,int,int)),
@@ -34,7 +34,7 @@ CActionBubble::CActionBubble(const QPointF &pos, const Chronicler::CPalette &pal
     connect(m_actions, SIGNAL(modelReset()),
             this, SLOT(ModelUpdated()));
 
-    m_actions->setStringList(test);
+//    m_actions->setStringList(test);
 
     AdjustMinSize();
     m_bounds = QRectF(-m_minSize.width()/2, -m_minSize.height()/2, m_minSize.width(), m_minSize.height());
@@ -85,14 +85,13 @@ QDataStream &CActionBubble::Read(QDataStream &ds)
     return ds;
 }
 
-QByteArray CActionBubble::Write()
+QDataStream & CActionBubble::Write(QDataStream &ds)
 {
-    QByteArray ba(CSingleLinkBubble::Write());
-    QDataStream ds(&ba, QIODevice::WriteOnly);
+    CSingleLinkBubble::Write(ds);
 
     ds << m_actions->stringList();
 
-    return ba;
+    return ds;
 }
 
 CStringListModel *CActionBubble::actions()

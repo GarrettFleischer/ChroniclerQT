@@ -57,14 +57,13 @@ QDataStream &CSingleLinkBubble::Read(QDataStream &ds)
     return ds;
 }
 
-QByteArray CSingleLinkBubble::Write()
+QDataStream & CSingleLinkBubble::Write(QDataStream &ds)
 {
-    QByteArray ba(CBubble::Write());
-    QDataStream ds(&ba, QIODevice::WriteOnly);
+    CBubble::Write(ds);
 
     ds << bool(m_link);
     if(m_link)
-        ds << m_link->Write();
+        m_link->Write(ds);
 
-    return ba;
+    return ds;
 }

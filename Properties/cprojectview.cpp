@@ -36,7 +36,7 @@ const QString CProjectView::currentVersion = "0.7.0.0";
 
 
 CProjectView::CProjectView(QWidget *parent)
-    : QWidget(parent)
+    : QWidget(parent), m_path(""), m_version(currentVersion)
 {
     m_upButton = new QPushButton(QIcon(":/images/icn_up"), "");
     m_upButton->setEnabled(false);
@@ -80,41 +80,46 @@ CProjectView::CProjectView(QWidget *parent)
 
 void CProjectView::Save()
 {
-    QByteArray ba;
-    QDataStream ds(&ba, QIODevice::WriteOnly);
-
-    ds << m_version
-       << m_name
-       << m_sceneModel->rowCount();
-    for(CGraphicsView *view : m_sceneModel->views())
-        ds << view->cScene();
-
-
-    QSaveFile file(m_path);
-    file.write(ba);
-
-    while(!file.commit())
+    if(!m_path.length())
+        SaveAs();
+    else
     {
-        QMessageBox msgBox;
-        msgBox.setText("Error writing to file!");
-        msgBox.setInformativeText("Ensure that the path is valid and that you have enough disk space.");
-        msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Retry | QMessageBox::Cancel);
-        msgBox.setDefaultButton(QMessageBox::Retry);
-        int ret = msgBox.exec();
+        QByteArray ba;
+        QDataStream ds(&ba, QIODevice::WriteOnly);
 
-        if(ret == QMessageBox::Save)
-            SaveAs();
-        else if(ret == QMessageBox::Cancel)
-            break;
+        ds << currentVersion
+           << m_name
+           << m_sceneModel->rowCount();
+        for(CGraphicsView *view : m_sceneModel->views())
+            ds << *(view->cScene());
+
+
+        QSaveFile file(m_path);
+        file.open(QIODevice::WriteOnly);
+        file.write(ba);
+
+        while(!file.commit())
+        {
+            QMessageBox msgBox;
+            msgBox.setText("Error writing to file!");
+            msgBox.setInformativeText("Ensure that the path is valid and that you have enough disk space.");
+            msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Retry | QMessageBox::Cancel);
+            msgBox.setDefaultButton(QMessageBox::Retry);
+            int ret = msgBox.exec();
+
+            if(ret == QMessageBox::Save)
+                SaveAs();
+            else if(ret == QMessageBox::Cancel)
+                break;
+        }
     }
-
-    shared().saveProjectAction->setEnabled(true);
 }
 
 void CProjectView::SaveAs()
 {
     QString dir = QFileInfo(m_path).absolutePath();
-    QFileDialog dialog(this, "Save As", dir, ".chronx");
+    QFileDialog dialog(this, "Save As", dir, "chronx (*.chronx)");
+    dialog.setDefaultSuffix("chronx");
     dialog.setFileMode(QFileDialog::AnyFile);
     dialog.setAcceptMode(QFileDialog::AcceptSave);
 
@@ -125,8 +130,17 @@ void CProjectView::SaveAs()
     }
 }
 
-void CProjectView::Load(const QString &filepath)
+void CProjectView::Load(QString filepath)
 {
+    if(!filepath.length())
+    {
+        QString dir = QFileInfo("C:/Development/QT/Chronicler Saves").absolutePath();
+        filepath = QFileDialog::getOpenFileName(this, "Open", dir, "chronx (*.chronx)");
+        if(!filepath.length())
+            return;
+    }
+
+    m_path = filepath;
     shared().mainWindow->setWindowTitle("Chronicler - " + QFileInfo(filepath).baseName());
     shared().dock->setVisible(true);
     shared().dock->setWindowTitle(QFileInfo(filepath).fileName());
@@ -134,12 +148,42 @@ void CProjectView::Load(const QString &filepath)
 
     // TODO
     // Load data from file and instantiate all scenes & bubbles...
+    QFile file(filepath);
+    file.open(QIODevice::ReadOnly);
+    QByteArray ba(file.readAll());
+    QDataStream ds(&ba, QIODevice::ReadOnly);
+
+    int num_scenes;
+    ds >> m_version
+       >> m_name
+       >> num_scenes;
 
     // grab the startup view
     CGraphicsView *view = m_sceneModel->views().first();
+    ds >> *(view->cScene());
+
+    // load other scenes
+    for(int i = 1; i < num_scenes; ++i)
+    {
+
+//        m_sceneModel->AddItem(new CGraphicsView(new CGraphicsScene("Scene " + QString().setNum(m_sceneModel->rowCount())), this));
+    }
+
+
+
     shared().sceneTabs->addTab(view, view->cScene()->name());
     shared().sceneTabs->setCurrentWidget(view);
     view->centerOn(view->scene()->sceneRect().center());
+}
+
+void CProjectView::Import()
+{
+
+}
+
+void CProjectView::NewProject()
+{
+
 }
 
 QList<CGraphicsView *> CProjectView::views()

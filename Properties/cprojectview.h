@@ -24,9 +24,7 @@ public:
 
     CProjectView(QWidget *parent = 0);
 
-    void Save();
-    void SaveAs();
-    void Load(const QString &filepath);
+
 
     QList<CGraphicsView *> views();
 
@@ -57,6 +55,13 @@ private:
 
 signals:
     sceneSelected(CGraphicsView *);
+
+public slots:
+    void Save();
+    void SaveAs();
+    void Load(QString filepath = "");
+    void Import();
+    void NewProject();
 
 private slots:
     void SelectedChanged(QModelIndex current);

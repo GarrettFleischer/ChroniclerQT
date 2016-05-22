@@ -90,12 +90,11 @@ QDataStream &CStoryBubble::Read(QDataStream &ds)
     return ds;
 }
 
-QByteArray CStoryBubble::Write()
+QDataStream & CStoryBubble::Write(QDataStream &ds)
 {
-    QByteArray ba(CSingleLinkBubble::Write());
-    QDataStream ds(&ba, QIODevice::WriteOnly);
+    CSingleLinkBubble::Write(ds);
 
     ds << m_story->Text();
 
-    return ba;
+    return ds;
 }

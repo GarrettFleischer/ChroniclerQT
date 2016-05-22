@@ -120,9 +120,10 @@ CBubble *CGraphicsScene::BubbleAt(const QPointF &point, bool choiceAllowed)
 
 QDataStream &operator <<(QDataStream &ds, const CGraphicsScene &scene)
 {
-    ds << scene.m_bubbles.length();
+    int len = scene.m_bubbles.length();
+    ds << len;
     for(CBubble *bbl : scene.m_bubbles)
-        ds << bbl->Write();
+        bbl->Write(ds);
 
     return ds;
 }
@@ -137,9 +138,17 @@ QDataStream &operator >>(QDataStream &ds, CGraphicsScene &scene)
         int t;
         ds >> t;
 
-        CBubble *bbl = scene.AddBubble(Chronicler::BubbleType(t), QPointF(), false);
+        CBubble *bbl;
+        if(t == int(Chronicler::Start))
+            bbl = scene.m_startBubble;
+        else
+            bbl = scene.AddBubble(Chronicler::BubbleType(t), QPointF(), false);
+
         bbl->Read(ds);
     }
+
+    for(CConnection *connection : scene.m_connections)
+        connection->ConnectToUIDs();
 
     return ds;
 }
@@ -185,7 +194,6 @@ void CGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
                 item->setSelected(false);
 
         CBubble *clickItem = 0;
-//        QList<QGraphicsItem *> clickItems = items(mouseEvent->scenePos());
 
         switch (m_mode)
         {
@@ -206,9 +214,6 @@ void CGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
             break;
 
         case InsertConnection:
-//            for (int i = 0; i < clickItems.length() && !clickItem; ++i)
-//                clickItem = qgraphicsitem_cast<CBubble *>(clickItems[i]);
-
             clickItem = BubbleAt(mouseEvent->scenePos(), true);
             if(clickItem)
             {
@@ -241,14 +246,6 @@ void CGraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
     if (m_mode == InsertConnection)
     {
         CBubble *hoverItem = BubbleAt(mouseEvent->scenePos());
-//        QList<QGraphicsItem *> hoverItems = items(mouseEvent->scenePos());
-
-//        while (hoverItems.count() && !hoverItem)
-//        {
-//            if(!dynamic_cast<CChoice *>(hoverItems.first()))
-//                hoverItem = qgraphicsitem_cast<CBubble *>(hoverItems.first());
-//            hoverItems.removeFirst();
-//        }
         if(hoverItem)
             m_line->setEndAnchor(hoverItem->InputAnchorAtPosition(mouseEvent->scenePos()));
 
@@ -316,7 +313,6 @@ void CGraphicsScene::keyReleaseEvent(QKeyEvent *event)
 {
     if(event->key() == Qt::Key_Shift && !m_line->isVisible())
         setMode(Cursor);
-//        views().first()->setDragMode(QGraphicsView::ScrollHandDrag);
 }
 
 
@@ -331,7 +327,7 @@ CBubble * CGraphicsScene::AddBubble(BubbleType type, const QPointF &pos, bool sh
         bbl = new CActionBubble(pos, m_palette, m_font);
     else if(type == Chronicler::Choice)
         bbl = new CChoiceBubble(pos, m_palette, m_font);
-    else
+    else if(type == Chronicler::Start)
         bbl = new CStartBubble(pos, m_palette, m_font);
 
     connect(bbl, SIGNAL(Selected(QGraphicsItem*)), this, SIGNAL(itemSelected(QGraphicsItem*)));

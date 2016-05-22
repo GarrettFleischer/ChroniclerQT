@@ -17,7 +17,7 @@ public:
     virtual void setFont(const QFont &font) override;
 
     virtual QDataStream &Read(QDataStream &ds) override;
-    virtual QByteArray Write() override;
+    virtual QDataStream &Write(QDataStream &ds) override;
 
     CStringListModel *actions();
 

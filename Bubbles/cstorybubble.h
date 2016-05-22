@@ -27,7 +27,7 @@ public:
     QString getStory() { return m_story->Text(); }
 
     virtual QDataStream &Read(QDataStream &ds) override;
-    virtual QByteArray Write() override;
+    virtual QDataStream &Write(QDataStream &ds) override;
 
 protected:
     virtual void UpdatePolygon();

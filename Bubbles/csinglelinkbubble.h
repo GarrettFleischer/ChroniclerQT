@@ -16,7 +16,7 @@ public:
     virtual QList<CConnection *> links() override;
 
     virtual QDataStream &Read(QDataStream &ds) override;
-    virtual QByteArray Write() override;
+    virtual QDataStream &Write(QDataStream &ds) override;
 
 protected:
     CConnection *m_link;

@@ -19,7 +19,7 @@ public:
     virtual Chronicler::Anchor InputAnchorAtPosition(const QPointF &) override;
 
     virtual QDataStream &Read(QDataStream &ds) override;
-    virtual QByteArray Write() override;
+    virtual QDataStream &Write(QDataStream &ds) override;
 
     void setChoice(const QString &choice);
     QString choice() const;

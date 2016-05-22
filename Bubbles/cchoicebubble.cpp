@@ -14,11 +14,11 @@ CChoiceBubble::CChoiceBubble(const QPointF &pos, const Chronicler::CPalette &pal
     //m_palette.fill = QColor(151,118,166);
     m_palette.fill = QColor(104, 160, 210);
 
-    choiceList test;
-    test.append(new CChoice(m_palette, font, this, "Code"));
-    test.append(new CChoice(m_palette, font, this, "Eat"));
-    test.append(new CChoice(m_palette, font, this, "Sleep"));
-    test.append(new CChoice(m_palette, font, this, "In that order..."));
+//    choiceList test;
+//    test.append(new CChoice(m_palette, font, this, "Code"));
+//    test.append(new CChoice(m_palette, font, this, "Eat"));
+//    test.append(new CChoice(m_palette, font, this, "Sleep"));
+//    test.append(new CChoice(m_palette, font, this, "In that order..."));
 
     m_choices = new CChoiceModel(choiceList(), this);
     connect(m_choices, SIGNAL(rowsInserted(QModelIndex,int,int)),
@@ -32,7 +32,7 @@ CChoiceBubble::CChoiceBubble(const QPointF &pos, const Chronicler::CPalette &pal
     connect(m_choices, SIGNAL(modelReset()),
             this, SLOT(ModelUpdated()));
 
-    m_choices->setChoices(test);
+//    m_choices->setChoices(test);
 
     AdjustMinSize();
     m_bounds = QRectF(-m_minSize.width() / 2, -m_minSize.height() / 2, m_minSize.width(), m_minSize.height());
@@ -157,16 +157,15 @@ QDataStream &CChoiceBubble::Read(QDataStream &ds)
     return ds;
 }
 
-QByteArray CChoiceBubble::Write()
+QDataStream & CChoiceBubble::Write(QDataStream &ds)
 {
-    QByteArray ba(CBubble::Write());
-    QDataStream ds(&ba, QIODevice::WriteOnly);
+    CBubble::Write(ds);
 
     QList<CChoice *> tmp = m_choices->choices();
 
     ds << tmp.length();
     for(CChoice *choice : tmp)
-        ds << choice->Write();
+        choice->Write(ds);
 
-    return ba;
+    return ds;
 }

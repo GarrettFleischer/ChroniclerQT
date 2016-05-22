@@ -45,8 +45,8 @@ public:
 
     void ConnectToUIDs();
 
-    void Read(QDataStream &ds);
-    QByteArray Write();
+    QDataStream &Read(QDataStream &ds);
+    QDataStream &Write(QDataStream &ds);
 
 private:
     CBubble *m_from;

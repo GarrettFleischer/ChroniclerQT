@@ -136,13 +136,15 @@ void CConnection::setEndAnchor(Chronicler::Anchor anchor)
 
 void CConnection::ConnectToUIDs()
 {
+    CBubble *from = shared().projectView->BubbleWithUID(m_fromUID);
+    CBubble *to = shared().projectView->BubbleWithUID(m_toUID);
     if(m_fromUID != -1)
-        setFrom(shared().projectView->BubbleWithUID(m_fromUID));
+        setFrom(from);
     if(m_toUID != -1)
-        setTo(shared().projectView->BubbleWithUID(m_toUID));
+        setTo(to);
 }
 
-void CConnection::Read(QDataStream &ds)
+QDataStream & CConnection::Read(QDataStream &ds)
 {
     int start, end;
 
@@ -153,18 +155,17 @@ void CConnection::Read(QDataStream &ds)
 
     m_line->setStartAnchor(Anchor(start));
     m_line->setEndAnchor(Anchor(end));
+
+    return ds;
 }
 
-QByteArray CConnection::Write()
+QDataStream & CConnection::Write(QDataStream &ds)
 {
-    QByteArray ba;
-    QDataStream ds(&ba, QIODevice::WriteOnly);
-
-    ds << m_line->startAnchor()
-       << m_line->endAnchor()
+    ds << static_cast<qint32>(m_line->startAnchor())
+       << static_cast<qint32>(m_line->endAnchor())
        << m_from->UID()
        << m_to->UID();
 
-    return ba;
+    return ds;
 }
 

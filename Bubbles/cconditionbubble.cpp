@@ -143,17 +143,16 @@ QDataStream &CConditionBubble::Read(QDataStream &ds)
     return ds;
 }
 
-QByteArray CConditionBubble::Write()
+QDataStream & CConditionBubble::Write(QDataStream &ds)
 {
-    QByteArray ba(CBubble::Write());
-    QDataStream ds(&ba, QIODevice::WriteOnly);
+    CBubble::Write(ds);
 
     ds << bool(m_trueLink) << bool(m_falseLink);
 
     if(m_trueLink)
-        ds << m_trueLink->Write();
+         m_trueLink->Write(ds);
     if(m_falseLink)
-        ds << m_falseLink->Write();
+        m_falseLink->Write(ds);
 
-    return ba;
+    return ds;
 }

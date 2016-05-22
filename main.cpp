@@ -23,7 +23,8 @@ int main(int argv, char *args[])
     CMainWindow mainWindow(&settings);
     mainWindow.setGeometry(100, 100, 1280, 720);
 
-    // Show the intro video or not, false by default.
+
+    //     Show the intro video or not, false by default.
     if(!showIntro)
         mainWindow.show();
     else

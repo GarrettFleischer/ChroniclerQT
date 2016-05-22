@@ -87,6 +87,8 @@ private slots:
     void NewProject();
     void OpenProject();
     void ImportProject();
+    void SaveProject();
+    void SaveAsProject();
 
     void DeleteItem();
     void TabClosed(int);

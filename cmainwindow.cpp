@@ -19,6 +19,8 @@
 #include "Misc/chronicler.h"
 using Chronicler::shared;
 
+#include <QDebug>
+
 
 const int InsertTextButton = 10;
 
@@ -70,8 +72,6 @@ CMainWindow::CMainWindow(QSettings *settings)
     setCentralWidget(shared().sceneTabs);
 
     CreateToolbars();
-
-
 }
 
 
@@ -96,27 +96,37 @@ void CMainWindow::PointerGroupClicked(int id)
         shared().pointerTypeGroup->button(int(CGraphicsScene::Cursor))->setChecked(true);
 }
 
+void CMainWindow::NewProject()
+{
+    shared().projectView->NewProject();
+}
+
+void CMainWindow::OpenProject()
+{
+    shared().projectView->Load();
+}
+
+void CMainWindow::ImportProject()
+{
+    shared().projectView->Import();
+}
+
+void CMainWindow::SaveProject()
+{
+    shared().projectView->Save();
+}
+
+void CMainWindow::SaveAsProject()
+{
+    shared().projectView->SaveAs();
+}
+
 void CMainWindow::ShowSettings()
 {
     if(shared().sceneTabs->indexOf(shared().settingsView) == -1)
         shared().sceneTabs->insertTab(0, shared().settingsView, "Settings");
 
     shared().sceneTabs->setCurrentWidget(shared().settingsView);
-}
-
-void CMainWindow::NewProject()
-{
-    // TODO popup new project dialog
-}
-
-void CMainWindow::OpenProject()
-{
-    // TODO popup ".chron" file picker
-}
-
-void CMainWindow::ImportProject()
-{
-    // TODO popup "startup.txt" file picker
 }
 
 void CMainWindow::ShowHomepage()
@@ -218,12 +228,21 @@ void CMainWindow::CreateActions()
     shared().importProjectAction->setToolTip("Import ChoiceScript Project");
     connect(shared().importProjectAction, SIGNAL(triggered(bool)), this, SLOT(ImportProject()));
 
+    shared().saveProjectAction = new QAction(QIcon(":/images/icn_save"), tr("Save"), this);
+    shared().saveProjectAction->setShortcut(tr("Ctrl+S"));
+    shared().saveProjectAction->setToolTip("Save Project");
+    connect(shared().saveProjectAction, SIGNAL(triggered(bool)), this, SLOT(SaveProject()));
+
+    shared().saveAsProjectAction = new QAction(QIcon(":/images/icn_savecs"), tr("Save As"), this);
+    shared().saveAsProjectAction->setToolTip("Save Project As");
+    connect(shared().saveAsProjectAction, SIGNAL(triggered(bool)), this, SLOT(SaveAsProject()));
+
     shared().showHomepageAction = new QAction(QIcon(":/images/icn_home"), tr("Show &homepage"), this);
     connect(shared().showHomepageAction, SIGNAL(triggered(bool)), this, SLOT(ShowHomepage()));
 
     // Disable unavailable actions
     shared().newProjectAction->setEnabled(false);
-    shared().openProjectAction->setEnabled(false);
+//    shared().openProjectAction->setEnabled(false);
     shared().importProjectAction->setEnabled(false);
 }
 
@@ -234,6 +253,9 @@ void CMainWindow::CreateMenus()
     shared().fileMenu->addAction(shared().newProjectAction);
     shared().fileMenu->addAction(shared().openProjectAction);
     shared().fileMenu->addAction(shared().importProjectAction);
+    shared().fileMenu->addSeparator();
+    shared().fileMenu->addAction(shared().saveProjectAction);
+    shared().fileMenu->addAction(shared().saveAsProjectAction);
     shared().fileMenu->addSeparator();
     shared().fileMenu->addAction(shared().settingsAction);
     shared().fileMenu->addSeparator();

@@ -125,7 +125,7 @@ QDataStream & CChoice::Read(QDataStream &ds)
     QString choice;
     bool linked;
 
-    ds >> choice >> linked;
+    ds >> m_UID >> choice >> linked;
 
     if(linked)
     {
@@ -133,17 +133,17 @@ QDataStream & CChoice::Read(QDataStream &ds)
         m_link->Read(ds);
     }
 
+    m_choice->setText(choice);
+
     return ds;
 }
 
-QByteArray CChoice::Write()
+QDataStream & CChoice::Write(QDataStream &ds)
 {
-    QByteArray ba;
-    QDataStream ds(&ba, QIODevice::WriteOnly);
+    ds << m_UID << m_choice->Text() << bool(m_link);
 
-    ds << m_choice->Text() << bool(m_link);
     if(m_link)
-        ds << m_link->Write();
+        m_link->Write(ds);
 
-    return ba;
+    return ds;
 }

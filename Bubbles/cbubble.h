@@ -58,10 +58,10 @@ public:
     virtual Anchor OutputAnchorAtPosition(const QPointF &pos);
     virtual Anchor InputAnchorAtPosition(const QPointF &pos);
 
-    uint UID();
+    quint32 UID();
 
     virtual QDataStream &Read(QDataStream &ds);
-    virtual QByteArray Write();
+    virtual QDataStream &Write(QDataStream &ds);
 
 protected:
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *evt) override;
@@ -76,9 +76,9 @@ protected:
 
     virtual void UpdatePolygon();
 
-    static uint GenerateUID();
+    static quint32 GenerateUID();
 
-    uint m_UID;
+    quint32 m_UID;
 
     BubbleType m_type;
 
@@ -100,7 +100,7 @@ protected:
 
 private:
     Anchor AnchorAtPosition(const QPointF &pos);
-    static QList<uint> m_UIDs;
+    static QList<quint32> m_UIDs;
     
 signals:
     void Selected(QGraphicsItem *item);

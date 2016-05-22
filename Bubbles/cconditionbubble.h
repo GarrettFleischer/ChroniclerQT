@@ -25,7 +25,7 @@ public:
     virtual Anchor InputAnchorAtPosition(const QPointF &) override;
 
     virtual QDataStream &Read(QDataStream &ds) override;
-    virtual QByteArray Write() override;
+    virtual QDataStream &Write(QDataStream &ds) override;
 
 
     void setCondition(QString condition);

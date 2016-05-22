@@ -151,7 +151,7 @@ void CBubble::UpdatePolygon()
     setPolygon(path.simplified().toFillPolygon());
 }
 
-uint CBubble::GenerateUID()
+quint32 CBubble::GenerateUID()
 {
     uint lowest = 0;
     while(m_UIDs.contains(lowest))
@@ -219,7 +219,7 @@ Anchor CBubble::InputAnchorAtPosition(const QPointF &pos)
     return AnchorAtPosition(pos);
 }
 
-uint CBubble::UID()
+quint32 CBubble::UID()
 {
     return m_UID;
 }
@@ -239,16 +239,13 @@ QDataStream &CBubble::Read(QDataStream &ds)
     return ds;
 }
 
-QByteArray CBubble::Write()
+QDataStream & CBubble::Write(QDataStream &ds)
 {
-    QByteArray ba;
-    QDataStream ds(&ba, QIODevice::WriteOnly);
-
-    ds << m_type
+    ds << static_cast<qint32>(m_type)
        << m_UID
        << m_label << m_order << m_locked
        << m_palette
        << m_minSize << m_bounds << scenePos();
 
-    return ba;
+    return ds;
 }
