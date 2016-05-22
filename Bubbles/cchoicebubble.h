@@ -25,6 +25,9 @@ public:
     virtual void RemoveLink(CConnection *) override;
     virtual QList<CConnection *> links() override;
 
+    virtual QDataStream &Read(QDataStream &ds) override;
+    virtual QByteArray Write() override;
+
     CChoiceModel *choices();
     choiceList choiceBubbles();
 
@@ -38,6 +41,7 @@ private:
 
 private slots:
     void ModelUpdated();
+
 };
 
 #endif // CCHOICEBUBBLE_H

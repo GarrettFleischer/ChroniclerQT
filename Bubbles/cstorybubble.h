@@ -26,12 +26,16 @@ public:
     void setStory(QString story) { m_story->setText(story); }
     QString getStory() { return m_story->Text(); }
 
+    virtual QDataStream &Read(QDataStream &ds) override;
+    virtual QByteArray Write() override;
+
 protected:
     virtual void UpdatePolygon();
 
 private:
     CTextItem * m_title;
     CTextItem * m_story;
+
 };
 
 #endif // CSTORYBUBBLE_H

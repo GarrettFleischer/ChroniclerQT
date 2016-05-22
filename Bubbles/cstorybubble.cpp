@@ -3,12 +3,10 @@
 #include <QPainterPath>
 #include <QtMath>
 
-#include "Connections/cconnection.h"
-//#include "Connections/clink.h"
 
 
 CStoryBubble::CStoryBubble(const QPointF &pos, const CPalette &palette, const QFont &font, QGraphicsItem *parent)
-    : CSingleLinkBubble(pos, palette, font, parent)//, m_resize(false)
+    : CSingleLinkBubble(pos, palette, font, parent)
 {
     m_type = Chronicler::Story;
     
@@ -80,5 +78,24 @@ void CStoryBubble::setPalette(const Chronicler::CPalette &palette)
 }
 
 
+QDataStream &CStoryBubble::Read(QDataStream &ds)
+{
+    CSingleLinkBubble::Read(ds);
 
+    QString story;
+    ds >> story;
 
+    m_story->setText(story);
+
+    return ds;
+}
+
+QByteArray CStoryBubble::Write()
+{
+    QByteArray ba(CSingleLinkBubble::Write());
+    QDataStream ds(&ba, QIODevice::WriteOnly);
+
+    ds << m_story->Text();
+
+    return ba;
+}

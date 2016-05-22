@@ -15,8 +15,12 @@ public:
     virtual void RemoveLink(CConnection *link) override;
     virtual QList<CConnection *> links() override;
 
+    virtual QDataStream &Read(QDataStream &ds) override;
+    virtual QByteArray Write() override;
+
 protected:
     CConnection *m_link;
+
 };
 
 #endif // CSINGLELINKBUBBLE_H

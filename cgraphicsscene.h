@@ -86,6 +86,7 @@ public:
 
     CBubble *AddBubble(BubbleType type, const QPointF &pos, bool shift);
     CConnection *AddConnection(CBubble *start, CBubble *end, Chronicler::Anchor start_anchor, Chronicler::Anchor end_anchor);
+    CConnection *AddConnection();
 
     QList<CBubble *> bubbles();
     QList<CConnection *> connections();

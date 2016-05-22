@@ -73,6 +73,28 @@ void CActionBubble::setFont(const QFont &font)
     UpdatePolygon();
 }
 
+QDataStream &CActionBubble::Read(QDataStream &ds)
+{
+    CSingleLinkBubble::Read(ds);
+
+    QStringList actions;
+    ds >> actions;
+
+    m_actions->setStringList(actions);
+
+    return ds;
+}
+
+QByteArray CActionBubble::Write()
+{
+    QByteArray ba(CSingleLinkBubble::Write());
+    QDataStream ds(&ba, QIODevice::WriteOnly);
+
+    ds << m_actions->stringList();
+
+    return ba;
+}
+
 CStringListModel *CActionBubble::actions()
 {
     return m_actions;
@@ -82,3 +104,5 @@ void CActionBubble::AdjustMinSize()
 {
     m_minSize.setHeight(m_actionsView->textBounds(QSizeF(100,100)).height());
 }
+
+

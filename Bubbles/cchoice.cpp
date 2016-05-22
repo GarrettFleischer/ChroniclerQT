@@ -9,6 +9,9 @@
 #include <QGraphicsSceneHoverEvent>
 #include <QGraphicsSceneMouseEvent>
 
+#include "Connections/cconnection.h"
+#include "cgraphicsscene.h"
+
 
 CChoice::CChoice(const Chronicler::CPalette &palette, const QFont &font, QGraphicsItem *parent, const QString &choice)
     : CSingleLinkBubble(QPointF(), palette, font, parent)
@@ -118,5 +121,30 @@ Chronicler::Anchor CChoice::InputAnchorAtPosition(const QPointF &)
     return Chronicler::None;
 }
 
+QDataStream & CChoice::Read(QDataStream &ds)
+{
+    QString choice;
+    bool linked;
 
+    ds >> choice >> linked;
 
+    if(linked)
+    {
+        m_link = dynamic_cast<CGraphicsScene *>(scene())->AddConnection();
+        m_link->Read(ds);
+    }
+
+    return ds;
+}
+
+QByteArray CChoice::Write()
+{
+    QByteArray ba;
+    QDataStream ds(&ba, QIODevice::WriteOnly);
+
+    ds << m_choice->Text() << bool(m_link);
+    if(m_link)
+        ds << m_link->Write();
+
+    return ba;
+}

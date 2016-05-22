@@ -2,6 +2,7 @@
 
 #include "Misc/ctextitem.h"
 #include "Connections/cconnection.h"
+#include "cgraphicsscene.h"
 
 
 CConditionBubble::CConditionBubble(const QPointF &pos, const CPalette &palette, const QFont &font, QGraphicsItem *parent)
@@ -115,4 +116,42 @@ Anchor CConditionBubble::OutputAnchorAtPosition(const QPointF &pos)
 Chronicler::Anchor CConditionBubble::InputAnchorAtPosition(const QPointF &)
 {
     return Anchor::Up;
+}
+
+
+QDataStream &CConditionBubble::Read(QDataStream &ds)
+{
+    CBubble::Read(ds);
+
+    bool trueLink, falseLink;
+
+    ds >> trueLink >> falseLink;
+
+    if(trueLink)
+    {
+        m_trueLink = dynamic_cast<CGraphicsScene *>(scene())->AddConnection();
+        m_trueLink->Read(ds);
+    }
+    if(falseLink)
+    {
+        m_falseLink = dynamic_cast<CGraphicsScene *>(scene())->AddConnection();
+        m_falseLink->Read(ds);
+    }
+
+    return ds;
+}
+
+QByteArray CConditionBubble::Write()
+{
+    QByteArray ba(CBubble::Write());
+    QDataStream ds(&ba, QIODevice::WriteOnly);
+
+    ds << bool(m_trueLink) << bool(m_falseLink);
+
+    if(m_trueLink)
+        ds << m_trueLink->Write();
+    if(m_falseLink)
+        ds << m_falseLink->Write();
+
+    return ba;
 }

@@ -17,15 +17,19 @@ public:
     virtual void setFont(const QFont &font);
     virtual void setPalette(const Chronicler::CPalette &palette);
 
-    void setCondition(QString condition);
-    QString getCondition() { return m_conditionText; }
-
     virtual void RemoveLink(CConnection *link);
     virtual void AddLink(CConnection *link);
     virtual QList<CConnection *> links();
 
     virtual Anchor OutputAnchorAtPosition(const QPointF &pos) override;
     virtual Anchor InputAnchorAtPosition(const QPointF &) override;
+
+    virtual QDataStream &Read(QDataStream &ds) override;
+    virtual QByteArray Write() override;
+
+
+    void setCondition(QString condition);
+    QString getCondition() { return m_conditionText; }
 
 protected:
     virtual void UpdatePolygon() override;

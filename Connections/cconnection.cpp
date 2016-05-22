@@ -138,10 +138,8 @@ void CConnection::ConnectToUIDs()
         setTo(shared().projectView->BubbleWithUID(m_toUID));
 }
 
-void CConnection::Read(QByteArray &ra)
+void CConnection::Read(QDataStream &ds)
 {
-    QDataStream ds(&ra, QIODevice::ReadOnly);
-
     int start, end;
 
     ds >> start
@@ -155,14 +153,14 @@ void CConnection::Read(QByteArray &ra)
 
 QByteArray CConnection::Write()
 {
-    QByteArray ra;
-    QDataStream ds(&ra, QIODevice::WriteOnly);
+    QByteArray ba;
+    QDataStream ds(&ba, QIODevice::WriteOnly);
 
     ds << m_line->startAnchor()
        << m_line->endAnchor()
        << m_from->UID()
        << m_to->UID();
 
-    return ra;
+    return ba;
 }
 

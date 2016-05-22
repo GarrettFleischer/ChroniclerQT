@@ -60,7 +60,7 @@ public:
 
     uint UID();
 
-    virtual void Read(QByteArray &ra);
+    virtual QDataStream &Read(QDataStream &ds);
     virtual QByteArray Write();
 
 protected:

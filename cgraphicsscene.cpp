@@ -324,11 +324,17 @@ CBubble * CGraphicsScene::AddBubble(BubbleType type, const QPointF &pos, bool sh
 
 CConnection *CGraphicsScene::AddConnection(CBubble *start, CBubble *end, Anchor start_anchor, Anchor end_anchor)
 {
-    CConnection *con = new CConnection(start, end, start_anchor, end_anchor, this);
-    addItem(con);
+    m_connections.append(new CConnection(start, end, start_anchor, end_anchor, this));
+    addItem(m_connections.last());
 
-    m_connections.append(con);
+    return m_connections.last();
+}
 
-    return con;
+CConnection *CGraphicsScene::AddConnection()
+{
+    m_connections.append(new CConnection(this));
+    addItem(m_connections.last());
+
+    return m_connections.last();
 }
 

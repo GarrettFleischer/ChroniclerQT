@@ -45,7 +45,7 @@ public:
 
     void ConnectToUIDs();
 
-    void Read(QByteArray &ra);
+    void Read(QDataStream &ds);
     QByteArray Write();
 
 private:

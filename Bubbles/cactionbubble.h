@@ -16,6 +16,9 @@ public:
     virtual void setPalette(const Chronicler::CPalette &palette) override;
     virtual void setFont(const QFont &font) override;
 
+    virtual QDataStream &Read(QDataStream &ds) override;
+    virtual QByteArray Write() override;
+
     CStringListModel *actions();
 
 protected:
@@ -29,6 +32,7 @@ private:
 
 private slots:
     void ModelUpdated();
+
 };
 
 #endif // CACTIONBUBBLE_H

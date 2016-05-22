@@ -221,43 +221,31 @@ uint CBubble::UID()
     return m_UID;
 }
 
-void CBubble::Read(QByteArray &ra)
+QDataStream &CBubble::Read(QDataStream &ds)
 {
-    QDataStream ds(&ra, QIODevice::ReadOnly);
     QPointF pos;
-    int num_links;
 
     ds >> m_UID
        >> m_label >> m_order >> m_locked
        >> m_palette
-       >> m_minSize >> m_bounds >> pos
-       >> num_links;
-
-    for(int i = 0; i < num_links; ++i)
-    {
-        CConnection *c = new CConnection(scene());
-        c->Read(ra);
-    }
+       >> m_minSize >> m_bounds >> pos;
 
     setPos(pos);
     UpdatePolygon();
+
+    return ds;
 }
 
 QByteArray CBubble::Write()
 {
-    QByteArray ra;
-    QDataStream ds(&ra, QIODevice::WriteOnly);
+    QByteArray ba;
+    QDataStream ds(&ba, QIODevice::WriteOnly);
 
-    QList<CConnection *> tmp = links();
-
-    ds << m_UID
+    ds << m_type
+       << m_UID
        << m_label << m_order << m_locked
        << m_palette
-       << m_minSize << m_bounds << scenePos()
-       << tmp.length();
+       << m_minSize << m_bounds << scenePos();
 
-    for(CConnection *link : tmp)
-        ds << link->Write();
-
-    return ra;
+    return ba;
 }

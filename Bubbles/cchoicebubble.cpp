@@ -138,3 +138,35 @@ Chronicler::Anchor CChoiceBubble::InputAnchorAtPosition(const QPointF &pos)
 
     return Chronicler::Up;
 }
+
+
+QDataStream &CChoiceBubble::Read(QDataStream &ds)
+{
+    CBubble::Read(ds);
+
+    int num_choices;
+    ds >> num_choices;
+
+    for(int i = 0; i < num_choices; ++i)
+    {
+        CChoice *choice = new CChoice(m_palette, m_font, this);
+        choice->Read(ds);
+        m_choices->AddItem(choice);
+    }
+
+    return ds;
+}
+
+QByteArray CChoiceBubble::Write()
+{
+    QByteArray ba(CBubble::Write());
+    QDataStream ds(&ba, QIODevice::WriteOnly);
+
+    QList<CChoice *> tmp = m_choices->choices();
+
+    ds << tmp.length();
+    for(CChoice *choice : tmp)
+        ds << choice->Write();
+
+    return ba;
+}
