@@ -69,13 +69,9 @@ void CConditionBubble::RemoveLink(CConnection *link)
     if(link)
     {
         if(link->startAnchor() == Anchor::Left)
-        {
             m_trueLink = 0;
-        }
         else if(link->startAnchor() == Anchor::Right)
-        {
             m_falseLink = 0;
-        }
     }
 }
 
@@ -86,14 +82,20 @@ void CConditionBubble::AddLink(CConnection *link)
         if(link->startAnchor() == Anchor::Left)
         {
             if(m_trueLink != link)
+            {
+                dynamic_cast<CGraphicsScene *>(scene())->RemoveConnection(m_trueLink);
                 delete m_trueLink;
+            }
 
             m_trueLink = link;
         }
         else if(link->startAnchor() == Anchor::Right)
         {
             if(m_falseLink != link)
+            {
+                dynamic_cast<CGraphicsScene *>(scene())->RemoveConnection(m_falseLink);
                 delete m_falseLink;
+            }
 
             m_falseLink = link;
         }
