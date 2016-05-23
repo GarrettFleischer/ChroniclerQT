@@ -47,15 +47,7 @@ HEADERS += \
     Properties/Widgets/clistpropertieswidget.h \
     Misc/cscenemodel.h \
     Misc/filedownloader.h \
-    Bubbles/cstartbubble.h \
-    Dropbox/qdropbox.h \
-    Dropbox/qdropboxaccount.h \
-    Dropbox/qdropboxdeltaresponse.h \
-    Dropbox/qdropboxfile.h \
-    Dropbox/qdropboxfileinfo.h \
-    Dropbox/qdropboxjson.h \
-    Dropbox/qtdropbox.h \
-    Dropbox/qtdropbox_global.h
+    Bubbles/cstartbubble.h
 
 SOURCES += \
     Bubbles/cbubble.cpp \
@@ -91,10 +83,4 @@ SOURCES += \
     Properties/Widgets/clistpropertieswidget.cpp \
     Misc/cscenemodel.cpp \
     Misc/filedownloader.cpp \
-    Bubbles/cstartbubble.cpp \
-    Dropbox/qdropbox.cpp \
-    Dropbox/qdropboxaccount.cpp \
-    Dropbox/qdropboxdeltaresponse.cpp \
-    Dropbox/qdropboxfile.cpp \
-    Dropbox/qdropboxfileinfo.cpp \
-    Dropbox/qdropboxjson.cpp
+    Bubbles/cstartbubble.cpp

@@ -41,8 +41,6 @@ signals:
 private slots:
     void RecentItemSelected(QListWidgetItem *item);
     void Downloaded();
-
-    void Progress(qint64 recieved, qint64 total);
 };
 
 #endif // CHOMEPAGE_H

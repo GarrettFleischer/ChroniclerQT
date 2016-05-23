@@ -12,7 +12,7 @@ class FileDownloader : public QObject
     Q_OBJECT
 
 public:
-    explicit FileDownloader(QUrl file, const char *slot, QObject *parent = 0);
+    explicit FileDownloader(QUrl file, const char *slot = 0, QObject *parent = 0);
     virtual ~FileDownloader();
     QByteArray downloadedData() const;
 

@@ -22,13 +22,9 @@
 
 #include "Misc/filedownloader.h"
 
-#include "Dropbox/qdropbox.h"
-#include "Dropbox/qdropboxfile.h"
-
 #include "Misc/chronicler.h"
 using Chronicler::shared;
 
-#include <QDebug>
 
 // for QSettings
 Q_DECLARE_METATYPE(QStringList)
@@ -44,26 +40,8 @@ CHomepage::CHomepage(QWidget *parent)
 
     setLayout(main_layout);
 
-//    QString news = "https://dtldtg.bn1301.livefilestore.com/y3mwdSQzjyFAnbG_xAvZ_6Npe_EUZgmA_AqZ9Q1RggqVmySzAoi-eHofxeZ08pvJkNMyzrcDtyHM4isyviD3POLHDP8TfaHVgOmjO2nU4AtRh-NTPgDnGB4RalR5zNCEDPZdk0EuUL-gQg5rW4KontM1g/Chronicler_news.html?download&psid=1";
-//    m_downloader = new FileDownloader(QUrl(news), SLOT(Downloaded()), this);
-
-    m_dbfile = new QDropboxFile(tr("/dropbox/ChroniclerQt/Chronicler_news.html"), new QDropbox(tr("i21ypoxxuexw60t"), tr("7msii2ldw9fm8ln")), this);
-
-    connect(m_dbfile, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(Progress(qint64,qint64)));
-
-    m_dbfile->open(QIODevice::ReadOnly);
-
-//    QByteArray ba(dbfile.readAll());
-//    qDebug() << ba << db.errorString();
-
-//    QString news = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/Chronicler_news.html";
-//    QFile file(news);
-//    file.open(QFile::WriteOnly);
-//    file.write(ba);
-//    file.close();
-//    dbfile.close();
-
-//    m_webView->load(QUrl::fromLocalFile(news));
+    QString news = "https://www.dropbox.com/s/tru5nkm9m4uukwe/Chronicler_news.html?dl=1";
+    m_downloader = new FileDownloader(QUrl(news), SLOT(Downloaded()), this);
 }
 
 void CHomepage::SetupSidebar(QHBoxLayout *main_layout)
@@ -74,8 +52,6 @@ void CHomepage::SetupSidebar(QHBoxLayout *main_layout)
 
     if(shared().settingsView->maxRecentFiles() > 0)
     {
-        //QStringList def({"C:/Chronicler/Dragon.chron", "C:/Chronicler/Test.chron"}); // fake default projects
-
         // load the recently opened projects from the settings
         m_recentView->addItems(shared().settingsView->settings()->value("Homepage/RecentFiles").value<QStringList>());
         connect(m_recentView, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(RecentItemSelected(QListWidgetItem*)));
@@ -108,7 +84,6 @@ void CHomepage::SetupSidebar(QHBoxLayout *main_layout)
 void CHomepage::SetupMainWindow(QHBoxLayout *main_layout)
 {
     m_webView = new QWebView();
-//    m_webView->load(QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + "/news.html"));
 
     // Add to main layout
     main_layout->addWidget(m_webView, 4);
@@ -135,33 +110,16 @@ void CHomepage::RecentItemSelected(QListWidgetItem *item)
 void CHomepage::Downloaded()
 {
     QString news = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/Chronicler_news.html";
+    QByteArray ba(m_downloader->downloadedData());
 
-    QFile file(news);
-    file.open(QFile::WriteOnly);
-    file.write(m_downloader->downloadedData());
-    file.close();
-
-    m_webView->load(QUrl::fromLocalFile(news));
-}
-
-void CHomepage::Progress(qint64 recieved, qint64 total)
-{
-    qDebug() << recieved << "/" << total << "\n";
-
-    if(recieved == total)
+    if(ba.length() > 0)
     {
-        m_dbfile->flush();
-        QByteArray ba(m_dbfile->readAll());
-        m_dbfile->close();
-
-        qDebug() << ba;
-
-        QString news = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/Chronicler_news.html";
         QFile file(news);
         file.open(QFile::WriteOnly);
         file.write(ba);
         file.close();
-
-        m_webView->load(QUrl::fromLocalFile(news));
     }
+
+    m_webView->load(QUrl::fromLocalFile(news));
 }
+

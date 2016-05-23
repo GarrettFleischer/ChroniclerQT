@@ -14,7 +14,8 @@ FileDownloader::~FileDownloader()
 
 void FileDownloader::Download(QUrl file, const char *slot)
 {
-    connect(this, SIGNAL(downloaded()), parent(), slot);
+    if(slot)
+        connect(this, SIGNAL(downloaded()), parent(), slot);
 
     QNetworkRequest request(file);
     m_WebCtrl.get(request);
@@ -22,9 +23,15 @@ void FileDownloader::Download(QUrl file, const char *slot)
 
 void FileDownloader::fileDownloaded(QNetworkReply* pReply)
 {
-    m_DownloadedData = pReply->readAll();
-    pReply->deleteLater();
-    emit downloaded();
+    QUrl redirect = pReply->attribute(QNetworkRequest::RedirectionTargetAttribute).value<QUrl>();
+    if(redirect.toString().length())
+        Download(redirect, 0);
+    else
+    {
+        m_DownloadedData = pReply->readAll();
+        pReply->deleteLater();
+        emit downloaded();
+    }
 }
 
 QByteArray FileDownloader::downloadedData() const
