@@ -320,7 +320,7 @@ void CGraphicsScene::keyReleaseEvent(QKeyEvent *event)
 
 CBubble * CGraphicsScene::AddBubble(BubbleType type, const QPointF &pos, bool shift)
 {
-    CBubble *bbl;
+    CBubble *bbl = 0;
     if(type == Chronicler::Story)
         bbl = new CStoryBubble(pos, m_palette, m_font);
     else if(type == Chronicler::Condition)
@@ -332,16 +332,19 @@ CBubble * CGraphicsScene::AddBubble(BubbleType type, const QPointF &pos, bool sh
     else if(type == Chronicler::Start)
         bbl = new CStartBubble(pos, m_palette, m_font);
 
-    connect(bbl, SIGNAL(Selected(QGraphicsItem*)), this, SIGNAL(itemSelected(QGraphicsItem*)));
-    addItem(bbl);
-    bbl->setSelected(true);
+    if(bbl)
+    {
+        connect(bbl, SIGNAL(Selected(QGraphicsItem*)), this, SIGNAL(itemSelected(QGraphicsItem*)));
+        addItem(bbl);
+        bbl->setSelected(true);
 
-    m_bubbles.append(bbl);
+        m_bubbles.append(bbl);
 
-    if(!shift)
-        setMode(CGraphicsScene::Cursor);
+        if(!shift)
+            setMode(CGraphicsScene::Cursor);
 
-    emit itemInserted(bbl);
+        emit itemInserted(bbl);
+    }
 
     return bbl;
 }

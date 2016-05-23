@@ -16,6 +16,7 @@ QT_END_NAMESPACE
 class CMainWindow;
 class CSettingsView;
 class FileDownloader;
+class QDropboxFile;
 
 class CHomepage : public QWidget
 {
@@ -33,11 +34,15 @@ private:
 
     FileDownloader *m_downloader;
 
+    QDropboxFile *m_dbfile;
+
 signals:
 
 private slots:
     void RecentItemSelected(QListWidgetItem *item);
     void Downloaded();
+
+    void Progress(qint64 recieved, qint64 total);
 };
 
 #endif // CHOMEPAGE_H

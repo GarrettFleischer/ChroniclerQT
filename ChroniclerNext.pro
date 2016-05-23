@@ -1,4 +1,4 @@
-QT += core gui network webkit webkitwidgets widgets multimedia multimediawidgets
+QT += core gui network xml webkit webkitwidgets widgets multimedia multimediawidgets
 
 RESOURCES   =	chroniclernext.qrc
 
@@ -47,7 +47,15 @@ HEADERS += \
     Properties/Widgets/clistpropertieswidget.h \
     Misc/cscenemodel.h \
     Misc/filedownloader.h \
-    Bubbles/cstartbubble.h
+    Bubbles/cstartbubble.h \
+    Dropbox/qdropbox.h \
+    Dropbox/qdropboxaccount.h \
+    Dropbox/qdropboxdeltaresponse.h \
+    Dropbox/qdropboxfile.h \
+    Dropbox/qdropboxfileinfo.h \
+    Dropbox/qdropboxjson.h \
+    Dropbox/qtdropbox.h \
+    Dropbox/qtdropbox_global.h
 
 SOURCES += \
     Bubbles/cbubble.cpp \
@@ -83,4 +91,10 @@ SOURCES += \
     Properties/Widgets/clistpropertieswidget.cpp \
     Misc/cscenemodel.cpp \
     Misc/filedownloader.cpp \
-    Bubbles/cstartbubble.cpp
+    Bubbles/cstartbubble.cpp \
+    Dropbox/qdropbox.cpp \
+    Dropbox/qdropboxaccount.cpp \
+    Dropbox/qdropboxdeltaresponse.cpp \
+    Dropbox/qdropboxfile.cpp \
+    Dropbox/qdropboxfileinfo.cpp \
+    Dropbox/qdropboxjson.cpp
