@@ -7,6 +7,7 @@ QT_BEGIN_NAMESPACE
 class QListView;
 class QPushButton;
 class QMenu;
+class QLineEdit;
 QT_END_NAMESPACE
 
 #include <QModelIndex>
@@ -33,6 +34,8 @@ public:
 private:
     void CreateBubbles();
 
+    QLineEdit *m_name;
+
     // view/model
     QListView  *m_modelView;
     CSceneModel *m_sceneModel;
@@ -45,7 +48,7 @@ private:
 
     // project data
     QString m_version;
-    QString m_name;
+//    QString m_name;
 
     // for quicksave
     QString m_path;
@@ -57,15 +60,17 @@ signals:
     sceneSelected(CGraphicsView *);
 
 public slots:
-    void Save();
-    void SaveAs();
-    void Load(QString filepath = "");
-    void Import();
+    void SaveProject();
+    void SaveProjectAs();
+    void OpenProject(const QString &filepath = "");
+    void ImportProject();
     void NewProject();
+    void CloseProject();
 
 private slots:
     void SelectedChanged(QModelIndex current);
     void DataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
+    void ProjectNameChanged();
 
     void MoveUp();
     void MoveDown();

@@ -3,11 +3,9 @@
 #include "cgraphicsview.h"
 #include "cgraphicsscene.h"
 
-CSceneModel::CSceneModel(CGraphicsView *startup, QObject *parent)
+CSceneModel::CSceneModel(QObject *parent)
     : QAbstractListModel(parent)
-{
-    m_scenes.append(startup);
-}
+{}
 
 int CSceneModel::rowCount(const QModelIndex &) const
 {
@@ -82,11 +80,11 @@ void CSceneModel::AddItem(CGraphicsView *view)
 
 void CSceneModel::RemoveItem(const int index)
 {
-    if(index > 0)
-    {
+    //if(index > 0)
+    //{
         beginRemoveRows(QModelIndex(), index, index);
         delete m_scenes[index];
         m_scenes.removeAt(index);
         endRemoveRows();
-    }
+    //}
 }

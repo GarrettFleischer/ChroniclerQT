@@ -120,8 +120,7 @@ CBubble *CGraphicsScene::BubbleAt(const QPointF &point, bool choiceAllowed)
 
 QDataStream &operator <<(QDataStream &ds, const CGraphicsScene &scene)
 {
-    int len = scene.m_bubbles.length();
-    ds << len;
+    ds << scene.m_name << scene.m_bubbles.length();
     for(CBubble *bbl : scene.m_bubbles)
         bbl->Write(ds);
 
@@ -149,6 +148,9 @@ QDataStream &operator >>(QDataStream &ds, CGraphicsScene &scene)
 
     for(CConnection *connection : scene.m_connections)
         connection->ConnectToUIDs();
+
+    for(CBubble *bbl : scene.m_bubbles)
+        bbl->setSelected(false);
 
     return ds;
 }

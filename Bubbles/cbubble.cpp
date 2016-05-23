@@ -43,7 +43,8 @@ CBubble::CBubble(const QPointF &pos, const Chronicler::CPalette &palette, const 
 
 CBubble::~CBubble()
 {
-    dynamic_cast<CGraphicsScene *>(scene())->RemoveBubble(this);
+    CGraphicsScene *scn = dynamic_cast<CGraphicsScene *>(scene());
+    scn->RemoveBubble(this);
 
     // Free up this UID for reuse
     m_UIDs.removeOne(m_UID);
@@ -51,7 +52,10 @@ CBubble::~CBubble()
     // make a copy to prevent invalid iterator when connections are removed.
     QList<CConnection *> tmp = m_connections;
     for(CConnection *connection : tmp)
+    {
+        scn->RemoveConnection(connection);
         delete connection;
+    }
 }
 
 void CBubble::mousePressEvent(QGraphicsSceneMouseEvent *evt)
@@ -233,6 +237,7 @@ QDataStream &CBubble::Read(QDataStream &ds)
        >> m_palette
        >> m_minSize >> m_bounds >> pos;
 
+    setLabel(m_label);
     setPos(pos);
     UpdatePolygon();
 

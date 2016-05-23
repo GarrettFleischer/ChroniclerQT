@@ -8,7 +8,7 @@ class CGraphicsView;
 class CSceneModel : public QAbstractListModel
 {
 public:
-    explicit CSceneModel(CGraphicsView *startup, QObject *parent = 0);
+    explicit CSceneModel(QObject *parent = 0);
 
     virtual int rowCount(const QModelIndex &index = QModelIndex()) const override;
 

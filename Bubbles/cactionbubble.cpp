@@ -16,12 +16,6 @@ CActionBubble::CActionBubble(const QPointF &pos, const Chronicler::CPalette &pal
     m_actionsView = new CTextItem("", QRectF(), this);
     m_actionsView->SetStyle(Qt::AlignAbsolute | Qt::AlignVCenter);
 
-//    QStringList test;
-//    test.append("Action 1");
-//    test.append("Action 2");
-//    test.append("Action 3");
-//    test.append("Action 4");
-
     m_actions = new CStringListModel(this);
     connect(m_actions, SIGNAL(rowsInserted(QModelIndex,int,int)),
             this, SLOT(ModelUpdated()));
@@ -34,8 +28,6 @@ CActionBubble::CActionBubble(const QPointF &pos, const Chronicler::CPalette &pal
     connect(m_actions, SIGNAL(modelReset()),
             this, SLOT(ModelUpdated()));
 
-//    m_actions->setStringList(test);
-
     AdjustMinSize();
     m_bounds = QRectF(-m_minSize.width()/2, -m_minSize.height()/2, m_minSize.width(), m_minSize.height());
     UpdatePolygon();
@@ -46,7 +38,7 @@ void CActionBubble::UpdatePolygon()
     CBubble::UpdatePolygon();
     QRectF b = boundingRect();
     const int off = 10;
-    m_actionsView->Resize(QRectF(b.x() + off, b.y() + off, b.width() - off * 2, b.height() - off * 2));
+    m_actionsView->Resize(QRectF(b.x() + off, b.y() + off, b.width() - off * 2, b.height() - off));
 }
 
 void CActionBubble::ModelUpdated()
@@ -101,7 +93,8 @@ CStringListModel *CActionBubble::actions()
 
 void CActionBubble::AdjustMinSize()
 {
-    m_minSize.setHeight(m_actionsView->textBounds(QSizeF(100,100)).height());
+    QFontMetrics fm(m_font);
+    m_minSize.setHeight(m_actionsView->textBounds(QSizeF(m_minSize.width(), fm.height())).height() + 30);
 }
 
 

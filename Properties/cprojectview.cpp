@@ -5,6 +5,7 @@
 #include <QListView>
 #include <QPushButton>
 #include <QLabel>
+#include <QLineEdit>
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -19,6 +20,8 @@
 #include <QDockWidget>
 #include <QTabWidget>
 
+#include <QSettings>
+
 #include "Misc/cscenemodel.h"
 #include "cgraphicsscene.h"
 #include "cgraphicsview.h"
@@ -26,10 +29,13 @@
 #include "cmainwindow.h"
 
 #include "Bubbles/cbubble.h"
+#include "csettingsview.h"
 
 
 #include "Misc/chronicler.h"
 using Chronicler::shared;
+
+Q_DECLARE_METATYPE(QStringList)
 
 
 const QString CProjectView::currentVersion = "0.7.0.0";
@@ -60,8 +66,7 @@ CProjectView::CProjectView(QWidget *parent)
     vl_buttons->addWidget(m_removeButton);
     vl_buttons->addStretch(1);
 
-    CGraphicsView *startup = new CGraphicsView(new CGraphicsScene("startup"), this);
-    m_sceneModel = new CSceneModel(startup, this);
+    m_sceneModel = new CSceneModel(this);
 
     m_modelView = new QListView();
     m_modelView->setModel(m_sceneModel);
@@ -73,23 +78,26 @@ CProjectView::CProjectView(QWidget *parent)
     hl_viewButtons->addWidget(m_modelView);
     hl_viewButtons->addLayout(vl_buttons);
 
+    m_name = new QLineEdit();
+    connect(m_name, SIGNAL(textChanged(QString)), this, SLOT(ProjectNameChanged()));
+
     QVBoxLayout *l_main = new QVBoxLayout(this);
+    l_main->addWidget(new QLabel("Title"));
+    l_main->addWidget(m_name);
     l_main->addWidget(new QLabel("Scenes"));
     l_main->addLayout(hl_viewButtons);
 }
 
-void CProjectView::Save()
+void CProjectView::SaveProject()
 {
     if(!m_path.length())
-        SaveAs();
+        SaveProjectAs();
     else
     {
         QByteArray ba;
         QDataStream ds(&ba, QIODevice::WriteOnly);
 
-        ds << currentVersion
-           << m_name
-           << m_sceneModel->rowCount();
+        ds << currentVersion << m_name->text() << m_sceneModel->rowCount();
         for(CGraphicsView *view : m_sceneModel->views())
             ds << *(view->cScene());
 
@@ -102,20 +110,33 @@ void CProjectView::Save()
         {
             QMessageBox msgBox;
             msgBox.setText("Error writing to file!");
-            msgBox.setInformativeText("Ensure that the path is valid and that you have enough disk space.");
+            msgBox.setInformativeText("Ensure that the file exists and that you have enough disk space.");
             msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Retry | QMessageBox::Cancel);
             msgBox.setDefaultButton(QMessageBox::Retry);
             int ret = msgBox.exec();
 
             if(ret == QMessageBox::Save)
-                SaveAs();
+            {
+                SaveProjectAs();
+                break;
+            }
             else if(ret == QMessageBox::Cancel)
                 break;
         }
+
+        QStringList recent_files = shared().settingsView->settings()->value("Homepage/RecentFiles").value<QStringList>();
+        if(!recent_files.contains(m_path))
+        {
+            recent_files.insert(0, m_path);
+            if(recent_files.length() > shared().settingsView->maxRecentFiles())
+                recent_files.removeLast();
+        }
+
+        shared().settingsView->settings()->setValue("Homepage/RecentFiles", QVariant::fromValue(recent_files));
     }
 }
 
-void CProjectView::SaveAs()
+void CProjectView::SaveProjectAs()
 {
     QString dir = QFileInfo(m_path).absolutePath();
     QFileDialog dialog(this, "Save As", dir, "chronx (*.chronx)");
@@ -126,64 +147,99 @@ void CProjectView::SaveAs()
     if(dialog.exec())
     {
         m_path = dialog.selectedFiles().first();
-        Save();
+        SaveProject();
     }
 }
 
-void CProjectView::Load(QString filepath)
+void CProjectView::OpenProject(const QString &filepath)
 {
-    if(!filepath.length())
+    CloseProject();
+
+    QFile file(filepath);
+    while(!file.open(QIODevice::ReadOnly))
     {
-        QString dir = QFileInfo("C:/Development/QT/Chronicler Saves").absolutePath();
-        filepath = QFileDialog::getOpenFileName(this, "Open", dir, "chronx (*.chronx)");
-        if(!filepath.length())
+        QString dir = QFileInfo("C:/Development/QT/Chronicler Saves/Test.chronx").absolutePath();
+        file.setFileName(QFileDialog::getOpenFileName(this, "Open", dir, "chronx (*.chronx)"));
+        if(!file.fileName().length())
             return;
     }
 
-    m_path = filepath;
-    shared().mainWindow->setWindowTitle("Chronicler - " + QFileInfo(filepath).baseName());
-    shared().dock->setVisible(true);
-    shared().dock->setWindowTitle(QFileInfo(filepath).fileName());
-    shared().sceneTabs->removeTab(shared().sceneTabs->indexOf(shared().homepage));
+    m_path = file.fileName();
+
 
     // TODO
     // Load data from file and instantiate all scenes & bubbles...
-    QFile file(filepath);
-    file.open(QIODevice::ReadOnly);
+
     QByteArray ba(file.readAll());
     QDataStream ds(&ba, QIODevice::ReadOnly);
 
     int num_scenes;
-    ds >> m_version
-       >> m_name
-       >> num_scenes;
+    QString project_name;
+    ds >> m_version >> project_name >> num_scenes;
+
+    m_name->setText(project_name);
+
+    // load other scenes
+    for(int i = 0; i < num_scenes; ++i)
+    {
+        QString name;
+        ds >> name;
+        m_sceneModel->AddItem(new CGraphicsView(new CGraphicsScene(name), this));
+        ds >> *(m_sceneModel->views().last()->cScene());
+    }
+
+    shared().dock->setVisible(true);
+    shared().dock->setWindowTitle(m_path);//(QFileInfo(m_path).fileName());
+    shared().sceneTabs->removeTab(shared().sceneTabs->indexOf(shared().homepage));
 
     // grab the startup view
     CGraphicsView *view = m_sceneModel->views().first();
-    ds >> *(view->cScene());
-
-    // load other scenes
-    for(int i = 1; i < num_scenes; ++i)
-    {
-
-//        m_sceneModel->AddItem(new CGraphicsView(new CGraphicsScene("Scene " + QString().setNum(m_sceneModel->rowCount())), this));
-    }
-
-
-
     shared().sceneTabs->addTab(view, view->cScene()->name());
     shared().sceneTabs->setCurrentWidget(view);
     view->centerOn(view->scene()->sceneRect().center());
 }
 
-void CProjectView::Import()
+void CProjectView::ImportProject()
 {
 
 }
 
 void CProjectView::NewProject()
 {
+    CloseProject();
 
+    m_name->setText("New Project");
+
+    shared().dock->setVisible(true);
+    shared().dock->setWindowTitle(m_path);
+    shared().sceneTabs->removeTab(shared().sceneTabs->indexOf(shared().homepage));
+
+    CGraphicsView *view = new CGraphicsView(new CGraphicsScene("startup"), this);
+    m_sceneModel->AddItem(view);
+
+    shared().sceneTabs->addTab(view, view->cScene()->name());
+    shared().sceneTabs->setCurrentWidget(view);
+    view->centerOn(view->scene()->sceneRect().center());
+}
+
+void CProjectView::CloseProject()
+{
+    m_name->setText("");
+    m_path = "";
+
+    for(CGraphicsView *view : m_sceneModel->views())
+    {
+        QList<CBubble *> bubbles = view->cScene()->bubbles();
+
+        for(CBubble *bbl : bubbles)
+            delete bbl;
+    }
+
+    while(m_sceneModel->rowCount())
+        m_sceneModel->RemoveItem(0);
+
+    shared().dock->hide();
+    shared().showHomepageAction->trigger();
 }
 
 QList<CGraphicsView *> CProjectView::views()
@@ -242,6 +298,11 @@ void CProjectView::DataChanged(const QModelIndex &topLeft, const QModelIndex &bo
     }
 }
 
+void CProjectView::ProjectNameChanged()
+{
+    shared().mainWindow->setWindowTitle("Chronicler - " + m_name->text());
+}
+
 void CProjectView::MoveUp()
 {
     m_sceneModel->MoveUp(m_modelView->currentIndex().row());
@@ -260,5 +321,6 @@ void CProjectView::AddItem()
 
 void CProjectView::RemoveItem()
 {
-    m_sceneModel->RemoveItem(m_modelView->currentIndex().row());
+    if(m_modelView->currentIndex().row() > 0)
+        m_sceneModel->RemoveItem(m_modelView->currentIndex().row());
 }

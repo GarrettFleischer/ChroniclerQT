@@ -106,7 +106,7 @@ void CHomepage::RecentItemSelected(QListWidgetItem *item)
     shared().settingsView->settings()->setValue("Homepage/RecentFiles", QVariant::fromValue(labels));
 
     // load the selected project
-    shared().projectView->Load(item->text());
+    shared().projectView->OpenProject(item->text());
 }
 
 void CHomepage::Downloaded()

@@ -11,6 +11,7 @@ CSingleLinkBubble::CSingleLinkBubble(const QPointF &pos, const Chronicler::CPale
 
 CSingleLinkBubble::~CSingleLinkBubble()
 {
+    dynamic_cast<CGraphicsScene *>(scene())->RemoveConnection(m_link);
     delete m_link;
 }
 

@@ -24,6 +24,8 @@ CConditionBubble::CConditionBubble(const QPointF &pos, const CPalette &palette, 
 
 CConditionBubble::~CConditionBubble()
 {
+    dynamic_cast<CGraphicsScene *>(scene())->RemoveConnection(m_trueLink);
+    dynamic_cast<CGraphicsScene *>(scene())->RemoveConnection(m_falseLink);
     delete m_trueLink;
     delete m_falseLink;
 }
@@ -127,7 +129,7 @@ QDataStream &CConditionBubble::Read(QDataStream &ds)
 
     bool trueLink, falseLink;
 
-    ds >> trueLink >> falseLink;
+    ds >> m_conditionText >> trueLink >> falseLink;
 
     if(trueLink)
     {
@@ -140,6 +142,8 @@ QDataStream &CConditionBubble::Read(QDataStream &ds)
         m_falseLink->Read(ds);
     }
 
+    setCondition(m_conditionText);
+
     return ds;
 }
 
@@ -147,7 +151,7 @@ QDataStream & CConditionBubble::Write(QDataStream &ds)
 {
     CBubble::Write(ds);
 
-    ds << bool(m_trueLink) << bool(m_falseLink);
+    ds << m_conditionText << bool(m_trueLink) << bool(m_falseLink);
 
     if(m_trueLink)
          m_trueLink->Write(ds);

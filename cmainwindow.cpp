@@ -103,22 +103,22 @@ void CMainWindow::NewProject()
 
 void CMainWindow::OpenProject()
 {
-    shared().projectView->Load();
+    shared().projectView->OpenProject();
 }
 
 void CMainWindow::ImportProject()
 {
-    shared().projectView->Import();
+    shared().projectView->ImportProject();
 }
 
 void CMainWindow::SaveProject()
 {
-    shared().projectView->Save();
+    shared().projectView->SaveProject();
 }
 
 void CMainWindow::SaveAsProject()
 {
-    shared().projectView->SaveAs();
+    shared().projectView->SaveProjectAs();
 }
 
 void CMainWindow::ShowSettings()
@@ -241,7 +241,7 @@ void CMainWindow::CreateActions()
     connect(shared().showHomepageAction, SIGNAL(triggered(bool)), this, SLOT(ShowHomepage()));
 
     // Disable unavailable actions
-    shared().newProjectAction->setEnabled(false);
+//    shared().newProjectAction->setEnabled(false);
 //    shared().openProjectAction->setEnabled(false);
     shared().importProjectAction->setEnabled(false);
 }

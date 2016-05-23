@@ -30,8 +30,6 @@ CConnection::CConnection(CBubble *from, CBubble *to, Anchor anc_from, Anchor anc
 
 CConnection::~CConnection()
 {
-//    dynamic_cast<CGraphicsScene *>(scene())->RemoveConnection(this);
-
     setFrom(0);
     setTo(0);
 
@@ -136,12 +134,10 @@ void CConnection::setEndAnchor(Chronicler::Anchor anchor)
 
 void CConnection::ConnectToUIDs()
 {
-    CBubble *from = shared().projectView->BubbleWithUID(m_fromUID);
-    CBubble *to = shared().projectView->BubbleWithUID(m_toUID);
     if(m_fromUID != -1)
-        setFrom(from);
+        setFrom(shared().projectView->BubbleWithUID(m_fromUID));
     if(m_toUID != -1)
-        setTo(to);
+        setTo(shared().projectView->BubbleWithUID(m_toUID));
 }
 
 QDataStream & CConnection::Read(QDataStream &ds)
