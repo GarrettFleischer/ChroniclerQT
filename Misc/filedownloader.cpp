@@ -29,9 +29,10 @@ void FileDownloader::fileDownloaded(QNetworkReply* pReply)
     else
     {
         m_DownloadedData = pReply->readAll();
-        pReply->deleteLater();
         emit downloaded();
     }
+
+    pReply->deleteLater();
 }
 
 QByteArray FileDownloader::downloadedData() const
