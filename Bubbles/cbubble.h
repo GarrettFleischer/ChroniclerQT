@@ -48,8 +48,13 @@ public:
 
     BubbleType getType() const { return m_type; }
 
+    // if this bubble is contained inside another bubble, return that
+    // else return itself
+    virtual CBubble * container();
+
     void AddConnection(CConnection *connection);
     void RemoveConnection(CConnection *connection);
+    QList<CConnection *> connections();
 
     virtual void AddLink(CConnection *link) = 0;
     virtual void RemoveLink(CConnection *link) = 0;

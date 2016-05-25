@@ -375,3 +375,8 @@ void CGraphicsScene::RemoveConnection(CConnection *connection)
     m_connections.removeAll(connection);
 }
 
+CStartBubble *CGraphicsScene::startBubble()
+{
+    return m_startBubble;
+}
+

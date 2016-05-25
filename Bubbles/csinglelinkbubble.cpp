@@ -15,6 +15,11 @@ CSingleLinkBubble::~CSingleLinkBubble()
     delete m_link;
 }
 
+CConnection *CSingleLinkBubble::link()
+{
+    return m_link;
+}
+
 
 void CSingleLinkBubble::AddLink(CConnection *link)
 {

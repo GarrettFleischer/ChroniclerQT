@@ -91,6 +91,7 @@ public:
     void RemoveBubble(CBubble *bubble);
     void RemoveConnection(CConnection *connection);
 
+    CStartBubble * startBubble();
     QList<CBubble *> bubbles();
     QList<CConnection *> connections();
 

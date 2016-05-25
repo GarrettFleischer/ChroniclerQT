@@ -11,6 +11,7 @@ public:
     CSingleLinkBubble(const QPointF &pos, const CPalette &palette, const QFont &font, QGraphicsItem *parent);
     virtual ~CSingleLinkBubble();
 
+    CConnection * link();
     virtual void AddLink(CConnection *link) override;
     virtual void RemoveLink(CConnection *link) override;
     virtual QList<CConnection *> links() override;

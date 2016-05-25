@@ -22,6 +22,7 @@
 
 #include <QSettings>
 
+
 #include "Misc/cscenemodel.h"
 #include "cgraphicsscene.h"
 #include "cgraphicsview.h"
@@ -29,8 +30,14 @@
 #include "cmainwindow.h"
 
 #include "Bubbles/cbubble.h"
-#include "csettingsview.h"
+#include "Bubbles/cstartbubble.h"
+#include "Bubbles/cstorybubble.h"
+#include "Bubbles/cchoicebubble.h"
+#include "Bubbles/cactionbubble.h"
+#include "Bubbles/cconditionbubble.h"
+#include "Connections/cconnection.h"
 
+#include "csettingsview.h"
 
 #include "Misc/chronicler.h"
 using Chronicler::shared;
@@ -101,6 +108,8 @@ void CProjectView::SaveProject()
         for(CGraphicsView *view : m_sceneModel->views())
             ds << *(view->cScene());
 
+
+        ExportChoiceScript();
 
         QSaveFile file(m_path);
         file.open(QIODevice::WriteOnly);
@@ -242,6 +251,28 @@ void CProjectView::CloseProject()
     shared().showHomepageAction->trigger();
 }
 
+void CProjectView::ExportChoiceScript()
+{
+    QFile file("C:/Development/QT/Chronicler Saves/startup.txt");
+    QList<CBubble *> processed;
+
+    CStartBubble *start_bubble = m_sceneModel->views().first()->cScene()->startBubble();
+
+    QString cs = BubbleToChoiceScript(processed, 0, start_bubble);
+
+    QList<CBubble *> bubbles = m_sceneModel->views().first()->cScene()->bubbles();
+    for(CBubble *bbl : bubbles)
+    {
+        if(!processed.contains(bbl) && bbl->connections().length() > 0)
+            cs += BubbleToChoiceScript(processed, 0, bbl);
+    }
+
+
+    file.open(QIODevice::WriteOnly);
+    file.write(cs.toStdString().c_str());
+    file.close();
+}
+
 QList<CGraphicsView *> CProjectView::views()
 {
     return m_sceneModel->views();
@@ -261,6 +292,65 @@ CBubble *CProjectView::BubbleWithUID(uint uid)
     }
 
     return 0;
+}
+
+QString CProjectView::BubbleToChoiceScript(QList<CBubble *> &processed, int indent_level, CBubble *bubble)
+{
+    processed.prepend(bubble);
+
+    QString cs;
+    QString indent;
+
+    QList<CConnection *> connections = bubble->connections();
+
+    // TODO add ignored list of bubbles with no connections...
+
+    // figure out if we need a label or not
+    bool make_label = connections.length() > 1;
+    if(!make_label && connections.length() > 0)
+    {
+        // if the only connecting bubble hasn't been processed yet...
+        CBubble *from = connections.first()->from()->container();
+        if(!processed.contains(from))//from->getOrder() > bubble->getOrder())
+            make_label = true;
+    }
+
+    if(make_label)
+        cs +=  "\n*label bubble_" + QString::number(bubble->UID());
+    else
+        indent = QString("    ").repeated(indent_level);
+
+    if(bubble->getType() == Chronicler::Start)
+    {
+        CStartBubble *start = dynamic_cast<CStartBubble *>(bubble);
+        if(start->link())
+            cs += BubbleToChoiceScript(processed, indent_level, start->link()->to());
+    }
+    else if(bubble->getType() == Chronicler::Story)
+    {
+        CStoryBubble *story = dynamic_cast<CStoryBubble *>(bubble);
+
+        cs += "\n" + indent + story->getStory().replace("\n", "\n" + indent) + "\n";
+
+        if(story->link() && processed.contains(story->link()->to()))
+            cs += indent + "*goto " + "bubble_" + QString::number(story->link()->to()->UID());
+        else if(story->link())
+            cs += BubbleToChoiceScript(processed, indent_level, story->link()->to());
+    }
+    else if(bubble->getType() == Chronicler::Choice)
+    {
+
+    }
+    else if(bubble->getType() == Chronicler::Action)
+    {
+
+    }
+    else if(bubble->getType() == Chronicler::Condition)
+    {
+
+    }
+
+    return cs;
 }
 
 

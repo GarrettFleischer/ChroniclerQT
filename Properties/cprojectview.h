@@ -13,6 +13,7 @@ QT_END_NAMESPACE
 #include <QModelIndex>
 
 class CGraphicsView;
+class CGraphicsScene;
 class CSceneModel;
 class CBubble;
 
@@ -26,13 +27,14 @@ public:
     CProjectView(QWidget *parent = 0);
 
 
-
     QList<CGraphicsView *> views();
 
     CBubble *BubbleWithUID(uint uid);
 
 private:
     void CreateBubbles();
+
+    QString BubbleToChoiceScript(QList<CBubble *> &processed, int indent_level, CBubble *bubble);
 
     QLineEdit *m_name;
 
@@ -48,7 +50,6 @@ private:
 
     // project data
     QString m_version;
-//    QString m_name;
 
     // for quicksave
     QString m_path;
@@ -66,6 +67,7 @@ public slots:
     void ImportProject();
     void NewProject();
     void CloseProject();
+    void ExportChoiceScript();
 
 private slots:
     void SelectedChanged(QModelIndex current);

@@ -120,6 +120,11 @@ Chronicler::Anchor CChoice::InputAnchorAtPosition(const QPointF &)
     return Chronicler::None;
 }
 
+CBubble *CChoice::container()
+{
+    return dynamic_cast<CBubble *>(parentItem());
+}
+
 QDataStream & CChoice::Read(QDataStream &ds)
 {
     QString choice;
@@ -147,3 +152,5 @@ QDataStream & CChoice::Write(QDataStream &ds)
 
     return ds;
 }
+
+

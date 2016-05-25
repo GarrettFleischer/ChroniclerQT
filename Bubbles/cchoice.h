@@ -18,6 +18,8 @@ public:
     virtual Chronicler::Anchor OutputAnchorAtPosition(const QPointF &pos) override;
     virtual Chronicler::Anchor InputAnchorAtPosition(const QPointF &) override;
 
+    virtual CBubble *container() override;
+
     virtual QDataStream &Read(QDataStream &ds) override;
     virtual QDataStream &Write(QDataStream &ds) override;
 

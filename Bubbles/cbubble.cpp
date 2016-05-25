@@ -196,6 +196,11 @@ void CBubble::setPalette(const Chronicler::CPalette &palette)
     update();
 }
 
+CBubble *CBubble::container()
+{
+    return this;
+}
+
 void CBubble::AddConnection(CConnection *connection)
 {
     if(!m_connections.contains(connection))
@@ -211,6 +216,11 @@ void CBubble::RemoveConnection(CConnection *connection)
     m_connections.removeAll(connection);
 
     emit ConnectionsChanged(m_connections.length());
+}
+
+QList<CConnection *> CBubble::connections()
+{
+    return m_connections;
 }
 
 Anchor CBubble::OutputAnchorAtPosition(const QPointF &pos)
