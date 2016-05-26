@@ -60,14 +60,12 @@ void CPropertiesManager::setBubble(CBubble *bbl)
 
         switch(bbl->getType())
         {
+        case Chronicler::Start:
+            break;
+
         case Chronicler::Story:
             m_storyProperties->setBubble(bbl);
             m_storyProperties->show();
-        break;
-
-        case Chronicler::Condition:
-            m_conditionProperties->setBubble(bbl);
-            m_conditionProperties->show();
         break;
 
         case Chronicler::Choice:
@@ -78,6 +76,11 @@ void CPropertiesManager::setBubble(CBubble *bbl)
         case Chronicler::Action:
             m_actionProperties->setBubble(bbl);
             m_actionProperties->show();
+        break;
+
+        case Chronicler::Condition:
+            m_conditionProperties->setBubble(bbl);
+            m_conditionProperties->show();
         break;
         }
     }

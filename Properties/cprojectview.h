@@ -35,6 +35,8 @@ private:
     void CreateBubbles();
 
     QString BubbleToChoiceScript(QList<CBubble *> &processed, int indent_level, CBubble *bubble);
+    bool needs_label(CBubble *bubble, const QList<CBubble *> &processed);
+    QString get_label(CBubble *bubble);
 
     QLineEdit *m_name;
 

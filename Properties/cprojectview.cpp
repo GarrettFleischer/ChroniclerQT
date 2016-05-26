@@ -22,7 +22,7 @@
 
 #include <QSettings>
 
-
+#include "Bubbles/cchoice.h"
 #include "Misc/cscenemodel.h"
 #include "cgraphicsscene.h"
 #include "cgraphicsview.h"
@@ -49,7 +49,7 @@ const QString CProjectView::currentVersion = "0.7.0.0";
 
 
 CProjectView::CProjectView(QWidget *parent)
-    : QWidget(parent), m_path(""), m_version(currentVersion)
+    : QWidget(parent), m_version(currentVersion), m_path("")
 {
     m_upButton = new QPushButton(QIcon(":/images/icn_up"), "");
     m_upButton->setEnabled(false);
@@ -175,10 +175,7 @@ void CProjectView::OpenProject(const QString &filepath)
 
     m_path = file.fileName();
 
-
-    // TODO
-    // Load data from file and instantiate all scenes & bubbles...
-
+    // Load data from the file
     QByteArray ba(file.readAll());
     QDataStream ds(&ba, QIODevice::ReadOnly);
 
@@ -262,11 +259,7 @@ void CProjectView::ExportChoiceScript()
 
     QList<CBubble *> bubbles = m_sceneModel->views().first()->cScene()->bubbles();
     for(CBubble *bbl : bubbles)
-    {
-        if(!processed.contains(bbl) && bbl->connections().length() > 0)
-            cs += BubbleToChoiceScript(processed, 0, bbl);
-    }
-
+        cs += BubbleToChoiceScript(processed, 0, bbl);
 
     file.open(QIODevice::WriteOnly);
     file.write(cs.toStdString().c_str());
@@ -296,14 +289,87 @@ CBubble *CProjectView::BubbleWithUID(uint uid)
 
 QString CProjectView::BubbleToChoiceScript(QList<CBubble *> &processed, int indent_level, CBubble *bubble)
 {
-    processed.prepend(bubble);
-
     QString cs;
-    QString indent;
 
+    if(!processed.contains(bubble))
+    {
+        processed.prepend(bubble);
+
+        QString indent_str = "    ";
+        QString indent;
+
+        // generate label...
+        if(needs_label(bubble, processed))
+            cs +=  "\n*label " + get_label(bubble);
+        else
+            indent = QString(indent_str).repeated(indent_level);
+
+        // Start bubble
+        if(bubble->getType() == Chronicler::Start)
+        {
+            CStartBubble *start = dynamic_cast<CStartBubble *>(bubble);
+            if(start->link())
+                cs += BubbleToChoiceScript(processed, indent_level, start->link()->to());
+        }
+        // Story bubble
+        else if(bubble->getType() == Chronicler::Story)
+        {
+            CStoryBubble *story = dynamic_cast<CStoryBubble *>(bubble);
+
+            cs += "\n" + indent + story->getStory().replace("\n", "\n" + indent) + "\n";
+
+            if(story->link() && needs_label(story->link()->to(), processed))
+                cs += indent + "*goto " + get_label(story->link()->to());
+            else if(story->link())
+                cs += BubbleToChoiceScript(processed, indent_level, story->link()->to());
+        }
+        // Choice bubble
+        else if(bubble->getType() == Chronicler::Choice)
+        {
+            CChoiceBubble *cb = dynamic_cast<CChoiceBubble *>(bubble);
+
+            cs += "\n" + indent + "*choice";
+
+            // increase indent level
+            indent = QString(indent_str).repeated(++indent_level);
+
+            for(CChoice *choice : cb->choiceBubbles())
+            {
+                // TODO add section for conditional choices
+                cs += "\n" + indent + "#" + choice->choice();
+
+                if(choice->link() && needs_label(choice->link()->to(), processed))
+                    cs += "\n" + indent + indent_str + "*goto " + get_label(choice->link()->to());
+                else if(choice->link())
+                    cs += BubbleToChoiceScript(processed, indent_level + 1, choice->link()->to());
+            }
+
+        }
+        // Action bubble
+        else if(bubble->getType() == Chronicler::Action)
+        {
+            CActionBubble *action = dynamic_cast<CActionBubble *>(bubble);
+
+            cs += "\n" + indent + action->actionString().replace("\n", "\n" + indent);
+
+            if(action->link() && needs_label(action->link()->to(), processed))
+                cs += indent + "*goto " + get_label(action->link()->to());
+            else if(action->link())
+                cs += BubbleToChoiceScript(processed, indent_level, action->link()->to());
+        }
+        // Condition bubble
+        else if(bubble->getType() == Chronicler::Condition)
+        {
+
+        }
+    }
+
+    return cs;
+}
+
+bool CProjectView::needs_label(CBubble *bubble, const QList<CBubble *> &processed)
+{
     QList<CConnection *> connections = bubble->connections();
-
-    // TODO add ignored list of bubbles with no connections...
 
     // figure out if we need a label or not
     bool make_label = connections.length() > 1;
@@ -311,46 +377,17 @@ QString CProjectView::BubbleToChoiceScript(QList<CBubble *> &processed, int inde
     {
         // if the only connecting bubble hasn't been processed yet...
         CBubble *from = connections.first()->from()->container();
-        if(!processed.contains(from))//from->getOrder() > bubble->getOrder())
+        if(!processed.contains(from) && from->getOrder() > bubble->getOrder())
             make_label = true;
     }
 
-    if(make_label)
-        cs +=  "\n*label bubble_" + QString::number(bubble->UID());
-    else
-        indent = QString("    ").repeated(indent_level);
+    return make_label;
+}
 
-    if(bubble->getType() == Chronicler::Start)
-    {
-        CStartBubble *start = dynamic_cast<CStartBubble *>(bubble);
-        if(start->link())
-            cs += BubbleToChoiceScript(processed, indent_level, start->link()->to());
-    }
-    else if(bubble->getType() == Chronicler::Story)
-    {
-        CStoryBubble *story = dynamic_cast<CStoryBubble *>(bubble);
-
-        cs += "\n" + indent + story->getStory().replace("\n", "\n" + indent) + "\n";
-
-        if(story->link() && processed.contains(story->link()->to()))
-            cs += indent + "*goto " + "bubble_" + QString::number(story->link()->to()->UID());
-        else if(story->link())
-            cs += BubbleToChoiceScript(processed, indent_level, story->link()->to());
-    }
-    else if(bubble->getType() == Chronicler::Choice)
-    {
-
-    }
-    else if(bubble->getType() == Chronicler::Action)
-    {
-
-    }
-    else if(bubble->getType() == Chronicler::Condition)
-    {
-
-    }
-
-    return cs;
+QString CProjectView::get_label(CBubble *bubble)
+{
+    //TODO only add UID if another bubble contains the same label
+    return bubble->getLabel().replace(" ", "_") + "_" + QString::number(bubble->UID());
 }
 
 

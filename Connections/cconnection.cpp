@@ -45,7 +45,7 @@ void CConnection::setFrom(CBubble *from)
 {
     if(m_from)
     {
-        disconnect(m_from, SIGNAL(PositionChanged()), this, SLOT(UpdatePosition()));
+        disconnect(m_from, SIGNAL(PositionOrShapeChanged()), this, SLOT(UpdatePosition()));
         m_from->RemoveLink(this);
     }
 
@@ -53,7 +53,7 @@ void CConnection::setFrom(CBubble *from)
     if(m_from)
     {
         m_from->AddLink(this);
-        connect(m_from, SIGNAL(PositionChanged()), this, SLOT(UpdatePosition()));
+        connect(m_from, SIGNAL(PositionOrShapeChanged()), this, SLOT(UpdatePosition()));
 
         m_line->setPalette(m_from->getPalette());
     }
@@ -70,7 +70,7 @@ void CConnection::setTo(CBubble *to)
 {
     if(m_to)
     {
-        disconnect(m_to, SIGNAL(PositionChanged()), this, SLOT(UpdatePosition()));
+        disconnect(m_to, SIGNAL(PositionOrShapeChanged()), this, SLOT(UpdatePosition()));
         m_to->RemoveConnection(this);
     }
 
@@ -78,7 +78,7 @@ void CConnection::setTo(CBubble *to)
     if(m_to)
     {
         m_to->AddConnection(this);
-        connect(m_to, SIGNAL(PositionChanged()), this, SLOT(UpdatePosition()));
+        connect(m_to, SIGNAL(PositionOrShapeChanged()), this, SLOT(UpdatePosition()));
     }
 
     UpdatePosition();
