@@ -38,6 +38,16 @@ void CSingleLinkBubble::RemoveLink(CConnection *link)
         m_link = 0;
 }
 
+void CSingleLinkBubble::RemoveLink(Chronicler::Anchor anchor)
+{
+    if(m_link && m_link->startAnchor() == anchor)
+    {
+        dynamic_cast<CGraphicsScene *>(scene())->RemoveConnection(m_link);
+        delete m_link;
+        m_link = 0;
+    }
+}
+
 QList<CConnection *> CSingleLinkBubble::links()
 {
     if(m_link)

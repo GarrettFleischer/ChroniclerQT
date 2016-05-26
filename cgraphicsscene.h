@@ -134,6 +134,10 @@ public slots:
 private slots:
     void ItemSelected(QGraphicsItem *selectedItem);
 
+
+    // QGraphicsScene interface
+protected:
+    virtual void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) override;
 };
 
 #endif // CGRAPHICSSCENE_H

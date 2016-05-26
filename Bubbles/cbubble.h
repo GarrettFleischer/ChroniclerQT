@@ -58,6 +58,7 @@ public:
 
     virtual void AddLink(CConnection *link) = 0;
     virtual void RemoveLink(CConnection *link) = 0;
+    virtual void RemoveLink(Anchor anchor) = 0;
     virtual QList<CConnection *> links() = 0;
 
     virtual Anchor OutputAnchorAtPosition(const QPointF &pos);
@@ -75,7 +76,7 @@ protected:
 
     virtual void hoverMoveEvent(QGraphicsSceneHoverEvent *evt) override;
     
-    virtual void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
+    //virtual void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
     virtual QVariant itemChange(GraphicsItemChange change, const QVariant &value);
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *);
 
@@ -110,7 +111,7 @@ private:
 signals:
     void Selected(QGraphicsItem *item);
     void ConnectionsChanged(int);
-    void PositionChanged();
+    void PositionOrShapeChanged();
 
 };
 

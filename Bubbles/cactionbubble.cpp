@@ -91,6 +91,19 @@ CStringListModel *CActionBubble::actions()
     return m_actions;
 }
 
+QString CActionBubble::actionString()
+{
+    QString a;
+    QStringList lst = m_actions->stringList();
+
+    for(int i = 0; i < lst.length() - 1; ++i)
+        a += lst[i] + "\n";
+
+    a += lst.last();
+
+    return a;
+}
+
 void CActionBubble::AdjustMinSize()
 {
     QFontMetrics fm(m_font);

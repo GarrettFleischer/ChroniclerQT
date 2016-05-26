@@ -28,3 +28,9 @@ void CStartBubble::UpdatePolygon()
 
     setPolygon(path.toFillPolygon());
 }
+
+
+Chronicler::Anchor CStartBubble::InputAnchorAtPosition(const QPointF &pos)
+{
+    return Chronicler::None;
+}

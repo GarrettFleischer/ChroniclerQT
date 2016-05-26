@@ -81,7 +81,7 @@ void CBubble::mouseMoveEvent(QGraphicsSceneMouseEvent *evt)
                           qMax<float>(m_lastBounds.height() + delta.y(), m_minSize.height()));
         setPolygon(m_bounds);
         UpdatePolygon();
-        emit PositionChanged();
+        emit PositionOrShapeChanged();
     }
     else
     {
@@ -109,16 +109,16 @@ void CBubble::hoverMoveEvent(QGraphicsSceneHoverEvent *evt)
 }
 
 
-void CBubble::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
-{
-    if(!isSelected())
-    {
-        scene()->clearSelection();
-        setSelected(true);
-    }
+//void CBubble::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
+//{
+//    if(!isSelected())
+//    {
+//        scene()->clearSelection();
+//        setSelected(true);
+//    }
 
-    shared().editMenu->exec(event->screenPos());
-}
+//    shared().editMenu->exec(event->screenPos());
+//}
 
 
 QVariant CBubble::itemChange(GraphicsItemChange change, const QVariant &value)
@@ -126,7 +126,7 @@ QVariant CBubble::itemChange(GraphicsItemChange change, const QVariant &value)
     if (change == QGraphicsItem::ItemSelectedHasChanged && value.toBool())
         emit Selected(this);
     else if (change == QGraphicsItem::ItemPositionChange)
-        emit PositionChanged();
+        emit PositionOrShapeChanged();
 
     return value;
 }
@@ -205,7 +205,7 @@ void CBubble::AddConnection(CConnection *connection)
 {
     if(!m_connections.contains(connection))
     {
-        connect(this, SIGNAL(PositionChanged()), connection, SLOT(UpdatePosition()));
+        connect(this, SIGNAL(PositionOrShapeChanged()), connection, SLOT(UpdatePosition()));
         m_connections.append(connection);
         emit ConnectionsChanged(m_connections.length());
     }

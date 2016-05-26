@@ -6,6 +6,7 @@
 #include <QDockWidget>
 #include <QtMath>
 #include <QKeyEvent>
+#include <QMenu>
 
 #include "cgraphicsview.h"
 
@@ -259,48 +260,51 @@ void CGraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
 void CGraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
-    if (m_mode == InsertConnection)
+    if(mouseEvent->button() == Qt::LeftButton)
     {
-        if(m_line->isVisible())
+        if (m_mode == InsertConnection)
         {
-            m_line->hide();
-
-            CBubble *startItem = BubbleAt(m_line->start(), true);
-            CBubble *endItem = BubbleAt(m_line->end());
-
-            if(startItem && endItem && startItem != endItem)
+            if(m_line->isVisible())
             {
-                Anchor start_anchor = m_line->startAnchor();
-                Anchor end_anchor = m_line->endAnchor();
-                if(start_anchor != Anchor::None && end_anchor != Anchor::None)
-                    AddConnection(startItem, endItem, start_anchor, end_anchor);
+                m_line->hide();
+
+                CBubble *startItem = BubbleAt(m_line->start(), true);
+                CBubble *endItem = BubbleAt(m_line->end());
+
+                if(startItem && endItem && startItem != endItem)
+                {
+                    Anchor start_anchor = m_line->startAnchor();
+                    Anchor end_anchor = m_line->endAnchor();
+                    if(start_anchor != Anchor::None && end_anchor != Anchor::None)
+                        AddConnection(startItem, endItem, start_anchor, end_anchor);
+                }
             }
+
+            if(!(mouseEvent->modifiers() & Qt::ShiftModifier))
+                setMode(Cursor);
         }
 
-        if(!(mouseEvent->modifiers() & Qt::ShiftModifier))
-            setMode(Cursor);
+        m_rubberBand = false;
+
+        // calculate selected bubbles...
+        QGraphicsScene::mouseReleaseEvent(mouseEvent);
+
+        // set the dock as the active widget
+        if(!shared().dock->isHidden())
+            shared().dock->activateWindow();
+
+        // update the bubble properties with the selected bubble
+        QList<QGraphicsItem *> selected = selectedItems();
+        if(selected.size() == 1)
+        {
+            CBubble *bbl = dynamic_cast<CBubble *>(selected.first());
+            shared().dockManager->setBubble(bbl);
+        }
+        else
+            shared().dockManager->setBubble(0, (selected.size() > 0)); // switch to project view if none selected
+
+        emit leftReleased();
     }
-
-    m_rubberBand = false;
-
-    // calculate selected bubbles...
-    QGraphicsScene::mouseReleaseEvent(mouseEvent);
-
-    // set the dock as the active widget
-    if(!shared().dock->isHidden())
-        shared().dock->activateWindow();
-
-    // update the bubble properties with the selected bubble
-    QList<QGraphicsItem *> selected = selectedItems();
-    if(selected.size() == 1)
-    {
-        CBubble *bbl = dynamic_cast<CBubble *>(selected.first());
-        shared().dockManager->setBubble(bbl);
-    }
-    else
-        shared().dockManager->setBubble(0, (selected.size() > 0)); // switch to project view if none selected
-
-    emit leftReleased();
 }
 
 void CGraphicsScene::keyPressEvent(QKeyEvent *event)
@@ -380,3 +384,25 @@ CStartBubble *CGraphicsScene::startBubble()
     return m_startBubble;
 }
 
+
+
+void CGraphicsScene::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
+{
+    if(m_mode == InsertConnection)
+    {
+        CBubble *clickItem = BubbleAt(event->scenePos(), true);
+        if(clickItem)
+            clickItem->RemoveLink(clickItem->OutputAnchorAtPosition(event->scenePos()));
+    }
+    else if(m_mode == Cursor)
+    {
+        CBubble *bbl = BubbleAt(event->scenePos());
+        if(!bbl->isSelected())
+        {
+            bbl->scene()->clearSelection();
+            bbl->setSelected(true);
+        }
+
+        shared().editMenu->exec(event->screenPos());
+    }
+}

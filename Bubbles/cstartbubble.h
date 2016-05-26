@@ -12,8 +12,9 @@ protected:
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *) override;
     virtual void hoverMoveEvent(QGraphicsSceneHoverEvent *) override;
 
-    virtual void UpdatePolygon() override;
+    virtual Chronicler::Anchor InputAnchorAtPosition(const QPointF &) override;
 
+    virtual void UpdatePolygon() override;
 };
 
 #endif // CSTARTBUBBLE_H

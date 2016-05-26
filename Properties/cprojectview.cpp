@@ -304,14 +304,17 @@ QString CProjectView::BubbleToChoiceScript(QList<CBubble *> &processed, int inde
         else
             indent = QString(indent_str).repeated(indent_level);
 
-        // Start bubble
+        // ------------ Start bubble ------------
         if(bubble->getType() == Chronicler::Start)
         {
             CStartBubble *start = dynamic_cast<CStartBubble *>(bubble);
             if(start->link())
                 cs += BubbleToChoiceScript(processed, indent_level, start->link()->to());
+            else
+                cs += indent + "*finish";
         }
-        // Story bubble
+
+        // ------------ Story bubble ------------
         else if(bubble->getType() == Chronicler::Story)
         {
             CStoryBubble *story = dynamic_cast<CStoryBubble *>(bubble);
@@ -323,7 +326,8 @@ QString CProjectView::BubbleToChoiceScript(QList<CBubble *> &processed, int inde
             else if(story->link())
                 cs += BubbleToChoiceScript(processed, indent_level, story->link()->to());
         }
-        // Choice bubble
+
+        // ------------ Choice bubble ------------
         else if(bubble->getType() == Chronicler::Choice)
         {
             CChoiceBubble *cb = dynamic_cast<CChoiceBubble *>(bubble);
@@ -342,10 +346,14 @@ QString CProjectView::BubbleToChoiceScript(QList<CBubble *> &processed, int inde
                     cs += "\n" + indent + indent_str + "*goto " + get_label(choice->link()->to());
                 else if(choice->link())
                     cs += BubbleToChoiceScript(processed, indent_level + 1, choice->link()->to());
+                else
+                    cs += "\n" + indent + indent_str + "*finish";
             }
 
+            cs += "\n";
         }
-        // Action bubble
+
+        // ------------ Action bubble ------------
         else if(bubble->getType() == Chronicler::Action)
         {
             CActionBubble *action = dynamic_cast<CActionBubble *>(bubble);
@@ -357,7 +365,8 @@ QString CProjectView::BubbleToChoiceScript(QList<CBubble *> &processed, int inde
             else if(action->link())
                 cs += BubbleToChoiceScript(processed, indent_level, action->link()->to());
         }
-        // Condition bubble
+
+        // ------------ Condition bubble ------------
         else if(bubble->getType() == Chronicler::Condition)
         {
 

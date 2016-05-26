@@ -19,7 +19,7 @@ CChoice::CChoice(const Chronicler::CPalette &palette, const QFont &font, QGraphi
     setFlag(QGraphicsItem::ItemIsMovable, false);
     setFlag(QGraphicsItem::ItemIsSelectable, false);
 
-    connect(qgraphicsitem_cast<CBubble *>(parent), SIGNAL(PositionChanged()), this, SIGNAL(PositionChanged()));
+    connect(qgraphicsitem_cast<CBubble *>(parent), SIGNAL(PositionOrShapeChanged()), this, SIGNAL(PositionOrShapeChanged()));
 
     m_choice = new CTextItem(choice, m_bounds, this);
     m_choice->SetStyle(Qt::AlignCenter);
@@ -73,7 +73,7 @@ void CChoice::UpdatePolygon()
 void CChoice::AdjustMinSize()
 {
     QFontMetrics fm(m_font);
-    m_minSize.setHeight(fm.height());
+    m_minSize.setHeight(fm.height() + 8);
 }
 
 

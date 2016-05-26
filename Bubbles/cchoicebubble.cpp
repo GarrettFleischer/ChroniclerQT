@@ -52,6 +52,8 @@ void CChoiceBubble::AddLink(CConnection *)
 {}
 void CChoiceBubble::RemoveLink(CConnection *)
 {}
+void CChoiceBubble::RemoveLink(Chronicler::Anchor)
+{}
 
 QList<CConnection *> CChoiceBubble::links()
 {
@@ -82,40 +84,34 @@ void CChoiceBubble::UpdatePolygon()
 
     qreal height = 0;
     if(choices.length() > 0)
-        height = boundingRect().center().y() - (choices.length() * choices[0]->boundingRect().height()) / 2;
+        height = boundingRect().center().y() - (choices.length() * (choices[0]->boundingRect().height() + 2)) / 2;
 
     for(CChoice *choice : choices)
     {
         choice->setWidth(boundingRect().width() - 5);
         choice->setPos(m_bounds.x() + 2, height);
-        height += choice->boundingRect().height();
+        height += choice->boundingRect().height() + 2;
     }
 }
 
 void CChoiceBubble::AdjustMinSize()
 {
-    QFontMetrics fm(m_font);
-
     choiceList choices = m_choices->choices();
 
-    qreal height = fm.height();
+    qreal height = 0;
     if(choices.length() > 0)
-        height = choices[0]->boundingRect().height();
+        height = (choices.length() * (choices[0]->boundingRect().height() + 2));
 
-    m_minSize.setHeight(height * (1 + choices.length()));
+    height += QFontMetrics(m_font).height() * 2;
+
+    m_minSize.setHeight(height);
 }
 
 void CChoiceBubble::ModelUpdated()
 {
-    choiceList choices = m_choices->choices();
-    qreal height = 0;
-
-    for(CChoice *choice : choices)
-        height += choice->boundingRect().height();
-
     AdjustMinSize();
     UpdatePolygon();
-    emit PositionChanged();
+    emit PositionOrShapeChanged();
 }
 
 

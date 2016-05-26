@@ -21,6 +21,8 @@ public:
 
     CStringListModel *actions();
 
+    QString actionString();
+
 protected:
     virtual void UpdatePolygon() override;
 

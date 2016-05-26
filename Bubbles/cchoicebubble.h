@@ -23,6 +23,7 @@ public:
 
     virtual void AddLink(CConnection *) override;
     virtual void RemoveLink(CConnection *) override;
+    virtual void RemoveLink(Chronicler::Anchor) override;
     virtual QList<CConnection *> links() override;
 
     virtual QDataStream &Read(QDataStream &ds) override;
