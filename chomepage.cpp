@@ -15,6 +15,8 @@
 #include <QAction>
 #include <QStandardPaths>
 #include <QFile>
+#include <QFileInfo>
+#include <QMessageBox>
 
 #include "Properties/cprojectview.h"
 #include "csettingsview.h"
@@ -91,20 +93,44 @@ void CHomepage::SetupMainWindow(QHBoxLayout *main_layout)
 
 void CHomepage::RecentItemSelected(QListWidgetItem *item)
 {
-    // move the selected project to the top of the list
-    m_recentView->takeItem(m_recentView->row(item));
-    m_recentView->insertItem(0, item);
-    item->setSelected(true);
+    if(QFileInfo(item->text()).exists())
+    {
+        // move the selected project to the top of the list
+        m_recentView->takeItem(m_recentView->row(item));
+        m_recentView->insertItem(0, item);
+        item->setSelected(true);
 
-    // save the updated list to settings
-    QStringList labels;
-    for(int i = 0; i < m_recentView->count() && i < shared().settingsView->maxRecentFiles(); ++i)
-        labels << m_recentView->item(i)->text();
+        // save the updated list to settings
+        QStringList labels;
+        for(int i = 0; i < m_recentView->count() && i < shared().settingsView->maxRecentFiles(); ++i)
+            labels << m_recentView->item(i)->text();
 
-    shared().settingsView->settings()->setValue("Homepage/RecentFiles", QVariant::fromValue(labels));
+        shared().settingsView->settings()->setValue("Homepage/RecentFiles", QVariant::fromValue(labels));
 
-    // load the selected project
-    shared().projectView->OpenProject(item->text());
+        // load the selected project
+        shared().projectView->OpenProject(item->text());
+    }
+    else
+    {
+        QMessageBox msgBox;
+        msgBox.setText("Project file does not exist.");
+        msgBox.setInformativeText("Do you wish to remove this file from recent items?");
+        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        msgBox.setDefaultButton(QMessageBox::Yes);
+
+        if(msgBox.exec() == QMessageBox::Yes)
+        {
+            // remove the non-existant project
+            m_recentView->takeItem(m_recentView->row(item));
+
+            // save the updated list to settings
+            QStringList labels;
+            for(int i = 0; i < m_recentView->count() && i < shared().settingsView->maxRecentFiles(); ++i)
+                labels << m_recentView->item(i)->text();
+
+            shared().settingsView->settings()->setValue("Homepage/RecentFiles", QVariant::fromValue(labels));
+        }
+    }
 }
 
 void CHomepage::Downloaded()

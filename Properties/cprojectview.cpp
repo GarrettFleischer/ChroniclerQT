@@ -47,11 +47,8 @@ using Chronicler::shared;
 Q_DECLARE_METATYPE(QStringList)
 
 
-const QString CProjectView::ProgramVersion = "0.8.0.1";
-
-
 CProjectView::CProjectView(QWidget *parent)
-    : QWidget(parent), m_version(ProgramVersion), m_path("")
+    : QWidget(parent), m_version(shared().ProgramVersion), m_path("")
 {
     m_upButton = new QPushButton(QIcon(":/images/icn_up"), "");
     m_upButton->setEnabled(false);
@@ -108,7 +105,7 @@ void CProjectView::SaveProject()
             QByteArray ba;
             QDataStream ds(&ba, QIODevice::WriteOnly);
 
-            ds << ProgramVersion << m_name->text() << m_sceneModel->rowCount();
+            ds << shared().ProgramVersion << m_name->text() << m_sceneModel->rowCount();
             for(CGraphicsView *view : m_sceneModel->views())
                 ds << *(view->cScene());
 

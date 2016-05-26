@@ -22,10 +22,7 @@ class CProjectView : public QWidget
     Q_OBJECT
 
 public:
-    static const QString ProgramVersion;
-
     CProjectView(QWidget *parent = 0);
-
 
     QList<CGraphicsView *> views();
 

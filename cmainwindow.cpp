@@ -30,6 +30,8 @@ CMainWindow::CMainWindow(QSettings *settings)
     setWindowTitle(tr("Chronicler"));
     setUnifiedTitleAndToolBarOnMac(true);
 
+    shared().ProgramVersion = "0.8.1.0";
+
     shared().mainWindow = this;
 
     // Load the settings...

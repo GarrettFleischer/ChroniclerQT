@@ -52,6 +52,8 @@ namespace Chronicler
     // Do NOT instantiate this struct, use shared() singleton access.
     struct SharedInstances
     {
+        QString ProgramVersion;
+
         CMainWindow *mainWindow;
 
         QTabWidget *sceneTabs;
