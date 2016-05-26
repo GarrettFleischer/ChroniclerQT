@@ -65,9 +65,9 @@ void CActionBubble::setFont(const QFont &font)
     UpdatePolygon();
 }
 
-QDataStream &CActionBubble::Read(QDataStream &ds)
+QDataStream &CActionBubble::Read(QDataStream &ds, const QString &version)
 {
-    CSingleLinkBubble::Read(ds);
+    CSingleLinkBubble::Read(ds, version);
 
     QStringList actions;
     ds >> actions;

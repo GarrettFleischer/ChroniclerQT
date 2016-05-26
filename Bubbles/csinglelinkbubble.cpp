@@ -57,9 +57,9 @@ QList<CConnection *> CSingleLinkBubble::links()
 }
 
 
-QDataStream &CSingleLinkBubble::Read(QDataStream &ds)
+QDataStream &CSingleLinkBubble::Read(QDataStream &ds, const QString &version)
 {
-    CBubble::Read(ds);
+    CBubble::Read(ds, version);
 
     bool linked;
     ds >> linked;
@@ -67,7 +67,7 @@ QDataStream &CSingleLinkBubble::Read(QDataStream &ds)
     if(linked)
     {
         m_link = dynamic_cast<CGraphicsScene *>(scene())->AddConnection();
-        m_link->Read(ds);
+        m_link->Read(ds, version);
     }
 
     return ds;

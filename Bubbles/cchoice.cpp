@@ -125,7 +125,7 @@ CBubble *CChoice::container()
     return dynamic_cast<CBubble *>(parentItem());
 }
 
-QDataStream & CChoice::Read(QDataStream &ds)
+QDataStream & CChoice::Read(QDataStream &ds, const QString &version)
 {
     QString choice;
     bool linked;
@@ -135,7 +135,7 @@ QDataStream & CChoice::Read(QDataStream &ds)
     if(linked)
     {
         m_link = dynamic_cast<CGraphicsScene *>(scene())->AddConnection();
-        m_link->Read(ds);
+        m_link->Read(ds, version);
     }
 
     m_choice->setText(choice);

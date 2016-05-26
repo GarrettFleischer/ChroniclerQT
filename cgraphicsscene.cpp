@@ -21,6 +21,8 @@
 #include "Connections/cline.h"
 #include "Connections/cconnection.h"
 
+#include "Properties/cprojectview.h"
+
 #include "Misc/chronicler.h"
 using Chronicler::Anchor;
 using Chronicler::shared;
@@ -144,7 +146,7 @@ QDataStream &operator >>(QDataStream &ds, CGraphicsScene &scene)
         else
             bbl = scene.AddBubble(Chronicler::BubbleType(t), QPointF(), false);
 
-        bbl->Read(ds);
+        bbl->Read(ds, shared().projectView->version());
     }
 
     for(CConnection *connection : scene.m_connections)

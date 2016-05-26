@@ -5,6 +5,8 @@ CStartBubble::CStartBubble(const QPointF &pos, const Chronicler::CPalette &palet
 {
     m_type = Chronicler::Start;
 
+    m_order = -1;
+
     m_palette.fill = Qt::darkGreen;
 
     m_minSize = QSizeF(100, 50);
@@ -30,7 +32,7 @@ void CStartBubble::UpdatePolygon()
 }
 
 
-Chronicler::Anchor CStartBubble::InputAnchorAtPosition(const QPointF &pos)
+Chronicler::Anchor CStartBubble::InputAnchorAtPosition(const QPointF &)
 {
     return Chronicler::None;
 }

@@ -16,7 +16,7 @@ public:
     virtual void setPalette(const Chronicler::CPalette &palette) override;
     virtual void setFont(const QFont &font) override;
 
-    virtual QDataStream &Read(QDataStream &ds) override;
+    virtual QDataStream &Read(QDataStream &ds, const QString &version) override;
     virtual QDataStream &Write(QDataStream &ds) override;
 
     CStringListModel *actions();

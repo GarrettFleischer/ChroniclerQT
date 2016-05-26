@@ -22,7 +22,7 @@ class CProjectView : public QWidget
     Q_OBJECT
 
 public:
-    static const QString currentVersion;
+    static const QString ProgramVersion;
 
     CProjectView(QWidget *parent = 0);
 
@@ -31,11 +31,13 @@ public:
 
     CBubble *BubbleWithUID(uint uid);
 
+    const QString version() const;
+
 private:
     void CreateBubbles();
 
-    QString BubbleToChoiceScript(QList<CBubble *> &processed, int indent_level, CBubble *bubble);
-    bool needs_label(CBubble *bubble, const QList<CBubble *> &processed);
+    QString BubbleToChoiceScript(const QList<CBubble *> &bubbles, QList<CBubble *> &processed, int indent_level, CBubble *bubble);
+    bool needs_label(CBubble *bubble, const QList<CBubble *> &bubbles);
     QString get_label(CBubble *bubble);
 
     QLineEdit *m_name;

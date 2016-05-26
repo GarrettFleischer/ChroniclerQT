@@ -26,7 +26,7 @@ public:
     virtual void RemoveLink(Chronicler::Anchor) override;
     virtual QList<CConnection *> links() override;
 
-    virtual QDataStream &Read(QDataStream &ds) override;
+    virtual QDataStream &Read(QDataStream &ds, const QString &version) override;
     virtual QDataStream &Write(QDataStream &ds) override;
 
     CChoiceModel *choices();

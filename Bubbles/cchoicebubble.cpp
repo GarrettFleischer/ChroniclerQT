@@ -129,9 +129,9 @@ Chronicler::Anchor CChoiceBubble::InputAnchorAtPosition(const QPointF &pos)
 }
 
 
-QDataStream &CChoiceBubble::Read(QDataStream &ds)
+QDataStream &CChoiceBubble::Read(QDataStream &ds, const QString &version)
 {
-    CBubble::Read(ds);
+    CBubble::Read(ds, version);
 
     int num_choices;
     ds >> num_choices;
@@ -139,7 +139,7 @@ QDataStream &CChoiceBubble::Read(QDataStream &ds)
     for(int i = 0; i < num_choices; ++i)
     {
         CChoice *choice = new CChoice(m_palette, m_font, this);
-        choice->Read(ds);
+        choice->Read(ds, version);
         m_choices->AddItem(choice);
     }
 

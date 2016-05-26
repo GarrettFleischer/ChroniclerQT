@@ -24,7 +24,7 @@ QList<uint> CBubble::m_UIDs = QList<uint>();
 
 CBubble::CBubble(const QPointF &pos, const Chronicler::CPalette &palette, const QFont &font, QGraphicsItem *parent, uint uid)
     : QGraphicsPolygonItem(parent), m_UID(uid),
-      m_minSize(QSizeF(150,150)), m_order(0), m_locked(false),
+      m_minSize(QSizeF(150,100)), m_order(0), m_locked(false),
       m_font(font), m_palette(palette), m_resize(false)
 {
     setFlag(QGraphicsItem::ItemIsMovable, true);
@@ -238,14 +238,25 @@ quint32 CBubble::UID()
     return m_UID;
 }
 
-QDataStream &CBubble::Read(QDataStream &ds)
+QDataStream &CBubble::Read(QDataStream &ds, const QString &version)
 {
     QPointF pos;
 
-    ds >> m_UID
-       >> m_label >> m_order >> m_locked
-       >> m_palette
-       >> m_minSize >> m_bounds >> pos;
+    if(version == "0.7.0.0")
+    {
+        QSize old_min_size;
+        ds >> m_UID
+           >> m_label >> m_order >> m_locked
+           >> m_palette
+           >> old_min_size >> m_bounds >> pos;
+    }
+    else
+    {
+        ds >> m_UID
+           >> m_label >> m_order >> m_locked
+           >> m_palette
+           >> m_bounds >> pos;
+    }
 
     setLabel(m_label);
     setPos(pos);
@@ -260,7 +271,7 @@ QDataStream & CBubble::Write(QDataStream &ds)
        << m_UID
        << m_label << m_order << m_locked
        << m_palette
-       << m_minSize << m_bounds << scenePos();
+       << m_bounds << scenePos();
 
     return ds;
 }

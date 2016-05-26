@@ -26,7 +26,7 @@ public:
     void setStory(QString story) { m_story->setText(story); }
     QString getStory() { return m_story->Text(); }
 
-    virtual QDataStream &Read(QDataStream &ds) override;
+    virtual QDataStream &Read(QDataStream &ds, const QString &version) override;
     virtual QDataStream &Write(QDataStream &ds) override;
 
 protected:

@@ -28,6 +28,8 @@ CStoryBubble::CStoryBubble(const QPointF &pos, const CPalette &palette, const QF
 
 void CStoryBubble::UpdatePolygon()
 {
+    CBubble::UpdatePolygon();
+
     QRectF b = boundingRect();
     qreal th = m_title->textBounds().height() + 10.0f;
     qreal tm = b.width()*2/3;
@@ -78,9 +80,9 @@ void CStoryBubble::setPalette(const Chronicler::CPalette &palette)
 }
 
 
-QDataStream &CStoryBubble::Read(QDataStream &ds)
+QDataStream &CStoryBubble::Read(QDataStream &ds, const QString &version)
 {
-    CSingleLinkBubble::Read(ds);
+    CSingleLinkBubble::Read(ds, version);
 
     QString story;
     ds >> story;

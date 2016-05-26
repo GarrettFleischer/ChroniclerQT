@@ -66,7 +66,7 @@ public:
 
     quint32 UID();
 
-    virtual QDataStream &Read(QDataStream &ds);
+    virtual QDataStream &Read(QDataStream &ds, const QString &version);
     virtual QDataStream &Write(QDataStream &ds);
 
 protected:

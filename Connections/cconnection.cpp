@@ -140,7 +140,7 @@ void CConnection::ConnectToUIDs()
         setTo(shared().projectView->BubbleWithUID(m_toUID));
 }
 
-QDataStream & CConnection::Read(QDataStream &ds)
+QDataStream & CConnection::Read(QDataStream &ds, const QString &)
 {
     int start, end;
 

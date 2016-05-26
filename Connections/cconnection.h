@@ -45,7 +45,7 @@ public:
 
     void ConnectToUIDs();
 
-    QDataStream &Read(QDataStream &ds);
+    QDataStream &Read(QDataStream &ds, const QString &);
     QDataStream &Write(QDataStream &ds);
 
 private:

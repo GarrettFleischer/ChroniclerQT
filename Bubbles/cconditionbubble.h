@@ -25,9 +25,11 @@ public:
     virtual Anchor OutputAnchorAtPosition(const QPointF &pos) override;
     virtual Anchor InputAnchorAtPosition(const QPointF &) override;
 
-    virtual QDataStream &Read(QDataStream &ds) override;
+    virtual QDataStream &Read(QDataStream &ds, const QString &version) override;
     virtual QDataStream &Write(QDataStream &ds) override;
 
+    CConnection *trueLink();
+    CConnection *falseLink();
 
     void setCondition(QString condition);
     QString getCondition() { return m_conditionText; }

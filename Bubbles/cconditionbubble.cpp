@@ -139,9 +139,9 @@ Chronicler::Anchor CConditionBubble::InputAnchorAtPosition(const QPointF &)
 }
 
 
-QDataStream &CConditionBubble::Read(QDataStream &ds)
+QDataStream &CConditionBubble::Read(QDataStream &ds, const QString &version)
 {
-    CBubble::Read(ds);
+    CBubble::Read(ds, version);
 
     bool trueLink, falseLink;
 
@@ -150,12 +150,12 @@ QDataStream &CConditionBubble::Read(QDataStream &ds)
     if(trueLink)
     {
         m_trueLink = dynamic_cast<CGraphicsScene *>(scene())->AddConnection();
-        m_trueLink->Read(ds);
+        m_trueLink->Read(ds, version);
     }
     if(falseLink)
     {
         m_falseLink = dynamic_cast<CGraphicsScene *>(scene())->AddConnection();
-        m_falseLink->Read(ds);
+        m_falseLink->Read(ds, version);
     }
 
     setCondition(m_conditionText);
@@ -175,4 +175,14 @@ QDataStream & CConditionBubble::Write(QDataStream &ds)
         m_falseLink->Write(ds);
 
     return ds;
+}
+
+CConnection *CConditionBubble::trueLink()
+{
+    return m_trueLink;
+}
+
+CConnection *CConditionBubble::falseLink()
+{
+    return m_falseLink;
 }
