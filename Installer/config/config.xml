@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding ="UTF-8"?>
 <Installer>
-	<Name></Name>
-	
+	<Name>Chronicler</Name>
+	<Version>0.8.1.2</Version>
+	<Title>Chronicler Installer</Title>
+	<Publisher>GameSmith</Publisher>
+	<StartMenuDir>Chronicler</StartMenuDir>
+	<TargetDir>@HomeDir@/Chronicler</TargetDir>
 </Installer>

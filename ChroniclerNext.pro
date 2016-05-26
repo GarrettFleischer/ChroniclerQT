@@ -2,8 +2,10 @@ QT += core gui network xml webkit webkitwidgets widgets multimedia multimediawid
 
 RESOURCES   =	chroniclernext.qrc
 
-LIBS += -LC:/Development/OpenSSL-Win32/lib -lubsec
-INCLUDEPATH += C:/Development/OpenSSL-Win32/include
+win32{
+	LIBS += -LC:/Development/OpenSSL-Win32/lib -lubsec
+	INCLUDEPATH += C:/Development/OpenSSL-Win32/include
+}
 
 PKGCONFIG += openssl
 

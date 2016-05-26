@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package>
+	<DisplayName>Chronicler</DisplayName>
+	<Description>Chronicler Install</Description>
+	<Version>1.0.0</Version>
+	<ReleaseDate>2016-05-21</ReleaseDate>
+	<Licenses>
+		name="Creative Commons Attribution-NonCommercial 4.0 International Public License" file="LICENSE"
+	</Licenses>
+	<Default>script</Default>
+	<Script>installscript.qs</Script>
+</Package>

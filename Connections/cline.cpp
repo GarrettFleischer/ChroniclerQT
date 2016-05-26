@@ -109,9 +109,9 @@ void CLine::UpdateShape()
     QTransform t;
     t.rotateRadians(end_angle);
     m_arrow = t.map(m_arrow);
-    qreal off_x = qCos(end_angle) * size * 0.5;
-    qreal off_y = qSin(end_angle) * size * 0.5;
-    m_arrow.translate(m_end.x() + off_x, m_end.y() + off_y);
+    qreal arrow_offset_x = qCos(end_angle) * size * 0.5;
+    qreal arrow_offset_y = qSin(end_angle) * size * 0.5;
+    m_arrow.translate(m_end.x() + arrow_offset_x, m_end.y() + arrow_offset_y);
 
     m_path.addPath(m_arrow);
 
