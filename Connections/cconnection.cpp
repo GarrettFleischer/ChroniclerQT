@@ -18,7 +18,7 @@ CConnection::CConnection(QGraphicsScene *scn)
 {}
 
 CConnection::CConnection(CBubble *from, CBubble *to, Anchor anc_from, Anchor anc_to, QGraphicsScene *scn)
-    : m_from(0), m_to(0), m_fromUID(-1), m_toUID(-1)
+    : m_from(0), m_to(0), m_fromUID(0), m_toUID(0)
 {
     m_line = new CLine(QPointF(), QPointF(), anc_from, anc_to);
     m_line->setZValue(-999999);
@@ -134,20 +134,18 @@ void CConnection::setEndAnchor(Chronicler::Anchor anchor)
 
 void CConnection::ConnectToUIDs()
 {
-    if(m_fromUID != -1)
-        setFrom(shared().projectView->BubbleWithUID(m_fromUID));
-    if(m_toUID != -1)
-        setTo(shared().projectView->BubbleWithUID(m_toUID));
+    setFrom(shared().projectView->BubbleWithUID(m_fromUID));
+    setTo(shared().projectView->BubbleWithUID(m_toUID));
 }
 
 QDataStream & CConnection::Read(QDataStream &ds, const QString &)
 {
-    int start, end;
+    qint32 start, end;
 
     ds >> start
-       >> end
-       >> m_fromUID
-       >> m_toUID;
+            >> end
+            >> m_fromUID
+            >> m_toUID;
 
     m_line->setStartAnchor(Anchor(start));
     m_line->setEndAnchor(Anchor(end));

@@ -12,6 +12,7 @@ QT_END_NAMESPACE
 
 #include "Misc/chronicler.h"
 using Chronicler::Anchor;
+using Chronicler::t_uid;
 
 class CBubble;
 class CLine;
@@ -54,8 +55,8 @@ private:
 
     CLine *m_line;
 
-    int m_fromUID;
-    int m_toUID;
+    t_uid m_fromUID;
+    t_uid m_toUID;
     
 signals:
     

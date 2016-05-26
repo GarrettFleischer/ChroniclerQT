@@ -282,7 +282,7 @@ void CMainWindow::CreateToolbars()
     QToolButton *tb_link = new QToolButton();
     tb_link->setCheckable(true);
     tb_link->setIcon(QIcon(":/images/icn_link.png"));
-    tb_link->setToolTip("Link tool");
+    tb_link->setToolTip("Link tool\nLeft drag: create link\nRight click: remove link");
 
 
     QToolButton *tb_story = new QToolButton();

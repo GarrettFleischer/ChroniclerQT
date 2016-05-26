@@ -133,7 +133,7 @@ QDataStream &CChoiceBubble::Read(QDataStream &ds, const QString &version)
 {
     CBubble::Read(ds, version);
 
-    int num_choices;
+    qint64 num_choices;
     ds >> num_choices;
 
     for(int i = 0; i < num_choices; ++i)
@@ -152,7 +152,7 @@ QDataStream & CChoiceBubble::Write(QDataStream &ds)
 
     QList<CChoice *> tmp = m_choices->choices();
 
-    ds << tmp.length();
+    ds << static_cast<qint64>(tmp.length());
     for(CChoice *choice : tmp)
         choice->Write(ds);
 

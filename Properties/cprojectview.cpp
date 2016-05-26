@@ -99,51 +99,54 @@ CProjectView::CProjectView(QWidget *parent)
 
 void CProjectView::SaveProject()
 {
-    if(!m_path.length())
-        SaveProjectAs();
-    else
+    if(m_sceneModel->rowCount() > 0)
     {
-        QByteArray ba;
-        QDataStream ds(&ba, QIODevice::WriteOnly);
-
-        ds << ProgramVersion << m_name->text() << m_sceneModel->rowCount();
-        for(CGraphicsView *view : m_sceneModel->views())
-            ds << *(view->cScene());
-
-
-        ExportChoiceScript();
-
-        QSaveFile file(m_path);
-        file.open(QIODevice::WriteOnly);
-        file.write(ba);
-
-        while(!file.commit())
+        if(!m_path.length())
+            SaveProjectAs();
+        else
         {
-            QMessageBox msgBox;
-            msgBox.setText("Error writing to file!");
-            msgBox.setInformativeText("Ensure that the file exists and that you have enough disk space.");
-            msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Retry | QMessageBox::Cancel);
-            msgBox.setDefaultButton(QMessageBox::Retry);
-            int ret = msgBox.exec();
+            QByteArray ba;
+            QDataStream ds(&ba, QIODevice::WriteOnly);
 
-            if(ret == QMessageBox::Save)
+            ds << ProgramVersion << m_name->text() << m_sceneModel->rowCount();
+            for(CGraphicsView *view : m_sceneModel->views())
+                ds << *(view->cScene());
+
+
+            ExportChoiceScript();
+
+            QSaveFile file(m_path);
+            file.open(QIODevice::WriteOnly);
+            file.write(ba);
+
+            while(!file.commit())
             {
-                SaveProjectAs();
-                break;
+                QMessageBox msgBox;
+                msgBox.setText("Error writing to file!");
+                msgBox.setInformativeText("Ensure that the file exists and that you have enough disk space.");
+                msgBox.setStandardButtons(QMessageBox::Save | QMessageBox::Retry | QMessageBox::Cancel);
+                msgBox.setDefaultButton(QMessageBox::Retry);
+                int ret = msgBox.exec();
+
+                if(ret == QMessageBox::Save)
+                {
+                    SaveProjectAs();
+                    break;
+                }
+                else if(ret == QMessageBox::Cancel)
+                    break;
             }
-            else if(ret == QMessageBox::Cancel)
-                break;
-        }
 
-        QStringList recent_files = shared().settingsView->settings()->value("Homepage/RecentFiles").value<QStringList>();
-        if(!recent_files.contains(m_path))
-        {
-            recent_files.insert(0, m_path);
-            if(recent_files.length() > shared().settingsView->maxRecentFiles())
-                recent_files.removeLast();
-        }
+            QStringList recent_files = shared().settingsView->settings()->value("Homepage/RecentFiles").value<QStringList>();
+            if(!recent_files.contains(m_path))
+            {
+                recent_files.insert(0, m_path);
+                if(recent_files.length() > shared().settingsView->maxRecentFiles())
+                    recent_files.removeLast();
+            }
 
-        shared().settingsView->settings()->setValue("Homepage/RecentFiles", QVariant::fromValue(recent_files));
+            shared().settingsView->settings()->setValue("Homepage/RecentFiles", QVariant::fromValue(recent_files));
+        }
     }
 }
 
@@ -169,7 +172,7 @@ void CProjectView::OpenProject(const QString &filepath)
     QFile file(filepath);
     while(!file.open(QIODevice::ReadOnly))
     {
-        QString dir = QFileInfo("C:/Development/QT/Chronicler Saves/Test.chronx").absolutePath();
+        QString dir = QFileInfo(filepath).absolutePath();
         file.setFileName(QFileDialog::getOpenFileName(this, "Open", dir, "chronx (*.chronx)"));
         if(!file.fileName().length())
             return;
@@ -192,7 +195,9 @@ void CProjectView::OpenProject(const QString &filepath)
     {
         QString name;
         ds >> name;
-        m_sceneModel->AddItem(new CGraphicsView(new CGraphicsScene(name), this));
+        CGraphicsView *view = new CGraphicsView(new CGraphicsScene(name), this);
+        view->hide();
+        m_sceneModel->AddItem(view);
         ds >> *(m_sceneModel->views().last()->cScene());
     }
 
@@ -258,20 +263,24 @@ bool SortByOrderAscending(CBubble *first, CBubble *second)
 
 void CProjectView::ExportChoiceScript()
 {
-    QFile file("C:/Development/QT/Chronicler Saves/startup.txt");
+    QString project_folder = QFileInfo(m_path).absolutePath();
+    for(CGraphicsView *view : m_sceneModel->views())
+    {
+        QFile file(project_folder + "/" + view->cScene()->name() + ".txt");
 
-    QList<CBubble *> bubbles = m_sceneModel->views().first()->cScene()->bubbles();
-    qSort(bubbles.begin(), bubbles.end(), SortByOrderAscending);
+        QList<CBubble *> bubbles = view->cScene()->bubbles();
+        qSort(bubbles.begin(), bubbles.end(), SortByOrderAscending);
 
-    QList<CBubble *> processed;
+        QList<CBubble *> processed;
 
-    QString cs;
-    for(CBubble *bbl : bubbles)
-        cs += BubbleToChoiceScript(bubbles, processed, 0, bbl);
+        QString cs;
+        for(CBubble *bbl : bubbles)
+            cs += BubbleToChoiceScript(bubbles, processed, 0, bbl);
 
-    file.open(QIODevice::WriteOnly);
-    file.write(cs.toStdString().c_str());
-    file.close();
+        file.open(QIODevice::WriteOnly);
+        file.write(cs.toStdString().c_str());
+        file.close();
+    }
 }
 
 QList<CGraphicsView *> CProjectView::views()
@@ -324,7 +333,7 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
             if(start->link())
                 cs += BubbleToChoiceScript(bubbles, processed, indent_level, start->link()->to());
             else
-                cs += indent + "*finish";
+                cs += indent + "*finish\n";
         }
 
         // ------------ Story bubble ------------
@@ -369,8 +378,6 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
                 else
                     cs += indent + indent_str + "*finish";
             }
-
-//            cs += "\n";
         }
 
         // ------------ Action bubble ------------
@@ -474,6 +481,7 @@ void CProjectView::SelectedChanged(QModelIndex current)
 
 void CProjectView::DataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight)
 {
+    // TODO ensure that each scene has a unique name
     for(int i = topLeft.row(); i <= bottomRight.row(); ++i)
     {
         CGraphicsView *view = m_sceneModel->views()[i];
@@ -500,7 +508,7 @@ void CProjectView::MoveDown()
 
 void CProjectView::AddItem()
 {
-    m_sceneModel->AddItem(new CGraphicsView(new CGraphicsScene("Scene " + QString().setNum(m_sceneModel->rowCount())), this));
+    m_sceneModel->AddItem(new CGraphicsView(new CGraphicsScene("scene " + QString().setNum(m_sceneModel->rowCount())), this));
     m_modelView->edit(QModelIndex(m_sceneModel->index(m_sceneModel->rowCount() - 1, 0)));
 }
 

@@ -18,6 +18,7 @@ QT_END_NAMESPACE
 using Chronicler::CPalette;
 using Chronicler::Anchor;
 using Chronicler::BubbleType;
+using Chronicler::t_uid;
 
 class CConnection;
 class CLink;
@@ -27,15 +28,15 @@ class CBubble : public QObject, public QGraphicsPolygonItem
     Q_OBJECT
 
 public:
-    CBubble(const QPointF &pos, const CPalette &palette, const QFont &font = QFont(), QGraphicsItem *parent = 0, uint uid = GenerateUID());
+    CBubble(const QPointF &pos, const CPalette &palette, const QFont &font = QFont(), QGraphicsItem *parent = 0, t_uid uid = GenerateUID());
 
     virtual ~CBubble();
 
     virtual void setLabel(QString label) { m_label = label; }
     QString getLabel() const { return m_label; }
 
-    void setOrder(int order) { m_order = order; }
-    int getOrder() const { return m_order; }
+    void setOrder(qint64 order) { m_order = order; }
+    qint64 getOrder() const { return m_order; }
 
     void setLocked(bool locked) { m_locked = locked; }
     bool getLocked() const { return m_locked; }
@@ -64,9 +65,9 @@ public:
     virtual Anchor OutputAnchorAtPosition(const QPointF &pos);
     virtual Anchor InputAnchorAtPosition(const QPointF &pos);
 
-    quint32 UID();
+    t_uid UID();
 
-    virtual QDataStream &Read(QDataStream &ds, const QString &version);
+    virtual QDataStream &Read(QDataStream &ds, const QString &);
     virtual QDataStream &Write(QDataStream &ds);
 
 protected:
@@ -75,16 +76,15 @@ protected:
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *evt) override;
 
     virtual void hoverMoveEvent(QGraphicsSceneHoverEvent *evt) override;
-    
-    //virtual void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
+
     virtual QVariant itemChange(GraphicsItemChange change, const QVariant &value);
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *);
 
     virtual void UpdatePolygon();
 
-    static quint32 GenerateUID();
+    static t_uid GenerateUID();
 
-    quint32 m_UID;
+    t_uid m_UID;
 
     BubbleType m_type;
 
@@ -94,7 +94,7 @@ protected:
     QList<CConnection *> m_connections;
 
     QString m_label;
-    int m_order;
+    qint64 m_order;
     bool m_locked;
 
     QFont m_font;
@@ -106,7 +106,7 @@ protected:
 
 private:
     Anchor AnchorAtPosition(const QPointF &pos);
-    static QList<quint32> m_UIDs;
+    static QList<t_uid> m_UIDs;
     
 signals:
     void Selected(QGraphicsItem *item);

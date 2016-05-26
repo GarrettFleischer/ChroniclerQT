@@ -20,9 +20,9 @@ using std::logic_error;
 #include "Misc/chronicler.h"
 using Chronicler::shared;
 
-QList<uint> CBubble::m_UIDs = QList<uint>();
+QList<t_uid> CBubble::m_UIDs = QList<t_uid>();
 
-CBubble::CBubble(const QPointF &pos, const Chronicler::CPalette &palette, const QFont &font, QGraphicsItem *parent, uint uid)
+CBubble::CBubble(const QPointF &pos, const Chronicler::CPalette &palette, const QFont &font, QGraphicsItem *parent, t_uid uid)
     : QGraphicsPolygonItem(parent), m_UID(uid),
       m_minSize(QSizeF(150,100)), m_order(0), m_locked(false),
       m_font(font), m_palette(palette), m_resize(false)
@@ -108,19 +108,6 @@ void CBubble::hoverMoveEvent(QGraphicsSceneHoverEvent *evt)
         setCursor(Qt::PointingHandCursor);
 }
 
-
-//void CBubble::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
-//{
-//    if(!isSelected())
-//    {
-//        scene()->clearSelection();
-//        setSelected(true);
-//    }
-
-//    shared().editMenu->exec(event->screenPos());
-//}
-
-
 QVariant CBubble::itemChange(GraphicsItemChange change, const QVariant &value)
 {
     if (change == QGraphicsItem::ItemSelectedHasChanged && value.toBool())
@@ -155,9 +142,9 @@ void CBubble::UpdatePolygon()
     setPolygon(path.simplified().toFillPolygon());
 }
 
-quint32 CBubble::GenerateUID()
+t_uid CBubble::GenerateUID()
 {
-    uint lowest = 0;
+    t_uid lowest = 1;
     while(m_UIDs.contains(lowest))
         ++lowest;
 
@@ -233,30 +220,19 @@ Anchor CBubble::InputAnchorAtPosition(const QPointF &pos)
     return AnchorAtPosition(pos);
 }
 
-quint32 CBubble::UID()
+t_uid CBubble::UID()
 {
     return m_UID;
 }
 
-QDataStream &CBubble::Read(QDataStream &ds, const QString &version)
+QDataStream &CBubble::Read(QDataStream &ds, const QString &)
 {
     QPointF pos;
 
-    if(version == "0.7.0.0")
-    {
-        QSize old_min_size;
-        ds >> m_UID
-           >> m_label >> m_order >> m_locked
-           >> m_palette
-           >> old_min_size >> m_bounds >> pos;
-    }
-    else
-    {
-        ds >> m_UID
-           >> m_label >> m_order >> m_locked
-           >> m_palette
-           >> m_bounds >> pos;
-    }
+    ds >> m_UID
+       >> m_label >> m_order >> m_locked
+       >> m_palette
+       >> m_bounds >> pos;
 
     setLabel(m_label);
     setPos(pos);
