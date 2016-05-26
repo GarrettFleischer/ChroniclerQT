@@ -87,11 +87,12 @@ void CLine::UpdateShape()
 
     QPointF p1(m_start.x(), m_start.y());
     QPointF p2(m_end.x(), m_end.y());
-    const qreal offset = qMax(sqrt(pow(p2.x() - p1.x(), 2) + pow(p2.y() - p1.y(), 2)) * 0.5, 65.0);
-    p1.rx() += (qRound(qCos(start_angle)) * offset);
-    p1.ry() += (qRound(qSin(start_angle)) * offset);
-    p2.rx() += (qRound(qCos(end_angle)) * offset);
-    p2.ry() += (qRound(qSin(end_angle)) * offset);
+    const qreal offset_x = qMax(qAbs(p2.x() - p1.x()) * 0.75, 65.0);
+    const qreal offset_y = qMax(qAbs(p2.y() - p1.y()) * 0.75, 65.0);
+    p1.rx() += (qRound(qCos(start_angle)) * offset_x);
+    p1.ry() += (qRound(qSin(start_angle)) * offset_y);
+    p2.rx() += (qRound(qCos(end_angle)) * offset_x);
+    p2.ry() += (qRound(qSin(end_angle)) * offset_y);
 
     m_path.moveTo(m_start);
     m_path.cubicTo(p1, p2, m_end);
