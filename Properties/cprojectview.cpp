@@ -347,7 +347,7 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
                 //                if(story->link()->to()->getType() == Chronicler::Story)
                 //                    cs += indent + "*page_break";
                 else
-                    cs += BubbleToChoiceScript(bubbles, processed, indent_level, story->link()->to());
+                    cs += "\n" + BubbleToChoiceScript(bubbles, processed, indent_level, story->link()->to());
             }
             else
                 cs += indent + "*finish";
@@ -371,9 +371,11 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
                 if(choice->link() && needs_label(choice->link()->to(), bubbles))
                     cs += indent + indent_str + "*goto " + get_label(choice->link()->to());
                 else if(choice->link())
-                    cs += BubbleToChoiceScript(bubbles, processed, indent_level + 1, choice->link()->to());
+                    cs += "\n" + BubbleToChoiceScript(bubbles, processed, indent_level + 1, choice->link()->to());
                 else
                     cs += indent + indent_str + "*finish";
+
+                cs += "\n";
             }
         }
 
@@ -387,7 +389,7 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
             if(action->link() && needs_label(action->link()->to(), bubbles))
                 cs += indent + "*goto " + get_label(action->link()->to());
             else if(action->link())
-                cs += BubbleToChoiceScript(bubbles, processed, indent_level, action->link()->to());
+                cs += "\n" + BubbleToChoiceScript(bubbles, processed, indent_level, action->link()->to());
             else
                 cs += indent + "*finish";
         }

@@ -113,7 +113,7 @@ void CHomepage::RecentItemSelected(QListWidgetItem *item)
     else
     {
         QMessageBox msgBox;
-        msgBox.setText("Project file does not exist.");
+        msgBox.setText("Selected project file not found.");
         msgBox.setInformativeText("Do you wish to remove this file from recent items?");
         msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
         msgBox.setDefaultButton(QMessageBox::Yes);

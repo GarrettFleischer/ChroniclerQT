@@ -6,10 +6,10 @@ Chronicler is a cross-platform visual code editor for [ChoiceScript](https://www
 C++, Qt
 
 **Screenshots:**  
-[Choice of the Dragon](https://www.choiceofgames.com/dragon/) example Chronicler project.  
-![](https://www.dropbox.com/s/eyinct3xuxvnzg0/Chronicler2_051216_1.png?dl=1)  
-![](https://www.dropbox.com/s/e07s82ayi48xwbs/Chronicler2_051216_2.png?dl=1)  
-![](https://www.dropbox.com/s/rn2odnysk0n62ju/Chronicler2_051216_3.png?dl=1)  
+[Choice of the Dragon](https://www.choiceofgames.com/dragon/) example ChoiceScript game.  
+![](https://www.dropbox.com/s/78gwnx2c27oa5bv/Chronicler2_052616_1.png?dl=1)  
+![](https://www.dropbox.com/s/02mpwb34y8mm8dp/Chronicler2_052616_2.png?dl=1)  
+![](https://www.dropbox.com/s/hnsunjcawrp6s0x/Chronicler2_052616_3.png?dl=1)  
 
 **Installation:**  
 1. Install Qt Creator (5.5 *not* 5.6) with the MinGW 32bit compiler.  
