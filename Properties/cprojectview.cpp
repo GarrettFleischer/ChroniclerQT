@@ -44,6 +44,7 @@
 #include "Misc/chronicler.h"
 using Chronicler::shared;
 
+
 Q_DECLARE_METATYPE(QStringList)
 
 
@@ -102,15 +103,15 @@ void CProjectView::SaveProject()
             SaveProjectAs();
         else
         {
+            // Update order before saving...
+            ExportChoiceScript();
+
             QByteArray ba;
             QDataStream ds(&ba, QIODevice::WriteOnly);
 
             ds << shared().ProgramVersion << m_name->text() << m_sceneModel->rowCount();
             for(CGraphicsView *view : m_sceneModel->views())
                 ds << *(view->cScene());
-
-
-            ExportChoiceScript();
 
             QSaveFile file(m_path);
             file.open(QIODevice::WriteOnly);
@@ -265,6 +266,9 @@ void CProjectView::ExportChoiceScript()
     {
         QFile file(project_folder + "/" + view->cScene()->name() + ".txt");
 
+        QList<CConnection *> processed_links;
+        CalculateOrder(view->cScene()->startBubble()->link(), processed_links, 0);
+
         QList<CBubble *> bubbles = view->cScene()->bubbles();
         qSort(bubbles.begin(), bubbles.end(), SortByOrderAscending);
 
@@ -318,8 +322,8 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
         QString indent;
 
         // generate label...
-        if(needs_label(bubble, bubbles))
-            cs +=  "\n\n*label " + get_label(bubble) + "\n";
+        if(LabelNeeded(bubble, bubbles))
+            cs +=  "\n\n*label " + MakeLabel(bubble, bubbles) + "\n";
         else
             indent = QString(indent_str).repeated(indent_level);
 
@@ -342,8 +346,8 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
 
             if(story->link())
             {
-                if(needs_label(story->link()->to(), bubbles))
-                    cs += indent + "*goto " + get_label(story->link()->to());
+                if(LabelNeeded(story->link()->to(), bubbles))
+                    cs += indent + "*goto " + MakeLabel(story->link()->to(), bubbles);
                 //                if(story->link()->to()->getType() == Chronicler::Story)
                 //                    cs += indent + "*page_break";
                 else
@@ -368,8 +372,8 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
                 // TODO add section for conditional choices
                 cs += "\n" + indent + "#" + choice->choice() + "\n";
 
-                if(choice->link() && needs_label(choice->link()->to(), bubbles))
-                    cs += indent + indent_str + "*goto " + get_label(choice->link()->to());
+                if(choice->link() && LabelNeeded(choice->link()->to(), bubbles))
+                    cs += indent + indent_str + "*goto " + MakeLabel(choice->link()->to(), bubbles);
                 else if(choice->link())
                     cs += "\n" + BubbleToChoiceScript(bubbles, processed, indent_level + 1, choice->link()->to());
                 else
@@ -386,8 +390,8 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
 
             cs += indent + action->actionString().replace("\n", "\n" + indent) + "\n";
 
-            if(action->link() && needs_label(action->link()->to(), bubbles))
-                cs += indent + "*goto " + get_label(action->link()->to());
+            if(action->link() && LabelNeeded(action->link()->to(), bubbles))
+                cs += indent + "*goto " + MakeLabel(action->link()->to(), bubbles);
             else if(action->link())
                 cs += "\n" + BubbleToChoiceScript(bubbles, processed, indent_level, action->link()->to());
             else
@@ -404,8 +408,8 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
             // true
             if(cb->trueLink())
             {
-                if(needs_label(cb->trueLink()->to(), bubbles))
-                    cs += indent + indent_str + "*goto " + get_label(cb->trueLink()->to());
+                if(LabelNeeded(cb->trueLink()->to(), bubbles))
+                    cs += indent + indent_str + "*goto " + MakeLabel(cb->trueLink()->to(), bubbles);
                 else
                     cs += BubbleToChoiceScript(bubbles, processed, indent_level + 1, cb->trueLink()->to());
             }
@@ -417,8 +421,8 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
             // false
             if(cb->falseLink())
             {
-                if(needs_label(cb->falseLink()->to(), bubbles))
-                    cs += indent + indent_str + "*goto " + get_label(cb->falseLink()->to());
+                if(LabelNeeded(cb->falseLink()->to(), bubbles))
+                    cs += indent + indent_str + "*goto " + MakeLabel(cb->falseLink()->to(), bubbles);
                 else
                     cs += BubbleToChoiceScript(bubbles, processed, indent_level + 1, cb->falseLink()->to());
             }
@@ -430,7 +434,7 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
     return cs;
 }
 
-bool CProjectView::needs_label(CBubble *bubble, const QList<CBubble *> &bubbles)
+bool CProjectView::LabelNeeded(CBubble *bubble, const QList<CBubble *> &bubbles)
 {
     QList<CConnection *> connections = bubble->connections();
 
@@ -448,11 +452,41 @@ bool CProjectView::needs_label(CBubble *bubble, const QList<CBubble *> &bubbles)
     return make_label;
 }
 
-QString CProjectView::get_label(CBubble *bubble)
+QString CProjectView::MakeLabel(CBubble *bubble, const QList<CBubble *> &bubbles)
 {
-    //TODO only add UID if another bubble contains the same label
-    return bubble->getLabel().replace(" ", "_") + "_" + QString::number(bubble->UID());
+    QString label = bubble->getLabel().replace(" ", "_");
+    for(CBubble *b : bubbles)
+    {
+        if(b != bubble && LabelNeeded(b, bubbles) && b->getLabel() == bubble->getLabel())
+        {
+            label += "_" + QString::number(bubble->UID());
+            break;
+        }
+    }
+
+    return label;
 }
+
+void CProjectView::CalculateOrder(CConnection *connection, QList<CConnection *> &processed, qint64 order)
+{
+    if(connection && !processed.contains(connection))
+    {
+        // update processed
+        processed.prepend(connection);
+
+        // calculate new order for current bubble
+        qint64 new_order = order;
+        if(connection->to()->getLocked())
+            new_order = connection->to()->getOrder();
+        else
+            connection->to()->setOrder(new_order);
+
+        // recurse
+        for(CConnection *c : connection->to()->links())
+            CalculateOrder(c, processed, new_order + 1);
+    }
+}
+
 
 
 

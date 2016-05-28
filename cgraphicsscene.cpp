@@ -194,11 +194,11 @@ void CGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     if (mouseEvent->button() == Qt::LeftButton)
     {
-        if(!(mouseEvent->modifiers() & Qt::ControlModifier) && selectedItems().size() == 1)
+        CBubble *clickItem = BubbleAt(mouseEvent->scenePos(), true);
+
+        if(!(mouseEvent->modifiers() & Qt::ControlModifier) && (!clickItem || !clickItem->isSelected()))
             for(QGraphicsItem *item : items())
                 item->setSelected(false);
-
-        CBubble *clickItem = 0;
 
         switch (m_mode)
         {
@@ -219,7 +219,6 @@ void CGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
             break;
 
         case InsertConnection:
-            clickItem = BubbleAt(mouseEvent->scenePos(), true);
             if(clickItem)
             {
                 Anchor out = clickItem->OutputAnchorAtPosition(mouseEvent->scenePos());

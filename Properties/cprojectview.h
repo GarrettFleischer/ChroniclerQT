@@ -16,6 +16,7 @@ class CGraphicsView;
 class CGraphicsScene;
 class CSceneModel;
 class CBubble;
+class CConnection;
 
 class CProjectView : public QWidget
 {
@@ -34,8 +35,10 @@ private:
     void CreateBubbles();
 
     QString BubbleToChoiceScript(const QList<CBubble *> &bubbles, QList<CBubble *> &processed, int indent_level, CBubble *bubble);
-    bool needs_label(CBubble *bubble, const QList<CBubble *> &bubbles);
-    QString get_label(CBubble *bubble);
+    bool LabelNeeded(CBubble *bubble, const QList<CBubble *> &bubbles);
+    QString MakeLabel(CBubble *bubble, const QList<CBubble *> &bubbles);
+
+    void CalculateOrder(CConnection *connection, QList<CConnection *> &processed, qint64 order);
 
     QLineEdit *m_name;
 
