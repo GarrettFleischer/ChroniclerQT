@@ -8,6 +8,8 @@ class QListView;
 class QPushButton;
 class QMenu;
 class QLineEdit;
+class QSaveFile;
+class QTimer;
 QT_END_NAMESPACE
 
 #include <QModelIndex>
@@ -34,11 +36,12 @@ public:
 private:
     void CreateBubbles();
 
+    void CalculateOrder(CConnection *connection, QList<CConnection *> &processed, qint64 order);
     QString BubbleToChoiceScript(const QList<CBubble *> &bubbles, QList<CBubble *> &processed, int indent_level, CBubble *bubble);
     bool LabelNeeded(CBubble *bubble, const QList<CBubble *> &bubbles);
     QString MakeLabel(CBubble *bubble, const QList<CBubble *> &bubbles);
 
-    void CalculateOrder(CConnection *connection, QList<CConnection *> &processed, qint64 order);
+    void SaveToFile(QSaveFile &file);
 
     QLineEdit *m_name;
 
@@ -57,6 +60,9 @@ private:
 
     // for quicksave
     QString m_path;
+
+    // for keeping track of autosaves
+    qint64 m_autosave_num;
 
     // TODO
     // member variable for project history
@@ -77,6 +83,8 @@ private slots:
     void SelectedChanged(QModelIndex current);
     void DataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
     void ProjectNameChanged();
+
+    void Autosave();
 
     void MoveUp();
     void MoveDown();

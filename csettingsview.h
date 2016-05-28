@@ -31,6 +31,7 @@ public:
     QColor fontColor();
 
     int maxAutosaves();
+    int autosaveInterval();
     int maxUndos();
     bool storeHistoryInProject();
     int maxRecentFiles();
@@ -67,6 +68,7 @@ private:
     QColor           m_fontColor;
 
     QSpinBox        *m_autosaves;
+    QSpinBox        *m_autosave_interval;
     QSpinBox        *m_undos;
     QCheckBox       *m_history;
     QSpinBox        *m_recent_files;

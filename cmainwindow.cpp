@@ -25,7 +25,7 @@ using Chronicler::shared;
 const int InsertTextButton = 10;
 
 
-CMainWindow::CMainWindow(QSettings *settings)
+CMainWindow::CMainWindow(QSettings *settings, const QString &filename)
 {
     setWindowTitle(tr("Chronicler"));
     setUnifiedTitleAndToolBarOnMac(true);
@@ -43,7 +43,7 @@ CMainWindow::CMainWindow(QSettings *settings)
     CreateActions();
     CreateMenus();
 
-    QStringList lst = QStringList() << "*set" << "*action" << "*create" << "*if" << "*elseif" << "${name}" << "${title}" << "${strength}";
+    QStringList lst = QStringList() << "*set" << "*create" << "*temp" << "*if" << "*elseif" << "*else";
     shared().actionsModel = new QStringListModel(lst, this);
 
     shared().dock = new QDockWidget("Project", this);
@@ -74,6 +74,9 @@ CMainWindow::CMainWindow(QSettings *settings)
     setCentralWidget(shared().sceneTabs);
 
     CreateToolbars();
+
+    if(filename.length())
+        shared().projectView->OpenProject(filename);
 }
 
 

@@ -73,7 +73,7 @@ class CMainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-   CMainWindow(QSettings *settings);
+   CMainWindow(QSettings *settings, const QString &filename);
 
 
 private slots:

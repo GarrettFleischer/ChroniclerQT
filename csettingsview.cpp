@@ -75,6 +75,11 @@ int CSettingsView::maxAutosaves()
     return m_autosaves->value();
 }
 
+int CSettingsView::autosaveInterval()
+{
+    return m_autosave_interval->value() * 60000;
+}
+
 int CSettingsView::maxUndos()
 {
     return m_undos->value();
@@ -149,7 +154,6 @@ void CSettingsView::SetupEditor(QLayout *main_layout)
 
     m_fontColorButton = new QPushButton();
     m_fontColorButton->setMaximumSize(24, 24);
-
     connect(m_fontColorButton, SIGNAL(clicked(bool)),
             this, SLOT(FontColorButtonPressed()));
 
@@ -180,8 +184,19 @@ void CSettingsView::SetupHistory(QLayout *main_layout)
     m_autosaves->setRange(0, 100);
     connect(m_autosaves, SIGNAL(valueChanged(int)),
             this, SLOT(SettingChanged()));
-    hl_autosaves->addWidget(m_autosaves,0, Qt::AlignLeft);
+    hl_autosaves->addWidget(m_autosaves, 0, Qt::AlignLeft);
     hl_autosaves->addStretch(1);
+
+    // Autosave interval
+    QHBoxLayout *hl_autosaves_interval = new QHBoxLayout();
+
+    m_autosave_interval = new QSpinBox();
+    m_autosave_interval->setRange(1, 60);
+    connect(m_autosave_interval, SIGNAL(valueChanged(int)),
+            this, SLOT(SettingChanged()));
+    hl_autosaves_interval->addWidget(m_autosave_interval, 0, Qt::AlignLeft);
+    hl_autosaves_interval->addWidget(new QLabel(" minutes", this));
+    hl_autosaves_interval->addStretch(1);
 
     // Max Undos
     QHBoxLayout *hl_undos = new QHBoxLayout();
@@ -209,6 +224,7 @@ void CSettingsView::SetupHistory(QLayout *main_layout)
 
     // Add rows
     fl_history->addRow("max autosaves", hl_autosaves);
+    fl_history->addRow("autosave interval", hl_autosaves_interval);
     fl_history->addRow("max undos", hl_undos);
     fl_history->addRow("max recent files", hl_recent);
 }
@@ -226,6 +242,7 @@ void CSettingsView::LoadSettings()
 
     // Load History
     m_autosaves->setValue(m_settings->value("Editor/MaxAutosaves", 5).toInt());
+    m_autosave_interval->setValue(m_settings->value("Editor/AutosaveInterval", 5).toInt());
     m_undos->setValue(m_settings->value("Editor/MaxUndos", 100).toInt());
     m_history->setCheckState(static_cast<Qt::CheckState>(m_settings->value("Editor/StoreHistory", Qt::Unchecked).toInt()));
     m_recent_files->setValue(m_settings->value("Editor/MaxRecentFiles", 10).toInt());
@@ -242,6 +259,7 @@ void CSettingsView::SaveSettings()
 
     // Save History
     m_settings->setValue("Editor/MaxAutosaves", maxAutosaves());
+    m_settings->setValue("Editor/AutosaveInterval", m_autosave_interval->value());
     m_settings->setValue("Editor/MaxUndos", maxUndos());
     m_settings->setValue("Editor/StoreHistory", static_cast<int>(m_history->checkState()));
     m_settings->setValue("Editor/MaxRecentFiles", maxRecentFiles());

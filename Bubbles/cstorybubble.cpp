@@ -24,6 +24,7 @@ CStoryBubble::CStoryBubble(const QPointF &pos, const CPalette &palette, const QF
     setCursor(Qt::PointingHandCursor);
 
     UpdatePolygon();
+    moveBy(-boundingRect().width() / 2, -boundingRect().height() / 2);
 }
 
 void CStoryBubble::UpdatePolygon()

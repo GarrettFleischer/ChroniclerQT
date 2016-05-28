@@ -20,7 +20,9 @@ int main(int argv, char *args[])
 
     bool showIntro = settings.value("MainWindow/ShowIntro", false).toBool();
 
-    CMainWindow mainWindow(&settings);
+    QString filename = ((argv > 1) ? args[1] : "");
+
+    CMainWindow mainWindow(&settings, filename);
     mainWindow.setGeometry(100, 100, 1280, 720);
 
 

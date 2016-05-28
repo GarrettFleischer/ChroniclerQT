@@ -24,6 +24,8 @@
 
 #include <QtAlgorithms>
 
+#include <QTimer>
+
 #include "Bubbles/cchoice.h"
 #include "Misc/cscenemodel.h"
 #include "cgraphicsscene.h"
@@ -43,7 +45,6 @@
 
 #include "Misc/chronicler.h"
 using Chronicler::shared;
-
 
 Q_DECLARE_METATYPE(QStringList)
 
@@ -93,6 +94,10 @@ CProjectView::CProjectView(QWidget *parent)
     l_main->addWidget(m_name);
     l_main->addWidget(new QLabel("Scenes"));
     l_main->addLayout(hl_viewButtons);
+
+    m_autosave_num = 0;
+
+    QTimer::singleShot(shared().settingsView->autosaveInterval(), this, SLOT(Autosave()));
 }
 
 void CProjectView::SaveProject()
@@ -106,16 +111,8 @@ void CProjectView::SaveProject()
             // Update order before saving...
             ExportChoiceScript();
 
-            QByteArray ba;
-            QDataStream ds(&ba, QIODevice::WriteOnly);
-
-            ds << shared().ProgramVersion << m_name->text() << m_sceneModel->rowCount();
-            for(CGraphicsView *view : m_sceneModel->views())
-                ds << *(view->cScene());
-
             QSaveFile file(m_path);
-            file.open(QIODevice::WriteOnly);
-            file.write(ba);
+            SaveToFile(file);
 
             while(!file.commit())
             {
@@ -161,6 +158,33 @@ void CProjectView::SaveProjectAs()
         m_path = dialog.selectedFiles().first();
         SaveProject();
     }
+}
+
+void CProjectView::Autosave()
+{
+    if(shared().settingsView->maxAutosaves() > 0 && m_sceneModel->rowCount() > 0 && m_path.length())
+    {
+        QString filename = QFileInfo(m_path).absolutePath() + "/" + QFileInfo(m_path).completeBaseName() +
+                ".backup" + QString::number((m_autosave_num = (m_autosave_num % shared().settingsView->maxAutosaves()) + 1)) + ".chronx";
+        QSaveFile file(filename);
+        SaveToFile(file);
+        file.commit();
+    }
+
+    QTimer::singleShot(shared().settingsView->autosaveInterval(), this, SLOT(Autosave()));
+}
+
+void CProjectView::SaveToFile(QSaveFile &file)
+{
+    QByteArray ba;
+    QDataStream ds(&ba, QIODevice::WriteOnly);
+
+    ds << shared().ProgramVersion << m_name->text() << m_sceneModel->rowCount();
+    for(CGraphicsView *view : m_sceneModel->views())
+        ds << *(view->cScene());
+
+    file.open(QIODevice::WriteOnly);
+    file.write(ba);
 }
 
 void CProjectView::OpenProject(const QString &filepath)
