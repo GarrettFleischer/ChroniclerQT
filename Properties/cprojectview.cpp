@@ -290,6 +290,18 @@ void CProjectView::ExportChoiceScript()
     {
         QFile file(project_folder + "/" + view->cScene()->name() + ".txt");
 
+        QString cs;
+        if(view->cScene()->name() == "startup")
+        {
+            cs += "*title " + m_name->text() + "\n\n";
+
+            cs += "*scene_list\n";
+            for(CGraphicsView *v : m_sceneModel->views())
+                cs += "    " + v->cScene()->name() + "\n";
+
+            cs += "\n";
+        }
+
         QList<CConnection *> processed_links;
         CalculateOrder(view->cScene()->startBubble()->link(), processed_links, 0);
 
@@ -298,7 +310,7 @@ void CProjectView::ExportChoiceScript()
 
         QList<CBubble *> processed;
 
-        QString cs;
+
         for(CBubble *bbl : bubbles)
             cs += BubbleToChoiceScript(bubbles, processed, 0, bbl);
 
