@@ -63,6 +63,7 @@ class CLine;
 #include "Misc/chronicler.h"
 using Chronicler::CPalette;
 using Chronicler::BubbleType;
+using Chronicler::Mode;
 
 //! [0]
 class CGraphicsScene : public QGraphicsScene
@@ -70,7 +71,7 @@ class CGraphicsScene : public QGraphicsScene
     Q_OBJECT
 
 public:
-    enum Mode { InsertConnection, Cursor, InsertStory, InsertCondition, InsertChoice, InsertAction };
+
 
     explicit CGraphicsScene(const QString &name, QObject *parent = 0);
 
@@ -109,7 +110,6 @@ protected:
 
 private:
     QString m_name;
-    Mode m_mode;
     QPointF m_startPoint;
     CLine *m_line;
     QFont m_font;

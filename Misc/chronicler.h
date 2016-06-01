@@ -30,6 +30,8 @@ namespace Chronicler
 
     enum Anchor { Right, Down, Left, Up, None };
 
+    enum Mode { InsertConnection, Cursor, InsertStory, InsertCondition, InsertChoice, InsertAction };
+
     struct CPalette
     {
         QColor fill = QColor(124, 140, 230);
@@ -85,6 +87,8 @@ namespace Chronicler
         QAction *saveProjectAction;
         QAction *saveAsProjectAction;
         QAction *showHomepageAction;
+
+        Mode cursorMode = Cursor;
     };
 
     SharedInstances &shared();

@@ -28,7 +28,7 @@ using Chronicler::Anchor;
 using Chronicler::shared;
 
 CGraphicsScene::CGraphicsScene(const QString &name, QObject *parent)
-    : QGraphicsScene(parent), m_name(name), m_mode(Cursor), m_line(0), m_rubberBand(false)
+    : QGraphicsScene(parent), m_name(name), m_line(0), m_rubberBand(false)
 {
     float maxsize = 25000.0;
     float minsize = -maxsize/2;
@@ -160,18 +160,18 @@ QDataStream &operator >>(QDataStream &ds, CGraphicsScene &scene)
 
 void CGraphicsScene::setMode(Mode mode)
 {
-    m_mode = mode;
+    shared().cursorMode = mode;
 
     if(views().size())
     {
         views().first()->setDragMode(QGraphicsView::ScrollHandDrag);
 
-        if(mode == Cursor)
+        if(mode == Chronicler::Cursor)
         {
-            shared().pointerTypeGroup->button(int(CGraphicsScene::Cursor))->setChecked(true);
+            shared().pointerTypeGroup->button(int(Chronicler::Cursor))->setChecked(true);
             m_line->hide();
         }
-        else if(mode == InsertConnection)
+        else if(mode == Chronicler::InsertConnection)
             views().first()->setDragMode(QGraphicsView::NoDrag);
     }
 }
@@ -200,25 +200,25 @@ void CGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
             for(QGraphicsItem *item : items())
                 item->setSelected(false);
 
-        switch (m_mode)
+        switch (shared().cursorMode)
         {
-        case InsertStory:
+        case Chronicler::InsertStory:
             AddBubble(Chronicler::Story, mouseEvent->scenePos(), (mouseEvent->modifiers() & Qt::ShiftModifier));
             break;
 
-        case InsertCondition:
+        case Chronicler::InsertCondition:
             AddBubble(Chronicler::Condition, mouseEvent->scenePos(), (mouseEvent->modifiers() & Qt::ShiftModifier));
             break;
 
-        case InsertChoice:
+        case Chronicler::InsertChoice:
             AddBubble(Chronicler::Choice, mouseEvent->scenePos(), (mouseEvent->modifiers() & Qt::ShiftModifier));
             break;
 
-        case InsertAction:
+        case Chronicler::InsertAction:
             AddBubble(Chronicler::Action, mouseEvent->scenePos(), (mouseEvent->modifiers() & Qt::ShiftModifier));
             break;
 
-        case InsertConnection:
+        case Chronicler::InsertConnection:
             if(clickItem)
             {
                 Anchor out = clickItem->OutputAnchorAtPosition(mouseEvent->scenePos());
@@ -232,7 +232,7 @@ void CGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
             }
             break;
 
-        case Cursor:
+        case Chronicler::Cursor:
             break;
         }
 
@@ -247,7 +247,7 @@ void CGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
 void CGraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
-    if (m_mode == InsertConnection)
+    if (shared().cursorMode == Chronicler::InsertConnection)
     {
         CBubble *hoverItem = BubbleAt(mouseEvent->scenePos());
         if(hoverItem)
@@ -255,7 +255,7 @@ void CGraphicsScene::mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent)
 
         m_line->setEnd(mouseEvent->scenePos());
     }
-    else if (m_mode == Cursor)
+    else if (shared().cursorMode == Chronicler::Cursor)
         QGraphicsScene::mouseMoveEvent(mouseEvent);
 }
 
@@ -263,7 +263,7 @@ void CGraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
     if(mouseEvent->button() == Qt::LeftButton)
     {
-        if (m_mode == InsertConnection)
+        if (shared().cursorMode == Chronicler::InsertConnection)
         {
             if(m_line->isVisible())
             {
@@ -282,7 +282,7 @@ void CGraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent)
             }
 
             if(!(mouseEvent->modifiers() & Qt::ShiftModifier))
-                setMode(Cursor);
+                setMode(Chronicler::Cursor);
         }
 
         m_rubberBand = false;
@@ -313,13 +313,13 @@ void CGraphicsScene::keyPressEvent(QKeyEvent *event)
     if(event->key() == Qt::Key_Shift)
         views().first()->setDragMode(QGraphicsView::RubberBandDrag);
     else if(event->key() == Qt::Key_Escape)
-        setMode(Cursor);
+        setMode(Chronicler::Cursor);
 }
 
 void CGraphicsScene::keyReleaseEvent(QKeyEvent *event)
 {
     if(event->key() == Qt::Key_Shift && !m_line->isVisible())
-        setMode(Cursor);
+        setMode(Chronicler::Cursor);
 }
 
 
@@ -346,7 +346,7 @@ CBubble * CGraphicsScene::AddBubble(BubbleType type, const QPointF &pos, bool sh
         m_bubbles.append(bbl);
 
         if(!shift)
-            setMode(CGraphicsScene::Cursor);
+            setMode(Chronicler::Cursor);
 
         emit itemInserted(bbl);
     }
@@ -389,13 +389,13 @@ CStartBubble *CGraphicsScene::startBubble()
 
 void CGraphicsScene::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
 {
-    if(m_mode == InsertConnection)
+    if(shared().cursorMode == Chronicler::InsertConnection)
     {
         CBubble *clickItem = BubbleAt(event->scenePos(), true);
         if(clickItem)
             clickItem->RemoveLink(clickItem->OutputAnchorAtPosition(event->scenePos()));
     }
-    else if(m_mode == Cursor)
+    else if(shared().cursorMode == Chronicler::Cursor)
     {
         CBubble *bbl = BubbleAt(event->scenePos());
         if(!bbl->isSelected())

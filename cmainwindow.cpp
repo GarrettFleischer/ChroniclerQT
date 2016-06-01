@@ -96,9 +96,9 @@ void CMainWindow::PointerGroupClicked(int id)
 {
     CGraphicsView *view = dynamic_cast<CGraphicsView *>(shared().sceneTabs->currentWidget());
     if(view)
-        view->cScene()->setMode(CGraphicsScene::Mode(id));
+        view->cScene()->setMode(Chronicler::Mode(id));
     else
-        shared().pointerTypeGroup->button(int(CGraphicsScene::Cursor))->setChecked(true);
+        shared().pointerTypeGroup->button(int(Chronicler::Cursor))->setChecked(true);
 }
 
 void CMainWindow::NewProject()
@@ -308,12 +308,12 @@ void CMainWindow::CreateToolbars()
     tb_choice->setToolTip("Choice bubble");
 
     shared().pointerTypeGroup = new QButtonGroup(this);
-    shared().pointerTypeGroup->addButton(tb_pointer, int(CGraphicsScene::Cursor));
-    shared().pointerTypeGroup->addButton(tb_link, int(CGraphicsScene::InsertConnection));
-    shared().pointerTypeGroup->addButton(tb_story, int(CGraphicsScene::InsertStory));
-    shared().pointerTypeGroup->addButton(tb_condition, int(CGraphicsScene::InsertCondition));
-    shared().pointerTypeGroup->addButton(tb_choice, int(CGraphicsScene::InsertChoice));
-    shared().pointerTypeGroup->addButton(tb_action, int(CGraphicsScene::InsertAction));
+    shared().pointerTypeGroup->addButton(tb_pointer, int(Chronicler::Cursor));
+    shared().pointerTypeGroup->addButton(tb_link, int(Chronicler::InsertConnection));
+    shared().pointerTypeGroup->addButton(tb_story, int(Chronicler::InsertStory));
+    shared().pointerTypeGroup->addButton(tb_condition, int(Chronicler::InsertCondition));
+    shared().pointerTypeGroup->addButton(tb_choice, int(Chronicler::InsertChoice));
+    shared().pointerTypeGroup->addButton(tb_action, int(Chronicler::InsertAction));
     connect(shared().pointerTypeGroup, SIGNAL(buttonClicked(int)),
             this, SLOT(PointerGroupClicked(int)));
 
