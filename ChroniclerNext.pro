@@ -5,6 +5,7 @@ RESOURCES   =	chroniclernext.qrc
 win32{
 	LIBS += -LC:/Development/OpenSSL-Win32/lib -lubsec
 	INCLUDEPATH += C:/Development/OpenSSL-Win32/include
+        RC_ICONS += GameSmith_Icon3.ico
 }
 
 PKGCONFIG += openssl
