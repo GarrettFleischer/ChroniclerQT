@@ -20,6 +20,8 @@ CConditionBubble::CConditionBubble(const QPointF &pos, const CPalette &palette, 
     AdjustMinSize();
     m_bounds = QRectF(-m_minSize.width()/2, -m_minSize.height()/2, m_minSize.width(), m_minSize.height());
     UpdatePolygon();
+
+    setPalette(m_palette);
 }
 
 CConditionBubble::~CConditionBubble()

@@ -27,6 +27,8 @@ CChoice::CChoice(const Chronicler::CPalette &palette, const QFont &font, QGraphi
     AdjustMinSize();
     m_bounds = QRectF(0, 0, m_minSize.width(), m_minSize.height());
     UpdatePolygon();
+
+    setPalette(m_palette);
 }
 
 void CChoice::setPalette(const Chronicler::CPalette &palette)

@@ -49,6 +49,8 @@ public:
 
     BubbleType getType() const { return m_type; }
 
+    void setBounds(const QRectF &bounds);
+
     // if this bubble is contained inside another bubble, return that
     // else return itself
     virtual CBubble * container();

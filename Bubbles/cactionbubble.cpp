@@ -31,6 +31,8 @@ CActionBubble::CActionBubble(const QPointF &pos, const Chronicler::CPalette &pal
     AdjustMinSize();
     m_bounds = QRectF(-m_minSize.width()/2, -m_minSize.height()/2, m_minSize.width(), m_minSize.height());
     UpdatePolygon();
+
+    setPalette(m_palette);
 }
 
 void CActionBubble::UpdatePolygon()

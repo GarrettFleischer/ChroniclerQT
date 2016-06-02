@@ -7,13 +7,13 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
-class FileDownloader : public QObject
+class CFileDownloader : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit FileDownloader(QUrl file, const char *slot = 0, QObject *parent = 0);
-    virtual ~FileDownloader();
+    explicit CFileDownloader(QUrl file, const char *slot = 0, QObject *parent = 0);
+    virtual ~CFileDownloader();
     QByteArray downloadedData() const;
 
     void Download(QUrl file, const char *slot);

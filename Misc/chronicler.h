@@ -69,6 +69,7 @@ namespace Chronicler
 
         QToolBar *pointerToolBar;
         QButtonGroup *pointerTypeGroup;
+        QMenu *paletteMenu;
 
         QStringListModel *actionsModel;
 

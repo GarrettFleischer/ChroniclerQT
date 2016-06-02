@@ -183,6 +183,12 @@ void CBubble::setPalette(const Chronicler::CPalette &palette)
     update();
 }
 
+void CBubble::setBounds(const QRectF &bounds)
+{
+    m_bounds = bounds;
+    UpdatePolygon();
+}
+
 CBubble *CBubble::container()
 {
     return this;

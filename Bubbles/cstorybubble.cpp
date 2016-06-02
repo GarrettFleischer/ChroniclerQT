@@ -25,6 +25,8 @@ CStoryBubble::CStoryBubble(const QPointF &pos, const CPalette &palette, const QF
 
     UpdatePolygon();
     moveBy(-boundingRect().width() / 2, -boundingRect().height() / 2);
+
+    setPalette(m_palette);
 }
 
 void CStoryBubble::UpdatePolygon()
@@ -32,8 +34,8 @@ void CStoryBubble::UpdatePolygon()
     CBubble::UpdatePolygon();
 
     QRectF b = boundingRect();
-    qreal th = m_title->textBounds().height() + 10.0f;
-    qreal tm = b.width()*2/3;
+    qreal th = m_title->textBounds().height();
+    qreal tm = b.width() * 0.55;
 
     m_title->Resize(QRectF(b.x() + 10, b.y() + 2, tm - 20, th));
     m_story->Resize(QRectF(b.x() + 10, b.y() + th + 10, b.width() - 20, b.height() - th - 12));

@@ -13,6 +13,8 @@ CStartBubble::CStartBubble(const QPointF &pos, const Chronicler::CPalette &palet
 
     m_bounds = QRectF(QPointF(0, 0), m_minSize);
     UpdatePolygon();
+
+    setPalette(m_palette);
 }
 
 void CStartBubble::mousePressEvent(QGraphicsSceneMouseEvent *)

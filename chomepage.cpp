@@ -22,7 +22,7 @@
 #include "csettingsview.h"
 #include "Misc/qactionbutton.h"
 
-#include "Misc/filedownloader.h"
+#include "Misc/cfiledownloader.h"
 
 #include "Misc/chronicler.h"
 using Chronicler::shared;
@@ -43,7 +43,7 @@ CHomepage::CHomepage(QWidget *parent)
     setLayout(main_layout);
 
     QString news = "https://www.dropbox.com/s/tru5nkm9m4uukwe/Chronicler_news.html?dl=1";
-    m_downloader = new FileDownloader(QUrl(news), SLOT(Downloaded()), this);
+    m_downloader = new CFileDownloader(QUrl(news), SLOT(Downloaded()), this);
 }
 
 void CHomepage::SetupSidebar(QHBoxLayout *main_layout)

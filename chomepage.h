@@ -15,7 +15,7 @@ QT_END_NAMESPACE
 
 class CMainWindow;
 class CSettingsView;
-class FileDownloader;
+class CFileDownloader;
 class QDropboxFile;
 
 class CHomepage : public QWidget
@@ -32,7 +32,7 @@ private:
     QWebView * m_webView;
     QListWidget *m_recentView;
 
-    FileDownloader *m_downloader;
+    CFileDownloader *m_downloader;
 
     QDropboxFile *m_dbfile;
 

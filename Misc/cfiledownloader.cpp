@@ -1,6 +1,6 @@
-#include "filedownloader.h"
+#include "cfiledownloader.h"
 
-FileDownloader::FileDownloader(QUrl file, const char *slot, QObject *parent)
+CFileDownloader::CFileDownloader(QUrl file, const char *slot, QObject *parent)
     : QObject(parent)
 {
     connect(&m_WebCtrl, SIGNAL(finished(QNetworkReply*)),
@@ -9,10 +9,10 @@ FileDownloader::FileDownloader(QUrl file, const char *slot, QObject *parent)
     Download(file, slot);
 }
 
-FileDownloader::~FileDownloader()
+CFileDownloader::~CFileDownloader()
 {}
 
-void FileDownloader::Download(QUrl file, const char *slot)
+void CFileDownloader::Download(QUrl file, const char *slot)
 {
     if(slot)
         connect(this, SIGNAL(downloaded()), parent(), slot);
@@ -21,7 +21,7 @@ void FileDownloader::Download(QUrl file, const char *slot)
     m_WebCtrl.get(request);
 }
 
-void FileDownloader::fileDownloaded(QNetworkReply* pReply)
+void CFileDownloader::fileDownloaded(QNetworkReply* pReply)
 {
     QUrl redirect = pReply->attribute(QNetworkRequest::RedirectionTargetAttribute).value<QUrl>();
     if(redirect.toString().length())
@@ -35,7 +35,7 @@ void FileDownloader::fileDownloaded(QNetworkReply* pReply)
     pReply->deleteLater();
 }
 
-QByteArray FileDownloader::downloadedData() const
+QByteArray CFileDownloader::downloadedData() const
 {
     return m_DownloadedData;
 }

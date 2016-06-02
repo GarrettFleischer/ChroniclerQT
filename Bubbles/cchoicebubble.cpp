@@ -14,7 +14,6 @@ CChoiceBubble::CChoiceBubble(const QPointF &pos, const Chronicler::CPalette &pal
     //m_palette.fill = QColor(151,118,166);
     m_palette.fill = QColor(104, 160, 210);
 
-
     m_choices = new CChoiceModel(choiceList(), this);
     connect(m_choices, SIGNAL(rowsInserted(QModelIndex,int,int)),
             this, SLOT(ModelUpdated()));
@@ -30,6 +29,8 @@ CChoiceBubble::CChoiceBubble(const QPointF &pos, const Chronicler::CPalette &pal
     AdjustMinSize();
     m_bounds = QRectF(-m_minSize.width() / 2, -m_minSize.height() / 2, m_minSize.width(), m_minSize.height());
     UpdatePolygon();
+
+    setPalette(m_palette);
 }
 
 void CChoiceBubble::setPalette(const Chronicler::CPalette &palette)

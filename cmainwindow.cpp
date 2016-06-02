@@ -16,10 +16,13 @@
 #include "csettingsview.h"
 #include "Properties/cprojectview.h"
 
+#include "Properties/cpalettecreator.h"
+#include "Misc/cpalettebutton.h"
+
 #include "Misc/chronicler.h"
 using Chronicler::shared;
 
-#include <QDebug>
+
 
 
 const int InsertTextButton = 10;
@@ -77,6 +80,9 @@ CMainWindow::CMainWindow(QSettings *settings, const QString &filename)
 
     if(filename.length())
         shared().projectView->OpenProject(filename);
+
+//    CPaletteCreator *p = new CPaletteCreator(this);
+//    p->show();
 }
 
 
@@ -307,6 +313,19 @@ void CMainWindow::CreateToolbars()
     tb_choice->setIcon(QIcon(":/images/icn_choice2.png"));
     tb_choice->setToolTip("Choice bubble");
 
+    // Palette creator
+    CPaletteButton *tb_palette = new CPaletteButton();
+//    QToolButton *tb_palette = new QToolButton();
+//    tb_palette->setPopupMode(QToolButton::MenuButtonPopup);
+//    tb_palette->setCheckable(true);
+//    tb_palette->setIcon(QIcon(":/images/icn_palette"));
+//    tb_palette->setToolTip("Palette creator/painter");
+
+//    shared().paletteMenu = new QMenu();
+//    shared().paletteMenu->addAction(new QAction(QIcon(":/images/icn_palette"), "", this));
+//    tb_palette->setMenu(shared().paletteMenu);
+
+
     shared().pointerTypeGroup = new QButtonGroup(this);
     shared().pointerTypeGroup->addButton(tb_pointer, int(Chronicler::Cursor));
     shared().pointerTypeGroup->addButton(tb_link, int(Chronicler::InsertConnection));
@@ -327,6 +346,7 @@ void CMainWindow::CreateToolbars()
     shared().pointerToolBar->addWidget(tb_choice);
     shared().pointerToolBar->addWidget(tb_action);
     shared().pointerToolBar->addWidget(tb_condition);
+    shared().pointerToolBar->addWidget(tb_palette);
     shared().pointerToolBar->setIconSize(QSize(32,32));
     addToolBar(area, shared().pointerToolBar);
     connect(shared().pointerToolBar, SIGNAL(topLevelChanged(bool)),
