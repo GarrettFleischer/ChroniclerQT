@@ -40,12 +40,12 @@ namespace Chronicler
         QColor select = QColor(255,200,0);
         QColor font = Qt::white;
 
-        friend QDataStream & operator<<(QDataStream &stream, CPalette p)
+        friend QDataStream & operator<<(QDataStream &stream, CPalette &p)
         {
             return stream << p.fill << p.line << p.select << p.font;
         }
 
-        friend QDataStream & operator>>(QDataStream &stream, CPalette p)
+        friend QDataStream & operator>>(QDataStream &stream, CPalette &p)
         {
             return stream >> p.fill >> p.line >> p.select >> p.font;
         }

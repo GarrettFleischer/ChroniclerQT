@@ -142,6 +142,8 @@ QDataStream & CChoice::Read(QDataStream &ds, const QString &version)
 
     m_choice->setText(choice);
 
+    setPalette(m_palette);
+
     return ds;
 }
 

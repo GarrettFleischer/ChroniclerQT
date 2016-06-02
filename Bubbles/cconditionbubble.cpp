@@ -162,6 +162,8 @@ QDataStream &CConditionBubble::Read(QDataStream &ds, const QString &version)
 
     setCondition(m_conditionText);
 
+    setPalette(m_palette);
+
     return ds;
 }
 

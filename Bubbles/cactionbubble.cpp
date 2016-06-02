@@ -76,6 +76,8 @@ QDataStream &CActionBubble::Read(QDataStream &ds, const QString &version)
 
     m_actions->setStringList(actions);
 
+    setPalette(m_palette);
+
     return ds;
 }
 

@@ -144,6 +144,8 @@ QDataStream &CChoiceBubble::Read(QDataStream &ds, const QString &version)
         m_choices->AddItem(choice);
     }
 
+    setPalette(m_palette);
+
     return ds;
 }
 

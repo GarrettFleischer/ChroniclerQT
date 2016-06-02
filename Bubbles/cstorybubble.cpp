@@ -92,6 +92,8 @@ QDataStream &CStoryBubble::Read(QDataStream &ds, const QString &version)
 
     m_story->setText(story);
 
+    setPalette(m_palette);
+
     return ds;
 }
 
