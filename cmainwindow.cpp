@@ -80,9 +80,6 @@ CMainWindow::CMainWindow(QSettings *settings, const QString &filename)
 
     if(filename.length())
         shared().projectView->OpenProject(filename);
-
-//    CPaletteCreator *p = new CPaletteCreator(this);
-//    p->show();
 }
 
 
@@ -314,17 +311,7 @@ void CMainWindow::CreateToolbars()
     tb_choice->setToolTip("Choice bubble");
 
     // Palette creator
-    CPaletteButton *tb_palette = new CPaletteButton();
-//    QToolButton *tb_palette = new QToolButton();
-//    tb_palette->setPopupMode(QToolButton::MenuButtonPopup);
-//    tb_palette->setCheckable(true);
-//    tb_palette->setIcon(QIcon(":/images/icn_palette"));
-//    tb_palette->setToolTip("Palette creator/painter");
-
-//    shared().paletteMenu = new QMenu();
-//    shared().paletteMenu->addAction(new QAction(QIcon(":/images/icn_palette"), "", this));
-//    tb_palette->setMenu(shared().paletteMenu);
-
+    shared().paletteButton = new CPaletteButton();
 
     shared().pointerTypeGroup = new QButtonGroup(this);
     shared().pointerTypeGroup->addButton(tb_pointer, int(Chronicler::Cursor));
@@ -333,6 +320,7 @@ void CMainWindow::CreateToolbars()
     shared().pointerTypeGroup->addButton(tb_condition, int(Chronicler::InsertCondition));
     shared().pointerTypeGroup->addButton(tb_choice, int(Chronicler::InsertChoice));
     shared().pointerTypeGroup->addButton(tb_action, int(Chronicler::InsertAction));
+    shared().pointerTypeGroup->addButton(shared().paletteButton, int(Chronicler::Paint));
     connect(shared().pointerTypeGroup, SIGNAL(buttonClicked(int)),
             this, SLOT(PointerGroupClicked(int)));
 
@@ -346,7 +334,7 @@ void CMainWindow::CreateToolbars()
     shared().pointerToolBar->addWidget(tb_choice);
     shared().pointerToolBar->addWidget(tb_action);
     shared().pointerToolBar->addWidget(tb_condition);
-    shared().pointerToolBar->addWidget(tb_palette);
+    shared().pointerToolBar->addWidget(shared().paletteButton);
     shared().pointerToolBar->setIconSize(QSize(32,32));
     addToolBar(area, shared().pointerToolBar);
     connect(shared().pointerToolBar, SIGNAL(topLevelChanged(bool)),

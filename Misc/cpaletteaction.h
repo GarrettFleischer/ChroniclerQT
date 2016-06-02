@@ -11,6 +11,9 @@ class CPaletteAction : public QAction
 public:
     CPaletteAction(QObject *parent = 0, const CPalette &palette = CPalette(), const QString &name = "Default");
 
+    const CPalette &getPalette() const;
+    void setPalette(const CPalette &palette);
+
 private:
     QIcon PaletteIcon();
 

@@ -102,11 +102,12 @@ public:
     friend QDataStream & operator >>(QDataStream &ds, CGraphicsScene &scene);
 
 protected:
-    virtual void mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent);
-    virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *mouseEvent);
-    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *mouseEvent);
+    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
+    virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
+    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
     virtual void keyPressEvent(QKeyEvent *event) override;
     virtual void keyReleaseEvent(QKeyEvent *event) override;
+    virtual void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) override;
 
 private:
     QString m_name;
@@ -133,11 +134,6 @@ public slots:
 
 private slots:
     void ItemSelected(QGraphicsItem *selectedItem);
-
-
-    // QGraphicsScene interface
-protected:
-    virtual void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) override;
 };
 
 #endif // CGRAPHICSSCENE_H

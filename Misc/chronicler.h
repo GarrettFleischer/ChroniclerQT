@@ -20,6 +20,7 @@ class CHomepage;
 class CSettingsView;
 class CProjectView;
 class CDockManager;
+class CPaletteButton;
 
 namespace Chronicler
 {
@@ -30,7 +31,7 @@ namespace Chronicler
 
     enum Anchor { Right, Down, Left, Up, None };
 
-    enum Mode { InsertConnection, Cursor, InsertStory, InsertCondition, InsertChoice, InsertAction };
+    enum Mode { InsertConnection, Cursor, InsertStory, InsertCondition, InsertChoice, InsertAction, Paint };
 
     struct CPalette
     {
@@ -69,7 +70,7 @@ namespace Chronicler
 
         QToolBar *pointerToolBar;
         QButtonGroup *pointerTypeGroup;
-        QMenu *paletteMenu;
+        CPaletteButton *paletteButton;
 
         QStringListModel *actionsModel;
 

@@ -11,6 +11,17 @@ CPaletteAction::CPaletteAction(QObject *parent, const Chronicler::CPalette &pale
     setIcon(PaletteIcon());
 }
 
+const Chronicler::CPalette &CPaletteAction::getPalette() const
+{
+    return m_palette;
+}
+
+void CPaletteAction::setPalette(const CPalette &palette)
+{
+    m_palette = palette;
+    emit changed();
+}
+
 QIcon CPaletteAction::PaletteIcon()
 {
     QPixmap pixmap(32, 32);
