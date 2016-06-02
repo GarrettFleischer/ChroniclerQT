@@ -14,6 +14,8 @@
 #include "Bubbles/cstorybubble.h"
 #include "Misc/ccolorbutton.h"
 
+#include "Misc/cpaletteaction.h"
+
 #include "csettingsview.h"
 using Chronicler::shared;
 
@@ -32,7 +34,7 @@ CPaletteCreator::CPaletteCreator(QWidget *parent)
     view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-    m_bubble = new CStoryBubble(QPointF(0, 0), CPalette());
+    m_bubble = new CStoryBubble(QPointF(0, 0), shared().defaultStory);
     m_bubble->setBounds(QRectF(0, 0, 200, 150));
     m_bubble->setLabel("Lorem");
     m_bubble->setStory("Lorem ipsum dolor sit amet,\nconsectetur adipiscing elit.\nMauris id.");
@@ -42,13 +44,13 @@ CPaletteCreator::CPaletteCreator(QWidget *parent)
     scene->addItem(m_bubble);
 
     QSize s(32, 32);
-    m_fillButton = new CColorButton(s, m_bubble->getPalette().fill);
+    m_fillButton = new CColorButton(s, m_bubble->getPalette()->getPalette().fill);
     connect(m_fillButton, SIGNAL(colorChanged(QColor)), this, SLOT(PaletteChanged()));
-    m_lineButton = new CColorButton(s, m_bubble->getPalette().line);
+    m_lineButton = new CColorButton(s, m_bubble->getPalette()->getPalette().line);
     connect(m_lineButton, SIGNAL(colorChanged(QColor)), this, SLOT(PaletteChanged()));
-    m_selectButton = new CColorButton(s, m_bubble->getPalette().select);
+    m_selectButton = new CColorButton(s, m_bubble->getPalette()->getPalette().select);
     connect(m_selectButton, SIGNAL(colorChanged(QColor)), this, SLOT(PaletteChanged()));
-    m_fontButton = new CColorButton(s, m_bubble->getPalette().font);
+    m_fontButton = new CColorButton(s, m_bubble->getPalette()->getPalette().font);
     connect(m_fontButton, SIGNAL(colorChanged(QColor)), this, SLOT(PaletteChanged()));
 
     m_name = new QLineEdit("New Palette");
@@ -88,9 +90,9 @@ void CPaletteCreator::setPalette(const Chronicler::CPalette &palette)
     PaletteChanged();
 }
 
-Chronicler::CPalette CPaletteCreator::getPalette()
+const CPalette CPaletteCreator::getPalette() const
 {
-    return m_bubble->getPalette();
+    return m_bubble->getPalette()->getPalette();
 }
 
 void CPaletteCreator::setName(const QString &name)
@@ -111,7 +113,7 @@ void CPaletteCreator::PaletteChanged()
     p.select = m_selectButton->getColor();
     p.font = m_fontButton->getColor();
 
-    m_bubble->setPalette(p);
+    m_bubble->setPalette(new CPaletteAction(this, p, m_name->text()));
 }
 
 void CPaletteCreator::SavePressed()

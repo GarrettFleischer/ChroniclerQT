@@ -22,7 +22,7 @@ public:
     CPaletteCreator(QWidget *parent = 0);
 
     void setPalette(const CPalette &palette);
-    CPalette getPalette();
+    const Chronicler::CPalette getPalette() const;
 
     void setName(const QString &name);
     QString getName();

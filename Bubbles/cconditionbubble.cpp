@@ -1,16 +1,16 @@
 #include "cconditionbubble.h"
 
+#include "Misc/cpaletteaction.h"
+
 #include "Misc/ctextitem.h"
 #include "Connections/cconnection.h"
 #include "cgraphicsscene.h"
 
 
-CConditionBubble::CConditionBubble(const QPointF &pos, const CPalette &palette, const QFont &font, QGraphicsItem *parent)
+CConditionBubble::CConditionBubble(const QPointF &pos, CPaletteAction *palette, const QFont &font, QGraphicsItem *parent)
     : CBubble(pos, palette, font, parent), m_trueLink(0), m_falseLink(0)
 {
     m_type = Chronicler::Condition;
-
-    m_palette.fill = QColor(151,118,166);
 
     m_condition = new CTextItem("", QRectF(), this);
     m_condition->SetStyle(Qt::AlignCenter);
@@ -53,9 +53,9 @@ void CConditionBubble::setFont(const QFont &font)
     UpdatePolygon();
 }
 
-void CConditionBubble::setPalette(const Chronicler::CPalette &palette)
+void CConditionBubble::setPalette(CPaletteAction *palette)
 {
-    m_condition->setColor(palette.font);
+    m_condition->setColor(palette->getPalette().font);
     CBubble::setPalette(palette);
 }
 

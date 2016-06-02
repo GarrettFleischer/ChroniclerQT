@@ -20,15 +20,17 @@ using Chronicler::Anchor;
 using Chronicler::BubbleType;
 using Chronicler::t_uid;
 
+class CPaletteAction;
 class CConnection;
 class CLink;
+
 
 class CBubble : public QObject, public QGraphicsPolygonItem
 {
     Q_OBJECT
 
 public:
-    CBubble(const QPointF &pos, const CPalette &palette, const QFont &font = QFont(), QGraphicsItem *parent = 0, t_uid uid = GenerateUID());
+    CBubble(const QPointF &pos, CPaletteAction *palette, const QFont &font = QFont(), QGraphicsItem *parent = 0, t_uid uid = GenerateUID());
 
     virtual ~CBubble();
 
@@ -44,8 +46,8 @@ public:
     virtual void setFont(const QFont &font);
     QFont getFont() const { return m_font; }
 
-    virtual void setPalette(const CPalette & palette);
-    const CPalette & getPalette() const { return m_palette; }
+    virtual void setPalette(CPaletteAction *palette);
+    CPaletteAction *getPalette();
 
     BubbleType getType() const { return m_type; }
 
@@ -69,7 +71,7 @@ public:
 
     t_uid UID();
 
-    virtual QDataStream &Read(QDataStream &ds, const QString &);
+    virtual QDataStream &Read(QDataStream &ds, const QString &version);
     virtual QDataStream &Write(QDataStream &ds);
 
 protected:
@@ -100,7 +102,7 @@ protected:
     bool m_locked;
 
     QFont m_font;
-    CPalette m_palette;
+    CPaletteAction *m_palette;
 
     bool m_resize;
     QPointF m_offset;
@@ -114,6 +116,9 @@ signals:
     void Selected(QGraphicsItem *item);
     void ConnectionsChanged(int);
     void PositionOrShapeChanged();
+
+private slots:
+    void UpdatePalette();
 
 };
 

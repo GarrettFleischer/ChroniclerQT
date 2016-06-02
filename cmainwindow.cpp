@@ -18,6 +18,7 @@
 
 #include "Properties/cpalettecreator.h"
 #include "Misc/cpalettebutton.h"
+#include "Misc/cpaletteaction.h"
 
 #include "Misc/chronicler.h"
 using Chronicler::shared;
@@ -33,7 +34,7 @@ CMainWindow::CMainWindow(QSettings *settings, const QString &filename)
     setWindowTitle(tr("Chronicler"));
     setUnifiedTitleAndToolBarOnMac(true);
 
-    shared().ProgramVersion = "0.8.1.0";
+    shared().ProgramVersion = "0.8.6.0";
 
     shared().mainWindow = this;
 
@@ -72,12 +73,12 @@ CMainWindow::CMainWindow(QSettings *settings, const QString &filename)
             this, SLOT(TabClosed(int)));
 
     shared().sceneTabs->addTab(shared().homepage, "Homepage");
-    //shared().sceneTabs->addTab(m_view, "startup.scn");
 
     setCentralWidget(shared().sceneTabs);
 
     CreateToolbars();
 
+    // to allow .chron files to be opened with Chronicler
     if(filename.length())
         shared().projectView->OpenProject(filename);
 }
@@ -247,6 +248,18 @@ void CMainWindow::CreateActions()
 
     shared().showHomepageAction = new QAction(QIcon(":/images/icn_home"), tr("Show &homepage"), this);
     connect(shared().showHomepageAction, SIGNAL(triggered(bool)), this, SLOT(ShowHomepage()));
+
+    // Default Palettes
+    CPalette dp_story, dp_choice, dp_action, dp_condition;
+    dp_story.fill = QColor(124, 140, 230);
+    dp_choice.fill = QColor(104, 160, 210);
+    dp_action.fill = QColor(161,88,136);
+    dp_condition.fill = QColor(151,118,166);
+
+    shared().defaultStory = new CPaletteAction(this, dp_story, "Story");
+    shared().defaultChoice = new CPaletteAction(this, dp_choice, "Choice");
+    shared().defaultAction = new CPaletteAction(this, dp_action, "Action");
+    shared().defaultCondition = new CPaletteAction(this, dp_condition, "Condition");
 
     // Disable unavailable actions
 //    shared().newProjectAction->setEnabled(false);

@@ -6,12 +6,15 @@
 #include "Misc/ctextitem.h"
 #include "Misc/cstringlistmodel.h"
 
-CActionBubble::CActionBubble(const QPointF &pos, const Chronicler::CPalette &palette, const QFont &font, QGraphicsItem *parent)
+#include "Misc/cpaletteaction.h"
+
+#include "Misc/chronicler.h"
+using Chronicler::shared;
+
+CActionBubble::CActionBubble(const QPointF &pos, CPaletteAction *palette, const QFont &font, QGraphicsItem *parent)
     : CSingleLinkBubble(pos, palette, font, parent)
 {
     m_type = Chronicler::Action;
-
-    m_palette.fill = QColor(161,88,136);
 
     m_actionsView = new CTextItem("", QRectF(), this);
     m_actionsView->SetStyle(Qt::AlignAbsolute | Qt::AlignVCenter);
@@ -54,10 +57,10 @@ void CActionBubble::ModelUpdated()
     UpdatePolygon();
 }
 
-void CActionBubble::setPalette(const Chronicler::CPalette &palette)
+void CActionBubble::setPalette(CPaletteAction *palette)
 {
     CBubble::setPalette(palette);
-    m_actionsView->setColor(palette.font);
+    m_actionsView->setColor(palette->getPalette().font);
 }
 
 void CActionBubble::setFont(const QFont &font)

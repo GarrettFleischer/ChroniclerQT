@@ -8,7 +8,7 @@ class CConnection;
 class CSingleLinkBubble : public CBubble
 {
 public:
-    CSingleLinkBubble(const QPointF &pos, const CPalette &palette, const QFont &font, QGraphicsItem *parent);
+    CSingleLinkBubble(const QPointF &pos, CPaletteAction *palette, const QFont &font, QGraphicsItem *parent);
     virtual ~CSingleLinkBubble();
 
     CConnection * link();

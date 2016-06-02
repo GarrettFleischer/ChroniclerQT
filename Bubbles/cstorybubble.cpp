@@ -3,16 +3,16 @@
 #include <QPainterPath>
 #include <QtMath>
 
+#include "Misc/cpaletteaction.h"
 
+#include <QDebug>
 
-CStoryBubble::CStoryBubble(const QPointF &pos, const CPalette &palette, const QFont &font, QGraphicsItem *parent)
+CStoryBubble::CStoryBubble(const QPointF &pos, CPaletteAction *palette, const QFont &font, QGraphicsItem *parent)
     : CSingleLinkBubble(pos, palette, font, parent)
 {
     m_type = Chronicler::Story;
     
     setPolygon(QPolygonF(QRectF(-100,-100,200,200)));
-
-    m_palette.fill = QColor(124, 140, 230);
 
     m_title = new CTextItem("", QRectF(), this);
     m_title->SetStyle(Qt::AlignHCenter);
@@ -75,10 +75,11 @@ void CStoryBubble::setLabel(QString label)
     m_title->setText(label);
 }
 
-void CStoryBubble::setPalette(const Chronicler::CPalette &palette)
+void CStoryBubble::setPalette(CPaletteAction *palette)
 {
-    m_title->setColor(palette.font);
-    m_story->setColor(palette.font);
+    qDebug() << "palette called";
+    m_title->setColor(palette->getPalette().font);
+    m_story->setColor(palette->getPalette().font);
     CBubble::setPalette(palette);
 }
 

@@ -7,7 +7,8 @@
 #include "Misc/cpaletteaction.h"
 #include "Properties/cpalettecreator.h"
 
-#include <QDebug>
+#include "Misc/chronicler.h"
+using Chronicler::shared;
 
 CPaletteButton::CPaletteButton(QWidget *parent)
     : QToolButton(parent), m_editing(0)
@@ -21,24 +22,40 @@ CPaletteButton::CPaletteButton(QWidget *parent)
     connect(m_creator, SIGNAL(accepted()), this, SLOT(Saved()));
 
     // TODO add defaults for each bubble type
-    m_current = new CPaletteAction(this);
+    m_current = shared().defaultStory;
 
     m_menu = new CActionMenu();
-    m_menu->addAction(m_current);
+    m_menu->addAction(shared().defaultStory);
+    m_menu->addAction(shared().defaultChoice);
+    m_menu->addAction(shared().defaultAction);
+    m_menu->addAction(shared().defaultCondition);
     connect(m_menu, SIGNAL(leftTriggered(QAction*)), this, SLOT(SelectAction(QAction*)));
     connect(m_menu, SIGNAL(rightTriggered(QAction*)), this, SLOT(EditAction(QAction*)));
 
     setMenu(m_menu);
 }
 
-const Chronicler::CPalette &CPaletteButton::getPalette() const
+CPaletteAction *CPaletteButton::getPalette()
 {
-    return m_current->getPalette();
+    return m_current;
+}
+
+CPaletteAction *CPaletteButton::getPaletteWithUID(Chronicler::t_uid uid)
+{
+    for(QAction *action : m_menu->actions())
+    {
+        CPaletteAction *a = dynamic_cast<CPaletteAction *>(action);
+        if(a->getUID() == uid)
+            return a;
+    }
+
+    return 0;
 }
 
 
 void CPaletteButton::contextMenuEvent(QContextMenuEvent *)
 {
+    m_editing = 0;
     m_creator->setName("New Palette");
     m_creator->setPalette(CPalette());
     m_creator->show();

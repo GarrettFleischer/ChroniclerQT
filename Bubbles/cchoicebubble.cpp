@@ -3,16 +3,15 @@
 #include <QtMath>
 #include <QFontMetrics>
 
+#include "Misc/cpaletteaction.h"
+
 #include "Misc/cchoicemodel.h"
 #include "cchoice.h"
 
-CChoiceBubble::CChoiceBubble(const QPointF &pos, const Chronicler::CPalette &palette, const QFont &font, QGraphicsItem *parent)
+CChoiceBubble::CChoiceBubble(const QPointF &pos, CPaletteAction *palette, const QFont &font, QGraphicsItem *parent)
     : CBubble(pos, palette, font, parent)
 {
     m_type = Chronicler::Choice;
-
-    //m_palette.fill = QColor(151,118,166);
-    m_palette.fill = QColor(104, 160, 210);
 
     m_choices = new CChoiceModel(choiceList(), this);
     connect(m_choices, SIGNAL(rowsInserted(QModelIndex,int,int)),
@@ -33,7 +32,7 @@ CChoiceBubble::CChoiceBubble(const QPointF &pos, const Chronicler::CPalette &pal
     setPalette(m_palette);
 }
 
-void CChoiceBubble::setPalette(const Chronicler::CPalette &palette)
+void CChoiceBubble::setPalette(CPaletteAction *palette)
 {
     CBubble::setPalette(palette);
     for(CChoice *choice : m_choices->choices())

@@ -13,9 +13,9 @@ class CChoiceBubble : public CBubble
 public:
     typedef QList<CChoice *> choiceList;
 
-    CChoiceBubble(const QPointF &pos, const CPalette &palette, const QFont &font = QFont(), QGraphicsItem *parent = 0);
+    CChoiceBubble(const QPointF &pos, CPaletteAction *palette, const QFont &font = QFont(), QGraphicsItem *parent = 0);
 
-    virtual void setPalette(const Chronicler::CPalette &palette) override;
+    virtual void setPalette(CPaletteAction *palette) override;
     virtual void setFont(const QFont &font) override;
 
     virtual Chronicler::Anchor OutputAnchorAtPosition(const QPointF &) override;

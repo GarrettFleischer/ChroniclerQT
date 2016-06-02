@@ -4,8 +4,10 @@
 #include <QPainter>
 #include <QPixmap>
 
-CPaletteAction::CPaletteAction(QObject *parent, const Chronicler::CPalette &palette, const QString &name)
-    : QAction(parent), m_palette(palette)
+QList<t_uid> CPaletteAction::m_UIDs = QList<t_uid>();
+
+CPaletteAction::CPaletteAction(QObject *parent, const Chronicler::CPalette &palette, const QString &name, Chronicler::t_uid uid)
+    : QAction(parent), m_uid(uid), m_palette(palette)
 {
     setText(name);
     setIcon(PaletteIcon());
@@ -20,6 +22,11 @@ void CPaletteAction::setPalette(const CPalette &palette)
 {
     m_palette = palette;
     emit changed();
+}
+
+Chronicler::t_uid CPaletteAction::getUID() const
+{
+    return m_uid;
 }
 
 QIcon CPaletteAction::PaletteIcon()
@@ -46,4 +53,13 @@ QIcon CPaletteAction::PaletteIcon()
     painter.drawText(pixmap.rect(), Qt::AlignCenter, "P");
 
     return QIcon(pixmap);
+}
+
+Chronicler::t_uid CPaletteAction::generateUID()
+{
+    t_uid lowest = 1;
+    while(m_UIDs.contains(lowest))
+        ++lowest;
+
+    return lowest;
 }

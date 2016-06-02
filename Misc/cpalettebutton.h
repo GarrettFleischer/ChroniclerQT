@@ -17,7 +17,9 @@ class CPaletteButton : public QToolButton
 public:
     CPaletteButton(QWidget *parent = 0);
 
-    const CPalette &getPalette() const;
+    CPaletteAction *getPalette();
+
+    CPaletteAction *getPaletteWithUID(Chronicler::t_uid uid);
 
 protected:
     virtual void contextMenuEvent(QContextMenuEvent *) override;

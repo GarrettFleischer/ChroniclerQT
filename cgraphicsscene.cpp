@@ -69,17 +69,6 @@ void CGraphicsScene::setName(const QString &name)
     emit nameChanged();
 }
 
-void CGraphicsScene::setPalette(const CPalette &palette)
-{
-    m_palette = palette;
-    for(QGraphicsItem *item : selectedItems())
-    {
-        CBubble *bbl = qgraphicsitem_cast<CBubble *>(item);
-        if(bbl)
-            bbl->setPalette(m_palette);
-    }
-}
-
 QList<CBubble *> CGraphicsScene::bubbles()
 {
     return m_bubbles;
@@ -334,15 +323,15 @@ CBubble * CGraphicsScene::AddBubble(BubbleType type, const QPointF &pos, bool sh
 {
     CBubble *bbl = 0;
     if(type == Chronicler::Story)
-        bbl = new CStoryBubble(pos, m_palette, m_font);
+        bbl = new CStoryBubble(pos, shared().defaultStory, m_font);
     else if(type == Chronicler::Condition)
-        bbl = new CConditionBubble(pos, m_palette, m_font);
+        bbl = new CConditionBubble(pos, shared().defaultCondition, m_font);
     else if(type == Chronicler::Action)
-        bbl = new CActionBubble(pos, m_palette, m_font);
+        bbl = new CActionBubble(pos, shared().defaultAction, m_font);
     else if(type == Chronicler::Choice)
-        bbl = new CChoiceBubble(pos, m_palette, m_font);
+        bbl = new CChoiceBubble(pos, shared().defaultChoice, m_font);
     else if(type == Chronicler::Start)
-        bbl = new CStartBubble(pos, m_palette, m_font);
+        bbl = new CStartBubble(pos, shared().defaultStory, m_font);
 
     if(bbl)
     {

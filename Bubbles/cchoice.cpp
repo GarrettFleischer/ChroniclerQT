@@ -9,11 +9,12 @@
 #include <QGraphicsSceneHoverEvent>
 #include <QGraphicsSceneMouseEvent>
 
+#include "Misc/cpaletteaction.h"
+
 #include "Connections/cconnection.h"
 #include "cgraphicsscene.h"
 
-
-CChoice::CChoice(const Chronicler::CPalette &palette, const QFont &font, QGraphicsItem *parent, const QString &choice)
+CChoice::CChoice(CPaletteAction *palette, const QFont &font, QGraphicsItem *parent, const QString &choice)
     : CSingleLinkBubble(QPointF(), palette, font, parent)
 {
     setFlag(QGraphicsItem::ItemIsMovable, false);
@@ -31,10 +32,10 @@ CChoice::CChoice(const Chronicler::CPalette &palette, const QFont &font, QGraphi
     setPalette(m_palette);
 }
 
-void CChoice::setPalette(const Chronicler::CPalette &palette)
+void CChoice::setPalette(CPaletteAction *palette)
 {
     CSingleLinkBubble::setPalette(palette);
-    m_choice->setColor(palette.font);
+    m_choice->setColor(palette->getPalette().font);
 }
 
 void CChoice::setFont(const QFont &font)

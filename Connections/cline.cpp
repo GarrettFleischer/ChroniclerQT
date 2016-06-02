@@ -6,6 +6,8 @@
 #include <QtMath>
 #include <QTransform>
 
+#include "Misc/cpaletteaction.h"
+
 CLine::CLine(const QPointF &start, const QPointF &end, Anchor anc_start, Anchor anc_end, QObject *parent)
     : QObject(parent), QGraphicsItem(), m_start(start), m_end(end),
       m_startAnchor(anc_start), m_endAnchor(anc_end), m_width(5)
@@ -42,12 +44,12 @@ QRectF CLine::boundingRect() const
     return bounds;
 }
 
-Chronicler::CPalette CLine::palette() const
+CPaletteAction *CLine::getPalette()
 {
     return m_palette;
 }
 
-void CLine::setPalette(const Chronicler::CPalette &palette)
+void CLine::setPalette(CPaletteAction *palette)
 {
     m_palette = palette;
     update();
@@ -67,13 +69,13 @@ void CLine::setEnd(const QPointF &end)
 
 void CLine::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
-    painter->setPen(QPen(QBrush(m_palette.line), m_width));
+    painter->setPen(QPen(QBrush(m_palette->getPalette().line), m_width));
     painter->drawPath(m_path);
-    painter->setPen(QPen(QBrush(m_palette.fill), m_width/2));
+    painter->setPen(QPen(QBrush(m_palette->getPalette().fill), m_width/2));
     painter->drawPath(m_path);
 
 //    painter->setPen(QPen(QBrush(m_palette.line), 1));
-    painter->setBrush(QBrush(m_palette.fill));
+    painter->setBrush(QBrush(m_palette->getPalette().fill));
     painter->drawPath(m_arrow);
 }
 

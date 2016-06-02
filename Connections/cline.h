@@ -27,8 +27,8 @@ public:
     virtual QPainterPath shape() const;
     virtual QRectF boundingRect() const;
 
-    CPalette palette() const;
-    void setPalette(const CPalette &palette);
+    CPaletteAction *getPalette();
+    void setPalette(CPaletteAction *palette);
 
     const QPointF & start() const { return m_start; }
     void setStart(const QPointF &start);
@@ -58,7 +58,7 @@ private:
     QPointF         m_end;
     Anchor          m_startAnchor;
     Anchor          m_endAnchor;
-    CPalette        m_palette;
+    CPaletteAction *m_palette;
     float           m_width;
 
 };

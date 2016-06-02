@@ -81,8 +81,6 @@ public:
     QString name();
     void setName(const QString &name);
 
-    void setPalette(const CPalette &palette);
-
     bool isRubberBandSelecting() const { return m_rubberBand; }
 
     CBubble *AddBubble(BubbleType type, const QPointF &pos, bool shift);

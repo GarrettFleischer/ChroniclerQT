@@ -5,7 +5,7 @@
 #include "cgraphicsscene.h"
 
 
-CSingleLinkBubble::CSingleLinkBubble(const QPointF &pos, const Chronicler::CPalette &palette, const QFont &font, QGraphicsItem *parent)
+CSingleLinkBubble::CSingleLinkBubble(const QPointF &pos, CPaletteAction *palette, const QFont &font, QGraphicsItem *parent)
     : CBubble(pos, palette, font, parent), m_link(0)
 {}
 

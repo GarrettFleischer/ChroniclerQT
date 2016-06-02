@@ -16,10 +16,10 @@ class CStoryBubble : public CSingleLinkBubble
     Q_OBJECT
 
 public:
-    CStoryBubble(const QPointF &pos, const Chronicler::CPalette &palette, const QFont &font = QFont(), QGraphicsItem *parent = 0);
+    CStoryBubble(const QPointF &pos, CPaletteAction *palette, const QFont &font = QFont(), QGraphicsItem *parent = 0);
 
     virtual void setFont(const QFont &font);
-    virtual void setPalette(const Chronicler::CPalette &palette);
+    virtual void setPalette(CPaletteAction *palette);
 
     virtual void setLabel(QString label);
 

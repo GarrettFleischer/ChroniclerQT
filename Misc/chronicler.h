@@ -21,6 +21,7 @@ class CSettingsView;
 class CProjectView;
 class CDockManager;
 class CPaletteButton;
+class CPaletteAction;
 
 namespace Chronicler
 {
@@ -89,6 +90,11 @@ namespace Chronicler
         QAction *saveProjectAction;
         QAction *saveAsProjectAction;
         QAction *showHomepageAction;
+
+        CPaletteAction *defaultStory;
+        CPaletteAction *defaultChoice;
+        CPaletteAction *defaultAction;
+        CPaletteAction *defaultCondition;
 
         Mode cursorMode = Cursor;
     };

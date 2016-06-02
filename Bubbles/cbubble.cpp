@@ -16,13 +16,14 @@ using std::logic_error;
 
 #include "Connections/cconnection.h"
 #include "cgraphicsscene.h"
+#include "Misc/cpaletteaction.h"
 
 #include "Misc/chronicler.h"
 using Chronicler::shared;
 
 QList<t_uid> CBubble::m_UIDs = QList<t_uid>();
 
-CBubble::CBubble(const QPointF &pos, const Chronicler::CPalette &palette, const QFont &font, QGraphicsItem *parent, t_uid uid)
+CBubble::CBubble(const QPointF &pos, CPaletteAction *palette, const QFont &font, QGraphicsItem *parent, t_uid uid)
     : QGraphicsPolygonItem(parent), m_UID(uid),
       m_minSize(QSizeF(150,100)), m_order(0), m_locked(false),
       m_font(font), m_palette(palette), m_resize(false)
@@ -39,6 +40,8 @@ CBubble::CBubble(const QPointF &pos, const Chronicler::CPalette &palette, const 
         throw logic_error("Error! UID must be unique.");
     else
         m_UIDs.append(m_UID);
+
+    setPalette(palette);
 }
 
 CBubble::~CBubble()
@@ -120,9 +123,9 @@ QVariant CBubble::itemChange(GraphicsItemChange change, const QVariant &value)
 
 void CBubble::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
-    QPen outline = (isSelected() ? QPen(m_palette.select, 2) : QPen(m_palette.line, 1.5));
+    QPen outline = (isSelected() ? QPen(m_palette->getPalette().select, 2) : QPen(m_palette->getPalette().line, 1.5));
     painter->setPen(outline);
-    painter->setBrush(QBrush(m_palette.fill));
+    painter->setBrush(QBrush(m_palette->getPalette().fill));
     painter->drawPolygon(polygon(), Qt::WindingFill);
 }
 
@@ -167,6 +170,11 @@ Anchor CBubble::AnchorAtPosition(const QPointF &pos)
     return Anchor::Up;
 }
 
+void CBubble::UpdatePalette()
+{
+    this->setPalette(m_palette);
+}
+
 
 void CBubble::setFont(const QFont &font)
 {
@@ -177,10 +185,17 @@ void CBubble::setFont(const QFont &font)
     }
 }
 
-void CBubble::setPalette(const Chronicler::CPalette &palette)
+void CBubble::setPalette(CPaletteAction *palette)
 {
+    disconnect(m_palette, SIGNAL(changed()), this, SLOT(UpdatePalette()));
     m_palette = palette;
+    connect(m_palette, SIGNAL(changed()), this, SLOT(UpdatePalette()));
     update();
+}
+
+CPaletteAction * CBubble::getPalette()
+{
+    return m_palette;
 }
 
 void CBubble::setBounds(const QRectF &bounds)
@@ -231,15 +246,32 @@ t_uid CBubble::UID()
     return m_UID;
 }
 
-QDataStream &CBubble::Read(QDataStream &ds, const QString &)
+QDataStream &CBubble::Read(QDataStream &ds, const QString &version)
 {
     QPointF pos;
 
-    ds >> m_UID
-       >> m_label >> m_order >> m_locked
-       >> m_palette
-       >> m_bounds >> pos;
+    if(version == "0.8.1.0")
+    {
+        CPalette palette;
 
+        ds >> m_UID
+                >> m_label >> m_order >> m_locked
+                >> palette // ignored after version 0.8.6.0
+                >> m_bounds >> pos;
+    }
+    else
+    {
+        t_uid palette_uid;
+
+        ds >> m_UID
+                >> m_label >> m_order >> m_locked
+                >> palette_uid
+                >> m_bounds >> pos;
+
+        // TODO set palette to palette with palette_uid
+    }
+
+    m_UIDs.append(m_UID);
     setLabel(m_label);
     setPos(pos);
     UpdatePolygon();
@@ -252,7 +284,7 @@ QDataStream & CBubble::Write(QDataStream &ds)
     ds << static_cast<qint32>(m_type)
        << m_UID
        << m_label << m_order << m_locked
-       << m_palette
+       << m_palette->getUID()
        << m_bounds << scenePos();
 
     return ds;
