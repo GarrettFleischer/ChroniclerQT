@@ -30,11 +30,12 @@ CPaletteCreator::CPaletteCreator(QWidget *parent)
     QHBoxLayout *hl_viewButtons = new QHBoxLayout(this);
 
     QGraphicsScene *scene = new QGraphicsScene(0, 0, 450, 300);
+    scene->setBackgroundBrush(QBrush(Qt::gray));
     QGraphicsView *view = new QGraphicsView(scene);
     view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     view->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-    m_bubble = new CStoryBubble(QPointF(0, 0), shared().defaultStory);
+    m_bubble = new CStoryBubble(0, QPointF(0, 0), shared().defaultStory);
     m_bubble->setBounds(QRectF(0, 0, 200, 150));
     m_bubble->setLabel("Lorem");
     m_bubble->setStory("Lorem ipsum dolor sit amet,\nconsectetur adipiscing elit.\nMauris id.");

@@ -7,10 +7,12 @@ class CPaletteCreator;
 class CActionMenu;
 class CPaletteAction;
 
+#include "Misc/cserializable.h"
+
 #include "Misc/chronicler.h"
 using Chronicler::CPalette;
 
-class CPaletteButton : public QToolButton
+class CPaletteButton : public QToolButton, public CSerializable
 {
     Q_OBJECT
 
@@ -23,6 +25,9 @@ public:
 
 protected:
     virtual void contextMenuEvent(QContextMenuEvent *) override;
+
+    virtual QDataStream &Read(QDataStream &ds, const QString &) override;
+    virtual QDataStream &Write(QDataStream &ds) override;
 
 private:
     CPaletteAction *m_current;
@@ -37,7 +42,6 @@ private slots:
     void SelectAction(QAction *action);
     void EditAction(QAction *action);
     void Saved();
-
 
 };
 

@@ -31,10 +31,10 @@ const int InsertTextButton = 10;
 
 CMainWindow::CMainWindow(QSettings *settings, const QString &filename)
 {
-    setWindowTitle(tr("Chronicler"));
-    setUnifiedTitleAndToolBarOnMac(true);
-
     shared().ProgramVersion = "0.8.6.0";
+
+    setWindowTitle(tr("Chronicler ") + shared().ProgramVersion);
+    setUnifiedTitleAndToolBarOnMac(true);
 
     shared().mainWindow = this;
 
@@ -250,20 +250,20 @@ void CMainWindow::CreateActions()
     connect(shared().showHomepageAction, SIGNAL(triggered(bool)), this, SLOT(ShowHomepage()));
 
     // Default Palettes
-    CPalette dp_story, dp_choice, dp_action, dp_condition;
+    CPalette dp_story, dp_choice, dp_action, dp_condition, dp_start;
     dp_story.fill = QColor(124, 140, 230);
     dp_choice.fill = QColor(104, 160, 210);
     dp_action.fill = QColor(161,88,136);
     dp_condition.fill = QColor(151,118,166);
+    dp_start.fill = Qt::darkGreen;
 
-    shared().defaultStory = new CPaletteAction(this, dp_story, "Story");
-    shared().defaultChoice = new CPaletteAction(this, dp_choice, "Choice");
-    shared().defaultAction = new CPaletteAction(this, dp_action, "Action");
-    shared().defaultCondition = new CPaletteAction(this, dp_condition, "Condition");
+    shared().defaultStory = new CPaletteAction(this, dp_story, "Story", 1);
+    shared().defaultChoice = new CPaletteAction(this, dp_choice, "Choice", 2);
+    shared().defaultAction = new CPaletteAction(this, dp_action, "Action", 3);
+    shared().defaultCondition = new CPaletteAction(this, dp_condition, "Condition", 4);
+    shared().defaultStart = new CPaletteAction(this, dp_start, "Start", 5);
 
     // Disable unavailable actions
-//    shared().newProjectAction->setEnabled(false);
-//    shared().openProjectAction->setEnabled(false);
     shared().importProjectAction->setEnabled(false);
 }
 

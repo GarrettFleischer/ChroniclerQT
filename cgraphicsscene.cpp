@@ -22,6 +22,7 @@
 #include "Connections/cconnection.h"
 
 #include "Misc/cpalettebutton.h"
+#include "Misc/cpaletteaction.h"
 
 #include "Properties/cprojectview.h"
 
@@ -29,7 +30,7 @@
 using Chronicler::Anchor;
 using Chronicler::shared;
 
-CGraphicsScene::CGraphicsScene(const QString &name, QObject *parent)
+CGraphicsScene::CGraphicsScene(bool create_start, const QString &name, QObject *parent)
     : QGraphicsScene(parent), m_name(name), m_line(0), m_rubberBand(false)
 {
     float maxsize = 25000.0;
@@ -43,7 +44,8 @@ CGraphicsScene::CGraphicsScene(const QString &name, QObject *parent)
 
     connect(this, SIGNAL(itemSelected(QGraphicsItem*)), this, SLOT(ItemSelected(QGraphicsItem*)));
 
-    m_startBubble = dynamic_cast<CStartBubble *>(AddBubble(Chronicler::Start, sceneRect().center(), false));
+    if(create_start)
+        m_startBubble = dynamic_cast<CStartBubble *>(AddBubble(Chronicler::Start, sceneRect().center(), false));
 }
 
 void CGraphicsScene::setFont(const QFont &font)
@@ -114,30 +116,27 @@ CBubble *CGraphicsScene::BubbleAt(const QPointF &point, bool choiceAllowed)
 
 QDataStream &operator <<(QDataStream &ds, const CGraphicsScene &scene)
 {
-    ds << scene.m_name << scene.m_bubbles.length();
+    ds << scene.m_name << static_cast<qint32>(scene.m_bubbles.length());
     for(CBubble *bbl : scene.m_bubbles)
-        bbl->Write(ds);
+        ds << *bbl;
 
     return ds;
 }
 
 QDataStream &operator >>(QDataStream &ds, CGraphicsScene &scene)
 {
-    int len;
+    qint32 len, t;
+    CBubble *bbl;
     ds >> len;
 
     for(int i = 0; i < len; ++i)
     {
-        int t;
         ds >> t;
+        bbl = scene.AddBubble(Chronicler::BubbleType(t), QPointF(), false, 0);
+        ds >> *bbl;
 
-        CBubble *bbl;
-        if(t == int(Chronicler::Start))
-            bbl = scene.m_startBubble;
-        else
-            bbl = scene.AddBubble(Chronicler::BubbleType(t), QPointF(), false);
-
-        bbl->Read(ds, shared().projectView->version());
+        if(bbl->getType() == Chronicler::Start)
+            scene.m_startBubble = dynamic_cast<CStartBubble*>(bbl);
     }
 
     for(CConnection *connection : scene.m_connections)
@@ -225,7 +224,7 @@ void CGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
         case Chronicler::Paint:
                 if(clickItem)
-                    clickItem->setPalette(shared().paletteButton->getPalette());
+                    clickItem->container()->setPalette(shared().paletteButton->getPalette());
             break;
 
         case Chronicler::Cursor:
@@ -319,19 +318,19 @@ void CGraphicsScene::keyReleaseEvent(QKeyEvent *event)
 }
 
 
-CBubble * CGraphicsScene::AddBubble(BubbleType type, const QPointF &pos, bool shift)
+CBubble * CGraphicsScene::AddBubble(BubbleType type, const QPointF &pos, bool shift, Chronicler::t_uid uid)
 {
     CBubble *bbl = 0;
     if(type == Chronicler::Story)
-        bbl = new CStoryBubble(pos, shared().defaultStory, m_font);
+        bbl = new CStoryBubble(uid, pos, shared().defaultStory, m_font);
     else if(type == Chronicler::Condition)
-        bbl = new CConditionBubble(pos, shared().defaultCondition, m_font);
+        bbl = new CConditionBubble(uid, pos, shared().defaultCondition, m_font);
     else if(type == Chronicler::Action)
-        bbl = new CActionBubble(pos, shared().defaultAction, m_font);
+        bbl = new CActionBubble(uid, pos, shared().defaultAction, m_font);
     else if(type == Chronicler::Choice)
-        bbl = new CChoiceBubble(pos, shared().defaultChoice, m_font);
+        bbl = new CChoiceBubble(uid, pos, shared().defaultChoice, m_font);
     else if(type == Chronicler::Start)
-        bbl = new CStartBubble(pos, shared().defaultStory, m_font);
+        bbl = new CStartBubble(uid, pos, shared().defaultStart, m_font);
 
     if(bbl)
     {

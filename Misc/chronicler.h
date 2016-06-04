@@ -95,6 +95,7 @@ namespace Chronicler
         CPaletteAction *defaultChoice;
         CPaletteAction *defaultAction;
         CPaletteAction *defaultCondition;
+        CPaletteAction *defaultStart;
 
         Mode cursorMode = Cursor;
     };

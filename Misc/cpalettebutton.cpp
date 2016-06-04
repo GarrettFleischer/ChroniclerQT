@@ -29,6 +29,7 @@ CPaletteButton::CPaletteButton(QWidget *parent)
     m_menu->addAction(shared().defaultChoice);
     m_menu->addAction(shared().defaultAction);
     m_menu->addAction(shared().defaultCondition);
+    m_menu->addAction(shared().defaultStart);
     connect(m_menu, SIGNAL(leftTriggered(QAction*)), this, SLOT(SelectAction(QAction*)));
     connect(m_menu, SIGNAL(rightTriggered(QAction*)), this, SLOT(EditAction(QAction*)));
 
@@ -84,4 +85,43 @@ void CPaletteButton::Saved()
     }
     else
         m_menu->addAction(new CPaletteAction(this, m_creator->getPalette(), m_creator->getName()));
+}
+
+
+QDataStream &CPaletteButton::Read(QDataStream &ds, const QString &)
+{
+    qint32 len;
+    ds >> len;
+
+    for(int i = 0; i < len; ++i)
+    {
+        t_uid uid;
+        QString name;
+        CPalette palette;
+
+        ds >> uid >> name >> palette;
+
+        CPaletteAction *pwuid = getPaletteWithUID(uid);
+        if(pwuid)
+            pwuid->setPalette(palette);
+        else
+            m_menu->addAction(new CPaletteAction(this, palette, name, uid));
+    }
+
+    return ds;
+}
+
+QDataStream &CPaletteButton::Write(QDataStream &ds)
+{
+    QList<QAction *> actions = m_menu->actions();
+    ds << static_cast<qint32>(actions.length());
+
+    for(QAction *action : actions)
+    {
+        CPaletteAction *a = dynamic_cast<CPaletteAction *>(action);
+        CPalette p = a->getPalette();
+        ds << a->getUID() << a->text() << p;
+    }
+
+    return ds;
 }

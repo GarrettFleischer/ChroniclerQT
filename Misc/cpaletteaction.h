@@ -12,7 +12,7 @@ class CPaletteAction : public QAction
 public:
     CPaletteAction(QObject *parent = 0, const CPalette &palette = CPalette(), const QString &name = "Default", t_uid uid = generateUID());
 
-    const CPalette &getPalette() const;
+    CPalette getPalette() const;
     void setPalette(const CPalette &palette);
 
     t_uid getUID() const;

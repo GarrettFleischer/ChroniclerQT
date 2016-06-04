@@ -41,6 +41,8 @@
 #include "Bubbles/cconditionbubble.h"
 #include "Connections/cconnection.h"
 
+#include "Misc/cpalettebutton.h"
+
 #include "csettingsview.h"
 
 #include "Misc/chronicler.h"
@@ -108,6 +110,15 @@ void CProjectView::SaveProject()
             SaveProjectAs();
         else
         {
+            // Create necessary directories
+            QString dir = QFileInfo(m_path).absolutePath();
+
+            if(!QDir(dir + "/backups").exists())
+                QDir().mkdir(dir + "/backups");
+
+            if(!QDir(dir + "/scenes").exists())
+                QDir().mkdir(dir + "/scenes");
+
             // Update order before saving...
             ExportChoiceScript();
 
@@ -156,6 +167,7 @@ void CProjectView::SaveProjectAs()
     if(dialog.exec())
     {
         m_path = dialog.selectedFiles().first();
+        shared().dock->setWindowTitle(m_path);
         SaveProject();
     }
 }
@@ -164,7 +176,7 @@ void CProjectView::Autosave()
 {
     if(shared().settingsView->maxAutosaves() > 0 && m_sceneModel->rowCount() > 0 && m_path.length())
     {
-        QString filename = QFileInfo(m_path).absolutePath() + "/" + QFileInfo(m_path).completeBaseName() +
+        QString filename = QFileInfo(m_path).absolutePath() + "/backups/" + QFileInfo(m_path).completeBaseName() +
                 ".backup" + QString::number((m_autosave_num = (m_autosave_num % shared().settingsView->maxAutosaves()) + 1)) + ".chronx";
         QSaveFile file(filename);
         SaveToFile(file);
@@ -179,7 +191,7 @@ void CProjectView::SaveToFile(QSaveFile &file)
     QByteArray ba;
     QDataStream ds(&ba, QIODevice::WriteOnly);
 
-    ds << shared().ProgramVersion << m_name->text() << m_sceneModel->rowCount();
+    ds << shared().ProgramVersion << m_name->text() << *(shared().paletteButton) << m_sceneModel->rowCount();
     for(CGraphicsView *view : m_sceneModel->views())
         ds << *(view->cScene());
 
@@ -203,12 +215,15 @@ void CProjectView::OpenProject(const QString &filepath)
     m_path = file.fileName();
 
     // Load data from the file
-    QByteArray ba(file.readAll());
-    QDataStream ds(&ba, QIODevice::ReadOnly);
+    QDataStream ds(file.readAll());
 
     int num_scenes;
     QString project_name;
-    ds >> m_version >> project_name >> num_scenes;
+    ds >> m_version;
+    if(m_version == "0.8.1.0")
+        ds >> project_name >> num_scenes;
+    else
+        ds >> project_name >> *(shared().paletteButton) >> num_scenes;
 
     m_name->setText(project_name);
 
@@ -217,7 +232,7 @@ void CProjectView::OpenProject(const QString &filepath)
     {
         QString name;
         ds >> name;
-        CGraphicsView *view = new CGraphicsView(new CGraphicsScene(name), this);
+        CGraphicsView *view = new CGraphicsView(new CGraphicsScene(false, name), this);
         view->hide();
         m_sceneModel->AddItem(view);
         ds >> *(m_sceneModel->views().last()->cScene());
@@ -231,7 +246,7 @@ void CProjectView::OpenProject(const QString &filepath)
     CGraphicsView *view = m_sceneModel->views().first();
     shared().sceneTabs->addTab(view, view->cScene()->name());
     shared().sceneTabs->setCurrentWidget(view);
-    view->centerOn(view->scene()->sceneRect().center());
+    view->centerOn(view->cScene()->startBubble()->scenePos());
 }
 
 void CProjectView::ImportProject()
@@ -249,12 +264,12 @@ void CProjectView::NewProject()
     shared().dock->setWindowTitle(m_path);
     shared().sceneTabs->removeTab(shared().sceneTabs->indexOf(shared().homepage));
 
-    CGraphicsView *view = new CGraphicsView(new CGraphicsScene("startup"), this);
+    CGraphicsView *view = new CGraphicsView(new CGraphicsScene(true, "startup"), this);
     m_sceneModel->AddItem(view);
 
     shared().sceneTabs->addTab(view, view->cScene()->name());
     shared().sceneTabs->setCurrentWidget(view);
-    view->centerOn(view->scene()->sceneRect().center());
+    view->centerOn(view->cScene()->startBubble()->scenePos());
 }
 
 void CProjectView::CloseProject()
@@ -288,7 +303,7 @@ void CProjectView::ExportChoiceScript()
     QString project_folder = QFileInfo(m_path).absolutePath();
     for(CGraphicsView *view : m_sceneModel->views())
     {
-        QFile file(project_folder + "/" + view->cScene()->name() + ".txt");
+        QFile file(project_folder + "/scenes/" + view->cScene()->name() + ".txt");
 
         QString cs;
         if(view->cScene()->name() == "startup")
@@ -562,7 +577,7 @@ void CProjectView::DataChanged(const QModelIndex &topLeft, const QModelIndex &bo
 
 void CProjectView::ProjectNameChanged()
 {
-    shared().mainWindow->setWindowTitle("Chronicler - " + m_name->text());
+    shared().mainWindow->setWindowTitle("Chronicler " + shared().ProgramVersion + " - " + m_name->text());
 }
 
 void CProjectView::MoveUp()
@@ -577,7 +592,7 @@ void CProjectView::MoveDown()
 
 void CProjectView::AddItem()
 {
-    m_sceneModel->AddItem(new CGraphicsView(new CGraphicsScene("scene " + QString().setNum(m_sceneModel->rowCount())), this));
+    m_sceneModel->AddItem(new CGraphicsView(new CGraphicsScene(true, "scene " + QString().setNum(m_sceneModel->rowCount())), this));
     m_modelView->edit(QModelIndex(m_sceneModel->index(m_sceneModel->rowCount() - 1, 0)));
 }
 

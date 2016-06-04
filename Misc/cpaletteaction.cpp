@@ -11,9 +11,11 @@ CPaletteAction::CPaletteAction(QObject *parent, const Chronicler::CPalette &pale
 {
     setText(name);
     setIcon(PaletteIcon());
+
+    m_UIDs.append(m_uid);
 }
 
-const Chronicler::CPalette &CPaletteAction::getPalette() const
+Chronicler::CPalette CPaletteAction::getPalette() const
 {
     return m_palette;
 }
@@ -21,6 +23,7 @@ const Chronicler::CPalette &CPaletteAction::getPalette() const
 void CPaletteAction::setPalette(const CPalette &palette)
 {
     m_palette = palette;
+    setIcon(PaletteIcon());
     emit changed();
 }
 

@@ -54,12 +54,12 @@ class QColor;
 class QWheelEvent;
 QT_END_NAMESPACE
 
-class CBubble;
 class CConnection;
 class CStartBubble;
 class CLink;
 class CLine;
 
+#include "Bubbles/cbubble.h"
 #include "Misc/chronicler.h"
 using Chronicler::CPalette;
 using Chronicler::BubbleType;
@@ -73,7 +73,7 @@ class CGraphicsScene : public QGraphicsScene
 public:
 
 
-    explicit CGraphicsScene(const QString &name, QObject *parent = 0);
+    explicit CGraphicsScene(bool create_start, const QString &name, QObject *parent = 0);
 
     void setFont(const QFont &font);
     QFont getFont() const { return m_font; }
@@ -83,7 +83,7 @@ public:
 
     bool isRubberBandSelecting() const { return m_rubberBand; }
 
-    CBubble *AddBubble(BubbleType type, const QPointF &pos, bool shift);
+    CBubble *AddBubble(BubbleType type, const QPointF &pos, bool shift, Chronicler::t_uid uid = CBubble::GenerateUID());
     CConnection *AddConnection(CBubble *start, CBubble *end, Chronicler::Anchor start_anchor, Chronicler::Anchor end_anchor);
     CConnection *AddConnection();
 
