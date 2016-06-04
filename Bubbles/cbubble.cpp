@@ -17,15 +17,16 @@ using std::logic_error;
 #include "Connections/cconnection.h"
 #include "cgraphicsscene.h"
 #include "Misc/cpaletteaction.h"
+#include "Misc/cpalettebutton.h"
 
 #include "Misc/chronicler.h"
 using Chronicler::shared;
 
 QList<t_uid> CBubble::m_UIDs = QList<t_uid>();
 
-CBubble::CBubble(const QPointF &pos, CPaletteAction *palette, const QFont &font, QGraphicsItem *parent, t_uid uid)
+CBubble::CBubble(t_uid uid, const QPointF &pos, CPaletteAction *palette, const QFont &font, QGraphicsItem *parent)
     : QGraphicsPolygonItem(parent), m_UID(uid),
-      m_minSize(QSizeF(150,100)), m_order(0), m_locked(false),
+      m_minSize(QSizeF(150, 100)), m_order(0), m_locked(false),
       m_font(font), m_palette(palette), m_resize(false)
 {
     setFlag(QGraphicsItem::ItemIsMovable, true);
@@ -36,10 +37,8 @@ CBubble::CBubble(const QPointF &pos, CPaletteAction *palette, const QFont &font,
     setCursor(Qt::PointingHandCursor);
     setPos(pos);
 
-    if(m_UIDs.contains(m_UID))
-        throw logic_error("Error! UID must be unique.");
-    else
-        m_UIDs.append(m_UID);
+    if(m_UID != 0)
+        AddUID(m_UID);
 
     setPalette(palette);
 }
@@ -145,6 +144,14 @@ void CBubble::UpdatePolygon()
     setPolygon(path.simplified().toFillPolygon());
 }
 
+void CBubble::AddUID(t_uid uid)
+{
+    if(uid == 0 || m_UIDs.contains(uid))
+        throw logic_error("Error! UID must be unique.");
+    else
+        m_UIDs.append(uid);
+}
+
 t_uid CBubble::GenerateUID()
 {
     t_uid lowest = 1;
@@ -191,6 +198,8 @@ void CBubble::setPalette(CPaletteAction *palette)
     m_palette = palette;
     connect(m_palette, SIGNAL(changed()), this, SLOT(UpdatePalette()));
     update();
+
+    emit PaletteChanged();
 }
 
 CPaletteAction * CBubble::getPalette()
@@ -256,7 +265,7 @@ QDataStream &CBubble::Read(QDataStream &ds, const QString &version)
 
         ds >> m_UID
                 >> m_label >> m_order >> m_locked
-                >> palette // ignored after version 0.8.6.0
+                >> palette
                 >> m_bounds >> pos;
     }
     else
@@ -268,10 +277,15 @@ QDataStream &CBubble::Read(QDataStream &ds, const QString &version)
                 >> palette_uid
                 >> m_bounds >> pos;
 
-        // TODO set palette to palette with palette_uid
+        m_palette = shared().paletteButton->getPaletteWithUID(palette_uid);
     }
 
-    m_UIDs.append(m_UID);
+    // hopefully fixes corrupted projects...
+    if(m_UIDs.contains(m_UID))
+        m_UID = GenerateUID();
+
+    AddUID(m_UID);
+
     setLabel(m_label);
     setPos(pos);
     UpdatePolygon();

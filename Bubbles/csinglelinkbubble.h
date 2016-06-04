@@ -8,7 +8,7 @@ class CConnection;
 class CSingleLinkBubble : public CBubble
 {
 public:
-    CSingleLinkBubble(const QPointF &pos, CPaletteAction *palette, const QFont &font, QGraphicsItem *parent);
+    CSingleLinkBubble(t_uid uid, const QPointF &pos, CPaletteAction *palette, const QFont &font, QGraphicsItem *parent);
     virtual ~CSingleLinkBubble();
 
     CConnection * link();
@@ -17,11 +17,11 @@ public:
     virtual void RemoveLink(Chronicler::Anchor anchor) override;
     virtual QList<CConnection *> links() override;
 
-    virtual QDataStream &Read(QDataStream &ds, const QString &version) override;
-    virtual QDataStream &Write(QDataStream &ds) override;
-
 protected:
     CConnection *m_link;
+
+    virtual QDataStream &Read(QDataStream &ds, const QString &version) override;
+    virtual QDataStream &Write(QDataStream &ds) override;
 
 };
 

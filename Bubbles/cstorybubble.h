@@ -16,7 +16,7 @@ class CStoryBubble : public CSingleLinkBubble
     Q_OBJECT
 
 public:
-    CStoryBubble(const QPointF &pos, CPaletteAction *palette, const QFont &font = QFont(), QGraphicsItem *parent = 0);
+    CStoryBubble(t_uid uid, const QPointF &pos, CPaletteAction *palette, const QFont &font = QFont(), QGraphicsItem *parent = 0);
 
     virtual void setFont(const QFont &font);
     virtual void setPalette(CPaletteAction *palette);
@@ -26,11 +26,11 @@ public:
     void setStory(QString story) { m_story->setText(story); }
     QString getStory() { return m_story->Text(); }
 
-    virtual QDataStream &Read(QDataStream &ds, const QString &version) override;
-    virtual QDataStream &Write(QDataStream &ds) override;
-
 protected:
     virtual void UpdatePolygon();
+
+    virtual QDataStream &Read(QDataStream &ds, const QString &version) override;
+    virtual QDataStream &Write(QDataStream &ds) override;
 
 private:
     CTextItem * m_title;

@@ -11,7 +11,7 @@ class CConditionBubble : public CBubble
     Q_OBJECT
 
 public:
-    CConditionBubble(const QPointF &pos, CPaletteAction *palette, const QFont &font = QFont(), QGraphicsItem *parent = 0);
+    CConditionBubble(t_uid uid, const QPointF &pos, CPaletteAction *palette, const QFont &font = QFont(), QGraphicsItem *parent = 0);
     virtual ~CConditionBubble();
 
     virtual void setFont(const QFont &font) override;
@@ -25,9 +25,6 @@ public:
     virtual Anchor OutputAnchorAtPosition(const QPointF &pos) override;
     virtual Anchor InputAnchorAtPosition(const QPointF &) override;
 
-    virtual QDataStream &Read(QDataStream &ds, const QString &version) override;
-    virtual QDataStream &Write(QDataStream &ds) override;
-
     CConnection *trueLink();
     CConnection *falseLink();
 
@@ -37,6 +34,9 @@ public:
 protected:
     virtual void UpdatePolygon() override;
     void AdjustMinSize();
+
+    virtual QDataStream &Read(QDataStream &ds, const QString &version) override;
+    virtual QDataStream &Write(QDataStream &ds) override;
 
 private:
     CTextItem *m_condition;

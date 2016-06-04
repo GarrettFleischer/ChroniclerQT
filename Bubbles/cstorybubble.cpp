@@ -5,10 +5,9 @@
 
 #include "Misc/cpaletteaction.h"
 
-#include <QDebug>
 
-CStoryBubble::CStoryBubble(const QPointF &pos, CPaletteAction *palette, const QFont &font, QGraphicsItem *parent)
-    : CSingleLinkBubble(pos, palette, font, parent)
+CStoryBubble::CStoryBubble(t_uid uid, const QPointF &pos, CPaletteAction *palette, const QFont &font, QGraphicsItem *parent)
+    : CSingleLinkBubble(uid, pos, palette, font, parent)
 {
     m_type = Chronicler::Story;
     
@@ -77,7 +76,6 @@ void CStoryBubble::setLabel(QString label)
 
 void CStoryBubble::setPalette(CPaletteAction *palette)
 {
-    qDebug() << "palette called";
     m_title->setColor(palette->getPalette().font);
     m_story->setColor(palette->getPalette().font);
     CBubble::setPalette(palette);

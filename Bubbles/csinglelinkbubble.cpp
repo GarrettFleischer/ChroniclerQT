@@ -5,8 +5,8 @@
 #include "cgraphicsscene.h"
 
 
-CSingleLinkBubble::CSingleLinkBubble(const QPointF &pos, CPaletteAction *palette, const QFont &font, QGraphicsItem *parent)
-    : CBubble(pos, palette, font, parent), m_link(0)
+CSingleLinkBubble::CSingleLinkBubble(t_uid uid, const QPointF &pos, CPaletteAction *palette, const QFont &font, QGraphicsItem *parent)
+    : CBubble(uid, pos, palette, font, parent), m_link(0)
 {}
 
 CSingleLinkBubble::~CSingleLinkBubble()
@@ -67,7 +67,7 @@ QDataStream &CSingleLinkBubble::Read(QDataStream &ds, const QString &version)
     if(linked)
     {
         m_link = dynamic_cast<CGraphicsScene *>(scene())->AddConnection();
-        m_link->Read(ds, version);
+        ds >> *m_link;
     }
 
     return ds;
@@ -79,7 +79,7 @@ QDataStream & CSingleLinkBubble::Write(QDataStream &ds)
 
     ds << bool(m_link);
     if(m_link)
-        m_link->Write(ds);
+        ds << *m_link;
 
     return ds;
 }

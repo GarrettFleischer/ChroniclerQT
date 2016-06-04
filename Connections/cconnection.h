@@ -10,15 +10,17 @@ class QPainterPath;
 class QGraphicsScene;
 QT_END_NAMESPACE
 
+#include "Misc/cserializable.h"
+
 #include "Misc/chronicler.h"
 using Chronicler::Anchor;
 using Chronicler::t_uid;
 
 class CBubble;
 class CLine;
+class CPaletteAction;
 
-
-class CConnection : public QObject, public QGraphicsItem
+class CConnection : public QObject, public QGraphicsItem, public CSerializable
 {
     Q_OBJECT
     
@@ -33,8 +35,8 @@ public:
     CBubble *to() const;
     void setTo(CBubble *to);
     
-    QColor color() const;
-    void setColor(const QColor &color);
+    CPaletteAction *getPalette();
+    void setPalette(CPaletteAction *palette);
 
     virtual QRectF boundingRect() const;
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *);
@@ -46,8 +48,9 @@ public:
 
     void ConnectToUIDs();
 
-    QDataStream &Read(QDataStream &ds, const QString &);
-    QDataStream &Write(QDataStream &ds);
+protected:
+    virtual QDataStream &Read(QDataStream &stream, const QString &version) override;
+    virtual QDataStream &Write(QDataStream &stream) override;
 
 private:
     CBubble *m_from;
@@ -62,6 +65,9 @@ signals:
     
 public slots:
     void UpdatePosition();
+
+private slots:
+    void FromPaletteChanged();
 
 
 };

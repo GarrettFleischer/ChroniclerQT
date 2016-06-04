@@ -46,6 +46,7 @@ void CConnection::setFrom(CBubble *from)
     if(m_from)
     {
         disconnect(m_from, SIGNAL(PositionOrShapeChanged()), this, SLOT(UpdatePosition()));
+        disconnect(m_from, SIGNAL(PaletteChanged()), this, SLOT(FromPaletteChanged()));
         m_from->RemoveLink(this);
     }
 
@@ -54,6 +55,7 @@ void CConnection::setFrom(CBubble *from)
     {
         m_from->AddLink(this);
         connect(m_from, SIGNAL(PositionOrShapeChanged()), this, SLOT(UpdatePosition()));
+        connect(m_from, SIGNAL(PaletteChanged()), this, SLOT(FromPaletteChanged()));
 
         m_line->setPalette(m_from->getPalette());
     }
@@ -84,6 +86,16 @@ void CConnection::setTo(CBubble *to)
     UpdatePosition();
 }
 
+CPaletteAction *CConnection::getPalette()
+{
+    return m_line->getPalette();
+}
+
+void CConnection::setPalette(CPaletteAction *palette)
+{
+    m_line->setPalette(palette);
+}
+
 void CConnection::UpdatePosition()
 {
     if(m_from)
@@ -102,6 +114,11 @@ void CConnection::UpdatePosition()
         m_line->setEnd(pos + QPointF(size.width() * 0.5 * qCos(angle),
                                      size.height() * 0.5 * qSin(angle)));
     }
+}
+
+void CConnection::FromPaletteChanged()
+{
+    m_line->setPalette(m_from->getPalette());
 }
 
 QRectF CConnection::boundingRect() const
@@ -132,17 +149,31 @@ void CConnection::setEndAnchor(Chronicler::Anchor anchor)
     m_line->setEndAnchor(anchor);
 }
 
+/**
+ * @brief Connects this object with the two bubbles containing the
+ *        UID's read during deserialization
+ *
+ *        To be called only after all bubbles have been instantiated
+ */
 void CConnection::ConnectToUIDs()
 {
     setFrom(shared().projectView->BubbleWithUID(m_fromUID));
     setTo(shared().projectView->BubbleWithUID(m_toUID));
 }
 
-QDataStream & CConnection::Read(QDataStream &ds, const QString &)
+/**
+ * @brief Deserializes this object in the format specified by version
+ * @param stream The QDataStream to extract the data from
+ * @param version The version of the program the data was created with
+ * @return The modified datastream for chaining
+ */
+QDataStream & CConnection::Read(QDataStream &stream, const QString &version)
 {
+    Q_UNUSED(version)
+
     qint32 start, end;
 
-    ds >> start
+    stream >> start
             >> end
             >> m_fromUID
             >> m_toUID;
@@ -150,16 +181,21 @@ QDataStream & CConnection::Read(QDataStream &ds, const QString &)
     m_line->setStartAnchor(Anchor(start));
     m_line->setEndAnchor(Anchor(end));
 
-    return ds;
+    return stream;
 }
 
-QDataStream & CConnection::Write(QDataStream &ds)
+/**
+ * @brief Serializes this object with the current program version
+ * @param stream The QDataStream to insert the data into
+ * @return The modified datastream for chaining
+ */
+QDataStream & CConnection::Write(QDataStream &stream)
 {
-    ds << static_cast<qint32>(m_line->startAnchor())
-       << static_cast<qint32>(m_line->endAnchor())
-       << m_from->UID()
-       << m_to->UID();
+    stream << static_cast<qint32>(m_line->startAnchor())
+           << static_cast<qint32>(m_line->endAnchor())
+           << m_from->UID()
+           << m_to->UID();
 
-    return ds;
+    return stream;
 }
 

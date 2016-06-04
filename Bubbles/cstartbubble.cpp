@@ -1,7 +1,7 @@
 #include "cstartbubble.h"
 
-CStartBubble::CStartBubble(const QPointF &pos, CPaletteAction *palette, const QFont &font, QGraphicsItem *parent)
-    : CSingleLinkBubble(pos, palette, font, parent)
+CStartBubble::CStartBubble(t_uid uid, const QPointF &pos, CPaletteAction *palette, const QFont &font, QGraphicsItem *parent)
+    : CSingleLinkBubble(uid, pos, palette, font, parent)
 {
     m_type = Chronicler::Start;
 

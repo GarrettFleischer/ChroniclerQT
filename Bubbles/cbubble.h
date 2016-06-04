@@ -14,6 +14,8 @@ class QStyleOptionGraphicsItem;
 class QPolygonF;
 QT_END_NAMESPACE
 
+#include "Misc/cserializable.h"
+
 #include "Misc/chronicler.h"
 using Chronicler::CPalette;
 using Chronicler::Anchor;
@@ -25,12 +27,12 @@ class CConnection;
 class CLink;
 
 
-class CBubble : public QObject, public QGraphicsPolygonItem
+class CBubble : public QObject, public QGraphicsPolygonItem, public CSerializable
 {
     Q_OBJECT
 
 public:
-    CBubble(const QPointF &pos, CPaletteAction *palette, const QFont &font = QFont(), QGraphicsItem *parent = 0, t_uid uid = GenerateUID());
+    CBubble(t_uid uid, const QPointF &pos, CPaletteAction *palette, const QFont &font = QFont(), QGraphicsItem *parent = 0);
 
     virtual ~CBubble();
 
@@ -50,6 +52,8 @@ public:
     CPaletteAction *getPalette();
 
     BubbleType getType() const { return m_type; }
+
+    static t_uid GenerateUID();
 
     void setBounds(const QRectF &bounds);
 
@@ -71,9 +75,6 @@ public:
 
     t_uid UID();
 
-    virtual QDataStream &Read(QDataStream &ds, const QString &version);
-    virtual QDataStream &Write(QDataStream &ds);
-
 protected:
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *evt) override;
     virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *evt) override;
@@ -86,7 +87,10 @@ protected:
 
     virtual void UpdatePolygon();
 
-    static t_uid GenerateUID();
+    virtual QDataStream &Read(QDataStream &ds, const QString &version) override;
+    virtual QDataStream &Write(QDataStream &ds) override;
+
+    static void AddUID(Chronicler::t_uid uid);
 
     t_uid m_UID;
 
@@ -116,6 +120,8 @@ signals:
     void Selected(QGraphicsItem *item);
     void ConnectionsChanged(int);
     void PositionOrShapeChanged();
+
+    void PaletteChanged();
 
 private slots:
     void UpdatePalette();

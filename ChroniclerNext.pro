@@ -55,7 +55,8 @@ HEADERS += \
     Misc/cpalettebutton.h \
     Misc/cpaletteaction.h \
     Misc/cfiledownloader.h \
-    Misc/cactionmenu.h
+    Misc/cactionmenu.h \
+    Misc/cserializable.h
 
 SOURCES += \
     Bubbles/cbubble.cpp \
@@ -96,4 +97,5 @@ SOURCES += \
     Misc/cpalettebutton.cpp \
     Misc/cpaletteaction.cpp \
     Misc/cfiledownloader.cpp \
-    Misc/cactionmenu.cpp
+    Misc/cactionmenu.cpp \
+    Misc/cserializable.cpp

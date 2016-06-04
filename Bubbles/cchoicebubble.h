@@ -13,7 +13,7 @@ class CChoiceBubble : public CBubble
 public:
     typedef QList<CChoice *> choiceList;
 
-    CChoiceBubble(const QPointF &pos, CPaletteAction *palette, const QFont &font = QFont(), QGraphicsItem *parent = 0);
+    CChoiceBubble(t_uid uid, const QPointF &pos, CPaletteAction *palette, const QFont &font = QFont(), QGraphicsItem *parent = 0);
 
     virtual void setPalette(CPaletteAction *palette) override;
     virtual void setFont(const QFont &font) override;
@@ -26,9 +26,6 @@ public:
     virtual void RemoveLink(Chronicler::Anchor) override;
     virtual QList<CConnection *> links() override;
 
-    virtual QDataStream &Read(QDataStream &ds, const QString &version) override;
-    virtual QDataStream &Write(QDataStream &ds) override;
-
     CChoiceModel *choices();
     choiceList choiceBubbles();
 
@@ -37,6 +34,9 @@ protected:
 
 private:
     virtual void AdjustMinSize();
+
+    virtual QDataStream &Read(QDataStream &ds, const QString &version) override;
+    virtual QDataStream &Write(QDataStream &ds) override;
 
     CChoiceModel *m_choices;
 

@@ -10,7 +10,7 @@ class CChoice : public CSingleLinkBubble
     Q_OBJECT
 
 public:
-    explicit CChoice(CPaletteAction *palette, const QFont &font = QFont(), QGraphicsItem *parent = 0, const QString &choice = "");
+    explicit CChoice(t_uid uid, CPaletteAction *palette, const QFont &font = QFont(), QGraphicsItem *parent = 0, const QString &choice = "");
     
     virtual void setPalette(CPaletteAction *palette) override;
     virtual void setFont(const QFont &font) override;
@@ -19,9 +19,6 @@ public:
     virtual Chronicler::Anchor InputAnchorAtPosition(const QPointF &) override;
 
     virtual CBubble *container() override;
-
-    virtual QDataStream &Read(QDataStream &ds, const QString &version) override;
-    virtual QDataStream &Write(QDataStream &ds) override;
 
     void setChoice(const QString &choice);
     QString choice() const;
@@ -34,6 +31,9 @@ protected:
     virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
     virtual void hoverMoveEvent(QGraphicsSceneHoverEvent *event) override;
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
+
+    virtual QDataStream &Read(QDataStream &ds, const QString &) override;
+    virtual QDataStream &Write(QDataStream &ds) override;
 
     virtual void UpdatePolygon() override;
 

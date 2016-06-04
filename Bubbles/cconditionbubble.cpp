@@ -7,8 +7,8 @@
 #include "cgraphicsscene.h"
 
 
-CConditionBubble::CConditionBubble(const QPointF &pos, CPaletteAction *palette, const QFont &font, QGraphicsItem *parent)
-    : CBubble(pos, palette, font, parent), m_trueLink(0), m_falseLink(0)
+CConditionBubble::CConditionBubble(t_uid uid, const QPointF &pos, CPaletteAction *palette, const QFont &font, QGraphicsItem *parent)
+    : CBubble(uid, pos, palette, font, parent), m_trueLink(0), m_falseLink(0)
 {
     m_type = Chronicler::Condition;
 
@@ -152,12 +152,12 @@ QDataStream &CConditionBubble::Read(QDataStream &ds, const QString &version)
     if(trueLink)
     {
         m_trueLink = dynamic_cast<CGraphicsScene *>(scene())->AddConnection();
-        m_trueLink->Read(ds, version);
+        ds >> *m_trueLink;
     }
     if(falseLink)
     {
         m_falseLink = dynamic_cast<CGraphicsScene *>(scene())->AddConnection();
-        m_falseLink->Read(ds, version);
+        ds >> *m_falseLink;
     }
 
     setCondition(m_conditionText);
@@ -174,9 +174,9 @@ QDataStream & CConditionBubble::Write(QDataStream &ds)
     ds << m_conditionText << bool(m_trueLink) << bool(m_falseLink);
 
     if(m_trueLink)
-         m_trueLink->Write(ds);
+         ds << *m_trueLink;
     if(m_falseLink)
-        m_falseLink->Write(ds);
+        ds << *m_falseLink;
 
     return ds;
 }
