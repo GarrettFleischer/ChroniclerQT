@@ -23,6 +23,8 @@ public:
 
     CPaletteAction *getPaletteWithUID(Chronicler::t_uid uid);
 
+    void setCurrent(CPaletteAction *palette);
+
 protected:
     virtual void contextMenuEvent(QContextMenuEvent *) override;
 

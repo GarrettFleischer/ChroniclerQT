@@ -53,6 +53,11 @@ CPaletteAction *CPaletteButton::getPaletteWithUID(Chronicler::t_uid uid)
     return 0;
 }
 
+void CPaletteButton::setCurrent(CPaletteAction *palette)
+{
+    m_current = palette;
+}
+
 
 void CPaletteButton::contextMenuEvent(QContextMenuEvent *)
 {
@@ -82,9 +87,14 @@ void CPaletteButton::Saved()
     {
         m_editing->setText(m_creator->getName());
         m_editing->setPalette(m_creator->getPalette());
+        m_current = m_editing;
+        m_editing = 0;
     }
     else
-        m_menu->addAction(new CPaletteAction(this, m_creator->getPalette(), m_creator->getName()));
+    {
+        m_current = new CPaletteAction(this, m_creator->getPalette(), m_creator->getName());
+        m_menu->addAction(m_current);
+    }
 }
 
 

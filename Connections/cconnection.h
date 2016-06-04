@@ -23,6 +23,7 @@ class CPaletteAction;
 class CConnection : public QObject, public QGraphicsItem, public CSerializable
 {
     Q_OBJECT
+    Q_INTERFACES(QGraphicsItem)
     
 public:
     CConnection(QGraphicsScene *scn);

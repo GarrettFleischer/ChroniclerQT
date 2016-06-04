@@ -152,17 +152,17 @@ void CGraphicsScene::setMode(Mode mode)
 {
     shared().cursorMode = mode;
 
-    if(views().size())
+    for(CGraphicsView *view : shared().projectView->views())
     {
-        views().first()->setDragMode(QGraphicsView::ScrollHandDrag);
+        view->setDragMode(QGraphicsView::ScrollHandDrag);
 
         if(mode == Chronicler::Cursor)
         {
             shared().pointerTypeGroup->button(int(Chronicler::Cursor))->setChecked(true);
-            m_line->hide();
+            view->cScene()->m_line->hide();
         }
         else if(mode == Chronicler::InsertConnection)
-            views().first()->setDragMode(QGraphicsView::NoDrag);
+            view->setDragMode(QGraphicsView::NoDrag);
     }
 }
 
@@ -237,6 +237,15 @@ void CGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
             m_rubberBand = true;
 
         emit leftPressed();
+    }
+    else if(event->button() == Qt::RightButton)
+    {
+        if(shared().cursorMode == Chronicler::Paint)
+        {
+            CBubble *clickItem = BubbleAt(event->scenePos(), true);
+            if(clickItem)
+                shared().paletteButton->setCurrent(clickItem->getPalette());
+        }
     }
 }
 
