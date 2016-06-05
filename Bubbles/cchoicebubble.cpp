@@ -129,9 +129,9 @@ Chronicler::Anchor CChoiceBubble::InputAnchorAtPosition(const QPointF &pos)
 }
 
 
-QDataStream &CChoiceBubble::Read(QDataStream &ds, const QString &version)
+QDataStream &CChoiceBubble::Deserialize(QDataStream &ds, const QString &version)
 {
-    CBubble::Read(ds, version);
+    CBubble::Deserialize(ds, version);
 
     qint64 num_choices;
     ds >> num_choices;
@@ -148,9 +148,9 @@ QDataStream &CChoiceBubble::Read(QDataStream &ds, const QString &version)
     return ds;
 }
 
-QDataStream & CChoiceBubble::Write(QDataStream &ds)
+QDataStream & CChoiceBubble::Serialize(QDataStream &ds)
 {
-    CBubble::Write(ds);
+    CBubble::Serialize(ds);
 
     QList<CChoice *> tmp = m_choices->choices();
 

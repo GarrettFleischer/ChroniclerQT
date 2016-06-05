@@ -255,7 +255,7 @@ t_uid CBubble::UID()
     return m_UID;
 }
 
-QDataStream &CBubble::Read(QDataStream &ds, const QString &version)
+QDataStream &CBubble::Deserialize(QDataStream &ds, const QString &version)
 {
     QPointF pos;
 
@@ -293,7 +293,7 @@ QDataStream &CBubble::Read(QDataStream &ds, const QString &version)
     return ds;
 }
 
-QDataStream & CBubble::Write(QDataStream &ds)
+QDataStream & CBubble::Serialize(QDataStream &ds)
 {
     ds << static_cast<qint32>(m_type)
        << m_UID

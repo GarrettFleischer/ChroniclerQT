@@ -82,9 +82,9 @@ void CStoryBubble::setPalette(CPaletteAction *palette)
 }
 
 
-QDataStream &CStoryBubble::Read(QDataStream &ds, const QString &version)
+QDataStream &CStoryBubble::Deserialize(QDataStream &ds, const QString &version)
 {
-    CSingleLinkBubble::Read(ds, version);
+    CSingleLinkBubble::Deserialize(ds, version);
 
     QString story;
     ds >> story;
@@ -96,9 +96,9 @@ QDataStream &CStoryBubble::Read(QDataStream &ds, const QString &version)
     return ds;
 }
 
-QDataStream & CStoryBubble::Write(QDataStream &ds)
+QDataStream & CStoryBubble::Serialize(QDataStream &ds)
 {
-    CSingleLinkBubble::Write(ds);
+    CSingleLinkBubble::Serialize(ds);
 
     ds << m_story->Text();
 

@@ -141,9 +141,9 @@ Chronicler::Anchor CConditionBubble::InputAnchorAtPosition(const QPointF &)
 }
 
 
-QDataStream &CConditionBubble::Read(QDataStream &ds, const QString &version)
+QDataStream &CConditionBubble::Deserialize(QDataStream &ds, const QString &version)
 {
-    CBubble::Read(ds, version);
+    CBubble::Deserialize(ds, version);
 
     bool trueLink, falseLink;
 
@@ -167,9 +167,9 @@ QDataStream &CConditionBubble::Read(QDataStream &ds, const QString &version)
     return ds;
 }
 
-QDataStream & CConditionBubble::Write(QDataStream &ds)
+QDataStream & CConditionBubble::Serialize(QDataStream &ds)
 {
-    CBubble::Write(ds);
+    CBubble::Serialize(ds);
 
     ds << m_conditionText << bool(m_trueLink) << bool(m_falseLink);
 

@@ -24,12 +24,13 @@ public:
     CPaletteAction *getPaletteWithUID(Chronicler::t_uid uid);
 
     void setCurrent(CPaletteAction *palette);
+    CPaletteAction *getCurrent();
 
 protected:
     virtual void contextMenuEvent(QContextMenuEvent *) override;
 
-    virtual QDataStream &Read(QDataStream &ds, const QString &) override;
-    virtual QDataStream &Write(QDataStream &ds) override;
+    virtual QDataStream &Deserialize(QDataStream &ds, const QString &) override;
+    virtual QDataStream &Serialize(QDataStream &ds) override;
 
 private:
     CPaletteAction *m_current;

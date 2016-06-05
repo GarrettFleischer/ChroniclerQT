@@ -75,6 +75,13 @@ class CMainWindow : public QMainWindow
 public:
    CMainWindow(QSettings *settings, const QString &filename);
 
+protected:
+    virtual void keyPressEvent(QKeyEvent *event) override;
+
+private:
+    void CreateActions();
+    void CreateMenus();
+    void CreateToolbars();
 
 private slots:
 
@@ -96,11 +103,6 @@ private slots:
 
     void DockAreaChanged(Qt::DockWidgetArea);
     void PointerToolBarAreaChanged(bool);
-
-private:
-    void CreateActions();
-    void CreateMenus();
-    void CreateToolbars();
 
 };
 

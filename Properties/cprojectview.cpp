@@ -26,6 +26,8 @@
 
 #include <QTimer>
 
+#include <QStatusBar>
+
 #include "Bubbles/cchoice.h"
 #include "Misc/cscenemodel.h"
 #include "cgraphicsscene.h"
@@ -137,10 +139,10 @@ void CProjectView::SaveProject()
                 if(ret == QMessageBox::Save)
                 {
                     SaveProjectAs();
-                    break;
+                    return;
                 }
                 else if(ret == QMessageBox::Cancel)
-                    break;
+                    return;
             }
 
             QStringList recent_files = shared().settingsView->settings()->value("Homepage/RecentFiles").value<QStringList>();
@@ -152,6 +154,9 @@ void CProjectView::SaveProject()
             }
 
             shared().settingsView->settings()->setValue("Homepage/RecentFiles", QVariant::fromValue(recent_files));
+
+            // show status message for 10 seconds
+            shared().statusBar->showMessage("Successfully saved to " + m_path + "...", 30000);
         }
     }
 }
@@ -181,6 +186,8 @@ void CProjectView::Autosave()
         QSaveFile file(filename);
         SaveToFile(file);
         file.commit();
+        // show status message for 30 seconds
+        shared().statusBar->showMessage("Autosave complete...", 30000);
     }
 
     QTimer::singleShot(shared().settingsView->autosaveInterval(), this, SLOT(Autosave()));
@@ -247,6 +254,9 @@ void CProjectView::OpenProject(const QString &filepath)
     shared().sceneTabs->addTab(view, view->cScene()->name());
     shared().sceneTabs->setCurrentWidget(view);
     view->centerOn(view->cScene()->startBubble()->scenePos());
+
+    // show status message for 30 seconds
+    shared().statusBar->showMessage("Successfully opened " + m_path, 30000);
 }
 
 void CProjectView::ImportProject()

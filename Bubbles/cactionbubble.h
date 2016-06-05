@@ -16,8 +16,8 @@ public:
     virtual void setPalette(CPaletteAction *palette) override;
     virtual void setFont(const QFont &font) override;
 
-    virtual QDataStream &Read(QDataStream &ds, const QString &version) override;
-    virtual QDataStream &Write(QDataStream &ds) override;
+    virtual QDataStream &Deserialize(QDataStream &ds, const QString &version) override;
+    virtual QDataStream &Serialize(QDataStream &ds) override;
 
     CStringListModel *actions();
 

@@ -128,7 +128,7 @@ CBubble *CChoice::container()
     return dynamic_cast<CBubble *>(parentItem());
 }
 
-QDataStream & CChoice::Read(QDataStream &ds, const QString &)
+QDataStream & CChoice::Deserialize(QDataStream &ds, const QString &)
 {
     QString choice;
     bool linked;
@@ -148,7 +148,7 @@ QDataStream & CChoice::Read(QDataStream &ds, const QString &)
     return ds;
 }
 
-QDataStream & CChoice::Write(QDataStream &ds)
+QDataStream & CChoice::Serialize(QDataStream &ds)
 {
     ds << m_UID << m_choice->Text() << bool(m_link);
 

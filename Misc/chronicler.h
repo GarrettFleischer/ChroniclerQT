@@ -11,6 +11,7 @@ class QToolBar;
 class QButtonGroup;
 class QDockWidget;
 class QStringListModel;
+class QStatusBar;
 QT_END_NAMESPACE
 
 class CMainWindow;
@@ -69,6 +70,8 @@ namespace Chronicler
         QDockWidget *dock;
         CDockManager *dockManager;
 
+        QStatusBar *statusBar;
+
         QToolBar *pointerToolBar;
         QButtonGroup *pointerTypeGroup;
         CPaletteButton *paletteButton;
@@ -82,6 +85,7 @@ namespace Chronicler
 
         QAction *exitAction;
         QAction *deleteAction;
+        QAction *copyAction;
         QAction *aboutAction;
         QAction *settingsAction;
         QAction *newProjectAction;
@@ -98,6 +102,9 @@ namespace Chronicler
         CPaletteAction *defaultStart;
 
         Mode cursorMode = Cursor;
+
+
+        void setMode(Mode mode);
     };
 
     SharedInstances &shared();

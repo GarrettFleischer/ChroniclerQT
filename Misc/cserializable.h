@@ -12,8 +12,8 @@ public:
 protected:
     CSerializable();
 
-    virtual QDataStream &Read(QDataStream &ds, const QString &version) = 0;
-    virtual QDataStream &Write(QDataStream &ds) = 0;
+    virtual QDataStream &Deserialize(QDataStream &ds, const QString &version) = 0;
+    virtual QDataStream &Serialize(QDataStream &ds) = 0;
 };
 
 #endif // CSERIALIZABLE_H

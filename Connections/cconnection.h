@@ -50,8 +50,8 @@ public:
     void ConnectToUIDs();
 
 protected:
-    virtual QDataStream &Read(QDataStream &stream, const QString &version) override;
-    virtual QDataStream &Write(QDataStream &stream) override;
+    virtual QDataStream &Deserialize(QDataStream &stream, const QString &version) override;
+    virtual QDataStream &Serialize(QDataStream &stream) override;
 
 private:
     CBubble *m_from;

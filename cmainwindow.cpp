@@ -7,6 +7,7 @@
 #include <QTabWidget>
 #include <QSettings>
 #include <QMessageBox>
+#include <QStatusBar>
 
 #include "cgraphicsscene.h"
 #include "Bubbles/cstorybubble.h"
@@ -38,6 +39,9 @@ CMainWindow::CMainWindow(QSettings *settings, const QString &filename)
 
     shared().mainWindow = this;
 
+    shared().statusBar = new QStatusBar(this);
+    setStatusBar(shared().statusBar);
+
     // Load the settings...
     shared().settingsView = new CSettingsView(settings);
     connect(shared().settingsView, SIGNAL(SettingsChanged()),
@@ -61,7 +65,7 @@ CMainWindow::CMainWindow(QSettings *settings, const QString &filename)
 
     // load the last dock widget area from the settings
     Qt::DockWidgetArea area = static_cast<Qt::DockWidgetArea>(shared().settingsView->settings()->value("MainWindow/DockArea",
-                                                                                                static_cast<int>(Qt::LeftDockWidgetArea)).toInt());
+                                                                                                       static_cast<int>(Qt::LeftDockWidgetArea)).toInt());
     addDockWidget(area, shared().dock);
 
     shared().homepage = new CHomepage(this);
@@ -98,11 +102,12 @@ void CMainWindow::DeleteItem()
 
 void CMainWindow::PointerGroupClicked(int id)
 {
-    CGraphicsView *view = dynamic_cast<CGraphicsView *>(shared().sceneTabs->currentWidget());
-    if(view)
-        view->cScene()->setMode(Chronicler::Mode(id));
-    else
-        shared().pointerTypeGroup->button(int(Chronicler::Cursor))->setChecked(true);
+    //    CGraphicsView *view = dynamic_cast<CGraphicsView *>(shared().sceneTabs->currentWidget());
+    //    if(view)
+    //        view->cScene()->setMode(Chronicler::Mode(id));
+    //    else
+    //        shared().pointerTypeGroup->button(int(Chronicler::Cursor))->setChecked(true);
+    shared().setMode(Chronicler::Mode(id));
 }
 
 void CMainWindow::NewProject()
@@ -339,7 +344,7 @@ void CMainWindow::CreateToolbars()
 
 
     Qt::ToolBarArea area = static_cast<Qt::ToolBarArea>(shared().settingsView->settings()->value("MainWindow/ToolBarArea",
-                                                                                          static_cast<int>(Qt::RightToolBarArea)).toInt());
+                                                                                                 static_cast<int>(Qt::RightToolBarArea)).toInt());
     shared().pointerToolBar = new QToolBar("Pointer type");
     shared().pointerToolBar->addWidget(tb_pointer);
     shared().pointerToolBar->addWidget(tb_link);
@@ -352,4 +357,11 @@ void CMainWindow::CreateToolbars()
     addToolBar(area, shared().pointerToolBar);
     connect(shared().pointerToolBar, SIGNAL(topLevelChanged(bool)),
             this, SLOT(PointerToolBarAreaChanged(bool)));
+}
+
+
+void CMainWindow::keyPressEvent(QKeyEvent *event)
+{
+    if(event->key() == Qt::Key_Escape)
+        shared().setMode(Chronicler::Cursor);
 }

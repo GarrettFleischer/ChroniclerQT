@@ -70,9 +70,9 @@ void CActionBubble::setFont(const QFont &font)
     UpdatePolygon();
 }
 
-QDataStream &CActionBubble::Read(QDataStream &ds, const QString &version)
+QDataStream &CActionBubble::Deserialize(QDataStream &ds, const QString &version)
 {
-    CSingleLinkBubble::Read(ds, version);
+    CSingleLinkBubble::Deserialize(ds, version);
 
     QStringList actions;
     ds >> actions;
@@ -84,9 +84,9 @@ QDataStream &CActionBubble::Read(QDataStream &ds, const QString &version)
     return ds;
 }
 
-QDataStream & CActionBubble::Write(QDataStream &ds)
+QDataStream & CActionBubble::Serialize(QDataStream &ds)
 {
-    CSingleLinkBubble::Write(ds);
+    CSingleLinkBubble::Serialize(ds);
 
     ds << m_actions->stringList();
 

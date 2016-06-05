@@ -35,8 +35,8 @@ protected:
 private:
     virtual void AdjustMinSize();
 
-    virtual QDataStream &Read(QDataStream &ds, const QString &version) override;
-    virtual QDataStream &Write(QDataStream &ds) override;
+    virtual QDataStream &Deserialize(QDataStream &ds, const QString &version) override;
+    virtual QDataStream &Serialize(QDataStream &ds) override;
 
     CChoiceModel *m_choices;
 

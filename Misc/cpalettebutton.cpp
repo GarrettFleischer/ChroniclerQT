@@ -2,6 +2,7 @@
 
 #include <QMenu>
 #include <QContextMenuEvent>
+#include <QGuiApplication>
 
 #include "Misc/cactionmenu.h"
 #include "Misc/cpaletteaction.h"
@@ -56,6 +57,15 @@ CPaletteAction *CPaletteButton::getPaletteWithUID(Chronicler::t_uid uid)
 void CPaletteButton::setCurrent(CPaletteAction *palette)
 {
     m_current = palette;
+
+    QGuiApplication::restoreOverrideCursor();
+    if(shared().cursorMode == Chronicler::Paint)
+        QGuiApplication::setOverrideCursor(QCursor(m_current->icon().pixmap(32, 32)));
+}
+
+CPaletteAction *CPaletteButton::getCurrent()
+{
+    return m_current;
 }
 
 
@@ -69,7 +79,8 @@ void CPaletteButton::contextMenuEvent(QContextMenuEvent *)
 
 void CPaletteButton::SelectAction(QAction *action)
 {
-    m_current = dynamic_cast<CPaletteAction *>(action);
+    setCurrent(dynamic_cast<CPaletteAction *>(action));
+    shared().setMode(Chronicler::Paint);
 }
 
 void CPaletteButton::EditAction(QAction *action)
@@ -95,10 +106,12 @@ void CPaletteButton::Saved()
         m_current = new CPaletteAction(this, m_creator->getPalette(), m_creator->getName());
         m_menu->addAction(m_current);
     }
+
+    shared().setMode(Chronicler::Paint);
 }
 
 
-QDataStream &CPaletteButton::Read(QDataStream &ds, const QString &)
+QDataStream &CPaletteButton::Deserialize(QDataStream &ds, const QString &)
 {
     qint32 len;
     ds >> len;
@@ -121,7 +134,7 @@ QDataStream &CPaletteButton::Read(QDataStream &ds, const QString &)
     return ds;
 }
 
-QDataStream &CPaletteButton::Write(QDataStream &ds)
+QDataStream &CPaletteButton::Serialize(QDataStream &ds)
 {
     QList<QAction *> actions = m_menu->actions();
     ds << static_cast<qint32>(actions.length());

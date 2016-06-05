@@ -42,6 +42,7 @@
 #define CGRAPHICSSCENE_H
 
 #include <QGraphicsScene>
+#include "Misc/cserializable.h"
 
 QT_BEGIN_NAMESPACE
 class QGraphicsSceneMouseEvent;
@@ -66,13 +67,11 @@ using Chronicler::BubbleType;
 using Chronicler::Mode;
 
 //! [0]
-class CGraphicsScene : public QGraphicsScene
+class CGraphicsScene : public QGraphicsScene, public CSerializable
 {
     Q_OBJECT
 
 public:
-
-
     explicit CGraphicsScene(bool create_start, const QString &name, QObject *parent = 0);
 
     void setFont(const QFont &font);
@@ -80,6 +79,8 @@ public:
 
     QString name();
     void setName(const QString &name);
+
+    CLine * getLine();
 
     bool isRubberBandSelecting() const { return m_rubberBand; }
 
@@ -96,8 +97,8 @@ public:
 
     CBubble *BubbleAt(const QPointF &point, bool choiceAllowed = false);
 
-    friend QDataStream & operator <<(QDataStream &ds, const CGraphicsScene &scene);
-    friend QDataStream & operator >>(QDataStream &ds, CGraphicsScene &scene);
+    virtual QDataStream & Serialize(QDataStream &ds) override;
+    virtual QDataStream & Deserialize(QDataStream &ds, const QString &version) override;
 
 protected:
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
@@ -126,9 +127,6 @@ signals:
     void leftPressed();
     void leftReleased();
     void nameChanged();
-
-public slots:
-    void setMode(Mode mode);
 
 private slots:
     void ItemSelected(QGraphicsItem *selectedItem);

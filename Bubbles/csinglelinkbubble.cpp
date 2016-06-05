@@ -57,9 +57,9 @@ QList<CConnection *> CSingleLinkBubble::links()
 }
 
 
-QDataStream &CSingleLinkBubble::Read(QDataStream &ds, const QString &version)
+QDataStream &CSingleLinkBubble::Deserialize(QDataStream &ds, const QString &version)
 {
-    CBubble::Read(ds, version);
+    CBubble::Deserialize(ds, version);
 
     bool linked;
     ds >> linked;
@@ -73,9 +73,9 @@ QDataStream &CSingleLinkBubble::Read(QDataStream &ds, const QString &version)
     return ds;
 }
 
-QDataStream & CSingleLinkBubble::Write(QDataStream &ds)
+QDataStream & CSingleLinkBubble::Serialize(QDataStream &ds)
 {
-    CBubble::Write(ds);
+    CBubble::Serialize(ds);
 
     ds << bool(m_link);
     if(m_link)

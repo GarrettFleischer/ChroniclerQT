@@ -7,12 +7,12 @@ using Chronicler::shared;
 
 QDataStream &operator <<(QDataStream &stream, CSerializable &serializable)
 {
-    return serializable.Write(stream);
+    return serializable.Serialize(stream);
 }
 
 QDataStream &operator >>(QDataStream &stream, CSerializable &serializable)
 {
-    return serializable.Read(stream, shared().projectView->version());
+    return serializable.Deserialize(stream, shared().projectView->version());
 }
 
 CSerializable::CSerializable()

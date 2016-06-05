@@ -167,7 +167,7 @@ void CConnection::ConnectToUIDs()
  * @param version The version of the program the data was created with
  * @return The modified datastream for chaining
  */
-QDataStream & CConnection::Read(QDataStream &stream, const QString &version)
+QDataStream & CConnection::Deserialize(QDataStream &stream, const QString &version)
 {
     Q_UNUSED(version)
 
@@ -189,7 +189,7 @@ QDataStream & CConnection::Read(QDataStream &stream, const QString &version)
  * @param stream The QDataStream to insert the data into
  * @return The modified datastream for chaining
  */
-QDataStream & CConnection::Write(QDataStream &stream)
+QDataStream & CConnection::Serialize(QDataStream &stream)
 {
     stream << static_cast<qint32>(m_line->startAnchor())
            << static_cast<qint32>(m_line->endAnchor())

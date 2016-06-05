@@ -7,6 +7,7 @@
 #include <QtMath>
 #include <QKeyEvent>
 #include <QMenu>
+#include <QGuiApplication>
 
 #include "cgraphicsview.h"
 
@@ -71,6 +72,11 @@ void CGraphicsScene::setName(const QString &name)
     emit nameChanged();
 }
 
+CLine *CGraphicsScene::getLine()
+{
+    return m_line;
+}
+
 QList<CBubble *> CGraphicsScene::bubbles()
 {
     return m_bubbles;
@@ -114,17 +120,19 @@ CBubble *CGraphicsScene::BubbleAt(const QPointF &point, bool choiceAllowed)
     return bubble;
 }
 
-QDataStream &operator <<(QDataStream &ds, const CGraphicsScene &scene)
+QDataStream &CGraphicsScene::Serialize(QDataStream &ds)
 {
-    ds << scene.m_name << static_cast<qint32>(scene.m_bubbles.length());
-    for(CBubble *bbl : scene.m_bubbles)
+    ds << m_name << static_cast<qint32>(m_bubbles.length());
+    for(CBubble *bbl : m_bubbles)
         ds << *bbl;
 
     return ds;
 }
 
-QDataStream &operator >>(QDataStream &ds, CGraphicsScene &scene)
+QDataStream &CGraphicsScene::Deserialize(QDataStream &ds, const QString &version)
 {
+    Q_UNUSED(version)
+
     qint32 len, t;
     CBubble *bbl;
     ds >> len;
@@ -132,38 +140,20 @@ QDataStream &operator >>(QDataStream &ds, CGraphicsScene &scene)
     for(int i = 0; i < len; ++i)
     {
         ds >> t;
-        bbl = scene.AddBubble(Chronicler::BubbleType(t), QPointF(), false, 0);
+        bbl = AddBubble(Chronicler::BubbleType(t), QPointF(), false, 0);
         ds >> *bbl;
 
         if(bbl->getType() == Chronicler::Start)
-            scene.m_startBubble = dynamic_cast<CStartBubble*>(bbl);
+            m_startBubble = dynamic_cast<CStartBubble*>(bbl);
     }
 
-    for(CConnection *connection : scene.m_connections)
+    for(CConnection *connection : m_connections)
         connection->ConnectToUIDs();
 
-    for(CBubble *bbl : scene.m_bubbles)
+    for(CBubble *bbl : m_bubbles)
         bbl->setSelected(false);
 
     return ds;
-}
-
-void CGraphicsScene::setMode(Mode mode)
-{
-    shared().cursorMode = mode;
-
-    for(CGraphicsView *view : shared().projectView->views())
-    {
-        view->setDragMode(QGraphicsView::ScrollHandDrag);
-
-        if(mode == Chronicler::Cursor)
-        {
-            shared().pointerTypeGroup->button(int(Chronicler::Cursor))->setChecked(true);
-            view->cScene()->m_line->hide();
-        }
-        else if(mode == Chronicler::InsertConnection)
-            view->setDragMode(QGraphicsView::NoDrag);
-    }
 }
 
 void CGraphicsScene::ItemSelected(QGraphicsItem *selectedItem)
@@ -286,7 +276,7 @@ void CGraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
             }
 
             if(!(event->modifiers() & Qt::ShiftModifier))
-                setMode(Chronicler::Cursor);
+                shared().setMode(Chronicler::Cursor);
         }
 
         m_rubberBand = false;
@@ -316,14 +306,12 @@ void CGraphicsScene::keyPressEvent(QKeyEvent *event)
 {
     if(event->key() == Qt::Key_Shift)
         views().first()->setDragMode(QGraphicsView::RubberBandDrag);
-    else if(event->key() == Qt::Key_Escape)
-        setMode(Chronicler::Cursor);
 }
 
 void CGraphicsScene::keyReleaseEvent(QKeyEvent *event)
 {
     if(event->key() == Qt::Key_Shift && !m_line->isVisible())
-        setMode(Chronicler::Cursor);
+        shared().setMode(Chronicler::Cursor);
 }
 
 
@@ -350,7 +338,7 @@ CBubble * CGraphicsScene::AddBubble(BubbleType type, const QPointF &pos, bool sh
         m_bubbles.append(bbl);
 
         if(!shift)
-            setMode(Chronicler::Cursor);
+            shared().setMode(Chronicler::Cursor);
 
         emit itemInserted(bbl);
     }

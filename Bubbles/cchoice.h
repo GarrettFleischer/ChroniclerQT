@@ -32,8 +32,8 @@ protected:
     virtual void hoverMoveEvent(QGraphicsSceneHoverEvent *event) override;
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
-    virtual QDataStream &Read(QDataStream &ds, const QString &) override;
-    virtual QDataStream &Write(QDataStream &ds) override;
+    virtual QDataStream &Deserialize(QDataStream &ds, const QString &) override;
+    virtual QDataStream &Serialize(QDataStream &ds) override;
 
     virtual void UpdatePolygon() override;
 
