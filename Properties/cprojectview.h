@@ -68,7 +68,7 @@ private:
     // member variable for project history
 
 signals:
-    sceneSelected(CGraphicsView *);
+    void sceneSelected(CGraphicsView *);
 
 public slots:
     void SaveProject();

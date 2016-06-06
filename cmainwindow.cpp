@@ -354,4 +354,13 @@ void CMainWindow::keyPressEvent(QKeyEvent *event)
 {
     if(event->key() == Qt::Key_Escape)
         shared().setMode(Chronicler::Cursor);
+
+    event->accept();
+}
+
+
+void CMainWindow::closeEvent(QCloseEvent *event)
+{
+    shared().settingsView->settings()->setValue("MainWindow/Geometry", geometry());
+    event->accept();
 }

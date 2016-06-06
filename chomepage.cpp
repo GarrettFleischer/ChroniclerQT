@@ -27,7 +27,6 @@
 #include "Misc/chronicler.h"
 using Chronicler::shared;
 
-
 // for QSettings
 Q_DECLARE_METATYPE(QStringList)
 
@@ -135,7 +134,7 @@ void CHomepage::RecentItemSelected(QListWidgetItem *item)
 
 void CHomepage::Downloaded()
 {
-    QString news = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation) + "/Chronicler_news.html";
+    QString news = QFileInfo(shared().settingsView->settings()->fileName()).absolutePath() + "/Chronicler_news.html";
     QByteArray ba(m_downloader->downloadedData());
 
     if(ba.length() > 0)
