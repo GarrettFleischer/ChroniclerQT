@@ -7,8 +7,8 @@
 #include "cgraphicsscene.h"
 
 
-CConditionBubble::CConditionBubble(t_uid uid, const QPointF &pos, CPaletteAction *palette, const QFont &font, QGraphicsItem *parent)
-    : CBubble(uid, pos, palette, font, parent), m_trueLink(0), m_falseLink(0)
+CConditionBubble::CConditionBubble(const QPointF &pos, CPaletteAction *palette, const QFont &font, QGraphicsItem *parent)
+    : CBubble(pos, palette, font, parent), m_trueLink(0), m_falseLink(0)
 {
     m_type = Chronicler::Condition;
 

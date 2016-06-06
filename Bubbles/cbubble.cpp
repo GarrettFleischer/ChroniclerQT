@@ -24,8 +24,8 @@ using Chronicler::shared;
 
 QList<t_uid> CBubble::m_UIDs = QList<t_uid>();
 
-CBubble::CBubble(t_uid uid, const QPointF &pos, CPaletteAction *palette, const QFont &font, QGraphicsItem *parent)
-    : QGraphicsPolygonItem(parent), m_UID(uid),
+CBubble::CBubble(const QPointF &pos, CPaletteAction *palette, const QFont &font, QGraphicsItem *parent)
+    : QGraphicsPolygonItem(parent),
       m_minSize(QSizeF(150, 100)), m_order(0), m_locked(false),
       m_font(font), m_palette(palette), m_resize(false)
 {
@@ -37,9 +37,6 @@ CBubble::CBubble(t_uid uid, const QPointF &pos, CPaletteAction *palette, const Q
     setCursor(Qt::PointingHandCursor);
     setPos(pos);
 
-    if(m_UID != 0)
-        AddUID(m_UID);
-
     setPalette(palette);
 }
 
@@ -47,9 +44,6 @@ CBubble::~CBubble()
 {
     CGraphicsScene *scn = dynamic_cast<CGraphicsScene *>(scene());
     scn->RemoveBubble(this);
-
-    // Free up this UID for reuse
-    m_UIDs.removeOne(m_UID);
 
     // make a copy to prevent invalid iterator when connections are removed.
     QList<CConnection *> tmp = m_connections;
@@ -154,11 +148,7 @@ void CBubble::AddUID(t_uid uid)
 
 t_uid CBubble::GenerateUID()
 {
-    t_uid lowest = 1;
-    while(m_UIDs.contains(lowest))
-        ++lowest;
-
-    return lowest;
+    return reinterpret_cast<t_uid>(this);
 }
 
 Anchor CBubble::AnchorAtPosition(const QPointF &pos)
@@ -250,7 +240,7 @@ Anchor CBubble::InputAnchorAtPosition(const QPointF &pos)
     return AnchorAtPosition(pos);
 }
 
-t_uid CBubble::UID()
+t_uid CBubble::getUID()
 {
     return m_UID;
 }
@@ -267,6 +257,12 @@ QDataStream &CBubble::Deserialize(QDataStream &ds, const QString &version)
                 >> m_label >> m_order >> m_locked
                 >> palette
                 >> m_bounds >> pos;
+
+        // hopefully fixes corrupted projects...
+        if(m_UIDs.contains(m_UID))
+            m_UID = GenerateUID();
+
+        AddUID(m_UID);
     }
     else
     {
@@ -280,12 +276,6 @@ QDataStream &CBubble::Deserialize(QDataStream &ds, const QString &version)
         m_palette = shared().paletteButton->getPaletteWithUID(palette_uid);
     }
 
-    // hopefully fixes corrupted projects...
-    if(m_UIDs.contains(m_UID))
-        m_UID = GenerateUID();
-
-    AddUID(m_UID);
-
     setLabel(m_label);
     setPos(pos);
     UpdatePolygon();
@@ -296,7 +286,7 @@ QDataStream &CBubble::Deserialize(QDataStream &ds, const QString &version)
 QDataStream & CBubble::Serialize(QDataStream &ds)
 {
     ds << static_cast<qint32>(m_type)
-       << m_UID
+       << GenerateUID()
        << m_label << m_order << m_locked
        << m_palette->getUID()
        << m_bounds << scenePos();

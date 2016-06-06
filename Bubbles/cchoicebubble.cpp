@@ -8,8 +8,8 @@
 #include "Misc/cchoicemodel.h"
 #include "cchoice.h"
 
-CChoiceBubble::CChoiceBubble(t_uid uid, const QPointF &pos, CPaletteAction *palette, const QFont &font, QGraphicsItem *parent)
-    : CBubble(uid, pos, palette, font, parent)
+CChoiceBubble::CChoiceBubble(const QPointF &pos, CPaletteAction *palette, const QFont &font, QGraphicsItem *parent)
+    : CBubble(pos, palette, font, parent)
 {
     m_type = Chronicler::Choice;
 
@@ -138,7 +138,7 @@ QDataStream &CChoiceBubble::Deserialize(QDataStream &ds, const QString &version)
 
     for(int i = 0; i < num_choices; ++i)
     {
-        CChoice *choice = new CChoice(0, m_palette, m_font, this);
+        CChoice *choice = new CChoice(m_palette, m_font, this);
         ds >> *choice;
         m_choices->AddItem(choice);
     }

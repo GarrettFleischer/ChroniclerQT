@@ -25,11 +25,6 @@
 using Chronicler::shared;
 
 
-
-
-const int InsertTextButton = 10;
-
-
 CMainWindow::CMainWindow(QSettings *settings, const QString &filename)
 {
     shared().ProgramVersion = "0.8.6.0";
@@ -102,11 +97,6 @@ void CMainWindow::DeleteItem()
 
 void CMainWindow::PointerGroupClicked(int id)
 {
-    //    CGraphicsView *view = dynamic_cast<CGraphicsView *>(shared().sceneTabs->currentWidget());
-    //    if(view)
-    //        view->cScene()->setMode(Chronicler::Mode(id));
-    //    else
-    //        shared().pointerTypeGroup->button(int(Chronicler::Cursor))->setChecked(true);
     shared().setMode(Chronicler::Mode(id));
 }
 

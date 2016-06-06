@@ -10,7 +10,7 @@ class CChoice : public CSingleLinkBubble
     Q_OBJECT
 
 public:
-    explicit CChoice(t_uid uid, CPaletteAction *palette, const QFont &font = QFont(), QGraphicsItem *parent = 0, const QString &choice = "");
+    explicit CChoice(CPaletteAction *palette, const QFont &font = QFont(), QGraphicsItem *parent = 0, const QString &choice = "");
     
     virtual void setPalette(CPaletteAction *palette) override;
     virtual void setFont(const QFont &font) override;

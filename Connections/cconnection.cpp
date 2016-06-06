@@ -193,8 +193,8 @@ QDataStream & CConnection::Serialize(QDataStream &stream)
 {
     stream << static_cast<qint32>(m_line->startAnchor())
            << static_cast<qint32>(m_line->endAnchor())
-           << m_from->UID()
-           << m_to->UID();
+           << m_from->GenerateUID()
+           << m_to->GenerateUID();
 
     return stream;
 }

@@ -140,7 +140,7 @@ QDataStream &CGraphicsScene::Deserialize(QDataStream &ds, const QString &version
     for(int i = 0; i < len; ++i)
     {
         ds >> t;
-        bbl = AddBubble(Chronicler::BubbleType(t), QPointF(), false, 0);
+        bbl = AddBubble(Chronicler::BubbleType(t), QPointF(), false);
         ds >> *bbl;
 
         if(bbl->getType() == Chronicler::Start)
@@ -315,19 +315,19 @@ void CGraphicsScene::keyReleaseEvent(QKeyEvent *event)
 }
 
 
-CBubble * CGraphicsScene::AddBubble(BubbleType type, const QPointF &pos, bool shift, Chronicler::t_uid uid)
+CBubble * CGraphicsScene::AddBubble(BubbleType type, const QPointF &pos, bool shift)
 {
     CBubble *bbl = 0;
     if(type == Chronicler::Story)
-        bbl = new CStoryBubble(uid, pos, shared().defaultStory, m_font);
+        bbl = new CStoryBubble(pos, shared().defaultStory, m_font);
     else if(type == Chronicler::Condition)
-        bbl = new CConditionBubble(uid, pos, shared().defaultCondition, m_font);
+        bbl = new CConditionBubble(pos, shared().defaultCondition, m_font);
     else if(type == Chronicler::Action)
-        bbl = new CActionBubble(uid, pos, shared().defaultAction, m_font);
+        bbl = new CActionBubble(pos, shared().defaultAction, m_font);
     else if(type == Chronicler::Choice)
-        bbl = new CChoiceBubble(uid, pos, shared().defaultChoice, m_font);
+        bbl = new CChoiceBubble(pos, shared().defaultChoice, m_font);
     else if(type == Chronicler::Start)
-        bbl = new CStartBubble(uid, pos, shared().defaultStart, m_font);
+        bbl = new CStartBubble(pos, shared().defaultStart, m_font);
 
     if(bbl)
     {

@@ -126,7 +126,10 @@ QDataStream &CPaletteButton::Deserialize(QDataStream &ds, const QString &)
 
         CPaletteAction *pwuid = getPaletteWithUID(uid);
         if(pwuid)
+        {
             pwuid->setPalette(palette);
+            pwuid->setText(name);
+        }
         else
             m_menu->addAction(new CPaletteAction(this, palette, name, uid));
     }

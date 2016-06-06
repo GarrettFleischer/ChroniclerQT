@@ -73,7 +73,7 @@ bool CChoiceModel::insertRows(int row, int count, const QModelIndex &index)
 
     CBubble *par = dynamic_cast<CBubble *>(parent());
     for(int i = row, end = row + count; i < end; ++i)
-        m_choices.insert(i, new CChoice(CBubble::GenerateUID(), par->getPalette(), par->getFont(), par));
+        m_choices.insert(i, new CChoice(par->getPalette(), par->getFont(), par));
 
     endInsertRows();
 

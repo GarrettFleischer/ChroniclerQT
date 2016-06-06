@@ -32,7 +32,7 @@ class CBubble : public QObject, public QGraphicsPolygonItem, public CSerializabl
     Q_OBJECT
 
 public:
-    CBubble(t_uid uid, const QPointF &pos, CPaletteAction *palette, const QFont &font = QFont(), QGraphicsItem *parent = 0);
+    CBubble(const QPointF &pos, CPaletteAction *palette, const QFont &font = QFont(), QGraphicsItem *parent = 0);
 
     virtual ~CBubble();
 
@@ -53,8 +53,6 @@ public:
 
     BubbleType getType() const { return m_type; }
 
-    static t_uid GenerateUID();
-
     void setBounds(const QRectF &bounds);
 
     // if this bubble is contained inside another bubble, return that
@@ -73,7 +71,8 @@ public:
     virtual Anchor OutputAnchorAtPosition(const QPointF &pos);
     virtual Anchor InputAnchorAtPosition(const QPointF &pos);
 
-    t_uid UID();
+    t_uid getUID();
+    t_uid GenerateUID();
 
 protected:
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *evt) override;
@@ -90,6 +89,7 @@ protected:
     virtual QDataStream &Deserialize(QDataStream &ds, const QString &version) override;
     virtual QDataStream &Serialize(QDataStream &ds) override;
 
+    // for backwards compatability
     static void AddUID(Chronicler::t_uid uid);
 
     t_uid m_UID;
@@ -114,6 +114,8 @@ protected:
 
 private:
     Anchor AnchorAtPosition(const QPointF &pos);
+
+    // for backwards compatability
     static QList<t_uid> m_UIDs;
     
 signals:

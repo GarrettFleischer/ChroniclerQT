@@ -11,7 +11,7 @@ class CConditionBubble : public CBubble
     Q_OBJECT
 
 public:
-    CConditionBubble(t_uid uid, const QPointF &pos, CPaletteAction *palette, const QFont &font = QFont(), QGraphicsItem *parent = 0);
+    CConditionBubble(const QPointF &pos, CPaletteAction *palette, const QFont &font = QFont(), QGraphicsItem *parent = 0);
     virtual ~CConditionBubble();
 
     virtual void setFont(const QFont &font) override;

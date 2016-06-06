@@ -358,7 +358,7 @@ CBubble *CProjectView::BubbleWithUID(uint uid)
     {
         for(QGraphicsItem *item : view->items())
         {
-            if((bubble = dynamic_cast<CBubble *>(item)) && (bubble->UID() == uid))
+            if((bubble = dynamic_cast<CBubble *>(item)) && (bubble->getUID() == uid))
                 return bubble;
         }
     }
@@ -520,7 +520,7 @@ QString CProjectView::MakeLabel(CBubble *bubble, const QList<CBubble *> &bubbles
     {
         if(b != bubble && LabelNeeded(b, bubbles) && b->getLabel() == bubble->getLabel())
         {
-            label += "_" + QString::number(bubble->UID());
+            label += "_" + QString::number(bubble->getUID());
             break;
         }
     }

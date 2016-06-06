@@ -14,8 +14,8 @@
 #include "Connections/cconnection.h"
 #include "cgraphicsscene.h"
 
-CChoice::CChoice(t_uid uid, CPaletteAction *palette, const QFont &font, QGraphicsItem *parent, const QString &choice)
-    : CSingleLinkBubble(uid, QPointF(), palette, font, parent)
+CChoice::CChoice(CPaletteAction *palette, const QFont &font, QGraphicsItem *parent, const QString &choice)
+    : CSingleLinkBubble(QPointF(), palette, font, parent)
 {
     setFlag(QGraphicsItem::ItemIsMovable, false);
     setFlag(QGraphicsItem::ItemIsSelectable, false);
@@ -150,7 +150,7 @@ QDataStream & CChoice::Deserialize(QDataStream &ds, const QString &)
 
 QDataStream & CChoice::Serialize(QDataStream &ds)
 {
-    ds << m_UID << m_choice->Text() << bool(m_link);
+    ds << GenerateUID() << m_choice->Text() << bool(m_link);
 
     if(m_link)
         ds << *m_link;

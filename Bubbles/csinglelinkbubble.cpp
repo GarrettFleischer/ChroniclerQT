@@ -5,8 +5,8 @@
 #include "cgraphicsscene.h"
 
 
-CSingleLinkBubble::CSingleLinkBubble(t_uid uid, const QPointF &pos, CPaletteAction *palette, const QFont &font, QGraphicsItem *parent)
-    : CBubble(uid, pos, palette, font, parent), m_link(0)
+CSingleLinkBubble::CSingleLinkBubble(const QPointF &pos, CPaletteAction *palette, const QFont &font, QGraphicsItem *parent)
+    : CBubble(pos, palette, font, parent), m_link(0)
 {}
 
 CSingleLinkBubble::~CSingleLinkBubble()
