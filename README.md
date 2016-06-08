@@ -7,7 +7,7 @@ C++, Qt
 
 **Screenshots:**  
 [Choice of the Dragon](https://www.choiceofgames.com/dragon/) example ChoiceScript game.  
-[Example project](https://www.dropbox.com/s/wcel02voz0i6ugt/Dragon.chronx?dl=1)  
+[Example Chronicler project](https://www.dropbox.com/s/wcel02voz0i6ugt/Dragon.chronx?dl=1)  
 ![](https://www.dropbox.com/s/78gwnx2c27oa5bv/Chronicler2_052616_1.png?dl=1)  
 ![](https://www.dropbox.com/s/02mpwb34y8mm8dp/Chronicler2_052616_2.png?dl=1)  
 ![](https://www.dropbox.com/s/hnsunjcawrp6s0x/Chronicler2_052616_3.png?dl=1)  
