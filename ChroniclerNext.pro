@@ -8,6 +8,8 @@ win32{
         RC_ICONS += cog_logo.ico
 }
 
+TRANSLATIONS += chroniclernext_es.ts
+
 PKGCONFIG += openssl
 
 CONFIG += c++11

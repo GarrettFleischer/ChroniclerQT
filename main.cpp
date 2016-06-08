@@ -6,7 +6,7 @@
 #include <QMediaContent>
 #include <QTimer>
 
-#include <QDebug>
+#include <QTranslator>
 
 #include "cmainwindow.h"
 
@@ -15,6 +15,10 @@ int main(int argv, char *args[])
     Q_INIT_RESOURCE(chroniclernext);
 
     QApplication app(argv, args);
+
+//    QTranslator translator;
+//    translator.load("C:\\chroniclernext_es.qm");
+//    app.installTranslator(&translator);
 
     QSettings settings(QSettings::IniFormat, QSettings::UserScope, "Chronicler-Next", "Chronicler");
 
@@ -27,6 +31,7 @@ int main(int argv, char *args[])
     mainWindow.setGeometry(window);
 
     mainWindow.show();
-    
+
+
     return app.exec();
 }

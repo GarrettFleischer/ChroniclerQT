@@ -49,7 +49,7 @@ CMainWindow::CMainWindow(QSettings *settings, const QString &filename)
     QStringList lst = QStringList() << "*set" << "*create" << "*temp" << "*if" << "*elseif" << "*else";
     shared().actionsModel = new QStringListModel(lst, this);
 
-    shared().dock = new QDockWidget("Project", this);
+    shared().dock = new QDockWidget(tr("Project"), this);
     connect(shared().dock, SIGNAL(dockLocationChanged(Qt::DockWidgetArea)),
             this, SLOT(DockAreaChanged(Qt::DockWidgetArea)));
 
@@ -71,7 +71,7 @@ CMainWindow::CMainWindow(QSettings *settings, const QString &filename)
     connect(shared().sceneTabs, SIGNAL(tabCloseRequested(int)),
             this, SLOT(TabClosed(int)));
 
-    shared().sceneTabs->addTab(shared().homepage, "Homepage");
+    shared().sceneTabs->addTab(shared().homepage, tr("Homepage"));
 
     setCentralWidget(shared().sceneTabs);
 
@@ -134,7 +134,7 @@ void CMainWindow::SaveAsProject()
 void CMainWindow::ShowSettings()
 {
     if(shared().sceneTabs->indexOf(shared().settingsView) == -1)
-        shared().sceneTabs->insertTab(0, shared().settingsView, "Settings");
+        shared().sceneTabs->insertTab(0, shared().settingsView, tr("Settings"));
 
     shared().sceneTabs->setCurrentWidget(shared().settingsView);
 }
@@ -142,7 +142,7 @@ void CMainWindow::ShowSettings()
 void CMainWindow::ShowHomepage()
 {
     if(shared().sceneTabs->indexOf(shared().homepage) == -1)
-        shared().sceneTabs->insertTab(0, shared().homepage, "Homepage");
+        shared().sceneTabs->insertTab(0, shared().homepage, tr("Homepage"));
 
     shared().sceneTabs->setCurrentWidget(shared().homepage);
 }
@@ -153,11 +153,11 @@ void CMainWindow::TabClosed(int index)
     {
         if(shared().settingsView->pendingChanges())
         {
-            QCheckBox dontShow("Remember my choice and don't show again.");
+            QCheckBox dontShow(tr("Remember my choice and don't show again."));
             dontShow.blockSignals(true); // performance
             QMessageBox msgBox;
-            msgBox.setText("Settings have been modified.");
-            msgBox.setInformativeText("Do you wish to apply these changes?");
+            msgBox.setText(tr("Settings have been modified."));
+            msgBox.setInformativeText(tr("Do you wish to apply these changes?"));
             msgBox.setStandardButtons(QMessageBox::Apply | QMessageBox::Discard | QMessageBox::Cancel);
             msgBox.setDefaultButton(QMessageBox::Apply);
             msgBox.setCheckBox(&dontShow);
@@ -226,25 +226,25 @@ void CMainWindow::CreateActions()
 
     shared().newProjectAction = new QAction(QIcon(":/images/icn_new"), tr("New Project"), this);
     shared().newProjectAction->setShortcut(tr("Ctrl+N"));
-    shared().newProjectAction->setToolTip("Create New Project");
+    shared().newProjectAction->setToolTip(tr("Create New Project"));
     connect(shared().newProjectAction, SIGNAL(triggered(bool)), this, SLOT(NewProject()));
 
     shared().openProjectAction = new QAction(QIcon(":/images/icn_load"), tr("Open Project"), this);
     shared().openProjectAction->setShortcut(tr("Ctrl+O"));
-    shared().openProjectAction->setToolTip("Open Existing Project");
+    shared().openProjectAction->setToolTip(tr("Open Existing Project"));
     connect(shared().openProjectAction, SIGNAL(triggered(bool)), this, SLOT(OpenProject()));
 
     shared().importProjectAction = new QAction(QIcon(":/images/icn_loadcs"), tr("Import Project"), this);
-    shared().importProjectAction->setToolTip("Import ChoiceScript Project");
+    shared().importProjectAction->setToolTip(tr("Import ChoiceScript Project"));
     connect(shared().importProjectAction, SIGNAL(triggered(bool)), this, SLOT(ImportProject()));
 
     shared().saveProjectAction = new QAction(QIcon(":/images/icn_save"), tr("Save"), this);
     shared().saveProjectAction->setShortcut(tr("Ctrl+S"));
-    shared().saveProjectAction->setToolTip("Save Project");
+    shared().saveProjectAction->setToolTip(tr("Save Project"));
     connect(shared().saveProjectAction, SIGNAL(triggered(bool)), this, SLOT(SaveProject()));
 
     shared().saveAsProjectAction = new QAction(QIcon(":/images/icn_savecs"), tr("Save As"), this);
-    shared().saveAsProjectAction->setToolTip("Save Project As");
+    shared().saveAsProjectAction->setToolTip(tr("Save Project As"));
     connect(shared().saveAsProjectAction, SIGNAL(triggered(bool)), this, SLOT(SaveAsProject()));
 
     shared().showHomepageAction = new QAction(QIcon(":/images/icn_home"), tr("Show &homepage"), this);
@@ -258,11 +258,11 @@ void CMainWindow::CreateActions()
     dp_condition.fill = QColor(151,118,166);
     dp_start.fill = Qt::darkGreen;
 
-    shared().defaultStory = new CPaletteAction(this, dp_story, "Story", 1);
-    shared().defaultChoice = new CPaletteAction(this, dp_choice, "Choice", 2);
-    shared().defaultAction = new CPaletteAction(this, dp_action, "Action", 3);
-    shared().defaultCondition = new CPaletteAction(this, dp_condition, "Condition", 4);
-    shared().defaultStart = new CPaletteAction(this, dp_start, "Start", 5);
+    shared().defaultStory = new CPaletteAction(this, dp_story, tr("Story"), 1);
+    shared().defaultChoice = new CPaletteAction(this, dp_choice, tr("Choice"), 2);
+    shared().defaultAction = new CPaletteAction(this, dp_action, tr("Action"), 3);
+    shared().defaultCondition = new CPaletteAction(this, dp_condition, tr("Condition"), 4);
+    shared().defaultStart = new CPaletteAction(this, dp_start, tr("Start"), 5);
 
     // Disable unavailable actions
     shared().importProjectAction->setEnabled(false);
@@ -300,29 +300,29 @@ void CMainWindow::CreateToolbars()
     tb_pointer->setCheckable(true);
     tb_pointer->setChecked(true);
     tb_pointer->setIcon(QIcon(":/images/icn_pointer.png"));
-    tb_pointer->setToolTip("Selection tool");
+    tb_pointer->setToolTip(tr("Selection tool"));
     QToolButton *tb_link = new QToolButton();
     tb_link->setCheckable(true);
     tb_link->setIcon(QIcon(":/images/icn_link.png"));
-    tb_link->setToolTip("Link tool\nLeft drag: create link\nRight click: remove link");
+    tb_link->setToolTip(tr("Link tool\nLeft drag: create link\nRight click: remove link"));
 
 
     QToolButton *tb_story = new QToolButton();
     tb_story->setCheckable(true);
     tb_story->setIcon(QIcon(":/images/icn_story.png"));
-    tb_story->setToolTip("Story bubble");
+    tb_story->setToolTip(tr("Story bubble"));
     QToolButton *tb_condition = new QToolButton();
     tb_condition->setCheckable(true);
     tb_condition->setIcon(QIcon(":/images/icn_condition.png"));
-    tb_condition->setToolTip("Condition bubble");
+    tb_condition->setToolTip(tr("Condition bubble"));
     QToolButton *tb_action = new QToolButton();
     tb_action->setCheckable(true);
     tb_action->setIcon(QIcon(":/images/icn_action.png"));
-    tb_action->setToolTip("Action bubble");
+    tb_action->setToolTip(tr("Action bubble"));
     QToolButton *tb_choice = new QToolButton();
     tb_choice->setCheckable(true);
     tb_choice->setIcon(QIcon(":/images/icn_choice2.png"));
-    tb_choice->setToolTip("Choice bubble");
+    tb_choice->setToolTip(tr("Choice bubble"));
 
     // Palette creator
     shared().paletteButton = new CPaletteButton();
@@ -341,7 +341,7 @@ void CMainWindow::CreateToolbars()
 
     Qt::ToolBarArea area = static_cast<Qt::ToolBarArea>(shared().settingsView->settings()->value("MainWindow/ToolBarArea",
                                                                                                  static_cast<int>(Qt::RightToolBarArea)).toInt());
-    shared().pointerToolBar = new QToolBar("Pointer type");
+    shared().pointerToolBar = new QToolBar(tr("Pointer type"));
     shared().pointerToolBar->addWidget(tb_pointer);
     shared().pointerToolBar->addWidget(tb_link);
     shared().pointerToolBar->addWidget(tb_story);
