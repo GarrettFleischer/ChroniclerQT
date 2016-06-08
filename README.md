@@ -27,8 +27,7 @@ Naming convention: Prefix all .h .cpp files with "C"
 **Contributors:**  
 [Garrett Fleischer](https://www.linkedin.com/in/garrett-fleischer-57a230b7)
 
-**CONTROLS**
-Controls are relatively straightforward, but here's a rundown of the basics
+**CONTROLS**  
 
 * Editor interface
 	The editor contains a Dock and a Toolbar.
