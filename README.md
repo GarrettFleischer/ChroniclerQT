@@ -28,7 +28,6 @@ Naming convention: Prefix all .h .cpp files with "C"
 **Contributors:**  
 [Garrett Fleischer](https://www.linkedin.com/in/garrett-fleischer-57a230b7)
 
-<<<<<<< HEAD
 
 **CONTROLS**  
 * **Editor interface**  
@@ -71,50 +70,6 @@ Naming convention: Prefix all .h .cpp files with "C"
 	By default the tool contains palettes for each type of bubble in the scene.  
 	Palettes are shared between bubbles, so if you edit an existing palette, all bubbles with that palette will be updated.  
 	(Currently there is no way to delete palettes)  
-=======
-**CONTROLS**  
-* **Editor interface**  
-	The editor contains a Dock and a Toolbar.
-	Each of these can be detached and reattached to create different layouts.
-	The window size and layout are preserved across runs of the program.
-* **Settings**  
-	There exists a page for settings accessed via the File menu or the keyboard shortcut "Ctrl+P"
-	Font size and color can be adjusted as well as autosave interval and maximum number of autosaves to store.
-	It is highly recommened that you store each project in its own unique folder as Chronicler creates subfolders for "scenes" and "backups" in the same directory as the .chronx project file. (Currently there is no warning for creating projects in the same folder as other projects)
-* **Homepage**  
-	The homepage displays an html news page and a list of recently opened projects on the left.
-	Below this are options to Create, Load, or Import projects. (Import is currently unavailable).
-	These options are also available under the File menu.
-* **Project tab**  
-	After opening a project, you are presented with a dock containing two tabs.
-	The project tab holds basic information about your project. Currently these options are the Title of your game, and the scenes your project contains.
-	The scene list has buttons on the right for creating or deleting scenes and adjusting their order. (**WARNING:** there is currently no confirmation dialog for deleting scenes!)
-	The "startup" scene cannot be renamed or moved in the order. (ChoiceScript limitation)
-* **Bubble tab**  
-	This tab in the dock displays editable information about the currently selected bubble.
-	All bubble controls contain a Label and a lockable Order.
-	The label is used when necessary for the generated ChoiceScript.
-	Order is the order in which this bubble is processed by the ChoiceScript compiler.
-	(Currently this is just a suggestion to the compiler, and may have no effect on the generated CS code)
-* **Scene view**  
-	Upon selecting a scene from the project tab, it opens as a tab in the main window.
-	Every scene contains a default start bubble which cannot be deleted.
-	The toolbar contains icons for each placeable bubble type.
-	Hovering over each icon displays a simple tooltip and, in some cases, usage instructions.
-* **Link tool**  
-	The link tool allows you to create links between bubbles.
-	Left click and drag between bubbles to create a directional link between them.
-	Right click on a bubble to delete a link.
-	Links are attached to anchors on a bubble. Dragging from the bottom of one bubble to the top of another, will attach the link to the nearest available anchors at those positions.
-* **Palette tool**  
-	The palette tool allows you to create and apply palettes to bubbles.
-	Right click on the tool itself to add a new palette.
-	Right click on an existing palette to edit it.
-	By default the tool contains palettes for each type of bubble in the scene.
-	Palettes are shared between bubbles, so if you edit an existing palette, all bubbles with that palette will be updated.
-	(Currently there is no way to delete palettes)
-	
->>>>>>> 5e21199095b1ba41f497df6c50c4da84fca0bcc0
 
 
 **Inspiration:**  
