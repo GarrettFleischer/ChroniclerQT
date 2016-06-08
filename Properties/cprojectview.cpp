@@ -500,7 +500,7 @@ bool CProjectView::LabelNeeded(CBubble *bubble, const QList<CBubble *> &bubbles)
     QList<CConnection *> connections = bubble->connections();
 
     // figure out if we need a label or not
-    bool make_label = connections.length() > 1;
+    bool make_label = connections.length() > 1 || bubble->getLocked();
     if(!make_label && connections.length() > 0)
     {
         // if the only connecting bubble hasn't been processed yet...
@@ -516,12 +516,17 @@ bool CProjectView::LabelNeeded(CBubble *bubble, const QList<CBubble *> &bubbles)
 QString CProjectView::MakeLabel(CBubble *bubble, const QList<CBubble *> &bubbles)
 {
     QString label = bubble->getLabel().replace(" ", "_");
-    for(CBubble *b : bubbles)
+    if(!label.length())
+        label = "bubble_" + QString::number(bubble->GenerateUID());
+    else
     {
-        if(b != bubble && LabelNeeded(b, bubbles) && b->getLabel() == bubble->getLabel())
+        for(CBubble *b : bubbles)
         {
-            label += "_" + QString::number(bubble->GenerateUID());
-            break;
+            if(b != bubble && LabelNeeded(b, bubbles) && b->getLabel() == bubble->getLabel())
+            {
+                label += "_" + QString::number(bubble->GenerateUID());
+                break;
+            }
         }
     }
 
