@@ -58,6 +58,9 @@ Naming convention: Prefix all .h .cpp files with "C"
 	Every scene contains a default start bubble which cannot be deleted.  
 	The toolbar contains icons for each placeable bubble type.  
 	Hovering over each icon displays a simple tooltip and, in some cases, usage instructions.  
+	Holding down the Shift key will allow you to place multiple bubbles or connections.  
+	When in Cursor mode, holding down shift and dragging from a blank area of the scene will allow you to select multiple bubbles.  
+	You can also hold Ctrl to individually select/deselect multiple bubbles.  
 * **Link tool**  
 	The link tool allows you to create links between bubbles.  
 	Left click and drag between bubbles to create a directional link between them.  
