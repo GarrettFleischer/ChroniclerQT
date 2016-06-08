@@ -17,7 +17,7 @@ CPaletteButton::CPaletteButton(QWidget *parent)
     setPopupMode(QToolButton::MenuButtonPopup);
     setCheckable(true);
     setIcon(QIcon(":/images/icn_palette"));
-    setToolTip("Palette creator/painter");
+    setToolTip("Palette tool\nRight click on the tool to add new palette.\nRight click on an existing palette to edit it.");
 
     m_creator = new CPaletteCreator(this);
     connect(m_creator, SIGNAL(accepted()), this, SLOT(Saved()));
