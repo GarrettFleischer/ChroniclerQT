@@ -90,8 +90,14 @@ void CMainWindow::DeleteItem()
     CGraphicsView *view = dynamic_cast<CGraphicsView *>(shared().sceneTabs->currentWidget());
 
     if(view)
+    {
         for(QGraphicsItem *item : view->cScene()->selectedItems())
-            delete item;
+        {
+            CBubble *bubble = dynamic_cast<CBubble *>(item);
+            if(bubble && bubble->getType() != Chronicler::Start)
+                bubble->deleteLater();
+        }
+    }
 }
 
 

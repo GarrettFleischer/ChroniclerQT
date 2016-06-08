@@ -520,7 +520,7 @@ QString CProjectView::MakeLabel(CBubble *bubble, const QList<CBubble *> &bubbles
     {
         if(b != bubble && LabelNeeded(b, bubbles) && b->getLabel() == bubble->getLabel())
         {
-            label += "_" + QString::number(bubble->getUID());
+            label += "_" + QString::number(bubble->GenerateUID());
             break;
         }
     }
