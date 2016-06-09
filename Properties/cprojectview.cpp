@@ -7,26 +7,29 @@
 #include <QLabel>
 #include <QLineEdit>
 
+#include <QMessageBox>
+
+#include <QDockWidget>
+#include <QTabWidget>
+
+#include <QStatusBar>
+
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 
 #include <QFile>
 #include <QSaveFile>
 #include <QFileDialog>
+#include <QTextStream>
 #include <QAction>
 
-#include <QMessageBox>
-
-#include <QDockWidget>
-#include <QTabWidget>
+#include <QStack>
 
 #include <QSettings>
 
 #include <QtAlgorithms>
 
 #include <QTimer>
-
-#include <QStatusBar>
 
 #include "Bubbles/cchoice.h"
 #include "Misc/cscenemodel.h"
@@ -49,6 +52,10 @@
 
 #include "Misc/chronicler.h"
 using Chronicler::shared;
+
+
+#include <QDebug>
+
 
 Q_DECLARE_METATYPE(QStringList)
 
@@ -259,9 +266,199 @@ void CProjectView::OpenProject(const QString &filepath)
     shared().statusBar->showMessage("Successfully opened " + m_path, 30000);
 }
 
-void CProjectView::ImportProject()
+QString CProjectView::CSStripIndent(const QString &line, const CSIndent &csindent)
 {
+    int i = 0;
+    while (line[i] == csindent.type)
+        ++i;
 
+    return line.mid(i);
+}
+
+quint8 CProjectView::CSIndentLevel(const QString &line, const CSIndent &csindent)
+{
+    quint8 level = 0;
+
+    quint8 i = 0;
+    while (line[i] == csindent.type)
+        ++i;
+
+    level = i / csindent.count;
+
+    return level;
+}
+
+QList<CProjectView::CSLine> CProjectView::CSProcLines(QTextStream &stream, const CSIndent &csindent)
+{
+    QList<CSLine> lines;
+    QStack<CSLine *> choices;
+
+    while(!stream.atEnd())
+    {
+        lines.append(CSLine(stream.readLine()));
+        CSLine &csline = lines.last();
+
+        csline.indent = CSIndentLevel(csline.line, csindent);
+        csline.line = CSStripIndent(csline.line, csindent);
+
+        if (csline.line.toLower().startsWith("*choice"))
+        {
+            csline.type = ChoiceAction;
+            choices.push(&csline);
+        }
+        else if (csline.line.toLower().startsWith("*fake_choice"))
+        {
+            csline.type = FakeChoice;
+            choices.push(&csline);
+        }
+        else if (csline.line.toLower().startsWith("#"))
+        {
+            if(csline.indent <= choices.top()->indent)
+                choices.pop();
+
+            csline.type = Choice;
+            choices.top()->data.append(&csline);
+        }
+        else if (csline.line.toLower().startsWith("*title"))
+            csline.type = Title;
+        else if (csline.line.toLower().startsWith("*author"))
+            csline.type = Author;
+        else if (csline.line.toLower().startsWith("*create"))
+            csline.type = Create;
+        else if (csline.line.toLower().startsWith("*temp"))
+            csline.type = Temp;
+        else if (csline.line.toLower().startsWith("*scene_list"))
+            csline.type = SceneList;
+        else if (csline.line.toLower().startsWith("*stat_chart"))
+            csline.type = StatChart;
+        else if (csline.line.toLower().startsWith("*if"))
+            csline.type = If;
+        else if (csline.line.toLower().startsWith("*else"))
+            csline.type = Else;
+        else if (csline.line.toLower().startsWith("*"))
+            csline.type = Action;
+        else if (csline.line.length())
+            csline.type = Text;
+        else
+            csline.type = Empty;
+    }
+
+    return lines;
+}
+
+QList<CProjectView::CSBlock> CProjectView::CSProcBlocks(const QList<CProjectView::CSLine> &lines)
+{
+    QList<CSBlock> blocks;
+
+    CSBlock block;
+    for (int i = 0; i < lines.length(); i += block.size)
+    {
+        block = CSProcBlock(lines, i);
+        if(block.type != Empty)
+            blocks.append(block);
+    }
+
+    return blocks;
+}
+
+CProjectView::CSBlock CProjectView::CSProcBlock(const QList<CProjectView::CSLine> &lines, int index)
+{
+    CSBlock csblock;
+    const CSLine &csline = lines[index];
+
+    if(csline.type != Empty)
+    {
+        csblock.type = csline.type;
+
+        // TEXT OR ACTIONS
+        if(csline.type == Text || csline.type == Action)
+        {
+            csblock.block = csline.line;
+            while (++index < lines.length() && (lines[index].type == Text || lines[index].type == Empty))
+            {
+                csblock.block += "\n" + lines[index].line;
+                ++csblock.size;
+            }
+        }
+
+        // SCENE_LIST
+        else if(csline.type == SceneList)
+        {
+            while (++index < lines.length() && (lines[index].indent == csline.indent + 1))
+            {
+                csblock.block += "\n" + lines[index].line;
+                ++csblock.size;
+            }
+        }
+
+        // CONDITION
+        else if(csline.type == If || csline.type == ElseIf || csline.type == Else)
+        {
+            csblock.children.append(CSProcBlock(lines, index + 1));
+            csblock.size = csblock.children.last().size;
+        }
+
+        // CHOICE_ACTION
+        else if(csline.type == ChoiceAction)
+        {
+            for (const CSLine *choice : csline.data)
+            {
+                int choice_index = lines.indexOf(*choice, index);
+                csblock.children.append(CSProcBlock(lines, choice_index));
+                csblock.size += csblock.children.last().size;
+            }
+        }
+
+        // FAKE_CHOICE
+        else if(csline.type == FakeChoice)
+        {
+            if(csline.data.length())
+            {
+                for (const CSLine *choice : csline.data)
+                    csblock.block += "\n" + choice->line;
+
+                csblock.size = lines.indexOf(*(csline.data.last())) - index;
+            }
+        }
+
+        // CHOICE
+        else if(csline.type == Choice)
+        {
+            csblock.block = csline.line;
+            csblock.children.append(CSProcBlock(lines, index + 1));
+            csblock.size += csblock.children.last().size;
+        }
+
+        // ANYTHING ELSE
+        else
+        {
+            csblock.block = csline.line;
+        }
+    }
+
+    return csblock;
+}
+
+void CProjectView::ImportChoiceScript(const QString &filepath)
+{
+    QString dir = QFileInfo(filepath).absolutePath();
+    QFile file(filepath);
+    while(!file.open(QIODevice::ReadOnly))
+    {
+        file.setFileName(QFileDialog::getOpenFileName(this, "Open", dir, "startup (startup.txt)"));
+        if(!file.fileName().length())
+            return; // quit if user hits cancel
+    }
+
+    // TODO: ask for indent type
+    CSIndent csindent;
+    QTextStream stream(&file);
+
+    QList<CSLine> lines = CSProcLines(stream, csindent);
+//    QList<CSBlock> blocks = CSProcBlocks(lines);
+
+    for(const CSLine &line : lines)
+        qDebug() << line.line;
 }
 
 void CProjectView::NewProject()

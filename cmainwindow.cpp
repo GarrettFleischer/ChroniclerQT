@@ -80,6 +80,8 @@ CMainWindow::CMainWindow(QSettings *settings, const QString &filename)
     // to allow .chron files to be opened with Chronicler
     if(filename.length())
         shared().projectView->OpenProject(filename);
+
+    shared().projectView->ImportChoiceScript("C:\\startup.txt");
 }
 
 
@@ -113,12 +115,12 @@ void CMainWindow::NewProject()
 
 void CMainWindow::OpenProject()
 {
-    shared().projectView->OpenProject();
+    shared().projectView->OpenProject("");
 }
 
 void CMainWindow::ImportProject()
 {
-    shared().projectView->ImportProject();
+    shared().projectView->ImportChoiceScript("");
 }
 
 void CMainWindow::SaveProject()

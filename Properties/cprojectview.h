@@ -9,7 +9,7 @@ class QPushButton;
 class QMenu;
 class QLineEdit;
 class QSaveFile;
-class QTimer;
+class QTextStream;
 QT_END_NAMESPACE
 
 #include <QModelIndex>
@@ -34,6 +34,39 @@ public:
     const QString version() const;
 
 private:
+    // Enums and Structs
+    enum CSType { Empty, Title, Author, Create, Temp, SceneList, StatChart, ChoiceAction, FakeChoice, Choice, If, Else, ElseIf, Action, Text };
+
+    struct CSLine
+    {
+        CSType type;
+        QString line;
+        quint8 indent;
+        QList<CSLine *> data;
+
+        CSLine(QString _line) : line(_line){}
+
+        operator ==(const CSLine &rhs)
+        {
+            return this == &rhs;
+        }
+    };
+
+    struct CSBlock
+    {
+        CSType type = Empty;
+        QString block;
+        QList<CSBlock> children;
+        quint32 size = 1;
+    };
+
+    struct CSIndent
+    {
+        char type = ' ';
+        quint8 count = 4;
+    };
+
+    // Private Methods
     void CreateBubbles();
 
     void CalculateOrder(CConnection *connection, QList<CConnection *> &processed, qint64 order);
@@ -43,6 +76,15 @@ private:
 
     void SaveToFile(QSaveFile &file);
 
+    // Choicescript processing
+    QString CSStripIndent(const QString &line, const CSIndent &csindent);
+    quint8 CSIndentLevel(const QString &line, const CSIndent &csindent);
+    QList<CSLine> CSProcLines(QTextStream &stream, const CSIndent &csindent);
+    QList<CSBlock> CSProcBlocks(const QList<CSLine> &lines);
+    CSBlock CSProcBlock(const QList<CSLine> & lines, int index);
+
+
+    // Private Members
     QLineEdit *m_name;
 
     // view/model
@@ -73,8 +115,8 @@ signals:
 public slots:
     void SaveProject();
     void SaveProjectAs();
-    void OpenProject(const QString &filepath = "");
-    void ImportProject();
+    void OpenProject(const QString &filepath);
+    void ImportChoiceScript(const QString &filepath);
     void NewProject();
     void CloseProject();
     void ExportChoiceScript();
