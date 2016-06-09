@@ -342,6 +342,12 @@ QList<CProjectView::CSLine> CProjectView::CSProcLines(QTextStream &stream, const
             csline.type = If;
         else if (csline.line.toLower().startsWith("*else"))
             csline.type = Else;
+        else if (csline.line.toLower().startsWith("*label"))
+            csline.type = Label;
+        else if (csline.line.toLower().startsWith("*finish"))
+            csline.type = Finish;
+        else if (csline.line.toLower().startsWith("*goto"))
+            csline.type = GoTo;
         else if (csline.line.toLower().startsWith("*"))
             csline.type = Action;
         else if (csline.line.length())
@@ -358,7 +364,7 @@ QList<CProjectView::CSBlock> CProjectView::CSProcBlocks(const QList<CProjectView
     QList<CSBlock> blocks;
 
     CSBlock block;
-    for (int i = 0; i < lines.length(); i += block.size)
+    for (int i = 0; i < lines.length(); i = block.end_index)
     {
         block = CSProcBlock(lines, i);
         if(block.type != Empty)
@@ -376,6 +382,7 @@ CProjectView::CSBlock CProjectView::CSProcBlock(const QList<CProjectView::CSLine
     if(csline.type != Empty)
     {
         csblock.type = csline.type;
+        csblock.start_index = index;
 
         // STORY
         if(csline.type == Text)
@@ -386,11 +393,6 @@ CProjectView::CSBlock CProjectView::CSProcBlock(const QList<CProjectView::CSLine
                 csblock.block += "\n" + lines[index].line;
                 ++csblock.size;
             }
-            while(index < lines.length() && (lines[index].indent == csline.indent || lines[index].type == Empty))
-                if(lines[index].type != Empty)
-                    csblock.children.append(CSProcBlock(lines, index++));
-                else
-                    index++;
         }
 
         // ACTION
@@ -417,19 +419,24 @@ CProjectView::CSBlock CProjectView::CSProcBlock(const QList<CProjectView::CSLine
         // CONDITION
         else if(csline.type == If || csline.type == ElseIf || csline.type == Else)
         {
-            csblock.children.append(CSProcBlock(lines, index + 1));
-            csblock.size = csblock.children.last().size;
+            csblock.AddChild(CSProcBlock(lines, index + 1));
+            index += csblock.size;
         }
 
         // CHOICE_ACTION
         else if(csline.type == ChoiceAction)
         {
+            csblock.size = 0;
             for (const CSLine *choice : csline.data)
             {
                 int choice_index = lines.indexOf(*choice, index);
-                csblock.children.append(CSProcBlock(lines, choice_index));
-                csblock.size += csblock.children.last().size;
+                csblock.AddChild(CSProcBlock(lines, choice_index));
             }
+            csblock.size = qMax((int)csblock.size, 1);
+            if(csblock.children.length())
+                index = csblock.children.last().end_index;
+            else
+                index += csblock.size;
         }
 
         // FAKE_CHOICE
@@ -442,22 +449,34 @@ CProjectView::CSBlock CProjectView::CSProcBlock(const QList<CProjectView::CSLine
 
                 csblock.size = lines.indexOf(*(csline.data.last())) - index;
             }
+            index += csblock.size;
         }
 
         // CHOICE
         else if(csline.type == Choice)
         {
             csblock.block = csline.line;
-            csblock.children.append(CSProcBlock(lines, index + 1));
-            csblock.size += csblock.children.last().size;
+            ++index;
+            quint32 prev_size;
+            while (lines[index].indent == csline.indent + 1 || lines[index].type == Empty)
+            {
+                prev_size = csblock.size + 1;
+                csblock.AddChild(CSProcBlock(lines, index));
+                index += qMax(int(csblock.size - prev_size), 1);
+            }
         }
 
         // ANYTHING ELSE
         else
         {
             csblock.block = csline.line;
+            ++index;
         }
     }
+    else
+        ++index;
+
+    csblock.end_index = index;
 
     return csblock;
 }

@@ -35,7 +35,7 @@ public:
 
 private:
     // Enums and Structs
-    enum CSType { Empty, Title, Author, Create, Temp, SceneList, StatChart, ChoiceAction, FakeChoice, Choice, If, Else, ElseIf, Action, Text };
+    enum CSType { Empty, Title, Author, Create, Temp, SceneList, StatChart, ChoiceAction, FakeChoice, Choice, If, Else, ElseIf, Action, Text, Label, Finish, GoTo };
 
     struct CSLine
     {
@@ -46,7 +46,7 @@ private:
 
         CSLine(QString _line) : line(_line){}
 
-        operator ==(const CSLine &rhs)
+        bool operator ==(const CSLine &rhs)
         {
             return this == &rhs;
         }
@@ -58,6 +58,17 @@ private:
         QString block;
         QList<CSBlock> children;
         quint32 size = 1;
+        quint32 start_index;
+        quint32 end_index;
+
+        void AddChild(const CSBlock &block)
+        {
+            if(block.type != Empty)
+            {
+                children.append(block);
+                size += block.size;
+            }
+        }
     };
 
     struct CSIndent
