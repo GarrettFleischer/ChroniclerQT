@@ -57,7 +57,6 @@ private:
         CSType type = Empty;
         QString block;
         QList<CSBlock> children;
-        quint32 size = 1;
         quint32 start_index;
         quint32 end_index;
 
@@ -66,7 +65,6 @@ private:
             if(block.type != Empty)
             {
                 children.append(block);
-                size += block.size;
             }
         }
     };

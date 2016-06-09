@@ -389,10 +389,7 @@ CProjectView::CSBlock CProjectView::CSProcBlock(const QList<CProjectView::CSLine
         {
             csblock.block = csline.line;
             while (++index < lines.length() && (lines[index].type == Text || lines[index].type == Empty))
-            {
                 csblock.block += "\n" + lines[index].line;
-                ++csblock.size;
-            }
         }
 
         // ACTION
@@ -400,56 +397,53 @@ CProjectView::CSBlock CProjectView::CSProcBlock(const QList<CProjectView::CSLine
         {
             csblock.block = csline.line;
             while (++index < lines.length() && lines[index].type == Action)
-            {
                 csblock.block += "\n" + lines[index].line;
-                ++csblock.size;
-            }
         }
 
         // SCENE_LIST
         else if(csline.type == SceneList)
         {
             while (++index < lines.length() && (lines[index].indent == csline.indent + 1))
-            {
                 csblock.block += "\n" + lines[index].line;
-                ++csblock.size;
-            }
         }
 
         // CONDITION
         else if(csline.type == If || csline.type == ElseIf || csline.type == Else)
         {
-            csblock.AddChild(CSProcBlock(lines, index + 1));
-            index += csblock.size;
+            ++index;
+            while (lines[index].indent == csline.indent + 1 || lines[index].type == Empty)
+            {
+                CSBlock child = CSProcBlock(lines, index);
+                csblock.end_index = child.end_index;
+                csblock.AddChild(child);
+            }
         }
 
         // CHOICE_ACTION
         else if(csline.type == ChoiceAction)
         {
-            csblock.size = 0;
+            ++index;
             for (const CSLine *choice : csline.data)
             {
                 int choice_index = lines.indexOf(*choice, index);
                 csblock.AddChild(CSProcBlock(lines, choice_index));
             }
-            csblock.size = qMax((int)csblock.size, 1);
+
             if(csblock.children.length())
                 index = csblock.children.last().end_index;
-            else
-                index += csblock.size;
         }
 
         // FAKE_CHOICE
         else if(csline.type == FakeChoice)
         {
+            ++index;
             if(csline.data.length())
             {
                 for (const CSLine *choice : csline.data)
                     csblock.block += "\n" + choice->line;
 
-                csblock.size = lines.indexOf(*(csline.data.last())) - index;
+                index = lines.indexOf(*csline.data.last(), index) + 1;
             }
-            index += csblock.size;
         }
 
         // CHOICE
@@ -457,12 +451,11 @@ CProjectView::CSBlock CProjectView::CSProcBlock(const QList<CProjectView::CSLine
         {
             csblock.block = csline.line;
             ++index;
-            quint32 prev_size;
             while (lines[index].indent == csline.indent + 1 || lines[index].type == Empty)
             {
-                prev_size = csblock.size + 1;
-                csblock.AddChild(CSProcBlock(lines, index));
-                index += qMax(int(csblock.size - prev_size), 1);
+                CSBlock child = CSProcBlock(lines, index);
+                index = child.end_index;
+                csblock.AddChild(child);
             }
         }
 
