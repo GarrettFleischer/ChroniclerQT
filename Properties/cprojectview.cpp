@@ -268,23 +268,30 @@ void CProjectView::OpenProject(const QString &filepath)
 
 QString CProjectView::CSStripIndent(const QString &line, const CSIndent &csindent)
 {
-    int i = 0;
-    while (line[i] == csindent.type)
-        ++i;
+    if(line.length())
+    {
+        int i = 0;
+        while (line[i] == csindent.type)
+            ++i;
 
-    return line.mid(i);
+        return line.mid(i);
+    }
+    else
+        return "";
 }
 
 quint8 CProjectView::CSIndentLevel(const QString &line, const CSIndent &csindent)
 {
     quint8 level = 0;
 
-    quint8 i = 0;
-    while (line[i] == csindent.type)
-        ++i;
+    if(line.length())
+    {
+        quint8 i = 0;
+        while (line[i] == csindent.type)
+            ++i;
 
-    level = i / csindent.count;
-
+        level = i / csindent.count;
+    }
     return level;
 }
 
@@ -370,11 +377,27 @@ CProjectView::CSBlock CProjectView::CSProcBlock(const QList<CProjectView::CSLine
     {
         csblock.type = csline.type;
 
-        // TEXT OR ACTIONS
-        if(csline.type == Text || csline.type == Action)
+        // STORY
+        if(csline.type == Text)
         {
             csblock.block = csline.line;
             while (++index < lines.length() && (lines[index].type == Text || lines[index].type == Empty))
+            {
+                csblock.block += "\n" + lines[index].line;
+                ++csblock.size;
+            }
+            while(index < lines.length() && (lines[index].indent == csline.indent || lines[index].type == Empty))
+                if(lines[index].type != Empty)
+                    csblock.children.append(CSProcBlock(lines, index++));
+                else
+                    index++;
+        }
+
+        // ACTION
+        else if(csline.type == Action)
+        {
+            csblock.block = csline.line;
+            while (++index < lines.length() && lines[index].type == Action)
             {
                 csblock.block += "\n" + lines[index].line;
                 ++csblock.size;
@@ -455,10 +478,10 @@ void CProjectView::ImportChoiceScript(const QString &filepath)
     QTextStream stream(&file);
 
     QList<CSLine> lines = CSProcLines(stream, csindent);
-//    QList<CSBlock> blocks = CSProcBlocks(lines);
+    QList<CSBlock> blocks = CSProcBlocks(lines);
 
-    for(const CSLine &line : lines)
-        qDebug() << line.line;
+    for(const CSBlock &block : blocks)
+        qDebug() << block.type << " : " << block.block;
 }
 
 void CProjectView::NewProject()

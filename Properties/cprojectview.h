@@ -39,7 +39,7 @@ private:
 
     struct CSLine
     {
-        CSType type;
+        CSType type = Empty;
         QString line;
         quint8 indent;
         QList<CSLine *> data;
