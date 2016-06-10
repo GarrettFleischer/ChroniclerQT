@@ -42,7 +42,9 @@
 #include "Bubbles/cstartbubble.h"
 #include "Bubbles/cstorybubble.h"
 #include "Bubbles/cchoicebubble.h"
+#include "Misc/cchoicemodel.h"
 #include "Bubbles/cactionbubble.h"
+#include "Misc/cstringlistmodel.h"
 #include "Bubbles/cconditionbubble.h"
 #include "Connections/cconnection.h"
 
@@ -352,8 +354,6 @@ QList<CProjectView::CSLine> CProjectView::CSProcLines(QTextStream &stream, const
             csline.type = Action;
         else if (csline.line.length())
             csline.type = Text;
-        else
-            csline.type = Empty;
     }
 
     return lines;
@@ -379,7 +379,13 @@ CProjectView::CSBlock CProjectView::CSProcBlock(const QList<CProjectView::CSLine
     CSBlock csblock;
     const CSLine &csline = lines[index];
 
-    if(csline.type != Empty)
+    if(csline.type == Empty)
+    {
+        csblock.width = 0;
+        csblock.height = 0;
+        ++index;
+    }
+    else
     {
         csblock.type = csline.type;
         csblock.start_index = index;
@@ -387,34 +393,37 @@ CProjectView::CSBlock CProjectView::CSProcBlock(const QList<CProjectView::CSLine
         // STORY
         if(csline.type == Text)
         {
-            csblock.block = csline.line;
+            csblock.text = csline.line;
             while (++index < lines.length() && (lines[index].type == Text || lines[index].type == Empty))
-                csblock.block += "\n" + lines[index].line;
+                csblock.text += "\n" + lines[index].line;
         }
 
         // ACTION
         else if(csline.type == Action)
         {
-            csblock.block = csline.line;
+            csblock.text = csline.line;
             while (++index < lines.length() && lines[index].type == Action)
-                csblock.block += "\n" + lines[index].line;
+                csblock.text += "\n" + lines[index].line;
         }
 
         // SCENE_LIST
         else if(csline.type == SceneList)
         {
             while (++index < lines.length() && (lines[index].indent == csline.indent + 1))
-                csblock.block += "\n" + lines[index].line;
+                csblock.text += (csblock.text.length() ? "\n" : "") + lines[index].line;
+            csblock.height = 0;
         }
 
         // CONDITION
-        else if(csline.type == If || csline.type == ElseIf || csline.type == Else)
+        else if(csline.type == If)// || csline.type == ElseIf || csline.type == Else)
         {
             ++index;
             while (lines[index].indent == csline.indent + 1 || lines[index].type == Empty)
             {
                 CSBlock child = CSProcBlock(lines, index);
-                csblock.end_index = child.end_index;
+                csblock.width = (child.width > csblock.width) ? child.width : csblock.width;
+                csblock.height += child.height;
+                index = child.end_index;
                 csblock.AddChild(child);
             }
         }
@@ -425,8 +434,11 @@ CProjectView::CSBlock CProjectView::CSProcBlock(const QList<CProjectView::CSLine
             ++index;
             for (const CSLine *choice : csline.data)
             {
-                int choice_index = lines.indexOf(*choice, index);
-                csblock.AddChild(CSProcBlock(lines, choice_index));
+                const int choice_index = lines.indexOf(*choice, index);
+                CSBlock child = CSProcBlock(lines, choice_index);
+                csblock.width = (child.width > csblock.width) ? child.width : csblock.width;
+                csblock.height = (child.height > csblock.height) ? child.height : csblock.height;
+                csblock.AddChild(child);
             }
 
             if(csblock.children.length())
@@ -440,7 +452,7 @@ CProjectView::CSBlock CProjectView::CSProcBlock(const QList<CProjectView::CSLine
             if(csline.data.length())
             {
                 for (const CSLine *choice : csline.data)
-                    csblock.block += "\n" + choice->line;
+                    csblock.text += (csblock.text.length() ? "\n" : "") + choice->line;
 
                 index = lines.indexOf(*csline.data.last(), index) + 1;
             }
@@ -449,11 +461,13 @@ CProjectView::CSBlock CProjectView::CSProcBlock(const QList<CProjectView::CSLine
         // CHOICE
         else if(csline.type == Choice)
         {
-            csblock.block = csline.line;
+            csblock.text = csline.line;
             ++index;
             while (lines[index].indent == csline.indent + 1 || lines[index].type == Empty)
             {
                 CSBlock child = CSProcBlock(lines, index);
+                csblock.width = (child.width > csblock.width) ? child.width : csblock.width;
+                csblock.height += child.height;
                 index = child.end_index;
                 csblock.AddChild(child);
             }
@@ -462,16 +476,88 @@ CProjectView::CSBlock CProjectView::CSProcBlock(const QList<CProjectView::CSLine
         // ANYTHING ELSE
         else
         {
-            csblock.block = csline.line;
+            csblock.text = csline.line;
+            csblock.height = 0;
             ++index;
         }
     }
-    else
-        ++index;
 
     csblock.end_index = index;
 
     return csblock;
+}
+
+void CProjectView::CSProcBubbles(const QList<CProjectView::CSBlock> &blocks, CGraphicsScene *scene)
+{
+    CBubble *prev = scene->startBubble();
+    int row = 1;
+    for(int i = 0; i < blocks.length(); ++i)
+    {
+        prev = CSProcBubble(blocks[i], scene, row += blocks[qMax(i - 1, 0)].height, 0, prev);
+    }
+}
+
+CBubble *CProjectView::CSProcBubble(const CProjectView::CSBlock &csblock, CGraphicsScene *scene, int row, int column, CBubble *prev)
+{
+    const static int cw = 300;
+    const static int rh = 300;
+
+    CBubble *bubble;
+    QPointF pos(column * cw, row * rh);
+
+    if(csblock.type == Text)
+    {
+        CStoryBubble *bbl = dynamic_cast<CStoryBubble *>(scene->AddBubble(Chronicler::Story, pos, false));
+        bbl->setStory(csblock.text);
+
+        bubble = bbl;
+    }
+    else if(csblock.type == Action)
+    {
+        CActionBubble *bbl = dynamic_cast<CActionBubble *>(scene->AddBubble(Chronicler::Action, pos, false));
+
+        QStringList actions = csblock.text.split('\n');
+        for(QString action : actions)
+            bbl->actions()->AddItem(action);
+
+        bubble = bbl;
+    }
+    else if(csblock.type == ChoiceAction)
+    {
+        CChoiceBubble *bbl = dynamic_cast<CChoiceBubble *>(scene->AddBubble(Chronicler::Choice, pos, false));
+
+        const int start_col = column - (csblock.children.length() / 2);
+        for(int i = 0; i < csblock.children.length(); ++i)
+        {
+            const CSBlock &choice = csblock.children[i];
+            CChoice *cb = new CChoice(bbl->getPalette(), bbl->getFont(), bbl, choice.text);
+            bbl->choices()->AddItem(cb);
+
+            CBubble *prev_child = Q_NULLPTR;
+            for(int j = 0; j < csblock.children[i].children.length(); ++j)
+            {
+                const CSBlock &child = csblock.children[i].children[j];
+
+                bool left = (i < csblock.children.length() / 2);
+                int ncol = start_col + child.width + i - left;
+                int nrow = row + child.height + j;
+
+                CBubble *next = CSProcBubble(child, scene, nrow, ncol, prev_child);
+            }
+        }
+
+        bubble = bbl;
+    }
+    else if(csline.type == If)
+    {
+
+    }
+
+
+//    if(prev)
+//        scene->AddConnection(prev, bubble, Chronicler::Down, Chronicler::Up);
+
+    return bubble;
 }
 
 void CProjectView::ImportChoiceScript(const QString &filepath)
@@ -492,8 +578,10 @@ void CProjectView::ImportChoiceScript(const QString &filepath)
     QList<CSLine> lines = CSProcLines(stream, csindent);
     QList<CSBlock> blocks = CSProcBlocks(lines);
 
-    for(const CSBlock &block : blocks)
-        qDebug() << block.type << " : " << block.block;
+    CGraphicsView *view = new CGraphicsView(new CGraphicsScene(true, "test"));
+    shared().sceneTabs->addTab(view, view->cScene()->name());
+
+    CSProcBubbles(blocks, view->cScene());
 }
 
 void CProjectView::NewProject()

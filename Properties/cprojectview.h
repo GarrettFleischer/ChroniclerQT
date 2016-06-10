@@ -55,17 +55,17 @@ private:
     struct CSBlock
     {
         CSType type = Empty;
-        QString block;
+        QString text;
         QList<CSBlock> children;
         quint32 start_index;
         quint32 end_index;
+        int width = 1;
+        int height = 1;
 
         void AddChild(const CSBlock &block)
         {
             if(block.type != Empty)
-            {
                 children.append(block);
-            }
         }
     };
 
@@ -91,6 +91,8 @@ private:
     QList<CSLine> CSProcLines(QTextStream &stream, const CSIndent &csindent);
     QList<CSBlock> CSProcBlocks(const QList<CSLine> &lines);
     CSBlock CSProcBlock(const QList<CSLine> & lines, int index);
+    void CSProcBubbles(const QList<CSBlock> &blocks, CGraphicsScene *scene);
+    CBubble *CSProcBubble(const CSBlock &csblock, CGraphicsScene *scene, int row, int column, CBubble *prev);
 
 
     // Private Members

@@ -66,6 +66,7 @@ Naming convention: Prefix all .h .cpp files with "C"
 	Left click and drag between bubbles to create a directional link between them.  
 	Right click on a bubble to delete a link.  
 	Links are attached to anchors on a bubble. Dragging from the bottom of one bubble to the top of another, will attach the link to the nearest available anchors at those positions.  
+	In the case of Condition bubbles, the left anchor is the "true" output, and the right anchor is the "false" output.  
 * **Palette tool**  
 	The palette tool allows you to create and apply palettes to bubbles.  
 	Right click on the tool itself to add a new palette.  

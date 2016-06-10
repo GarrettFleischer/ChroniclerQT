@@ -55,7 +55,7 @@ void CGraphicsScene::setFont(const QFont &font)
 
     for(QGraphicsItem *item : items())
     {
-        CBubble *bbl = qgraphicsitem_cast<CBubble *>(item);
+        CBubble *bbl = dynamic_cast<CBubble *>(item);
         if(bbl)
             bbl->setFont(m_font);
     }
