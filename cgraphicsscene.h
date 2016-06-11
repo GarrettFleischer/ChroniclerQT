@@ -128,8 +128,13 @@ signals:
     void leftReleased();
     void nameChanged();
 
+public slots:
+    void SelectAll();
+
 private slots:
     void ItemSelected(QGraphicsItem *selectedItem);
+
+    void UpdateSceneRect();
 };
 
 #endif // CGRAPHICSSCENE_H

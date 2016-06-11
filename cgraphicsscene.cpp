@@ -8,6 +8,7 @@
 #include <QKeyEvent>
 #include <QMenu>
 #include <QGuiApplication>
+#include <QAction>
 
 #include "cgraphicsview.h"
 
@@ -27,6 +28,8 @@
 
 #include "Properties/cprojectview.h"
 
+#include "cmainwindow.h"
+
 #include "Misc/chronicler.h"
 using Chronicler::Anchor;
 using Chronicler::shared;
@@ -44,6 +47,7 @@ CGraphicsScene::CGraphicsScene(bool create_start, const QString &name, QObject *
     addItem(m_line);
 
     connect(this, SIGNAL(itemSelected(QGraphicsItem*)), this, SLOT(ItemSelected(QGraphicsItem*)));
+    connect(this, SIGNAL(changed(QList<QRectF>)), this, SLOT(UpdateSceneRect()));
 
     if(create_start)
         m_startBubble = dynamic_cast<CStartBubble *>(AddBubble(Chronicler::Start, sceneRect().center(), false));
@@ -167,6 +171,29 @@ void CGraphicsScene::ItemSelected(QGraphicsItem *selectedItem)
 
         // bring the selected item to the front
         selectedItem->setZValue(1);
+    }
+}
+
+void CGraphicsScene::SelectAll()
+{
+    for(QGraphicsItem *itm : items())
+        itm->setSelected(true);
+}
+
+void CGraphicsScene::UpdateSceneRect()
+{
+    if(views().length())
+    {
+        QRectF ib = itemsBoundingRect();
+        QRectF sb = sceneRect();
+        QRectF vb = views().first()->visibleRegion().boundingRect();
+        qreal p = 1000;
+
+        setSceneRect(QRectF(QPointF(qMin(ib.left() - p, vb.left()), qMin(ib.top() - p, vb.top())),
+                            QPointF(qMax(ib.right() + p, vb.right()), qMax(ib.bottom() + p, vb.bottom()))));
+
+        if(sceneRect() != sb && selectedItems().length())
+            views().first()->centerOn(selectedItems().first());
     }
 }
 

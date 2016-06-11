@@ -6,8 +6,10 @@
 #include <QScrollBar>
 #include <QtMath>
 #include <QtGlobal>
+#include <QAction>
 
 #include "cgraphicsscene.h"
+#include "Bubbles/cstartbubble.h"
 
 
 CGraphicsView::CGraphicsView(CGraphicsScene *scene, QWidget *parent)
@@ -19,6 +21,16 @@ CGraphicsView::CGraphicsView(CGraphicsScene *scene, QWidget *parent)
     setRenderHint(QPainter::Antialiasing, true);
     //setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     //setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+
+    QAction *select_all = new QAction(this);
+    select_all->setShortcut(QKeySequence::SelectAll);
+    connect(select_all, SIGNAL(triggered()), scene, SLOT(SelectAll()));
+    addAction(select_all);
+
+    QAction *go_home = new QAction(this);
+    go_home->setShortcut(tr("Ctrl+H"));
+    connect(go_home, SIGNAL(triggered()), this, SLOT(Recenter()));
+    addAction(go_home);
 }
 
 CGraphicsScene *CGraphicsView::cScene()
@@ -92,5 +104,10 @@ void CGraphicsView::GentleZoom(double factor, const QPointF & mouse_pos)
             target_scene_pos = mapToScene(target_viewport_pos.toPoint());
         }
     }
+}
+
+void CGraphicsView::Recenter()
+{
+    centerOn(cScene()->startBubble());
 }
 

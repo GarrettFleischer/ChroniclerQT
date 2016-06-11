@@ -2,12 +2,15 @@
 #define CGRAPHICSVIEW_H
 
 #include <QGraphicsView>
+#include <QObject>
 
 class CGraphicsScene;
 
 
 class CGraphicsView : public QGraphicsView
 {
+    Q_OBJECT
+
 public:
     CGraphicsView(CGraphicsScene *scene, QWidget *parent = 0);
 
@@ -28,6 +31,9 @@ private:
     Qt::KeyboardModifiers m_modifiers;
     double m_zoom_factor_base;
     QPointF target_scene_pos, target_scene_pos2, target_viewport_pos, target_viewport_pos2;
+
+public slots:
+    void Recenter();
 };
 
 #endif // CGRAPHICSVIEW_H
