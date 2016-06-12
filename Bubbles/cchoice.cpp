@@ -17,6 +17,8 @@
 CChoice::CChoice(CPaletteAction *palette, const QFont &font, QGraphicsItem *parent, const QString &choice)
     : CSingleLinkBubble(QPointF(), palette, font, parent)
 {
+    m_type = Chronicler::ChoiceItem;
+
     setFlag(QGraphicsItem::ItemIsMovable, false);
     setFlag(QGraphicsItem::ItemIsSelectable, false);
 

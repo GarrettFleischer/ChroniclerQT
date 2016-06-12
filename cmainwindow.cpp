@@ -81,7 +81,7 @@ CMainWindow::CMainWindow(QSettings *settings, const QString &filename)
     if(filename.length())
         shared().projectView->OpenProject(filename);
 
-    shared().projectView->ImportChoiceScript("C:\\startup.txt");
+    shared().projectView->ImportChoiceScript("~/benseawalker/startup.txt");
 }
 
 

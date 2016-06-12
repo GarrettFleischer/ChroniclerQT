@@ -57,8 +57,7 @@ private:
         CSType type = Empty;
         QString text;
         QList<CSBlock> children;
-        quint32 start_index;
-        quint32 end_index;
+        QString label;
         int width = 1;
         int height = 1;
 
@@ -66,6 +65,18 @@ private:
         {
             if(block.type != Empty)
                 children.append(block);
+        }
+    };
+
+    struct CSBubble
+    {
+        CBubble *bubble = Q_NULLPTR;
+        QString link;
+        QList<CSBubble> children;
+
+        bool operator ==(const CSBubble &rhs)
+        {
+            return bubble == rhs.bubble;
         }
     };
 
@@ -90,9 +101,11 @@ private:
     quint8 CSIndentLevel(const QString &line, const CSIndent &csindent);
     QList<CSLine> CSProcLines(QTextStream &stream, const CSIndent &csindent);
     QList<CSBlock> CSProcBlocks(const QList<CSLine> &lines);
-    CSBlock CSProcBlock(const QList<CSLine> & lines, int index);
-    void CSProcBubbles(const QList<CSBlock> &blocks, CGraphicsScene *scene);
-    CBubble *CSProcBubble(const CSBlock &csblock, CGraphicsScene *scene, int row, int column, CBubble *prev);
+    CSBlock CSProcBlock(const QList<CSLine> & lines, int &index);
+    QList<CSBubble> CSProcBubbles(const QList<CSBlock> &blocks, CGraphicsScene *scene);
+    CSBubble CSProcBubble(const CSBlock &csblock, CGraphicsScene *scene, int row, int column, CSBubble &prev);
+    void CSLinkBubbles(QList<CSBubble> &csbubbles, CGraphicsScene *scene);
+    CBubble *CSBubbleWithLabel(const QList<CSBubble> &csbubbles, const QString &label);
 
 
     // Private Members

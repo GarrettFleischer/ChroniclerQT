@@ -310,47 +310,66 @@ QList<CProjectView::CSLine> CProjectView::CSProcLines(QTextStream &stream, const
         csline.indent = CSIndentLevel(csline.line, csindent);
         csline.line = CSStripIndent(csline.line, csindent);
 
-        if (csline.line.toLower().startsWith("*choice"))
+        if (csline.line.startsWith("*choice", Qt::CaseInsensitive))
         {
             csline.type = ChoiceAction;
             choices.push(&csline);
         }
-        else if (csline.line.toLower().startsWith("*fake_choice"))
+        else if (csline.line.startsWith("*fake_choice", Qt::CaseInsensitive))
         {
             csline.type = FakeChoice;
             choices.push(&csline);
         }
-        else if (csline.line.toLower().startsWith("#"))
+        else if (csline.line.startsWith("#"))
         {
             if(csline.indent <= choices.top()->indent)
                 choices.pop();
 
             csline.type = Choice;
+            csline.line.remove('#');
             choices.top()->data.append(&csline);
         }
-        else if (csline.line.toLower().startsWith("*title"))
+        else if (csline.line.startsWith("*title", Qt::CaseInsensitive))
+        {
             csline.type = Title;
-        else if (csline.line.toLower().startsWith("*author"))
+            csline.line.remove("*title ", Qt::CaseInsensitive);
+        }
+        else if (csline.line.startsWith("*author", Qt::CaseInsensitive))
+        {
             csline.type = Author;
-        else if (csline.line.toLower().startsWith("*create"))
+            csline.line.remove("*author ", Qt::CaseInsensitive);
+        }
+        else if (csline.line.startsWith("*create", Qt::CaseInsensitive))
+        {
             csline.type = Create;
-        else if (csline.line.toLower().startsWith("*temp"))
+            csline.line.remove("*create ", Qt::CaseInsensitive);
+        }
+        else if (csline.line.startsWith("*temp", Qt::CaseInsensitive))
+        {
             csline.type = Temp;
-        else if (csline.line.toLower().startsWith("*scene_list"))
+            csline.line.remove("*temp ", Qt::CaseInsensitive);
+        }
+        else if (csline.line.startsWith("*scene_list", Qt::CaseInsensitive))
             csline.type = SceneList;
-        else if (csline.line.toLower().startsWith("*stat_chart"))
+        else if (csline.line.startsWith("*stat_chart", Qt::CaseInsensitive))
             csline.type = StatChart;
-        else if (csline.line.toLower().startsWith("*if"))
+        else if (csline.line.startsWith("*if", Qt::CaseInsensitive))
             csline.type = If;
-        else if (csline.line.toLower().startsWith("*else"))
+        else if (csline.line.startsWith("*else", Qt::CaseInsensitive))
             csline.type = Else;
-        else if (csline.line.toLower().startsWith("*label"))
+        else if (csline.line.startsWith("*label", Qt::CaseInsensitive))
+        {
             csline.type = Label;
-        else if (csline.line.toLower().startsWith("*finish"))
+            csline.line.remove("*label", Qt::CaseInsensitive).remove(' ');
+        }
+        else if (csline.line.startsWith("*finish", Qt::CaseInsensitive))
             csline.type = Finish;
         else if (csline.line.toLower().startsWith("*goto"))
+        {
             csline.type = GoTo;
-        else if (csline.line.toLower().startsWith("*"))
+            csline.line.remove("*goto", Qt::CaseInsensitive).remove(' ');
+        }
+        else if (csline.line.startsWith("*"))
             csline.type = Action;
         else if (csline.line.length())
             csline.type = Text;
@@ -364,7 +383,7 @@ QList<CProjectView::CSBlock> CProjectView::CSProcBlocks(const QList<CProjectView
     QList<CSBlock> blocks;
 
     CSBlock block;
-    for (int i = 0; i < lines.length(); i = block.end_index)
+    for (int i = 0; i < lines.length();)
     {
         block = CSProcBlock(lines, i);
         if(block.type != Empty)
@@ -374,7 +393,7 @@ QList<CProjectView::CSBlock> CProjectView::CSProcBlocks(const QList<CProjectView
     return blocks;
 }
 
-CProjectView::CSBlock CProjectView::CSProcBlock(const QList<CProjectView::CSLine> &lines, int index)
+CProjectView::CSBlock CProjectView::CSProcBlock(const QList<CProjectView::CSLine> &lines, int &index)
 {
     CSBlock csblock;
     const CSLine &csline = lines[index];
@@ -388,13 +407,19 @@ CProjectView::CSBlock CProjectView::CSProcBlock(const QList<CProjectView::CSLine
     else
     {
         csblock.type = csline.type;
-        csblock.start_index = index;
+
+        // Label
+        if(csline.type == Label)
+        {
+            csblock = CSProcBlock(lines, ++index);
+            csblock.label = csline.line;
+        }
 
         // STORY
-        if(csline.type == Text)
+        else if(csline.type == Text || csline.type == StatChart)
         {
             csblock.text = csline.line;
-            while (++index < lines.length() && (lines[index].type == Text || lines[index].type == Empty))
+            while (++index < lines.length() && (lines[index].type == Text || lines[index].type == Empty || lines[index].type == StatChart))
                 csblock.text += "\n" + lines[index].line;
         }
 
@@ -423,7 +448,6 @@ CProjectView::CSBlock CProjectView::CSProcBlock(const QList<CProjectView::CSLine
                 CSBlock child = CSProcBlock(lines, index);
                 csblock.width = (child.width > csblock.width) ? child.width : csblock.width;
                 csblock.height += child.height;
-                index = child.end_index;
                 csblock.AddChild(child);
             }
         }
@@ -434,15 +458,13 @@ CProjectView::CSBlock CProjectView::CSProcBlock(const QList<CProjectView::CSLine
             ++index;
             for (const CSLine *choice : csline.data)
             {
-                const int choice_index = lines.indexOf(*choice, index);
+                int choice_index = lines.indexOf(*choice, index);
                 CSBlock child = CSProcBlock(lines, choice_index);
                 csblock.width = (child.width > csblock.width) ? child.width : csblock.width;
                 csblock.height = (child.height > csblock.height) ? child.height : csblock.height;
                 csblock.AddChild(child);
+                index = choice_index;
             }
-
-            if(csblock.children.length())
-                index = csblock.children.last().end_index;
         }
 
         // FAKE_CHOICE
@@ -468,7 +490,6 @@ CProjectView::CSBlock CProjectView::CSProcBlock(const QList<CProjectView::CSLine
                 CSBlock child = CSProcBlock(lines, index);
                 csblock.width = (child.width > csblock.width) ? child.width : csblock.width;
                 csblock.height += child.height;
-                index = child.end_index;
                 csblock.AddChild(child);
             }
         }
@@ -482,27 +503,33 @@ CProjectView::CSBlock CProjectView::CSProcBlock(const QList<CProjectView::CSLine
         }
     }
 
-    csblock.end_index = index;
-
     return csblock;
 }
 
-void CProjectView::CSProcBubbles(const QList<CProjectView::CSBlock> &blocks, CGraphicsScene *scene)
+QList<CProjectView::CSBubble> CProjectView::CSProcBubbles(const QList<CProjectView::CSBlock> &blocks, CGraphicsScene *scene)
 {
-    CBubble *prev = scene->startBubble();
+    QList<CSBubble> bubbles;
+    CSBubble prev;
+    prev.bubble = scene->startBubble();
     int row = 1;
     for(int i = 0; i < blocks.length(); ++i)
     {
-        prev = CSProcBubble(blocks[i], scene, row += blocks[qMax(i - 1, 0)].height, 0, prev);
+        if(!bubbles.contains(prev))
+            bubbles.append(prev);
+        prev = CSProcBubble(blocks[i], scene, row += blocks[qMax(i - 1, 0)].height, 0, bubbles.last());
     }
+
+    return bubbles;
 }
 
-CBubble *CProjectView::CSProcBubble(const CProjectView::CSBlock &csblock, CGraphicsScene *scene, int row, int column, CBubble *prev)
+CProjectView::CSBubble CProjectView::CSProcBubble(const CProjectView::CSBlock &csblock, CGraphicsScene *scene, int row, int column, CSBubble &prev)
 {
     const static int cw = 300;
     const static int rh = 300;
 
-    CBubble *bubble;
+//    CBubble *bubble = Q_NULLPTR;
+    CSBubble next;
+    next.bubble = prev.bubble;
     QPointF pos(column * cw, row * rh);
 
     if(csblock.type == Text)
@@ -510,7 +537,7 @@ CBubble *CProjectView::CSProcBubble(const CProjectView::CSBlock &csblock, CGraph
         CStoryBubble *bbl = dynamic_cast<CStoryBubble *>(scene->AddBubble(Chronicler::Story, pos, false));
         bbl->setStory(csblock.text);
 
-        bubble = bbl;
+        next.bubble = bbl;
     }
     else if(csblock.type == Action)
     {
@@ -520,7 +547,7 @@ CBubble *CProjectView::CSProcBubble(const CProjectView::CSBlock &csblock, CGraph
         for(QString action : actions)
             bbl->actions()->AddItem(action);
 
-        bubble = bbl;
+        next.bubble = bbl;
     }
     else if(csblock.type == ChoiceAction)
     {
@@ -530,10 +557,10 @@ CBubble *CProjectView::CSProcBubble(const CProjectView::CSBlock &csblock, CGraph
         for(int i = 0; i < csblock.children.length(); ++i)
         {
             const CSBlock &choice = csblock.children[i];
-            CChoice *cb = new CChoice(bbl->getPalette(), bbl->getFont(), bbl, choice.text);
-            bbl->choices()->AddItem(cb);
+            CChoice *cschoice = new CChoice(bbl->getPalette(), bbl->getFont(), bbl, choice.text);
+            bbl->choices()->AddItem(cschoice);
 
-            CBubble *prev_child = Q_NULLPTR;
+            CSBubble prev_child;
             for(int j = 0; j < csblock.children[i].children.length(); ++j)
             {
                 const CSBlock &child = csblock.children[i].children[j];
@@ -542,22 +569,69 @@ CBubble *CProjectView::CSProcBubble(const CProjectView::CSBlock &csblock, CGraph
                 int ncol = start_col + child.width + i - left;
                 int nrow = row + child.height + j;
 
-                CBubble *next = CSProcBubble(child, scene, nrow, ncol, prev_child);
+                CSBubble next_child = CSProcBubble(child, scene, nrow, ncol, prev_child);
+
+                if(!prev_child.bubble && next_child.bubble)
+                {
+                    if(left)
+                        scene->AddConnection(cschoice, next_child.bubble, Chronicler::Left, Chronicler::Up);
+                    else
+                        scene->AddConnection(cschoice, next_child.bubble, Chronicler::Right, Chronicler::Up);
+                }
+                else if(next_child.bubble && prev_child.bubble != next_child.bubble)
+                    scene->AddConnection(prev_child.bubble, next_child.bubble, Chronicler::Down, Chronicler::Up);
+
+                prev_child = next_child;
             }
         }
 
-        bubble = bbl;
+        next.bubble = bbl;
     }
-    else if(csline.type == If)
+    else if(csblock.type == If)
     {
 
     }
+    else if(csblock.type == GoTo)
+    {
+        prev.link = csblock.text;
+    }
+
+    if(next.bubble)
+    {
+        if(csblock.label.length())
+            next.bubble->setLabel(csblock.label);
+
+        if(prev.bubble != next.bubble && prev.bubble && prev.bubble->getType() != Chronicler::Choice)
+            scene->AddConnection(prev.bubble, next.bubble, Chronicler::Down, Chronicler::Up);
+    }
 
 
-//    if(prev)
-//        scene->AddConnection(prev, bubble, Chronicler::Down, Chronicler::Up);
+//    next.bubble = (next.bubble ? next.bubble : prev);
+    return next;
+}
 
-    return bubble;
+void CProjectView::CSLinkBubbles(QList<CProjectView::CSBubble> &csbubbles, CGraphicsScene *scene)
+{
+    for(CSBubble csbubble : csbubbles)
+    {
+        if(csbubble.links.length())
+        {
+            CBubble *to = CSBubbleWithLabel(csbubbles, csbubble.links.first());
+            if(to)
+                scene->AddConnection(csbubble.bubble, to, Chronicler::Down, Chronicler::Up);
+        }
+    }
+}
+
+CBubble *CProjectView::CSBubbleWithLabel(const QList<CSBubble> &csbubbles, const QString &label)
+{
+    for(const CSBubble &csbubble : csbubbles)
+    {
+        if(csbubble.bubble->getLabel() == label)
+            return csbubble.bubble;
+    }
+
+    return Q_NULLPTR;
 }
 
 void CProjectView::ImportChoiceScript(const QString &filepath)
@@ -581,7 +655,9 @@ void CProjectView::ImportChoiceScript(const QString &filepath)
     CGraphicsView *view = new CGraphicsView(new CGraphicsScene(true, "test"));
     shared().sceneTabs->addTab(view, view->cScene()->name());
 
-    CSProcBubbles(blocks, view->cScene());
+    QList<CSBubble> bubbles = CSProcBubbles(blocks, view->cScene());
+    CSLinkBubbles(bubbles, view->cScene());
+
 }
 
 void CProjectView::NewProject()
