@@ -186,14 +186,14 @@ void CGraphicsScene::UpdateSceneRect()
     {
         QRectF ib = itemsBoundingRect();
         QRectF sb = sceneRect();
-        QRectF vb = views().first()->visibleRegion().boundingRect();
+//        QRectF vb = views().first()->visibleRegion().boundingRect();
         qreal p = 1000;
 
-        setSceneRect(QRectF(QPointF(qMin(ib.left() - p, vb.left()), qMin(ib.top() - p, vb.top())),
-                            QPointF(qMax(ib.right() + p, vb.right()), qMax(ib.bottom() + p, vb.bottom()))));
+        setSceneRect(QRectF(QPointF(qMin(ib.left() - p, sb.left()), qMin(ib.top() - p, sb.top())),
+                            QPointF(qMax(ib.right() + p, sb.right()), qMax(ib.bottom() + p, sb.bottom()))));
 
-        if(sceneRect() != sb && selectedItems().length())
-            views().first()->centerOn(selectedItems().first());
+//        if(selectedItems().length())
+//            views().first()->ensureVisible(selectedItems().first(), 100, 100);
     }
 }
 

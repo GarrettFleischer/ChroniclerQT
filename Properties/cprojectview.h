@@ -42,14 +42,11 @@ private:
         CSType type = Empty;
         QString line;
         quint8 indent;
-        QList<CSLine *> data;
+        QList<CSLine *> children;
 
         CSLine(QString _line) : line(_line){}
 
-        bool operator ==(const CSLine &rhs)
-        {
-            return this == &rhs;
-        }
+        bool operator ==(const CSLine &rhs) { return this == &rhs; }
     };
 
     struct CSBlock
@@ -72,12 +69,8 @@ private:
     {
         CBubble *bubble = Q_NULLPTR;
         QString link;
-        QList<CSBubble> children;
 
-        bool operator ==(const CSBubble &rhs)
-        {
-            return bubble == rhs.bubble;
-        }
+        bool operator ==(const CSBubble &rhs) { return bubble == rhs.bubble; }
     };
 
     struct CSIndent
@@ -103,9 +96,9 @@ private:
     QList<CSBlock> CSProcBlocks(const QList<CSLine> &lines);
     CSBlock CSProcBlock(const QList<CSLine> & lines, int &index);
     QList<CSBubble> CSProcBubbles(const QList<CSBlock> &blocks, CGraphicsScene *scene);
-    CSBubble CSProcBubble(const CSBlock &csblock, CGraphicsScene *scene, int row, int column, CSBubble &prev);
+    CBubble *CSProcBubble(const CSBlock &csblock, QList<CSBubble> &deferredLinks, CGraphicsScene *scene, int row, int column, CBubble *prev);
     void CSLinkBubbles(QList<CSBubble> &csbubbles, CGraphicsScene *scene);
-    CBubble *CSBubbleWithLabel(const QList<CSBubble> &csbubbles, const QString &label);
+    CBubble *CSBubbleWithLabel(CGraphicsScene *scene, const QString &label);
 
 
     // Private Members
