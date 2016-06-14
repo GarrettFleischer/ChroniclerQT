@@ -271,10 +271,10 @@ void CProjectView::OpenProject(const QString &filepath)
 
 QString CProjectView::CSStripIndent(const QString &line, const CSIndent &csindent)
 {
-    if(line.length())
+    if(line.length() && line.count(csindent.type) != line.length())
     {
         int i = 0;
-        while (line[i] == csindent.type)
+        while (i < line.length() && line[i] == csindent.type)
             ++i;
 
         return line.mid(i);
@@ -287,14 +287,12 @@ quint8 CProjectView::CSIndentLevel(const QString &line, const CSIndent &csindent
 {
     quint8 level = 0;
 
-    if(line.length())
-    {
-        quint8 i = 0;
-        while (line[i] == csindent.type)
-            ++i;
+    quint8 i = 0;
+    while (i < line.length() && line[i] == csindent.type)
+        ++i;
 
-        level = i / csindent.count;
-    }
+    level = i / csindent.count;
+
     return level;
 }
 
@@ -388,11 +386,11 @@ QList<CProjectView::CSLine> CProjectView::CSProcLines(QTextStream &stream, const
         else if (csline.line.startsWith("*finish", Qt::CaseInsensitive))
             csline.type = Finish;
 
-        else if (csline.line.toLower().startsWith("*goto"))
-        {
-            csline.type = GoTo;
-            csline.line.remove("*goto", Qt::CaseInsensitive).remove(' ');
-        }
+//        else if (csline.line.toLower().startsWith("*goto"))
+//        {
+//            csline.type = GoTo;
+//            csline.line.remove("*goto", Qt::CaseInsensitive).remove(' ');
+//        }
 
         else if (csline.line.startsWith("*"))
             csline.type = Action;
@@ -470,11 +468,11 @@ CProjectView::CSBlock CProjectView::CSProcBlock(const QList<CProjectView::CSLine
         {
             ++index;
 
-            while (lines[index].indent == csline.indent + 1 || lines[index].type == Empty)
+            while (index < lines.length() && (lines[index].indent == csline.indent + 1 || lines[index].type == Empty))
             {
                 CSBlock child = CSProcBlock(lines, index);
-                csblock.width = (child.width > csblock.width) ? child.width : csblock.width;
-                csblock.height += child.height;
+                csblock.width += child.width;//= (child.width > csblock.width) ? child.width : csblock.width;
+                //                csblock.height += child.height;
                 csblock.AddChild(child);
             }
 
@@ -549,19 +547,29 @@ QList<CProjectView::CSBubble> CProjectView::CSProcBubbles(const QList<CProjectVi
     QList<CSBubble> deferred;
     CBubble *prev = scene->startBubble();
     int row = 1;
+    int column = 0;
     for(int i = 0; i < blocks.length(); ++i)
-        prev = CSProcBubble(blocks[i], deferred, scene, row += blocks[qMax(i - 1, 0)].height, 0, prev);
+    {
+        prev = CSProcBubble(blocks[i], deferred, scene, row += blocks[qMax(i - 1, 0)].height, column, prev);
+
+        if(i > 0)
+        {
+            if(blocks[i - 1].type == If || blocks[i - 1].type == ElseIf)
+            {
+            }
+        }
+    }
 
     return deferred;
 }
 
 CBubble * CProjectView::CSProcBubble(const CSBlock &csblock, QList<CSBubble> &deferredLinks, CGraphicsScene *scene, int row, int column, CBubble *prev)
 {
-    const static int cw = 225;
-    const static int rh = 225;
+    const static int column_width = 225;
+    const static int row_height = 225;
 
     CBubble *bubble = Q_NULLPTR;
-    QPointF pos(column * cw, row * rh);
+    QPointF pos(column * column_width, row * row_height);
 
     if(csblock.type == Text)
     {
@@ -586,10 +594,14 @@ CBubble * CProjectView::CSProcBubble(const CSBlock &csblock, QList<CSBubble> &de
     {
         CChoiceBubble *bbl = dynamic_cast<CChoiceBubble *>(scene->AddBubble(Chronicler::Choice, pos, false));
 
-        const qreal half = qreal(csblock.width) / 2.0;
-        const int start_col = column - half + qCeil(half - int(half));// - csblock.children.first().width;
-        int child_x_offset = 0;
-        bool first_right = true;
+        int left_width = 0;
+        for(int i = 0; i < csblock.children.length() / 2; ++i)
+            left_width += csblock.children[i].width;
+
+        const int left_start = column - left_width;
+        const int right_start = column + csblock.children[csblock.children.length() / 2].width;
+        int child_left_offset = 0;
+        int child_right_offset = 0;
         for(int i = 0; i < csblock.children.length(); ++i)
         {
             const CSBlock &choice = csblock.children[i];
@@ -598,17 +610,9 @@ CBubble * CProjectView::CSProcBubble(const CSBlock &csblock, QList<CSBubble> &de
 
             bool left = (i < csblock.children.length() / 2);
             if(left && i > 0)
-                child_x_offset += csblock.children[i - 1].width;
-            else if (i > 0)
-            {
-                if(first_right)
-                {
-                    child_x_offset += csblock.children[i].width;
-                    first_right = false;
-                }
-                else
-                    child_x_offset += csblock.children[i - 1].width + csblock.children[i].width;
-            }
+                child_left_offset += qMax(1, csblock.children[i - 1].width / 2 + csblock.children[i].width / 2);
+            else if (i > csblock.children.length() / 2)
+                child_right_offset += qMax(1, csblock.children[i - 1].width / 2 + csblock.children[i].width / 2);
 
 
             int child_y_offset = 1;
@@ -618,12 +622,9 @@ CBubble * CProjectView::CSProcBubble(const CSBlock &csblock, QList<CSBubble> &de
             {
                 const CSBlock &child = csblock.children[i].children[j];
 
-                // TODO use left_col / right_col
-                int ncol = start_col + child_x_offset;
+                int ncol = (left ? (left_start + child_left_offset) : (right_start + child_right_offset));
                 int nrow = row + child_y_offset;
                 child_y_offset += child.height;
-                if(ncol == column)
-                    ncol += left ? -child.width : child.width;
 
                 CBubble *next_child = CSProcBubble(child, deferredLinks, scene, nrow, ncol, prev_child);
 
@@ -639,10 +640,13 @@ CBubble * CProjectView::CSProcBubble(const CSBlock &csblock, QList<CSBubble> &de
 
     else if(csblock.type == If || csblock.type == ElseIf)
     {
+        if(csblock.type == ElseIf)
+            pos.rx() += (column += qMax(1, csblock.width)) * column_width;
+
         CConditionBubble *bbl = dynamic_cast<CConditionBubble *>(scene->AddBubble(Chronicler::Condition, pos, false));
         bbl->setCondition(csblock.text);
 
-        int ncol = column - csblock.width / 2;
+        int ncol = column - qMax(1, csblock.width / 2);
         int nrow = row + 1;
 
         CBubble *prev_child = Q_NULLPTR;
@@ -663,19 +667,38 @@ CBubble * CProjectView::CSProcBubble(const CSBlock &csblock, QList<CSBubble> &de
         bubble = bbl;
     }
 
-    else if(csblock.type == GoTo)
+    else if(csblock.type == Else)
     {
-        CSBubble csbubble;
-        csbubble.bubble = prev;
-        csbubble.link = csblock.text;
-        deferredLinks.append(csbubble);
+        column = prev->scenePos().x() / column_width + qMax(1, csblock.width / 2);
+
+        CBubble *prev_child = Q_NULLPTR;
+        for(int i = 0; i < csblock.children.length(); ++i)
+        {
+            const CSBlock &child = csblock.children[i];
+
+            CBubble *next_child = CSProcBubble(child, deferredLinks, scene, row, column, prev_child);
+
+            row += child.height;
+            prev_child = next_child;
+        }
+
+        bubble = prev_child;
     }
+
+//    else if(csblock.type == GoTo)
+//    {
+//        CSBubble csbubble;
+//        csbubble.bubble = prev;
+//        csbubble.link = csblock.text;
+//        deferredLinks.append(csbubble);
+//    }
 
     if(bubble)
     {
         if(csblock.label.length())
             bubble->setLabel(csblock.label);
 
+        // TODO ensure that the last Action bubble doesn't contain a *goto
         if(prev != bubble && prev)
         {
             if(prev->getType() != Chronicler::Choice && prev->getType() != Chronicler::Condition)
