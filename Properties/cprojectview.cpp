@@ -271,7 +271,7 @@ void CProjectView::OpenProject(const QString &filepath)
 
 QString CProjectView::CSStripIndent(const QString &line, const CSIndent &csindent)
 {
-    if(line.length() && line.count(csindent.type) != line.length())
+    if(line.length() && line.simplified().remove(" ").length())
     {
         int i = 0;
         while (i < line.length() && line[i] == csindent.type)
@@ -386,11 +386,11 @@ QList<CProjectView::CSLine> CProjectView::CSProcLines(QTextStream &stream, const
         else if (csline.line.startsWith("*finish", Qt::CaseInsensitive))
             csline.type = Finish;
 
-//        else if (csline.line.toLower().startsWith("*goto"))
-//        {
-//            csline.type = GoTo;
-//            csline.line.remove("*goto", Qt::CaseInsensitive).remove(' ');
-//        }
+        else if (csline.line.toLower().startsWith("*goto"))
+        {
+            csline.type = GoTo;
+            csline.line.remove("*goto", Qt::CaseInsensitive).remove(' ');
+        }
 
         else if (csline.line.startsWith("*"))
             csline.type = Action;
@@ -471,20 +471,9 @@ CProjectView::CSBlock CProjectView::CSProcBlock(const QList<CProjectView::CSLine
             while (index < lines.length() && (lines[index].indent == csline.indent + 1 || lines[index].type == Empty))
             {
                 CSBlock child = CSProcBlock(lines, index);
-                csblock.width += child.width;//= (child.width > csblock.width) ? child.width : csblock.width;
-                //                csblock.height += child.height;
+                csblock.width += child.width;
                 csblock.AddChild(child);
             }
-
-            //            for (const CSLine *condition : csline.children)
-            //            {
-            //                int choice_index = lines.indexOf(*condition, index);
-            //                CSBlock child = CSProcBlock(lines, choice_index);
-            //                csblock.width += child.width;
-            //                csblock.height = (child.height > csblock.height) ? child.height : csblock.height;
-            //                csblock.AddChild(child);
-            //                index = choice_index;
-            //            }
         }
 
         // CHOICE_ACTION
@@ -551,13 +540,6 @@ QList<CProjectView::CSBubble> CProjectView::CSProcBubbles(const QList<CProjectVi
     for(int i = 0; i < blocks.length(); ++i)
     {
         prev = CSProcBubble(blocks[i], deferred, scene, row += blocks[qMax(i - 1, 0)].height, column, prev);
-
-        if(i > 0)
-        {
-            if(blocks[i - 1].type == If || blocks[i - 1].type == ElseIf)
-            {
-            }
-        }
     }
 
     return deferred;
@@ -626,7 +608,19 @@ CBubble * CProjectView::CSProcBubble(const CSBlock &csblock, QList<CSBubble> &de
                 int nrow = row + child_y_offset;
                 child_y_offset += child.height;
 
-                CBubble *next_child = CSProcBubble(child, deferredLinks, scene, nrow, ncol, prev_child);
+                CBubble *next_child = Q_NULLPTR;
+
+                if(!prev_child && child.type == GoTo)
+                {
+//                    next_child = scene->AddBubble(Chronicler::Action, pos, false);
+                    CSBubble csbubble;
+                    csbubble.bubble = cschoice;
+                    csbubble.link = child.text;
+                    csbubble.anchor = left ? Chronicler::Left : Chronicler::Right;
+                    deferredLinks.append(csbubble);
+                }
+                else
+                    next_child = CSProcBubble(child, deferredLinks, scene, nrow, ncol, prev_child);
 
                 if(!prev_child && next_child)
                     scene->AddConnection(cschoice, next_child, left ? Chronicler::Left : Chronicler::Right, Chronicler::Up);
@@ -654,7 +648,18 @@ CBubble * CProjectView::CSProcBubble(const CSBlock &csblock, QList<CSBubble> &de
         {
             const CSBlock &child = csblock.children[i];
 
-            CBubble *next_child = CSProcBubble(child, deferredLinks, scene, nrow, ncol, prev_child);
+            CBubble *next_child = Q_NULLPTR;
+
+            if(!prev_child && child.type == GoTo)
+            {
+                CSBubble csbubble;
+                csbubble.bubble = bbl;
+                csbubble.link = child.text;
+                csbubble.anchor = Chronicler::Left;
+                deferredLinks.append(csbubble);
+            }
+            else
+                next_child = CSProcBubble(child, deferredLinks, scene, nrow, ncol, prev_child);
 
             // link true output
             if(!prev_child && next_child)
@@ -676,7 +681,18 @@ CBubble * CProjectView::CSProcBubble(const CSBlock &csblock, QList<CSBubble> &de
         {
             const CSBlock &child = csblock.children[i];
 
-            CBubble *next_child = CSProcBubble(child, deferredLinks, scene, row, column, prev_child);
+            CBubble *next_child = Q_NULLPTR;
+
+            if(!prev_child && child.type == GoTo)
+            {
+                CSBubble csbubble;
+                csbubble.bubble = prev;
+                csbubble.link = child.text;
+                csbubble.anchor = Chronicler::Right;
+                deferredLinks.append(csbubble);
+            }
+            else
+                next_child = CSProcBubble(child, deferredLinks, scene, row, column, prev_child);
 
             row += child.height;
             prev_child = next_child;
@@ -685,13 +701,14 @@ CBubble * CProjectView::CSProcBubble(const CSBlock &csblock, QList<CSBubble> &de
         bubble = prev_child;
     }
 
-//    else if(csblock.type == GoTo)
-//    {
-//        CSBubble csbubble;
-//        csbubble.bubble = prev;
-//        csbubble.link = csblock.text;
-//        deferredLinks.append(csbubble);
-//    }
+    else if(csblock.type == GoTo)
+    {
+        CSBubble csbubble;
+        csbubble.bubble = prev;
+        csbubble.link = csblock.text;
+        csbubble.anchor = Chronicler::Down;
+        deferredLinks.append(csbubble);
+    }
 
     if(bubble)
     {
@@ -701,10 +718,25 @@ CBubble * CProjectView::CSProcBubble(const CSBlock &csblock, QList<CSBubble> &de
         // TODO ensure that the last Action bubble doesn't contain a *goto
         if(prev != bubble && prev)
         {
-            if(prev->getType() != Chronicler::Choice && prev->getType() != Chronicler::Condition)
+            if(prev->getType() != Chronicler::Choice && prev->getType() != Chronicler::Condition && prev->getType() != Chronicler::Action)
                 scene->AddConnection(prev, bubble, Chronicler::Down, Chronicler::Up);
             else if (prev->getType() == Chronicler::Condition)
                 scene->AddConnection(prev, bubble, Chronicler::Right, Chronicler::Up);
+            else if(prev->getType() == Chronicler::Action)
+            {
+                bool has_goto = false;
+                for(const QString &str : dynamic_cast<CActionBubble *>(prev)->actions()->stringList())
+                {
+                    if(str.contains("*goto "))
+                    {
+                        has_goto = true;
+                        break;
+                    }
+                }
+
+                if(!has_goto)
+                    scene->AddConnection(prev, bubble, Chronicler::Down, Chronicler::Up);
+            }
         }
 
     }
@@ -720,7 +752,7 @@ void CProjectView::CSLinkBubbles(QList<CProjectView::CSBubble> &csbubbles, CGrap
         {
             CBubble *to = CSBubbleWithLabel(scene, csbubble.link);
             if(to)
-                scene->AddConnection(csbubble.bubble, to, Chronicler::Down, Chronicler::Up);
+                scene->AddConnection(csbubble.bubble, to, csbubble.anchor, Chronicler::Up);
         }
     }
 }

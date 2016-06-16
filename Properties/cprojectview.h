@@ -20,6 +20,8 @@ class CSceneModel;
 class CBubble;
 class CConnection;
 
+#include <Misc/chronicler.h>
+
 class CProjectView : public QWidget
 {
     Q_OBJECT
@@ -69,6 +71,7 @@ private:
     {
         CBubble *bubble = Q_NULLPTR;
         QString link;
+        Chronicler::Anchor anchor;
 
         bool operator ==(const CSBubble &rhs) { return bubble == rhs.bubble; }
     };

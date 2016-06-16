@@ -15,7 +15,7 @@ CStoryBubble::CStoryBubble(const QPointF &pos, CPaletteAction *palette, const QF
 
     m_title = new CTextItem("", QRectF(), this);
     m_title->SetStyle(Qt::AlignHCenter);
-    setLabel("Title");
+//    setLabel("Title");
 
     m_story = new CTextItem("Story", QRectF(), this);
     m_story->SetStyle(Qt::AlignLeft);
