@@ -53,6 +53,12 @@ namespace Chronicler
         }
     };
 
+    struct CSIndent
+    {
+        char type = ' ';
+        quint8 count = 4;
+    };
+
 
     // Do NOT instantiate this struct, use shared() singleton access.
     struct SharedInstances

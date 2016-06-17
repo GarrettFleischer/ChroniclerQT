@@ -4,9 +4,10 @@ RESOURCES   =	chroniclernext.qrc
 
 win32{
 	LIBS += -LC:/Development/OpenSSL-Win32/lib -lubsec
-	INCLUDEPATH += C:/Development/OpenSSL-Win32/include
-        RC_ICONS += GameSmith.ico
+        INCLUDEPATH += C:/Development/OpenSSL-Win32/include
 }
+
+RC_ICONS += GameSmith.ico
 
 TRANSLATIONS += chroniclernext_es.ts
 
@@ -59,7 +60,8 @@ HEADERS += \
     Misc/cfiledownloader.h \
     Misc/cactionmenu.h \
     Misc/cserializable.h \
-    Misc/cactiondelegate.h
+    Misc/cactiondelegate.h \
+    Properties/cindentselectiondialog.h
 
 SOURCES += \
     Bubbles/cbubble.cpp \
@@ -102,4 +104,5 @@ SOURCES += \
     Misc/cfiledownloader.cpp \
     Misc/cactionmenu.cpp \
     Misc/cserializable.cpp \
-    Misc/cactiondelegate.cpp
+    Misc/cactiondelegate.cpp \
+    Properties/cindentselectiondialog.cpp

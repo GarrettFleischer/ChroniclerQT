@@ -21,6 +21,7 @@ class CBubble;
 class CConnection;
 
 #include <Misc/chronicler.h>
+using Chronicler::CSIndent;
 
 class CProjectView : public QWidget
 {
@@ -76,12 +77,6 @@ private:
         bool operator ==(const CSBubble &rhs) { return bubble == rhs.bubble; }
     };
 
-    struct CSIndent
-    {
-        char type = ' ';
-        quint8 count = 4;
-    };
-
     // Private Methods
     void CreateBubbles();
 
@@ -135,8 +130,8 @@ signals:
 public slots:
     void SaveProject();
     void SaveProjectAs();
-    void OpenProject(const QString &filepath);
-    void ImportChoiceScript(const QString &filepath);
+    void OpenProject(const QString &filepath = "");
+    void ImportChoiceScript(const QString &filepath = "");
     void NewProject();
     void CloseProject();
     void ExportChoiceScript();

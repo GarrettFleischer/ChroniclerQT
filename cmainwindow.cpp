@@ -81,7 +81,7 @@ CMainWindow::CMainWindow(QSettings *settings, const QString &filename)
     if(filename.length())
         shared().projectView->OpenProject(filename);
 
-    shared().projectView->ImportChoiceScript("~/benseawalker/startup.txt");
+//    shared().projectView->ImportChoiceScript("C:/startup.txt");
 }
 
 
@@ -115,12 +115,12 @@ void CMainWindow::NewProject()
 
 void CMainWindow::OpenProject()
 {
-    shared().projectView->OpenProject("");
+    shared().projectView->OpenProject();
 }
 
 void CMainWindow::ImportProject()
 {
-    shared().projectView->ImportChoiceScript("");
+    shared().projectView->ImportChoiceScript();
 }
 
 void CMainWindow::SaveProject()
@@ -267,7 +267,7 @@ void CMainWindow::CreateActions()
     shared().defaultStart = new CPaletteAction(this, dp_start, tr("Start"), 5);
 
     // Disable unavailable actions
-    shared().importProjectAction->setEnabled(false);
+//    shared().importProjectAction->setEnabled(false);
 }
 
 

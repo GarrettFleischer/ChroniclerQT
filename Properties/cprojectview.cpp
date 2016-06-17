@@ -49,6 +49,8 @@
 #include "Bubbles/cconditionbubble.h"
 #include "Connections/cconnection.h"
 
+#include "Properties/cindentselectiondialog.h"
+
 #include "Misc/cpalettebutton.h"
 
 #include "csettingsview.h"
@@ -779,8 +781,11 @@ void CProjectView::ImportChoiceScript(const QString &filepath)
             return; // quit if user hits cancel
     }
 
+    CIndentSelectionDialog dialog(this);
+    dialog.exec();
+
     // TODO: ask for indent type
-    CSIndent csindent;
+    CSIndent csindent = dialog.getIndent();
     QTextStream stream(&file);
 
     QList<CSLine> lines = CSProcLines(stream, csindent);
