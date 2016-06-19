@@ -37,46 +37,6 @@ public:
     const QString version() const;
 
 private:
-    // Enums and Structs
-    enum CSType { Empty, Title, Author, Create, Temp, SceneList, StatChart, ChoiceAction, FakeChoice, Choice, If, Else, ElseIf, Action, Text, Label, Finish, GoTo };
-
-    struct CSLine
-    {
-        CSType type = Empty;
-        QString line;
-        quint8 indent;
-        QList<CSLine *> children;
-
-        CSLine(QString _line) : line(_line){}
-
-        bool operator ==(const CSLine &rhs) { return this == &rhs; }
-    };
-
-    struct CSBlock
-    {
-        CSType type = Empty;
-        QString text;
-        QList<CSBlock> children;
-        QString label;
-        int width = 1;
-        int height = 1;
-
-        void AddChild(const CSBlock &block)
-        {
-            if(block.type != Empty)
-                children.append(block);
-        }
-    };
-
-    struct CSBubble
-    {
-        CBubble *bubble = Q_NULLPTR;
-        QString link;
-        Chronicler::Anchor anchor;
-
-        bool operator ==(const CSBubble &rhs) { return bubble == rhs.bubble; }
-    };
-
     // Private Methods
     void CreateBubbles();
 
@@ -86,18 +46,6 @@ private:
     QString MakeLabel(CBubble *bubble, const QList<CBubble *> &bubbles);
 
     void SaveToFile(QSaveFile &file);
-
-    // Choicescript processing
-    QString CSStripIndent(const QString &line, const CSIndent &csindent);
-    quint8 CSIndentLevel(const QString &line, const CSIndent &csindent);
-    QList<CSLine> CSProcLines(QTextStream &stream, const CSIndent &csindent);
-    QList<CSBlock> CSProcBlocks(const QList<CSLine> &lines);
-    CSBlock CSProcBlock(const QList<CSLine> & lines, int &index);
-    QList<CSBubble> CSProcBubbles(const QList<CSBlock> &blocks, CGraphicsScene *scene);
-    CBubble *CSProcBubble(const CSBlock &csblock, QList<CSBubble> &deferredLinks, CGraphicsScene *scene, int row, int column, CBubble *prev);
-    void CSLinkBubbles(QList<CSBubble> &csbubbles, CGraphicsScene *scene);
-    CBubble *CSBubbleWithLabel(CGraphicsScene *scene, const QString &label);
-
 
     // Private Members
     QLineEdit *m_name;
@@ -130,7 +78,7 @@ signals:
 public slots:
     void SaveProject();
     void SaveProjectAs();
-    void OpenProject(const QString &filepath = "");
+    void OpenProject(QString filepath = "");
     void ImportChoiceScript(const QString &filepath = "");
     void NewProject();
     void CloseProject();

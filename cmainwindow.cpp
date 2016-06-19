@@ -80,8 +80,6 @@ CMainWindow::CMainWindow(QSettings *settings, const QString &filename)
     // to allow .chron files to be opened with Chronicler
     if(filename.length())
         shared().projectView->OpenProject(filename);
-
-//    shared().projectView->ImportChoiceScript("C:/startup.txt");
 }
 
 
@@ -265,9 +263,6 @@ void CMainWindow::CreateActions()
     shared().defaultAction = new CPaletteAction(this, dp_action, tr("Action"), 3);
     shared().defaultCondition = new CPaletteAction(this, dp_condition, tr("Condition"), 4);
     shared().defaultStart = new CPaletteAction(this, dp_start, tr("Start"), 5);
-
-    // Disable unavailable actions
-//    shared().importProjectAction->setEnabled(false);
 }
 
 
