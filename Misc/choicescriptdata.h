@@ -26,6 +26,9 @@ public:
 
     CSceneModel *getModel();
 
+    const QString getTitle() const;
+    const QString getAuthor() const;
+
 private:
     // Enums and Structs
     enum CSType { Empty, Title, Author, Create, Temp, SceneList, StatChart, ChoiceAction, FakeChoice, Choice, If, Else, ElseIf, Action, Text, Label, Finish, GoTo };
@@ -83,6 +86,8 @@ private:
 
     // Private Members
     CSceneModel m_model;
+    QString m_title;
+    QString m_author;
 
 };
 

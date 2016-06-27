@@ -32,7 +32,7 @@ namespace Chronicler
         if(cursorMode == Chronicler::Paint)
             QGuiApplication::setOverrideCursor(QCursor(paletteButton->getCurrent()->icon().pixmap(32, 32)));
 
-        for(CGraphicsView *view : projectView->views())
+        for(CGraphicsView *view : projectView->getViews())
         {
             view->setDragMode(QGraphicsView::ScrollHandDrag);
 

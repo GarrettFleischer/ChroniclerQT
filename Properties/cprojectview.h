@@ -30,11 +30,11 @@ class CProjectView : public QWidget
 public:
     CProjectView(QWidget *parent = 0);
 
-    QList<CGraphicsView *> views();
+    QList<CGraphicsView *> getViews();
 
     CBubble *BubbleWithUID(uint uid);
 
-    const QString version() const;
+    const QString getVersion() const;
 
 private:
     // Private Methods
@@ -48,7 +48,8 @@ private:
     void SaveToFile(QSaveFile &file);
 
     // Private Members
-    QLineEdit *m_name;
+    QLineEdit *m_title;
+    QLineEdit *m_author;
 
     // view/model
     QListView  *m_modelView;

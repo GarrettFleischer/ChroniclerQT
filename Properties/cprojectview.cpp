@@ -104,12 +104,16 @@ CProjectView::CProjectView(QWidget *parent)
     hl_viewButtons->addWidget(m_modelView);
     hl_viewButtons->addLayout(vl_buttons);
 
-    m_name = new QLineEdit();
-    connect(m_name, SIGNAL(textChanged(QString)), this, SLOT(ProjectNameChanged()));
+    m_title = new QLineEdit();
+    connect(m_title, SIGNAL(textChanged(QString)), this, SLOT(ProjectNameChanged()));
+
+    m_author = new QLineEdit();
 
     QVBoxLayout *l_main = new QVBoxLayout(this);
     l_main->addWidget(new QLabel("Title"));
-    l_main->addWidget(m_name);
+    l_main->addWidget(m_title);
+    l_main->addWidget(new QLabel("Author"));
+    l_main->addWidget(m_author);
     l_main->addWidget(new QLabel("Scenes"));
     l_main->addLayout(hl_viewButtons);
 
@@ -212,7 +216,7 @@ void CProjectView::SaveToFile(QSaveFile &file)
     QByteArray ba;
     QDataStream ds(&ba, QIODevice::WriteOnly);
 
-    ds << shared().ProgramVersion << m_name->text() << *(shared().paletteButton) << m_sceneModel->rowCount();
+    ds << shared().ProgramVersion << m_title->text() << m_author->text() << *(shared().paletteButton) << m_sceneModel->rowCount();
     for(CGraphicsView *view : m_sceneModel->views())
         ds << *(view->cScene());
 
@@ -239,14 +243,19 @@ void CProjectView::OpenProject(QString filepath)
     QDataStream ds(file.readAll());
 
     int num_scenes;
-    QString project_name;
+    QString project_title;
+    QString project_author;
+
     ds >> m_version;
     if(m_version == "0.8.1.0")
-        ds >> project_name >> num_scenes;
+        ds >> project_title >> num_scenes;
+    else if(m_version == "0.8.6.0")
+        ds >> project_title >> *(shared().paletteButton) >> num_scenes;
     else
-        ds >> project_name >> *(shared().paletteButton) >> num_scenes;
+        ds >> project_title >> project_author >> *(shared().paletteButton) >> num_scenes;
 
-    m_name->setText(project_name);
+    m_title->setText(project_title);
+    m_author->setText(project_author);
 
     // load other scenes
     for(int i = 0; i < num_scenes; ++i)
@@ -295,6 +304,8 @@ void CProjectView::ImportChoiceScript(const QString &filepath)
     CSIndent csindent = dialog.getIndent();
     ChoiceScriptData csdata(file, csindent);
     m_sceneModel->setViews(csdata.getModel()->views());
+    m_title->setText(csdata.getTitle());
+    m_author->setText(csdata.getAuthor());
 
     file.close();
 
@@ -306,7 +317,7 @@ void CProjectView::NewProject()
 {
     CloseProject();
 
-    m_name->setText("New Project");
+    m_title->setText("New Project");
 
     shared().dock->setVisible(true);
     shared().dock->setWindowTitle(m_path);
@@ -322,7 +333,7 @@ void CProjectView::NewProject()
 
 void CProjectView::CloseProject()
 {
-    m_name->setText("");
+    m_title->setText("");
     m_path = "";
 
     for(CGraphicsView *view : m_sceneModel->views())
@@ -356,7 +367,8 @@ void CProjectView::ExportChoiceScript()
         QString cs;
         if(view->cScene()->name() == "startup")
         {
-            cs += "*title " + m_name->text() + "\n\n";
+            cs += "*title " + m_title->text() + "\n";
+            cs += "*author " + m_author->text() + "\n\n";
 
             cs += "*scene_list\n";
             for(CGraphicsView *v : m_sceneModel->views())
@@ -383,7 +395,7 @@ void CProjectView::ExportChoiceScript()
     }
 }
 
-QList<CGraphicsView *> CProjectView::views()
+QList<CGraphicsView *> CProjectView::getViews()
 {
     return m_sceneModel->views();
 }
@@ -404,7 +416,7 @@ CBubble *CProjectView::BubbleWithUID(uint uid)
     return 0;
 }
 
-const QString CProjectView::version() const
+const QString CProjectView::getVersion() const
 {
     return m_version;
 }
@@ -630,7 +642,7 @@ void CProjectView::DataChanged(const QModelIndex &topLeft, const QModelIndex &bo
 
 void CProjectView::ProjectNameChanged()
 {
-    shared().mainWindow->setWindowTitle("Chronicler " + shared().ProgramVersion + " - " + m_name->text());
+    shared().mainWindow->setWindowTitle("Chronicler " + shared().ProgramVersion + " - " + m_title->text());
 }
 
 void CProjectView::MoveUp()

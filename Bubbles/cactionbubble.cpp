@@ -114,7 +114,7 @@ QString CActionBubble::actionString()
 void CActionBubble::AdjustMinSize()
 {
     QFontMetrics fm(m_font);
-    m_minSize.setHeight(m_actionsView->textBounds(QSizeF(m_minSize.width(), fm.height())).height() + 30);
+    m_minSize.setHeight(fm.height() + 30);
 }
 
 

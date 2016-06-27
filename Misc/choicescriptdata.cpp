@@ -28,8 +28,6 @@
 #include "Misc/chronicler.h"
 using Chronicler::shared;
 
-#include <QDebug>
-
 
 ChoiceScriptData::ChoiceScriptData(QFile &startup, const CSIndent &csindent)
 {
@@ -65,6 +63,16 @@ ChoiceScriptData::ChoiceScriptData(QFile &startup, const CSIndent &csindent)
 CSceneModel *ChoiceScriptData::getModel()
 {
     return &m_model;
+}
+
+const QString ChoiceScriptData::getTitle() const
+{
+    return m_title;
+}
+
+const QString ChoiceScriptData::getAuthor() const
+{
+    return m_author;
 }
 
 QList<ChoiceScriptData::CSBlock> ChoiceScriptData::ProcessFile(QFile &file, const CSIndent &csindent)
@@ -161,17 +169,17 @@ QList<ChoiceScriptData::CSLine> ChoiceScriptData::CSProcLines(QTextStream &strea
             csline.line.remove("*author ", Qt::CaseInsensitive);
         }
 
-        else if (csline.line.startsWith("*create", Qt::CaseInsensitive))
-        {
-            csline.type = Create;
-            csline.line.remove("*create ", Qt::CaseInsensitive);
-        }
+//        else if (csline.line.startsWith("*create", Qt::CaseInsensitive))
+//        {
+//            csline.type = Create;
+//            csline.line.remove("*create ", Qt::CaseInsensitive);
+//        }
 
-        else if (csline.line.startsWith("*temp", Qt::CaseInsensitive))
-        {
-            csline.type = Temp;
-            csline.line.remove("*temp ", Qt::CaseInsensitive);
-        }
+//        else if (csline.line.startsWith("*temp", Qt::CaseInsensitive))
+//        {
+//            csline.type = Temp;
+//            csline.line.remove("*temp ", Qt::CaseInsensitive);
+//        }
 
         else if (csline.line.startsWith("*scene_list", Qt::CaseInsensitive))
             csline.type = SceneList;
@@ -268,8 +276,8 @@ ChoiceScriptData::CSBlock ChoiceScriptData::CSProcBlock(const QList<ChoiceScript
         else if(csline.type == Action)
         {
             csblock.text = csline.line;
-            while (++index < lines.length() && lines[index].type == Action)
-                csblock.text += "\n" + lines[index].line;
+            while (++index < lines.length() && (lines[index].type == Action || lines[index].type == Empty))
+                csblock.text += ((lines[index].type == Action) ? "\n" + lines[index].line : "");
         }
 
         // SCENE_LIST
@@ -284,6 +292,8 @@ ChoiceScriptData::CSBlock ChoiceScriptData::CSProcBlock(const QList<ChoiceScript
         else if(csline.type == If || csline.type == ElseIf || csline.type == Else)
         {
             ++index;
+
+            csblock.text = csline.line;
 
             while (index < lines.length() && (lines[index].indent == csline.indent + 1 || lines[index].type == Empty))
             {
@@ -355,9 +365,7 @@ QList<ChoiceScriptData::CSBubble> ChoiceScriptData::CSProcBubbles(const QList<Ch
     int row = 1;
     int column = 0;
     for(int i = 0; i < blocks.length(); ++i)
-    {
         prev = CSProcBubble(blocks[i], deferred, scene, row += blocks[qMax(i - 1, 0)].height, column, prev);
-    }
 
     return deferred;
 }
@@ -370,6 +378,7 @@ CBubble * ChoiceScriptData::CSProcBubble(const CSBlock &csblock, QList<CSBubble>
     CBubble *bubble = Q_NULLPTR;
     QPointF pos(column * column_width, row * row_height);
 
+    // Story
     if(csblock.type == Text)
     {
         CStoryBubble *bbl = dynamic_cast<CStoryBubble *>(scene->AddBubble(Chronicler::Story, pos, false));
@@ -378,6 +387,7 @@ CBubble * ChoiceScriptData::CSProcBubble(const CSBlock &csblock, QList<CSBubble>
         bubble = bbl;
     }
 
+    // Action
     else if(csblock.type == Action)
     {
         CActionBubble *bbl = dynamic_cast<CActionBubble *>(scene->AddBubble(Chronicler::Action, pos, false));
@@ -389,6 +399,7 @@ CBubble * ChoiceScriptData::CSProcBubble(const CSBlock &csblock, QList<CSBubble>
         bubble = bbl;
     }
 
+    // Choice
     else if(csblock.type == ChoiceAction)
     {
         CChoiceBubble *bbl = dynamic_cast<CChoiceBubble *>(scene->AddBubble(Chronicler::Choice, pos, false));
@@ -449,6 +460,7 @@ CBubble * ChoiceScriptData::CSProcBubble(const CSBlock &csblock, QList<CSBubble>
         bubble = bbl;
     }
 
+    // if / elseif
     else if(csblock.type == If || csblock.type == ElseIf)
     {
         if(csblock.type == ElseIf)
@@ -489,6 +501,7 @@ CBubble * ChoiceScriptData::CSProcBubble(const CSBlock &csblock, QList<CSBubble>
         bubble = bbl;
     }
 
+    // Else
     else if(csblock.type == Else)
     {
         column = prev->scenePos().x() / column_width + qMax(1, csblock.width / 2);
@@ -518,6 +531,7 @@ CBubble * ChoiceScriptData::CSProcBubble(const CSBlock &csblock, QList<CSBubble>
         bubble = prev_child;
     }
 
+    // Goto
     else if(csblock.type == GoTo)
     {
         CSBubble csbubble;
@@ -526,6 +540,14 @@ CBubble * ChoiceScriptData::CSProcBubble(const CSBlock &csblock, QList<CSBubble>
         csbubble.anchor = Chronicler::Down;
         deferredLinks.append(csbubble);
     }
+
+    // Title
+    else if(csblock.type == Title)
+        m_title = csblock.text;
+
+    // Author
+    else if(csblock.type == Author)
+        m_author = csblock.text;
 
     if(bubble)
     {
@@ -555,7 +577,6 @@ CBubble * ChoiceScriptData::CSProcBubble(const CSBlock &csblock, QList<CSBubble>
                     scene->AddConnection(prev, bubble, Chronicler::Down, Chronicler::Up);
             }
         }
-
     }
 
     return (bubble ? bubble : prev);

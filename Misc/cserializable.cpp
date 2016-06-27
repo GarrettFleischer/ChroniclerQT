@@ -12,7 +12,7 @@ QDataStream &operator <<(QDataStream &stream, CSerializable &serializable)
 
 QDataStream &operator >>(QDataStream &stream, CSerializable &serializable)
 {
-    return serializable.Deserialize(stream, shared().projectView->version());
+    return serializable.Deserialize(stream, shared().projectView->getVersion());
 }
 
 CSerializable::CSerializable()
