@@ -62,7 +62,8 @@ HEADERS += \
     Misc/cserializable.h \
     Misc/cactiondelegate.h \
     Properties/cindentselectiondialog.h \
-    Misc/choicescriptdata.h
+    Misc/choicescriptdata.h \
+    Properties/cvariablesview.h
 
 SOURCES += \
     Bubbles/cbubble.cpp \
@@ -107,4 +108,5 @@ SOURCES += \
     Misc/cserializable.cpp \
     Misc/cactiondelegate.cpp \
     Properties/cindentselectiondialog.cpp \
-    Misc/choicescriptdata.cpp
+    Misc/choicescriptdata.cpp \
+    Properties/cvariablesview.cpp

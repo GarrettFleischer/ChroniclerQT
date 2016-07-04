@@ -25,7 +25,7 @@ CChoice::CChoice(CPaletteAction *palette, const QFont &font, QGraphicsItem *pare
     connect(qgraphicsitem_cast<CBubble *>(parent), SIGNAL(PositionOrShapeChanged()), this, SIGNAL(PositionOrShapeChanged()));
 
     m_choice = new CTextItem(choice, m_bounds, this);
-    m_choice->SetStyle(Qt::AlignCenter);
+//    m_choice->SetStyle(Qt::AlignCenter);
 
     AdjustMinSize();
     m_bounds = QRectF(0, 0, m_minSize.width(), m_minSize.height());

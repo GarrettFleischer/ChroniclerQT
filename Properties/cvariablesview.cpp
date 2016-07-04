@@ -1,6 +1,10 @@
 #include "cvariablesview.h"
 
-CVariablesView::CVariablesView(QWidget *parent) : QWidget(parent)
-{
+#include <QTableView>
+#include <QVBoxLayout>
 
+CVariablesView::CVariablesView(QWidget *parent)
+    : QWidget(parent)
+{
+    m_view = new QTableView(this);
 }

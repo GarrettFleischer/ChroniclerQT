@@ -358,7 +358,7 @@ void CMainWindow::keyPressEvent(QKeyEvent *event)
     if(event->key() == Qt::Key_Escape)
         shared().setMode(Chronicler::Cursor);
 
-    event->accept();
+    event->ignore();
 }
 
 
