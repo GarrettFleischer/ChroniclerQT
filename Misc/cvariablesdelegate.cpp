@@ -1,15 +1,12 @@
 #include "cvariablesdelegate.h"
 
 #include <QComboBox>
-#include <QCheckBox>
 #include <QLineEdit>
 
-#include <QPainter>
-#include <QBrush>
+#include "Misc/cvariablesmodel.h"
 
 #include "Properties/cprojectview.h"
 #include "Misc/cscenemodel.h"
-#include "Misc/cvariablesmodel.h"
 
 #include "Misc/chronicler.h"
 using Chronicler::shared;
@@ -17,8 +14,6 @@ using Chronicler::shared;
 CVariablesDelegate::CVariablesDelegate(QObject *parent)
     : QStyledItemDelegate(parent)
 {
-    m_localEditor = new QCheckBox();
-
     m_sceneEditor = new QComboBox();
     m_sceneEditor->setModel(shared().projectView->model());
 
@@ -28,7 +23,6 @@ CVariablesDelegate::CVariablesDelegate(QObject *parent)
 CVariablesDelegate::~CVariablesDelegate()
 {
     m_sceneEditor->deleteLater();
-    m_localEditor->deleteLater();
     m_lineEditor->deleteLater();
 }
 
@@ -38,11 +32,6 @@ QWidget *CVariablesDelegate::createEditor(QWidget *parent, const QStyleOptionVie
     Q_UNUSED(option)
 
     if(index.column() == 0)
-    {
-        m_localEditor->setParent(parent);
-        return m_localEditor;
-    }
-    else if(index.column() == 1)
     {
         m_sceneEditor->setParent(parent);
         return m_sceneEditor;
@@ -64,13 +53,6 @@ void CVariablesDelegate::setEditorData(QWidget *editor, const QModelIndex &index
 {
     if(index.column() == 0)
     {
-        bool value = index.model()->data(index, Qt::EditRole).toBool();
-
-        QCheckBox *check = static_cast<QCheckBox *>(editor);
-        check->setChecked(value);
-    }
-    else if(index.column() == 1)
-    {
         QString value = index.model()->data(index, Qt::EditRole).toString();
 
         QComboBox *combo = static_cast<QComboBox *>(editor);
@@ -91,11 +73,6 @@ void CVariablesDelegate::setModelData(QWidget *editor, QAbstractItemModel *model
 
     if(index.column() == 0)
     {
-        QCheckBox *check = static_cast<QCheckBox *>(editor);
-        sm->setData(index, check->isChecked(), Qt::EditRole);
-    }
-    else if(index.column() == 1)
-    {
         QComboBox *combo = static_cast<QComboBox *>(editor);
         sm->setData(index, combo->currentText(), Qt::EditRole);
     }
@@ -111,21 +88,4 @@ void CVariablesDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptio
     Q_UNUSED(index)
 
     editor->setGeometry(option.rect);
-}
-
-
-void CVariablesDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
-{
-    if(index.column() == 0)
-    {
-        if(index.data(Qt::DisplayRole).toBool())
-        {
-            painter->setBrush(QBrush(Qt::red));
-            painter->drawRect(option.rect);
-        }
-    }
-    else
-    {
-        QStyledItemDelegate::paint(painter, option, index);
-    }
 }

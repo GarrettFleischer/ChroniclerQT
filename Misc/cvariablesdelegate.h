@@ -5,7 +5,7 @@
 
 QT_BEGIN_NAMESPACE
 class QComboBox;
-class QCheckBox;
+class QLineEdit;
 QT_END_NAMESPACE
 
 
@@ -26,13 +26,8 @@ public:
 
     virtual void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const Q_DECL_OVERRIDE;
 
-    virtual void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const Q_DECL_OVERRIDE;
-
-
 private:
     QComboBox *m_sceneEditor;
-    QCheckBox *m_localEditor;
-
     QLineEdit *m_lineEditor;
 
 };

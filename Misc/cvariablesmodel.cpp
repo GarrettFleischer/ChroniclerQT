@@ -23,7 +23,7 @@ int CVariablesModel::columnCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent)
 
-    return 4;
+    return 3;
 }
 
 QVariant CVariablesModel::data(const QModelIndex &index, int role) const
@@ -35,24 +35,12 @@ QVariant CVariablesModel::data(const QModelIndex &index, int role) const
             if(role == Qt::DisplayRole || role == Qt::EditRole)
             {
                 if(m_variables[index.row()].scene)
-                    return true;
-                else
-                    return false;
-            }
-        }
-        else if(index.column() == 1)
-        {
-            if(role == Qt::DisplayRole || role == Qt::EditRole)
-            {
-                if(m_variables[index.row()].scene)
                     return m_variables[index.row()].scene->name();
                 else
                     return "Global";
             }
-            //            else if(role == Qt::EditRole)
-            //                return QVariant::fromValue<CGraphicsScene *>(m_variables[index.row()].scene);
         }
-        else if(index.column() == 2)
+        else if(index.column() == 1)
         {
             if(role == Qt::DisplayRole || role == Qt::EditRole)
                 return m_variables[index.row()].name;
@@ -73,21 +61,13 @@ bool CVariablesModel::setData(const QModelIndex &index, const QVariant &variant,
     {
         if(index.column() == 0)
         {
-            if(!variant.toBool())
-            {
-                m_variables[index.row()].scene = Q_NULLPTR;
-                return true;
-            }
-        }
-        else if(index.column() == 1)
-        {
             if(role == Qt::EditRole)
             {
                 m_variables[index.row()].scene = shared().projectView->model()->sceneWithName(variant.toString());
                 return true;
             }
         }
-        else if(index.column() == 2)
+        else if(index.column() == 1)
         {
             if(role == Qt::EditRole)
             {
@@ -113,10 +93,8 @@ QVariant CVariablesModel::headerData(int section, Qt::Orientation orientation, i
     if(orientation == Qt::Horizontal && role == Qt::DisplayRole)
     {
         if(section == 0)
-            return "Local";
-        else if(section == 1)
             return "Scene";
-        else if(section == 2)
+        else if(section == 1)
             return "Name";
         else
             return "Data";
