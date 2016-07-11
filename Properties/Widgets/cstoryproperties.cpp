@@ -11,22 +11,22 @@
 
 
 CStoryProperties::CStoryProperties(QWidget *parent)
-    : CPropertiesWidget(parent), m_storyBubble(0), m_storyEdit(0)
+    : CPropertiesWidget(parent), m_storyBubble(Q_NULLPTR), m_storyEdit(Q_NULLPTR)
 {
-    m_boldAction = new QAction(QIcon(":/images/icn_bold.png"), tr(""), 0);
+    m_boldAction = new QAction(QIcon(":/images/icn_bold.png"), tr(""), Q_NULLPTR);
     m_boldAction->setShortcut(tr("Ctrl+B"));
     m_boldAction->setToolTip(tr("Toggle bold tags around selection"));
     connect(m_boldAction, SIGNAL(triggered()),
             this, SLOT(BoldTriggered()));
 
-    m_italicAction = new QAction(QIcon(":/images/icn_italic.png"), tr(""), 0);
+    m_italicAction = new QAction(QIcon(":/images/icn_italic.png"), tr(""), Q_NULLPTR);
     m_italicAction->setShortcut(tr("Ctrl+I"));
     m_italicAction->setToolTip(tr("Toggle italic tags around selection"));
     connect(m_italicAction, SIGNAL(triggered()),
             this, SLOT(ItalicTriggered()));
 
-    QActionButton *btn_bold = new QActionButton(0, m_boldAction);
-    QActionButton *btn_italic = new QActionButton(0, m_italicAction);
+    QActionButton *btn_bold = new QActionButton(Q_NULLPTR, m_boldAction);
+    QActionButton *btn_italic = new QActionButton(Q_NULLPTR, m_italicAction);
 
     QHBoxLayout *hl_font = new QHBoxLayout();
     hl_font->addWidget(btn_bold);

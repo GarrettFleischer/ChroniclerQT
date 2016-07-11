@@ -4,7 +4,7 @@
 
 
 QActionButton::QActionButton(QWidget *parent, QAction *action, bool showText)
-    : QPushButton(parent), m_action(0), m_showText(showText)
+    : QPushButton(parent), m_action(Q_NULLPTR), m_showText(showText)
 {
     setAction(action);
 }

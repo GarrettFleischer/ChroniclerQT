@@ -13,7 +13,7 @@ class QActionButton : public QPushButton
     Q_OBJECT
 
 public:
-    explicit QActionButton(QWidget *parent = 0, QAction *action = 0, bool showText = false);
+    explicit QActionButton(QWidget *parent = Q_NULLPTR, QAction *action = Q_NULLPTR, bool showText = false);
 
     void setAction( QAction* action );
 
