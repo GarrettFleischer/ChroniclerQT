@@ -46,6 +46,8 @@ QVariant CVariablesModel::data(const QModelIndex &index, int role) const
             {
                 if(m_variables[index.row()].scene)
                     return m_variables[index.row()].scene->name();
+                else
+                    return "Global";
             }
             //            else if(role == Qt::EditRole)
             //                return QVariant::fromValue<CGraphicsScene *>(m_variables[index.row()].scene);
@@ -71,23 +73,36 @@ bool CVariablesModel::setData(const QModelIndex &index, const QVariant &variant,
     {
         if(index.column() == 0)
         {
-            if(role == Qt::EditRole)
+            if(!variant.toBool())
             {
-                m_variables[index.row()].scene = shared().projectView->model()->sceneWithName(variant.toString());
+                m_variables[index.row()].scene = Q_NULLPTR;
+                return true;
             }
         }
         else if(index.column() == 1)
         {
             if(role == Qt::EditRole)
+            {
+                m_variables[index.row()].scene = shared().projectView->model()->sceneWithName(variant.toString());
+                return true;
+            }
+        }
+        else if(index.column() == 2)
+        {
+            if(role == Qt::EditRole)
+            {
                 m_variables[index.row()].name = variant.toString();
+                return true;
+            }
         }
         else
         {
             if(role == Qt::EditRole)
+            {
                 m_variables[index.row()].data = variant.toString();
+                return true;
+            }
         }
-
-        return true;
     }
 
     return false;
@@ -98,8 +113,10 @@ QVariant CVariablesModel::headerData(int section, Qt::Orientation orientation, i
     if(orientation == Qt::Horizontal && role == Qt::DisplayRole)
     {
         if(section == 0)
-            return "Scene";
+            return "Local";
         else if(section == 1)
+            return "Scene";
+        else if(section == 2)
             return "Name";
         else
             return "Data";
@@ -110,6 +127,8 @@ QVariant CVariablesModel::headerData(int section, Qt::Orientation orientation, i
 
 Qt::ItemFlags CVariablesModel::flags(const QModelIndex &index) const
 {
+    Q_UNUSED(index)
+
     return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
 }
 

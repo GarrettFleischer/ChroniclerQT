@@ -4,9 +4,12 @@
 #include <QCheckBox>
 #include <QLineEdit>
 
+#include <QPainter>
+#include <QBrush>
+
 #include "Properties/cprojectview.h"
 #include "Misc/cscenemodel.h"
-#include "Misc/cscenemodel.h"
+#include "Misc/cvariablesmodel.h"
 
 #include "Misc/chronicler.h"
 using Chronicler::shared;
@@ -84,13 +87,22 @@ void CVariablesDelegate::setEditorData(QWidget *editor, const QModelIndex &index
 
 void CVariablesDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
 {
-    CSceneModel *sm = static_cast<CSceneModel *>(model);
+    CVariablesModel *sm = static_cast<CVariablesModel *>(model);
 
-
-    if(index.column() == 1)
+    if(index.column() == 0)
     {
-        QComboBox *box = static_cast<QComboBox *>(editor);
-        sm->setData(index, box->currentText(), Qt::EditRole);
+        QCheckBox *check = static_cast<QCheckBox *>(editor);
+        sm->setData(index, check->isChecked(), Qt::EditRole);
+    }
+    else if(index.column() == 1)
+    {
+        QComboBox *combo = static_cast<QComboBox *>(editor);
+        sm->setData(index, combo->currentText(), Qt::EditRole);
+    }
+    else
+    {
+        QLineEdit *line = static_cast<QLineEdit *>(editor);
+        sm->setData(index, line->text(), Qt::EditRole);
     }
 }
 
@@ -99,4 +111,21 @@ void CVariablesDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptio
     Q_UNUSED(index)
 
     editor->setGeometry(option.rect);
+}
+
+
+void CVariablesDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+{
+    if(index.column() == 0)
+    {
+        if(index.data(Qt::DisplayRole).toBool())
+        {
+            painter->setBrush(QBrush(Qt::red));
+            painter->drawRect(option.rect);
+        }
+    }
+    else
+    {
+        QStyledItemDelegate::paint(painter, option, index);
+    }
 }
