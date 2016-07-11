@@ -120,6 +120,7 @@ namespace Chronicler
         QAction *saveProjectAction;
         QAction *saveAsProjectAction;
         QAction *showHomepageAction;
+        QAction *showDockAction;
 
         CPaletteAction *defaultStory;
         CPaletteAction *defaultChoice;

@@ -10,6 +10,7 @@
 #include <QMessageBox>
 
 #include <QDockWidget>
+#include <QToolBar>
 #include <QTabWidget>
 
 #include <QStatusBar>
@@ -268,7 +269,8 @@ void CProjectView::OpenProject(QString filepath)
         ds >> *(m_sceneModel->views().last()->cScene());
     }
 
-    shared().dock->setVisible(true);
+    shared().dock->show();
+    shared().pointerToolBar->show();
     shared().dock->setWindowTitle(m_path);//(QFileInfo(m_path).fileName());
     shared().sceneTabs->removeTab(shared().sceneTabs->indexOf(shared().homepage));
 
@@ -319,7 +321,8 @@ void CProjectView::NewProject()
 
     m_title->setText("New Project");
 
-    shared().dock->setVisible(true);
+    shared().dock->show();
+    shared().pointerToolBar->show();
     shared().dock->setWindowTitle(m_path);
     shared().sceneTabs->removeTab(shared().sceneTabs->indexOf(shared().homepage));
 
@@ -348,6 +351,7 @@ void CProjectView::CloseProject()
         m_sceneModel->RemoveItem(0);
 
     shared().dock->hide();
+    shared().pointerToolBar->hide();
     shared().showHomepageAction->trigger();
 }
 

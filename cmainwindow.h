@@ -76,7 +76,6 @@ public:
    CMainWindow(QSettings *settings, const QString &filename);
 
 protected:
-    virtual void keyPressEvent(QKeyEvent *event) override;
     virtual void closeEvent(QCloseEvent *event) override;
 
 private:
@@ -91,6 +90,7 @@ private slots:
     void ShowAbout();
     void ShowSettings();
     void ShowHomepage();
+    void ShowDock();
 
     void NewProject();
     void OpenProject();
@@ -104,6 +104,8 @@ private slots:
 
     void DockAreaChanged(Qt::DockWidgetArea);
     void PointerToolBarAreaChanged(bool);
+
+    void EscapePressed();
 
 };
 

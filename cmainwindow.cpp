@@ -25,6 +25,8 @@
 using Chronicler::shared;
 
 
+#include <QDebug>
+
 CMainWindow::CMainWindow(QSettings *settings, const QString &filename)
 {
     shared().ProgramVersion = "0.9.2.0";
@@ -147,6 +149,11 @@ void CMainWindow::ShowHomepage()
     shared().sceneTabs->setCurrentWidget(shared().homepage);
 }
 
+void CMainWindow::ShowDock()
+{
+    shared().dock->setVisible(!shared().dock->isVisible());
+}
+
 void CMainWindow::TabClosed(int index)
 {
     if(shared().sceneTabs->widget(index) == shared().settingsView)
@@ -188,6 +195,12 @@ void CMainWindow::PointerToolBarAreaChanged(bool)
     shared().settingsView->settings()->setValue("MainWindow/ToolBarArea", static_cast<int>(toolBarArea(shared().pointerToolBar)));
 }
 
+void CMainWindow::EscapePressed()
+{
+    qDebug() << "esc";
+    shared().setMode(Chronicler::Cursor);
+}
+
 void CMainWindow::SettingsChanged()
 {
     // Update font and font color.
@@ -208,7 +221,7 @@ void CMainWindow::ShowAbout()
 void CMainWindow::CreateActions()
 {
     shared().deleteAction = new QAction(QIcon(":/images/icn_trash.png"), tr("&Delete"), this);
-    shared().deleteAction->setShortcut(tr("Delete"));
+    shared().deleteAction->setShortcut(QKeySequence::Delete);
     shared().deleteAction->setToolTip(tr("Delete selected bubble(S)"));
     connect(shared().deleteAction, SIGNAL(triggered()), this, SLOT(DeleteItem()));
 
@@ -218,19 +231,19 @@ void CMainWindow::CreateActions()
     connect(shared().exitAction, SIGNAL(triggered()), this, SLOT(close()));
 
     shared().settingsAction = new QAction(QIcon(":/images/icn_settings"), tr("&Settings"), this);
-    shared().settingsAction->setShortcut(tr("Ctrl+P"));
+    shared().settingsAction->setShortcut(QKeySequence::Preferences);
     connect(shared().settingsAction, SIGNAL(triggered(bool)), this, SLOT(ShowSettings()));
 
     shared().aboutAction = new QAction(QIcon(":/images/icn_info"), tr("A&bout"), this);
     connect(shared().aboutAction, SIGNAL(triggered()), this, SLOT(ShowAbout()));
 
     shared().newProjectAction = new QAction(QIcon(":/images/icn_new"), tr("New Project"), this);
-    shared().newProjectAction->setShortcut(tr("Ctrl+N"));
+    shared().newProjectAction->setShortcut(QKeySequence::New);
     shared().newProjectAction->setToolTip(tr("Create New Project"));
     connect(shared().newProjectAction, SIGNAL(triggered(bool)), this, SLOT(NewProject()));
 
     shared().openProjectAction = new QAction(QIcon(":/images/icn_load"), tr("Open Project"), this);
-    shared().openProjectAction->setShortcut(tr("Ctrl+O"));
+    shared().openProjectAction->setShortcut(QKeySequence::Open);
     shared().openProjectAction->setToolTip(tr("Open Existing Project"));
     connect(shared().openProjectAction, SIGNAL(triggered(bool)), this, SLOT(OpenProject()));
 
@@ -239,16 +252,24 @@ void CMainWindow::CreateActions()
     connect(shared().importProjectAction, SIGNAL(triggered(bool)), this, SLOT(ImportProject()));
 
     shared().saveProjectAction = new QAction(QIcon(":/images/icn_save"), tr("Save"), this);
-    shared().saveProjectAction->setShortcut(tr("Ctrl+S"));
+    shared().saveProjectAction->setShortcut(QKeySequence::Save);
     shared().saveProjectAction->setToolTip(tr("Save Project"));
     connect(shared().saveProjectAction, SIGNAL(triggered(bool)), this, SLOT(SaveProject()));
 
     shared().saveAsProjectAction = new QAction(QIcon(":/images/icn_savecs"), tr("Save As"), this);
+    shared().saveAsProjectAction->setShortcut(QKeySequence::SaveAs);
     shared().saveAsProjectAction->setToolTip(tr("Save Project As"));
     connect(shared().saveAsProjectAction, SIGNAL(triggered(bool)), this, SLOT(SaveAsProject()));
 
     shared().showHomepageAction = new QAction(QIcon(":/images/icn_home"), tr("Show &homepage"), this);
     connect(shared().showHomepageAction, SIGNAL(triggered(bool)), this, SLOT(ShowHomepage()));
+
+    shared().showDockAction = new QAction(tr("Show &dock"), this);
+    connect(shared().showDockAction, SIGNAL(triggered(bool)), this, SLOT(ShowDock()));
+
+    QAction *escape_action = new QAction(Q_NULLPTR);
+    escape_action->setShortcut(QKeySequence::Deselect);
+    connect(escape_action, SIGNAL(triggered(bool)), this, SLOT(EscapePressed()));
 
     // Default Palettes
     CPalette dp_story, dp_choice, dp_action, dp_condition, dp_start;
@@ -285,6 +306,7 @@ void CMainWindow::CreateMenus()
 
     shared().viewMenu = menuBar()->addMenu(tr("&View"));
     shared().viewMenu->addAction(shared().showHomepageAction);
+    shared().viewMenu->addAction(shared().showDockAction);
 
     shared().helpMenu = menuBar()->addMenu(tr("&Help"));
     shared().helpMenu->addAction(shared().aboutAction);
@@ -339,6 +361,7 @@ void CMainWindow::CreateToolbars()
     Qt::ToolBarArea area = static_cast<Qt::ToolBarArea>(shared().settingsView->settings()->value("MainWindow/ToolBarArea",
                                                                                                  static_cast<int>(Qt::RightToolBarArea)).toInt());
     shared().pointerToolBar = new QToolBar(tr("Pointer type"));
+    shared().pointerToolBar->setVisible(false);
     shared().pointerToolBar->addWidget(tb_pointer);
     shared().pointerToolBar->addWidget(tb_link);
     shared().pointerToolBar->addWidget(tb_story);
@@ -351,16 +374,6 @@ void CMainWindow::CreateToolbars()
     connect(shared().pointerToolBar, SIGNAL(topLevelChanged(bool)),
             this, SLOT(PointerToolBarAreaChanged(bool)));
 }
-
-
-void CMainWindow::keyPressEvent(QKeyEvent *event)
-{
-    if(event->key() == Qt::Key_Escape)
-        shared().setMode(Chronicler::Cursor);
-
-    event->ignore();
-}
-
 
 void CMainWindow::closeEvent(QCloseEvent *event)
 {
