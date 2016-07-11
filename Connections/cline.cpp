@@ -37,10 +37,6 @@ QRectF CLine::boundingRect() const
 {
     QRectF bounds(m_path.boundingRect());
 
-    // add a width/2 buffer to prevent artifacts when moving
-    bounds.translate(-m_width / 2, -m_width / 2);
-    bounds.setSize(QSizeF(bounds.width() + m_width, bounds.height() + m_width));
-
     return bounds;
 }
 
@@ -81,9 +77,10 @@ void CLine::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *
 
 void CLine::UpdateShape()
 {
+    prepareGeometryChange();
+
     m_path = QPainterPath();
 
-    // TODO: DEAL WITH OFFSETS BASED ON ANCHOR POSITION
     qreal start_angle = (qreal(m_startAnchor) * M_PI * 0.5);
     qreal end_angle = (qreal(m_endAnchor) * M_PI * 0.5);
 
@@ -117,7 +114,6 @@ void CLine::UpdateShape()
 
     m_path.addPath(m_arrow);
 
-    prepareGeometryChange();
     update();
 }
 
