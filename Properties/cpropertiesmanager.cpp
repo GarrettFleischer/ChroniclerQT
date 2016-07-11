@@ -82,6 +82,9 @@ void CPropertiesManager::setBubble(CBubble *bbl)
             m_conditionProperties->setBubble(bbl);
             m_conditionProperties->show();
         break;
+
+        default:
+            break;
         }
     }
     else

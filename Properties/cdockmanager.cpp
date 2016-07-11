@@ -5,6 +5,7 @@
 
 #include "cpropertiesmanager.h"
 #include "cprojectview.h"
+#include "cvariablesview.h"
 
 #include "Misc/chronicler.h"
 using Chronicler::shared;
@@ -19,8 +20,10 @@ CDockManager::CDockManager(QWidget *parent)
 
     m_properties = new CPropertiesManager();
     shared().projectView = new CProjectView();
+    shared().variablesView = new CVariablesView();
 
     m_tabView->addTab(shared().projectView, "Project");
+    m_tabView->addTab(shared().variablesView, "Variables");
     m_tabView->addTab(m_properties, "Bubble");
 
     QVBoxLayout *layout = new QVBoxLayout();

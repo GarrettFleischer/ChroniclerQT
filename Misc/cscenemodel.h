@@ -4,6 +4,7 @@
 #include <QAbstractListModel>
 
 class CGraphicsView;
+class CGraphicsScene;
 
 class CSceneModel : public QAbstractListModel
 {
@@ -19,6 +20,8 @@ public:
 
     void setViews(const QList<CGraphicsView *> &views);
     QList<CGraphicsView *> views();
+
+    CGraphicsScene *sceneWithName(const QString &name);
 
     void MoveUp(const int index);
     void MoveDown(const int index);

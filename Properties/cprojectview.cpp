@@ -421,6 +421,11 @@ const QString CProjectView::getVersion() const
     return m_version;
 }
 
+CSceneModel *CProjectView::model()
+{
+    return m_sceneModel;
+}
+
 QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QList<CBubble *> &processed, int indent_level, CBubble *bubble)
 {
     QString cs;

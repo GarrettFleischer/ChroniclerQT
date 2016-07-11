@@ -54,6 +54,15 @@ QList<CGraphicsView *> CSceneModel::views()
     return m_scenes;
 }
 
+CGraphicsScene *CSceneModel::sceneWithName(const QString &name)
+{
+    for(CGraphicsView *view : m_scenes)
+        if(view->cScene()->name() == name)
+            return view->cScene();
+
+    return Q_NULLPTR;
+}
+
 void CSceneModel::MoveUp(const int index)
 {
     if(index > 1 && index < m_scenes.length())

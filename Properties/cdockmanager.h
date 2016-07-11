@@ -11,7 +11,6 @@ class QMenu;
 QT_END_NAMESPACE
 
 class CPropertiesManager;
-class CProjectView;
 
 class CBubble;
 
@@ -30,6 +29,8 @@ private:
     QTabWidget *m_tabView;
 
     CPropertiesManager *m_properties;
+
+
 
 signals:
 

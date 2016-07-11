@@ -36,6 +36,8 @@ public:
 
     const QString getVersion() const;
 
+    CSceneModel *model();
+
 private:
     // Private Methods
     void CreateBubbles();

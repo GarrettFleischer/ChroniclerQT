@@ -63,7 +63,10 @@ HEADERS += \
     Misc/cactiondelegate.h \
     Properties/cindentselectiondialog.h \
     Misc/choicescriptdata.h \
-    Properties/cvariablesview.h
+    Properties/cvariablesview.h \
+    Misc/cvariablesmodel.h \
+    Misc/cscenecombobox.h \
+    Misc/cvariablesdelegate.h
 
 SOURCES += \
     Bubbles/cbubble.cpp \
@@ -109,4 +112,7 @@ SOURCES += \
     Misc/cactiondelegate.cpp \
     Properties/cindentselectiondialog.cpp \
     Misc/choicescriptdata.cpp \
-    Properties/cvariablesview.cpp
+    Properties/cvariablesview.cpp \
+    Misc/cvariablesmodel.cpp \
+    Misc/cscenecombobox.cpp \
+    Misc/cvariablesdelegate.cpp

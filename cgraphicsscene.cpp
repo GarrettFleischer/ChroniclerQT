@@ -165,7 +165,7 @@ void CGraphicsScene::ItemSelected(QGraphicsItem *selectedItem)
     if(!m_rubberBand)
     {
         // decrease all z values by a ridiculously small number
-        // to preserve current stacking order & help prevent integer overflow
+        // to preserve current stacking order & help prevent float overflow
         foreach (QGraphicsItem *item, items())
             item->setZValue(item->zValue() - qPow(1, -10));
 

@@ -7,6 +7,8 @@ QT_BEGIN_NAMESPACE
 class QTableView;
 QT_END_NAMESPACE
 
+class CVariablesModel;
+
 class CVariablesView : public QWidget
 {
     Q_OBJECT
@@ -14,7 +16,8 @@ public:
     explicit CVariablesView(QWidget *parent = 0);
 
 private:
-    QTableView *m_view;
+    QTableView      *m_view;
+    CVariablesModel *m_model;
 
 signals:
 
