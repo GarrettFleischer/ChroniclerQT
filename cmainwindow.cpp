@@ -29,10 +29,8 @@ using Chronicler::shared;
 
 CMainWindow::CMainWindow(QSettings *settings, const QString &filename)
 {
-    shared().ProgramVersion = "0.9.2.0";
-
     setWindowTitle(tr("Chronicler ") + shared().ProgramVersion);
-    setUnifiedTitleAndToolBarOnMac(true);
+    setUnifiedTitleAndToolBarOnMac(false);
 
     shared().mainWindow = this;
 

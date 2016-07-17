@@ -82,7 +82,7 @@ namespace Chronicler
     // Do NOT instantiate this struct, use shared() singleton access.
     struct SharedInstances
     {
-        QString ProgramVersion;
+        QString ProgramVersion = "0.9.2.0";
 
         CMainWindow *mainWindow;
 
@@ -127,6 +127,8 @@ namespace Chronicler
         CPaletteAction *defaultAction;
         CPaletteAction *defaultCondition;
         CPaletteAction *defaultStart;
+
+        QString globalVariableTitle = "Global";
 
         Mode cursorMode = Cursor;
 

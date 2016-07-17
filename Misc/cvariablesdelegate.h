@@ -8,6 +8,7 @@ class QComboBox;
 class QLineEdit;
 QT_END_NAMESPACE
 
+class CSceneComboBox;
 
 class CVariablesDelegate : public QStyledItemDelegate
 {
@@ -27,7 +28,7 @@ public:
     virtual void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const Q_DECL_OVERRIDE;
 
 private:
-    QComboBox *m_sceneEditor;
+    CSceneComboBox *m_sceneEditor;
     QLineEdit *m_lineEditor;
 
 };

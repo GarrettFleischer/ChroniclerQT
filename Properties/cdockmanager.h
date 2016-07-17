@@ -30,11 +30,12 @@ private:
 
     CPropertiesManager *m_properties;
 
-
+    QWidget *m_lastView;
 
 signals:
 
-public slots:
+private slots:
+    void TabChanged();
 
 };
 

@@ -34,10 +34,8 @@ QVariant CVariablesModel::data(const QModelIndex &index, int role) const
         {
             if(role == Qt::DisplayRole || role == Qt::EditRole)
             {
-                if(m_variables[index.row()].scene)
-                    return m_variables[index.row()].scene->name();
-                else
-                    return "Global";
+                return (m_variables[index.row()].scene) ? m_variables[index.row()].scene->name()
+                                                        : shared().globalVariableTitle;
             }
         }
         else if(index.column() == 1)
@@ -63,7 +61,12 @@ bool CVariablesModel::setData(const QModelIndex &index, const QVariant &variant,
         {
             if(role == Qt::EditRole)
             {
-                m_variables[index.row()].scene = shared().projectView->model()->sceneWithName(variant.toString());
+                if(variant.isValid())
+                    m_variables[index.row()].scene = shared().projectView->model()->sceneWithName(variant.toString());
+                else
+                    m_variables[index.row()].scene = Q_NULLPTR;
+
+                emit dataChanged(index, index, {Qt::EditRole, Qt::DisplayRole});
                 return true;
             }
         }
@@ -72,6 +75,8 @@ bool CVariablesModel::setData(const QModelIndex &index, const QVariant &variant,
             if(role == Qt::EditRole)
             {
                 m_variables[index.row()].name = variant.toString();
+
+                emit dataChanged(index, index, {Qt::EditRole, Qt::DisplayRole});
                 return true;
             }
         }
@@ -80,6 +85,8 @@ bool CVariablesModel::setData(const QModelIndex &index, const QVariant &variant,
             if(role == Qt::EditRole)
             {
                 m_variables[index.row()].data = variant.toString();
+
+                emit dataChanged(index, index, {Qt::EditRole, Qt::DisplayRole});
                 return true;
             }
         }
@@ -107,7 +114,7 @@ Qt::ItemFlags CVariablesModel::flags(const QModelIndex &index) const
 {
     Q_UNUSED(index)
 
-    return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
+    return Qt::ItemIsEnabled | Qt::ItemIsEditable;
 }
 
 void CVariablesModel::AddItem(const Chronicler::CVariable &item)

@@ -1,9 +1,11 @@
 #include "cvariablesdelegate.h"
 
-#include <QComboBox>
+//#include <QComboBox>
 #include <QLineEdit>
 
 #include "Misc/cvariablesmodel.h"
+
+#include "Misc/cscenecombobox.h"
 
 #include "Properties/cprojectview.h"
 #include "Misc/cscenemodel.h"
@@ -14,7 +16,7 @@ using Chronicler::shared;
 CVariablesDelegate::CVariablesDelegate(QObject *parent)
     : QStyledItemDelegate(parent)
 {
-    m_sceneEditor = new QComboBox();
+    m_sceneEditor = new CSceneComboBox();
     m_sceneEditor->setModel(shared().projectView->model());
 
     m_lineEditor = new QLineEdit();
@@ -33,8 +35,9 @@ QWidget *CVariablesDelegate::createEditor(QWidget *parent, const QStyleOptionVie
 
     if(index.column() == 0)
     {
-        m_sceneEditor->setParent(parent);
-        return m_sceneEditor;
+//        m_sceneEditor->setParent(parent);
+//        return m_sceneEditor;
+        return new CSceneComboBox(parent, shared().projectView->model());
     }
     else
     {
@@ -74,7 +77,10 @@ void CVariablesDelegate::setModelData(QWidget *editor, QAbstractItemModel *model
     if(index.column() == 0)
     {
         QComboBox *combo = static_cast<QComboBox *>(editor);
-        sm->setData(index, combo->currentText(), Qt::EditRole);
+        if(combo->currentIndex() == 0)
+            sm->setData(index, QVariant(), Qt::EditRole);
+        else
+            sm->setData(index, combo->currentText(), Qt::EditRole);
     }
     else
     {

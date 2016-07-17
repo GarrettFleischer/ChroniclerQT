@@ -17,10 +17,13 @@ CDockManager::CDockManager(QWidget *parent)
 
     m_tabView = new QTabWidget();
     m_tabView->setTabPosition(QTabWidget::South);
+    connect(m_tabView, SIGNAL(currentChanged(int)), this, SLOT(TabChanged()));
 
     m_properties = new CPropertiesManager();
     shared().projectView = new CProjectView();
     shared().variablesView = new CVariablesView();
+
+    m_lastView = shared().projectView;
 
     m_tabView->addTab(shared().projectView, "Project");
     m_tabView->addTab(shared().variablesView, "Variables");
@@ -41,8 +44,14 @@ void CDockManager::setBubble(CBubble *bbl, bool ignore)
         if(bbl)
             m_tabView->setCurrentWidget(m_properties);
         else
-            m_tabView->setCurrentWidget(shared().projectView);
+            m_tabView->setCurrentWidget(m_lastView);
     }
+}
+
+void CDockManager::TabChanged()
+{
+    if(m_tabView->currentWidget() != m_properties)
+        m_lastView = m_tabView->currentWidget();
 }
 
 QSize CDockManager::sizeHint() const

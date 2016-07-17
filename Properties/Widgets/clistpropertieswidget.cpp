@@ -13,17 +13,21 @@ CListPropertiesWidget::CListPropertiesWidget(QWidget *parent)
     : CPropertiesWidget(parent)
 {
     m_upButton = new QPushButton(QIcon(":/images/icn_up"), "");
+    m_upButton->setToolTip("Move item up");
     m_upButton->setEnabled(false);
     connect(m_upButton, SIGNAL(clicked(bool)), this, SLOT(MoveUp()));
 
     m_downButton = new QPushButton(QIcon(":/images/icn_down"), "");
+    m_downButton->setToolTip("Move item down");
     m_downButton->setEnabled(false);
     connect(m_downButton, SIGNAL(clicked(bool)), this, SLOT(MoveDown()));
 
     m_addButton = new QPushButton(QIcon(":/images/icn_add"), "");
+    m_addButton->setToolTip("Add new item");
     connect(m_addButton, SIGNAL(clicked(bool)), this, SLOT(AddItem()));
 
     m_removeButton = new QPushButton(QIcon(":/images/icn_trash"), "");
+    m_removeButton->setToolTip("<qt>Delete item.<br>This cannot be undone!</qt>");
     m_removeButton->setEnabled(false);
     connect(m_removeButton, SIGNAL(clicked(bool)), this, SLOT(RemoveItem()));
 
@@ -36,6 +40,7 @@ CListPropertiesWidget::CListPropertiesWidget(QWidget *parent)
 
 
     m_modelView = new QListView();
+    m_modelView->setAlternatingRowColors(true);
     m_modelView->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::EditKeyPressed);
     connect(m_modelView, SIGNAL(clicked(QModelIndex)), this, SLOT(SelectedChanged(QModelIndex)));
 

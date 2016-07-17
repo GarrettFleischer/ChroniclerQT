@@ -5,6 +5,7 @@
 
 QT_BEGIN_NAMESPACE
 class QTableView;
+class QSortFilterProxyModel;
 QT_END_NAMESPACE
 
 class CVariablesModel;
@@ -16,12 +17,13 @@ public:
     explicit CVariablesView(QWidget *parent = 0);
 
 private:
-    QTableView      *m_view;
-    CVariablesModel *m_model;
-
+    QTableView              *m_view;
+    CVariablesModel         *m_model;
+    QSortFilterProxyModel   *m_sortModel;
 signals:
 
-public slots:
+private slots:
+    void ModelChanged();
 };
 
 #endif // CVARIABLESVIEW_H
