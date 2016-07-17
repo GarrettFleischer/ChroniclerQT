@@ -15,5 +15,8 @@ QDataStream &operator >>(QDataStream &stream, CSerializable &serializable)
     return serializable.Deserialize(stream, shared().projectView->getVersion());
 }
 
+CSerializable::~CSerializable()
+{}
+
 CSerializable::CSerializable()
 {}

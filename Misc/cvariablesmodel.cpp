@@ -34,19 +34,19 @@ QVariant CVariablesModel::data(const QModelIndex &index, int role) const
         {
             if(role == Qt::DisplayRole || role == Qt::EditRole)
             {
-                return (m_variables[index.row()].scene) ? m_variables[index.row()].scene->name()
+                return (m_variables[index.row()].scene()) ? m_variables[index.row()].scene()->name()
                                                         : shared().globalVariableTitle;
             }
         }
         else if(index.column() == 1)
         {
             if(role == Qt::DisplayRole || role == Qt::EditRole)
-                return m_variables[index.row()].name;
+                return m_variables[index.row()].name();
         }
         else
         {
             if(role == Qt::DisplayRole || role == Qt::EditRole)
-                return m_variables[index.row()].data;
+                return m_variables[index.row()].data();
         }
     }
 
@@ -62,9 +62,9 @@ bool CVariablesModel::setData(const QModelIndex &index, const QVariant &variant,
             if(role == Qt::EditRole)
             {
                 if(variant.isValid())
-                    m_variables[index.row()].scene = shared().projectView->model()->sceneWithName(variant.toString());
+                    m_variables[index.row()].setScene(shared().projectView->model()->sceneWithName(variant.toString()));
                 else
-                    m_variables[index.row()].scene = Q_NULLPTR;
+                    m_variables[index.row()].setScene(Q_NULLPTR);
 
                 emit dataChanged(index, index, {Qt::EditRole, Qt::DisplayRole});
                 return true;
@@ -74,7 +74,7 @@ bool CVariablesModel::setData(const QModelIndex &index, const QVariant &variant,
         {
             if(role == Qt::EditRole)
             {
-                m_variables[index.row()].name = variant.toString();
+                m_variables[index.row()].setName(variant.toString());
 
                 emit dataChanged(index, index, {Qt::EditRole, Qt::DisplayRole});
                 return true;
@@ -84,7 +84,7 @@ bool CVariablesModel::setData(const QModelIndex &index, const QVariant &variant,
         {
             if(role == Qt::EditRole)
             {
-                m_variables[index.row()].data = variant.toString();
+                m_variables[index.row()].setData(variant.toString());
 
                 emit dataChanged(index, index, {Qt::EditRole, Qt::DisplayRole});
                 return true;
@@ -117,7 +117,7 @@ Qt::ItemFlags CVariablesModel::flags(const QModelIndex &index) const
     return Qt::ItemIsEnabled | Qt::ItemIsEditable;
 }
 
-void CVariablesModel::AddItem(const Chronicler::CVariable &item)
+void CVariablesModel::AddItem(const CVariable &item)
 {
     int row = rowCount();
 
@@ -126,7 +126,7 @@ void CVariablesModel::AddItem(const Chronicler::CVariable &item)
     endInsertRows();
 }
 
-void CVariablesModel::RemoveItem(const Chronicler::CVariable &item)
+void CVariablesModel::RemoveItem(const CVariable &item)
 {
     int row = m_variables.indexOf(item);
 

@@ -35,9 +35,11 @@ QWidget *CVariablesDelegate::createEditor(QWidget *parent, const QStyleOptionVie
 
     if(index.column() == 0)
     {
-//        m_sceneEditor->setParent(parent);
-//        return m_sceneEditor;
-        return new CSceneComboBox(parent, shared().projectView->model());
+        m_sceneEditor->setParent(parent);
+        return m_sceneEditor;
+//        CSceneComboBox *box = new CSceneComboBox(parent, shared().projectView->model());
+//        connect(box, SIGNAL(activated(int)), this, SLOT(PersistantEditorModified(box,index)));
+//        return box;
     }
     else
     {
@@ -50,6 +52,9 @@ void CVariablesDelegate::destroyEditor(QWidget *editor, const QModelIndex &index
 {
     Q_UNUSED(editor)
     Q_UNUSED(index)
+
+//    if(dynamic_cast<CSceneComboBox *>(editor))
+//        editor->deleteLater();
 }
 
 void CVariablesDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
@@ -94,4 +99,9 @@ void CVariablesDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptio
     Q_UNUSED(index)
 
     editor->setGeometry(option.rect);
+}
+
+void CVariablesDelegate::PersistantEditorModified(QWidget *editor, const QModelIndex &index)
+{
+    setModelData(editor, const_cast<QAbstractItemModel *>(index.model()), index);
 }

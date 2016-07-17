@@ -31,6 +31,9 @@ private:
     CSceneComboBox *m_sceneEditor;
     QLineEdit *m_lineEditor;
 
+private slots:
+    void PersistantEditorModified(QWidget *editor, const QModelIndex &index);
+
 };
 
 #endif // CVARIABLESDELEGATE_H

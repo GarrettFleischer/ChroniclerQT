@@ -66,7 +66,8 @@ HEADERS += \
     Properties/cvariablesview.h \
     Misc/cvariablesmodel.h \
     Misc/cscenecombobox.h \
-    Misc/cvariablesdelegate.h
+    Misc/cvariablesdelegate.h \
+    Misc/cvariable.h
 
 SOURCES += \
     Bubbles/cbubble.cpp \
@@ -115,4 +116,5 @@ SOURCES += \
     Properties/cvariablesview.cpp \
     Misc/cvariablesmodel.cpp \
     Misc/cscenecombobox.cpp \
-    Misc/cvariablesdelegate.cpp
+    Misc/cvariablesdelegate.cpp \
+    Misc/cvariable.cpp

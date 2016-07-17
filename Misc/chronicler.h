@@ -60,24 +60,6 @@ namespace Chronicler
         quint8 count = 4;
     };
 
-    struct CVariable
-    {
-        CGraphicsScene *scene = Q_NULLPTR;
-        QString name;
-        QString data;
-
-        CVariable()
-            : scene(Q_NULLPTR) {}
-
-        CVariable(CGraphicsScene *_scene, QString _name, QString _data)
-            : scene(_scene), name(_name), data(_data) {}
-
-        bool operator ==(const CVariable &rhs)
-        {
-            return (rhs.scene == scene && rhs.name == name && rhs.data == data);
-        }
-    };
-
 
     // Do NOT instantiate this struct, use shared() singleton access.
     struct SharedInstances

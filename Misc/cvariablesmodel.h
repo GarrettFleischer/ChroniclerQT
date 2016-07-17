@@ -3,8 +3,7 @@
 
 #include <QAbstractTableModel>
 
-#include "chronicler.h"
-using Chronicler::CVariable;
+#include "Misc/cvariable.h"
 
 class CVariablesModel : public QAbstractTableModel
 {

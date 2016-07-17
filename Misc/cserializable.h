@@ -9,6 +9,8 @@ public:
     friend QDataStream & operator <<(QDataStream &stream, CSerializable &serializable);
     friend QDataStream & operator >>(QDataStream &stream, CSerializable &serializable);
 
+    virtual ~CSerializable();
+
 protected:
     CSerializable();
 
