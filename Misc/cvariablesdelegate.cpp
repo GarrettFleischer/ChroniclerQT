@@ -15,19 +15,7 @@ using Chronicler::shared;
 
 CVariablesDelegate::CVariablesDelegate(QObject *parent)
     : QStyledItemDelegate(parent)
-{
-    m_sceneEditor = new CSceneComboBox();
-    m_sceneEditor->setModel(shared().projectView->model());
-
-    m_lineEditor = new QLineEdit();
-}
-
-CVariablesDelegate::~CVariablesDelegate()
-{
-    m_sceneEditor->deleteLater();
-    m_lineEditor->deleteLater();
-}
-
+{}
 
 QWidget *CVariablesDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
@@ -35,26 +23,12 @@ QWidget *CVariablesDelegate::createEditor(QWidget *parent, const QStyleOptionVie
 
     if(index.column() == 0)
     {
-        m_sceneEditor->setParent(parent);
-        return m_sceneEditor;
-//        CSceneComboBox *box = new CSceneComboBox(parent, shared().projectView->model());
-//        connect(box, SIGNAL(activated(int)), this, SLOT(PersistantEditorModified(box,index)));
-//        return box;
+        CSceneComboBox *box = new CSceneComboBox(parent, shared().projectView->model());
+        connect(box, SIGNAL(currentIndexChanged(int)), this, SLOT(PersistentEditorChanged()));
+        return box;
     }
-    else
-    {
-        m_lineEditor->setParent(parent);
-        return m_lineEditor;
-    }
-}
 
-void CVariablesDelegate::destroyEditor(QWidget *editor, const QModelIndex &index) const
-{
-    Q_UNUSED(editor)
-    Q_UNUSED(index)
-
-//    if(dynamic_cast<CSceneComboBox *>(editor))
-//        editor->deleteLater();
+    return QStyledItemDelegate::createEditor(parent, option, index);
 }
 
 void CVariablesDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
@@ -101,7 +75,7 @@ void CVariablesDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptio
     editor->setGeometry(option.rect);
 }
 
-void CVariablesDelegate::PersistantEditorModified(QWidget *editor, const QModelIndex &index)
+void CVariablesDelegate::PersistentEditorChanged()
 {
-    setModelData(editor, const_cast<QAbstractItemModel *>(index.model()), index);
+    emit commitData(static_cast<QWidget *>(sender()));
 }

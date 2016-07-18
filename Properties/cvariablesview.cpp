@@ -10,15 +10,19 @@
 #include "Misc/cvariablesmodel.h"
 #include "Misc/cvariablesdelegate.h"
 
+#include "Misc/chronicler.h"
+using Chronicler::shared;
+
 CVariablesView::CVariablesView(QWidget *parent)
     : QWidget(parent)
 {
     m_model = new CVariablesModel(this);
+
     m_sortModel = new QSortFilterProxyModel(this);
     m_sortModel->setDynamicSortFilter(true);
     m_sortModel->setSourceModel(m_model);
-
-//    connect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), this, SLOT(ModelChanged()));
+    connect(m_sortModel, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(RowsInserted(QModelIndex,int,int)));
+    connect(m_sortModel, SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)), this, SLOT(RowsAboutToBeRemoved(QModelIndex,int,int)));
 
     m_view = new QTableView(this);
     m_view->setAlternatingRowColors(true);
@@ -28,16 +32,67 @@ CVariablesView::CVariablesView(QWidget *parent)
 
     QVBoxLayout *vl_main = new QVBoxLayout(this);
     vl_main->addWidget(m_view);
-
-    m_model->AddItem(CVariable("name", "John", Q_NULLPTR));
-    m_model->AddItem(CVariable("occupation", "Smith", Q_NULLPTR));
-    m_model->AddItem(CVariable("age", "23", Q_NULLPTR));
-//    m_view->openPersistentEditor(m_sortModel->index(0, 0));
-//    m_view->openPersistentEditor(m_sortModel->index(1, 0));
-//    m_view->openPersistentEditor(m_sortModel->index(2, 0));
 }
 
-void CVariablesView::ModelChanged()
+CVariablesView::~CVariablesView()
 {
-//    m_view->sortByColumn(0, Qt::AscendingOrder);
+    Reset();
+}
+
+void CVariablesView::Reset()
+{
+    for(int i = 0; i < m_sortModel->rowCount(); ++i)
+        m_view->closePersistentEditor(m_sortModel->index(i, 0));
+
+    m_model->Reset();
+}
+
+CVariablesModel *CVariablesView::model() const
+{
+    return m_model;
+}
+
+QDataStream &CVariablesView::Deserialize(QDataStream &ds, const QString &version)
+{
+    if(shared().versionToInt(version) > 920)
+    {
+        qint64 count;
+        ds >> count;
+
+        for(qint64 i = 0; i < count; ++i)
+        {
+            CVariable v;
+            ds >> v;
+            m_model->AddItem(v);
+        }
+    }
+
+    m_view->sortByColumn(0);
+
+    return ds;
+}
+
+QDataStream &CVariablesView::Serialize(QDataStream &ds)
+{
+    ds << static_cast<qint64>(m_model->rowCount());
+    for(CVariable &v : m_model->variables())
+        ds << v;
+
+    return ds;
+}
+
+void CVariablesView::RowsInserted(QModelIndex parent, int first, int last)
+{
+    Q_UNUSED(parent)
+
+    for(int i = first; i <= last; ++i)
+        m_view->openPersistentEditor(m_sortModel->index(i, 0));
+}
+
+void CVariablesView::RowsAboutToBeRemoved(QModelIndex parent, int first, int last)
+{
+    Q_UNUSED(parent)
+
+    for(int i = first; i <= last; ++i)
+        m_view->closePersistentEditor(m_sortModel->index(i, 0));
 }

@@ -4,6 +4,8 @@
 #include <QButtonGroup>
 #include <QAbstractButton>
 
+#include <QtMath>
+
 #include "cgraphicsview.h"
 #include "cgraphicsscene.h"
 #include "Connections/cline.h"
@@ -41,5 +43,17 @@ namespace Chronicler
             else if(cursorMode == Chronicler::InsertConnection)
                 view->setDragMode(QGraphicsView::NoDrag);
         }
+    }
+
+    int SharedInstances::versionToInt(const QString &version)
+    {
+        QStringList nums = version.split(".", QString::SkipEmptyParts);
+        int mult = nums.length();
+        int ret = 0;
+
+        for(const QString &num : nums)
+            ret += num.toInt() *  pow(10, --mult);
+
+        return ret;
     }
 }

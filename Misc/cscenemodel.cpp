@@ -95,5 +95,13 @@ void CSceneModel::RemoveItem(const int index)
         delete m_scenes[index];
         m_scenes.removeAt(index);
         endRemoveRows();
-    //}
+        //}
+}
+
+void CSceneModel::Reset()
+{
+    beginResetModel();
+    while(m_scenes.length())
+        RemoveItem(0);
+    endResetModel();
 }

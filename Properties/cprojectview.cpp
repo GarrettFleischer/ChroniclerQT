@@ -58,11 +58,10 @@
 
 #include "csettingsview.h"
 
+#include "Properties/cvariablesview.h"
+
 #include "Misc/chronicler.h"
 using Chronicler::shared;
-
-
-#include <QDebug>
 
 
 Q_DECLARE_METATYPE(QStringList)
@@ -226,6 +225,8 @@ void CProjectView::SaveToFile(QSaveFile &file)
     for(CGraphicsView *view : m_sceneModel->views())
         ds << *(view->cScene());
 
+    ds << *(shared().variablesView);
+
     file.open(QIODevice::WriteOnly);
     file.write(ba);
 }
@@ -273,6 +274,8 @@ void CProjectView::OpenProject(QString filepath)
         m_sceneModel->AddItem(view);
         ds >> *(m_sceneModel->views().last()->cScene());
     }
+
+    ds >> *(shared().variablesView);
 
     shared().dock->show();
     shared().pointerToolBar->show();
@@ -352,8 +355,8 @@ void CProjectView::CloseProject()
             delete bbl;
     }
 
-    while(m_sceneModel->rowCount())
-        m_sceneModel->RemoveItem(0);
+    m_sceneModel->Reset();
+    shared().variablesView->Reset();
 
     shared().dock->hide();
     shared().pointerToolBar->hide();

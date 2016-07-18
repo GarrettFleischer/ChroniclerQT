@@ -64,7 +64,7 @@ namespace Chronicler
     // Do NOT instantiate this struct, use shared() singleton access.
     struct SharedInstances
     {
-        QString ProgramVersion = "0.9.2.0";
+        QString ProgramVersion = "0.9.5.0";
 
         CMainWindow *mainWindow;
 
@@ -116,6 +116,8 @@ namespace Chronicler
 
 
         void setMode(Mode mode);
+
+        int versionToInt(const QString &versionToInt);
     };
 
     SharedInstances &shared();

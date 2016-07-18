@@ -20,7 +20,11 @@ public:
 
     void AddItem(const CVariable &item);
     void RemoveItem(const CVariable &item);
-    void RemoveItem(int row);
+    void RemoveItem(const int row);
+
+    void Reset();
+
+    QList<CVariable> variables() const;
 
 private:
     QList<CVariable> m_variables;

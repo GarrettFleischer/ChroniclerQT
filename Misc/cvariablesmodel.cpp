@@ -135,9 +135,21 @@ void CVariablesModel::RemoveItem(const CVariable &item)
     endRemoveRows();
 }
 
-void CVariablesModel::RemoveItem(int row)
+void CVariablesModel::RemoveItem(const int row)
 {
     beginRemoveRows(index(row, 0), row, row);
     m_variables.removeAt(row);
     endRemoveRows();
+}
+
+void CVariablesModel::Reset()
+{
+    beginResetModel();
+    m_variables.clear();
+    endResetModel();
+}
+
+QList<CVariable> CVariablesModel::variables() const
+{
+    return m_variables;
 }

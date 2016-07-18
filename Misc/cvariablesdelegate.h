@@ -16,11 +16,8 @@ class CVariablesDelegate : public QStyledItemDelegate
 
 public:
     explicit CVariablesDelegate(QObject *parent = Q_NULLPTR);
-    ~CVariablesDelegate();
-
 
     virtual QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const Q_DECL_OVERRIDE;
-    virtual void destroyEditor(QWidget *editor, const QModelIndex &index) const Q_DECL_OVERRIDE;
 
     virtual void setEditorData(QWidget *editor, const QModelIndex &index) const Q_DECL_OVERRIDE;
     virtual void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const Q_DECL_OVERRIDE;
@@ -32,7 +29,7 @@ private:
     QLineEdit *m_lineEditor;
 
 private slots:
-    void PersistantEditorModified(QWidget *editor, const QModelIndex &index);
+    void PersistentEditorChanged();
 
 };
 

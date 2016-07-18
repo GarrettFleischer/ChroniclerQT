@@ -28,6 +28,8 @@ public:
     void AddItem(CGraphicsView *view);
     void RemoveItem(const int index);
 
+    void Reset();
+
 private:
     QList<CGraphicsView *> m_scenes;
 
