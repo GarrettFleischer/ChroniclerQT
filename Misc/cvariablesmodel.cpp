@@ -114,14 +114,14 @@ Qt::ItemFlags CVariablesModel::flags(const QModelIndex &index) const
 {
     Q_UNUSED(index)
 
-    return Qt::ItemIsEnabled | Qt::ItemIsEditable;
+    return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
 }
 
 void CVariablesModel::AddItem(const CVariable &item)
 {
     int row = rowCount();
 
-    beginInsertRows(index(row, 0), row, row);
+    beginInsertRows(QModelIndex(), row, row);
     m_variables.append(item);
     endInsertRows();
 }
@@ -130,15 +130,8 @@ void CVariablesModel::RemoveItem(const CVariable &item)
 {
     int row = m_variables.indexOf(item);
 
-    beginRemoveRows(index(row, 0), row, row);
+    beginRemoveRows(QModelIndex(), row, row);
     m_variables.removeAll(item);
-    endRemoveRows();
-}
-
-void CVariablesModel::RemoveItem(const int row)
-{
-    beginRemoveRows(index(row, 0), row, row);
-    m_variables.removeAt(row);
     endRemoveRows();
 }
 
@@ -152,4 +145,26 @@ void CVariablesModel::Reset()
 QList<CVariable> CVariablesModel::variables() const
 {
     return m_variables;
+}
+
+
+bool CVariablesModel::removeRows(int row, int count, const QModelIndex &parent)
+{
+    Q_UNUSED(parent)
+
+    beginRemoveRows(QModelIndex(), row, row + count - 1);
+
+    for(int i = row; i < row + count; ++i)
+        m_variables.removeAt(i);
+
+    endRemoveRows();
+
+    return true;
+}
+
+void CVariablesModel::setVariables(const QList<CVariable> &variables)
+{
+    beginResetModel();
+    m_variables = variables;
+    endResetModel();
 }

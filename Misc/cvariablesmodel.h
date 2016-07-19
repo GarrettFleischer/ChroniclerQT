@@ -11,16 +11,18 @@ public:
     explicit CVariablesModel(QObject *parent = Q_NULLPTR);
 
 
-    virtual int rowCount(const QModelIndex &parent = QModelIndex()) const override;
-    virtual int columnCount(const QModelIndex &parent = QModelIndex()) const override;
-    virtual QVariant data(const QModelIndex &index, int role) const override;
-    virtual bool setData(const QModelIndex &index, const QVariant &variant, int role) override;
-    virtual QVariant headerData(int section, Qt::Orientation orientation, int role) const override;
-    virtual Qt::ItemFlags flags(const QModelIndex &index) const override;
+    virtual int rowCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
+    virtual int columnCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
+    virtual QVariant data(const QModelIndex &index, int role) const Q_DECL_OVERRIDE;
+    virtual bool setData(const QModelIndex &index, const QVariant &variant, int role) Q_DECL_OVERRIDE;
+    virtual QVariant headerData(int section, Qt::Orientation orientation, int role) const Q_DECL_OVERRIDE;
+    virtual Qt::ItemFlags flags(const QModelIndex &index) const Q_DECL_OVERRIDE;
 
+    virtual bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex()) Q_DECL_OVERRIDE;
+
+    void setVariables(const QList<CVariable> &variables);
     void AddItem(const CVariable &item);
     void RemoveItem(const CVariable &item);
-    void RemoveItem(const int row);
 
     void Reset();
 

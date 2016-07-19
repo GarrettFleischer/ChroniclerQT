@@ -31,7 +31,7 @@ public:
     void Reset();
 
 private:
-    QList<CGraphicsView *> m_scenes;
+    QList<CGraphicsView *> m_views;
 
 };
 

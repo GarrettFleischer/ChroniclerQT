@@ -25,12 +25,16 @@
 #include "Bubbles/cconditionbubble.h"
 #include "Connections/cconnection.h"
 
+#include "Properties/cprojectview.h"
+
+
 #include "Misc/chronicler.h"
 using Chronicler::shared;
 
 
 ChoiceScriptData::ChoiceScriptData(QFile &startup, const CSIndent &csindent)
 {
+    m_currentScene = "startup";
     QList<CSBlock> blocks = ProcessFile(startup, csindent);
 
     QString dir = QFileInfo(startup).absoluteDir().absolutePath();
@@ -42,7 +46,7 @@ ChoiceScriptData::ChoiceScriptData(QFile &startup, const CSIndent &csindent)
         if(block.type == SceneList)
         {
             QStringList scenes = block.text.split('\n', QString::SkipEmptyParts);
-            scenes.removeAll("startup");
+            scenes.removeOne("startup");
 
             for(const QString &scene : scenes)
             {
@@ -50,6 +54,7 @@ ChoiceScriptData::ChoiceScriptData(QFile &startup, const CSIndent &csindent)
                 file.open(QIODevice::ReadOnly);
                 if(file.isOpen())
                 {
+                    m_currentScene = scene;
                     ProcessFile(file, csindent);
                     file.close();
                 }
@@ -60,9 +65,19 @@ ChoiceScriptData::ChoiceScriptData(QFile &startup, const CSIndent &csindent)
     }
 }
 
-CSceneModel *ChoiceScriptData::getModel()
+QList<CGraphicsView *> ChoiceScriptData::getViews()
 {
-    return &m_model;
+    return m_views;
+}
+
+QList<CVariable> ChoiceScriptData::getVariables()
+{
+    QList<CVariable> variables;
+
+    for(const CSVariable &v : m_variables)
+        variables.append(CVariable(v.name, v.data, shared().projectView->model()->sceneWithName(v.scene)));
+
+    return variables;
 }
 
 const QString ChoiceScriptData::getTitle() const
@@ -88,7 +103,7 @@ QList<ChoiceScriptData::CSBlock> ChoiceScriptData::ProcessFile(QFile &file, cons
     QList<CSBubble> deferred = CSProcBubbles(blocks, view->cScene());
     CSLinkBubbles(deferred, view->cScene());
 
-    m_model.AddItem(view);
+    m_views.append(view);
 
     return blocks;
 }
@@ -169,17 +184,17 @@ QList<ChoiceScriptData::CSLine> ChoiceScriptData::CSProcLines(QTextStream &strea
             csline.line.remove("*author ", Qt::CaseInsensitive);
         }
 
-//        else if (csline.line.startsWith("*create", Qt::CaseInsensitive))
-//        {
-//            csline.type = Create;
-//            csline.line.remove("*create ", Qt::CaseInsensitive);
-//        }
+        else if (csline.line.startsWith("*create", Qt::CaseInsensitive))
+        {
+            csline.type = Create;
+            csline.line.remove("*create ", Qt::CaseInsensitive);
+        }
 
-//        else if (csline.line.startsWith("*temp", Qt::CaseInsensitive))
-//        {
-//            csline.type = Temp;
-//            csline.line.remove("*temp ", Qt::CaseInsensitive);
-//        }
+        else if (csline.line.startsWith("*temp", Qt::CaseInsensitive))
+        {
+            csline.type = Temp;
+            csline.line.remove("*temp ", Qt::CaseInsensitive);
+        }
 
         else if (csline.line.startsWith("*scene_list", Qt::CaseInsensitive))
             csline.type = SceneList;
@@ -247,11 +262,18 @@ ChoiceScriptData::CSBlock ChoiceScriptData::CSProcBlock(const QList<ChoiceScript
     CSBlock csblock;
     const CSLine &csline = lines[index];
 
-    if(csline.type == Empty)
+    // Empty
+    if(csline.type == Empty || csline.type == Create || csline.type == Temp)
     {
         csblock.width = 0;
         csblock.height = 0;
         ++index;
+
+        if(csline.type == Create || csline.type == Temp)
+        {
+            QStringList data = csline.line.split(" ");
+            m_variables.append(CSVariable(data.first(), data.last(), (csline.type == Temp ? m_currentScene : "")));
+        }
     }
     else
     {

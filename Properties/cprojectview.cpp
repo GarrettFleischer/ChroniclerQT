@@ -50,6 +50,7 @@
 #include "Bubbles/cconditionbubble.h"
 #include "Connections/cconnection.h"
 
+
 #include "Misc/choicescriptdata.h"
 
 #include "Properties/cindentselectiondialog.h"
@@ -59,6 +60,7 @@
 #include "csettingsview.h"
 
 #include "Properties/cvariablesview.h"
+#include "Misc/cvariablesmodel.h"
 
 #include "Misc/chronicler.h"
 using Chronicler::shared;
@@ -313,7 +315,8 @@ void CProjectView::ImportChoiceScript(const QString &filepath)
     // TODO: ask for indent type
     CSIndent csindent = dialog.getIndent();
     ChoiceScriptData csdata(file, csindent);
-    m_sceneModel->setViews(csdata.getModel()->views());
+    m_sceneModel->setViews(csdata.getViews());
+    shared().variablesView->model()->setVariables(csdata.getVariables());
     m_title->setText(csdata.getTitle());
     m_author->setText(csdata.getAuthor());
 
@@ -387,6 +390,18 @@ void CProjectView::ExportChoiceScript()
                 cs += "    " + v->cScene()->name() + "\n";
 
             cs += "\n";
+
+            for(const CVariable &v : shared().variablesView->model()->variables())
+            {
+                if(v.scene() == Q_NULLPTR)
+                    cs += "*create " + v.name() + " " + v.data();
+            }
+        }
+
+        for(const CVariable &v : shared().variablesView->model()->variables())
+        {
+            if(v.scene() == view->cScene())
+                cs += "*temp " + v.name() + " " + v.data();
         }
 
         QList<CConnection *> processed_links;

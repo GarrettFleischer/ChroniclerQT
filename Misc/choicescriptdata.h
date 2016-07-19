@@ -8,11 +8,12 @@ class QTextStream;
 class QFile;
 QT_END_NAMESPACE
 
-class CGraphicsScene;
+class CGraphicsView;
 class CBubble;
 class CConnection;
 
 #include "Misc/cscenemodel.h"
+#include "Misc/cvariable.h"
 
 #include "Misc/chronicler.h"
 using Chronicler::CSIndent;
@@ -24,7 +25,8 @@ class ChoiceScriptData : public QObject
 public:
     ChoiceScriptData(QFile &startup, const Chronicler::CSIndent &csindent);
 
-    CSceneModel *getModel();
+    QList<CGraphicsView *> getViews();
+    QList<CVariable> getVariables();
 
     const QString getTitle() const;
     const QString getAuthor() const;
@@ -70,24 +72,42 @@ private:
         bool operator ==(const CSBubble &rhs) { return bubble == rhs.bubble; }
     };
 
+    struct CSVariable
+    {
+        QString name;
+        QString data;
+        QString scene;
+
+        CSVariable(QString _name, QString _data, QString _scene)
+            : name(_name), data(_data), scene(_scene) {}
+    };
+
     QList<CSBlock> ProcessFile(QFile &file, const CSIndent &csindent);
 
     // Choicescript processing
     QString CSStripIndent(const QString &line, const CSIndent &csindent);
     quint8 CSIndentLevel(const QString &line, const CSIndent &csindent);
+
     QList<CSLine> CSProcLines(QTextStream &stream, const CSIndent &csindent);
+
     QList<CSBlock> CSProcBlocks(const QList<CSLine> &lines);
     CSBlock CSProcBlock(const QList<CSLine> & lines, int &index);
+
     QStringList CSProcSceneList(const QList<CSBlock> &blocks);
+
     QList<CSBubble> CSProcBubbles(const QList<CSBlock> &blocks, CGraphicsScene *scene);
     CBubble *CSProcBubble(const CSBlock &csblock, QList<CSBubble> &deferredLinks, CGraphicsScene *scene, int row, int column, CBubble *prev);
     void CSLinkBubbles(QList<CSBubble> &csbubbles, CGraphicsScene *scene);
     CBubble *CSBubbleWithLabel(CGraphicsScene *scene, const QString &label);
 
     // Private Members
-    CSceneModel m_model;
+    QList<CGraphicsView *> m_views;
     QString m_title;
     QString m_author;
+
+    QString m_currentScene;
+
+    QList<CSVariable> m_variables;
 
 };
 

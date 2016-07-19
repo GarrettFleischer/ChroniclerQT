@@ -9,16 +9,16 @@ CSceneModel::CSceneModel(QObject *parent)
 
 int CSceneModel::rowCount(const QModelIndex &) const
 {
-    return m_scenes.length();
+    return m_views.length();
 }
 
 QVariant CSceneModel::data(const QModelIndex &index, int role) const
 {
-    if (!index.isValid() || index.row() >= m_scenes.length())
+    if (!index.isValid() || index.row() >= m_views.length())
         return QVariant();
 
     if (role == Qt::DisplayRole || role == Qt::EditRole)
-        return QVariant(m_scenes[index.row()]->cScene()->name());
+        return QVariant(m_views[index.row()]->cScene()->name());
 
     return QVariant();
 }
@@ -27,7 +27,7 @@ bool CSceneModel::setData(const QModelIndex &index, const QVariant &value, int r
 {
     if (index.isValid() && (role == Qt::EditRole || role == Qt::DisplayRole))
     {
-        m_scenes[index.row()]->cScene()->setName(value.toString());
+        m_views[index.row()]->cScene()->setName(value.toString());
 
         emit dataChanged(index, index);
         return true;
@@ -45,18 +45,18 @@ Qt::ItemFlags CSceneModel::flags(const QModelIndex &index) const
 void CSceneModel::setViews(const QList<CGraphicsView *> &views)
 {
     beginResetModel();
-    m_scenes = views;
+    m_views = views;
     endResetModel();
 }
 
 QList<CGraphicsView *> CSceneModel::views()
 {
-    return m_scenes;
+    return m_views;
 }
 
 CGraphicsScene *CSceneModel::sceneWithName(const QString &name)
 {
-    for(CGraphicsView *view : m_scenes)
+    for(CGraphicsView *view : m_views)
         if(view->cScene()->name() == name)
             return view->cScene();
 
@@ -65,43 +65,40 @@ CGraphicsScene *CSceneModel::sceneWithName(const QString &name)
 
 void CSceneModel::MoveUp(const int index)
 {
-    if(index > 1 && index < m_scenes.length())
+    if(index > 1 && index < m_views.length())
     {
         beginMoveRows(QModelIndex(), index, index, QModelIndex(), index - 1);
-        m_scenes.swap(index, index - 1);
+        m_views.swap(index, index - 1);
         endMoveRows();
     }
 }
 
 void CSceneModel::MoveDown(const int index)
 {
-    if(index > 0 && index < m_scenes.length() - 1)
+    if(index > 0 && index < m_views.length() - 1)
         MoveUp(index + 1);
 }
 
 void CSceneModel::AddItem(CGraphicsView *view)
 {
-    const int index = m_scenes.length();
+    const int index = m_views.length();
     beginInsertRows(QModelIndex(), index, index);
-    m_scenes.append(view);
+    m_views.append(view);
     endInsertRows();
 }
 
 void CSceneModel::RemoveItem(const int index)
 {
-    //if(index > 0)
-    //{
-        beginRemoveRows(QModelIndex(), index, index);
-        delete m_scenes[index];
-        m_scenes.removeAt(index);
-        endRemoveRows();
-        //}
+    beginRemoveRows(QModelIndex(), index, index);
+    delete m_views[index];
+    m_views.removeAt(index);
+    endRemoveRows();
 }
 
 void CSceneModel::Reset()
 {
     beginResetModel();
-    while(m_scenes.length())
+    while(m_views.length())
         RemoveItem(0);
     endResetModel();
 }

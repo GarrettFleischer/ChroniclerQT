@@ -9,6 +9,7 @@
 QT_BEGIN_NAMESPACE
 class QTableView;
 class QSortFilterProxyModel;
+class QPushButton;
 QT_END_NAMESPACE
 
 class CVariablesModel;
@@ -35,9 +36,15 @@ private:
     CVariablesModel         *m_model;
     QSortFilterProxyModel   *m_sortModel;
 
+    QPushButton *m_addButton;
+    QPushButton *m_removeButton;
+
 private slots:
     void RowsInserted(QModelIndex parent, int first, int last);
     void RowsAboutToBeRemoved(QModelIndex parent, int first, int last);
+
+    void AddItem();
+    void RemoveItem();
 
 };
 
