@@ -30,6 +30,8 @@ private:
     QAction *m_boldAction;
     QAction *m_italicAction;
 
+    QStringListModel *m_model;
+
 signals:
 
 protected slots:
@@ -37,6 +39,9 @@ protected slots:
 
     void BoldTriggered();
     void ItalicTriggered();
+
+private slots:
+    void UpdateModel();
 };
 
 #endif // CSTORYPROPERTIES_H

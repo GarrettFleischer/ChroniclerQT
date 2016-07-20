@@ -312,7 +312,6 @@ void CProjectView::ImportChoiceScript(const QString &filepath)
     CIndentSelectionDialog dialog(this);
     dialog.exec();
 
-    // TODO: ask for indent type
     CSIndent csindent = dialog.getIndent();
     ChoiceScriptData csdata(file, csindent);
     m_sceneModel->setViews(csdata.getViews());
@@ -394,15 +393,17 @@ void CProjectView::ExportChoiceScript()
             for(const CVariable &v : shared().variablesView->model()->variables())
             {
                 if(v.scene() == Q_NULLPTR)
-                    cs += "*create " + v.name() + " " + v.data();
+                    cs += "*create " + v.name() + " " + v.data() + "\n";
             }
         }
 
         for(const CVariable &v : shared().variablesView->model()->variables())
         {
             if(v.scene() == view->cScene())
-                cs += "*temp " + v.name() + " " + v.data();
+                cs += "*temp " + v.name() + " " + v.data() + "\n";
         }
+
+        cs += "\n";
 
         QList<CConnection *> processed_links;
         CalculateOrder(view->cScene()->startBubble()->link(), processed_links, 0);

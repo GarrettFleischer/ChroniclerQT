@@ -272,7 +272,7 @@ ChoiceScriptData::CSBlock ChoiceScriptData::CSProcBlock(const QList<ChoiceScript
         if(csline.type == Create || csline.type == Temp)
         {
             QStringList data = csline.line.split(" ");
-            m_variables.append(CSVariable(data.first(), data.last(), (csline.type == Temp ? m_currentScene : "")));
+            m_variables.append(CSVariable(data.first(), (data.length() > 1 ? data[1] : ""), (csline.type == Temp ? m_currentScene : "")));
         }
     }
     else

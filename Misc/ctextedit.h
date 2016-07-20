@@ -26,6 +26,9 @@ public:
     void setCompleter(QCompleter * completer);
     QCompleter *completer() const;
 
+    QStringListModel *model() const;
+    void setModel(QStringListModel *model);
+
 protected:
     virtual void keyPressEvent(QKeyEvent *e) override;
     virtual void focusInEvent(QFocusEvent *e) override;

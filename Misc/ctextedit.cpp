@@ -2,7 +2,7 @@
 
 
 CTextEdit::CTextEdit(QWidget * parent, QStringListModel * model, const QString & text)
-: QTextEdit(parent), m_completer(0), m_model(model), m_enabled(true), m_acceptsReturn(true), m_ctrlHeld(false)
+    : QTextEdit(parent), m_completer(0), m_model(model), m_enabled(true), m_acceptsReturn(true), m_ctrlHeld(false)
 {
     m_filtered = new QStringListModel(this);
     setText(text);
@@ -62,6 +62,16 @@ QStringList *CTextEdit::listFromFile(const QString & fileName)
     return words;
 }
 
+QStringListModel *CTextEdit::model() const
+{
+    return m_model;
+}
+
+void CTextEdit::setModel(QStringListModel *model)
+{
+    m_model = model;
+}
+
 
 int moveCursorToWordStart(QTextCursor & tc)
 {
@@ -70,7 +80,10 @@ int moveCursorToWordStart(QTextCursor & tc)
     tc.movePosition(tc.Right, QTextCursor::KeepAnchor);
 
     int offset = 1;
-    while(tc.selectedText() != " " && tc.position() > 1)
+
+    qDebug() << tc.selection().toPlainText();
+
+    while(tc.selection().toPlainText() != " " && tc.selection().toPlainText() != "\n" && tc.position() > 1)
     {
         tc.movePosition(tc.Left);
         tc.movePosition(tc.Left);
@@ -79,7 +92,7 @@ int moveCursorToWordStart(QTextCursor & tc)
         offset++;
     }
 
-    // if it found a space, deselect the space, and move to the start
+    // if it found a space or newline, deselect the space, and move to the start
     if(tc.position() > 1)
     {
         tc.movePosition(tc.Right);
@@ -102,8 +115,7 @@ QString CTextEdit::textUnderCursor() const
     if(tc.selectedText() == "*" || tc.selectedText() == "$" || tc.selectedText() == "${" )
         selected_text = tc.selectedText();
 
-    if(!selected_text.isEmpty())
-        tc.select(QTextCursor::WordUnderCursor);
+    tc.select(QTextCursor::WordUnderCursor);
 
     selected_text += tc.selectedText();
 
@@ -123,6 +135,7 @@ void CTextEdit::insertCompletion(const QString& completion)
         tc.movePosition(tc.Right, QTextCursor::KeepAnchor);
 
     tc.movePosition(tc.EndOfWord, QTextCursor::KeepAnchor);
+
     tc.insertText(completion);
 
     setTextCursor(tc);
@@ -154,17 +167,17 @@ void CTextEdit::keyPressEvent(QKeyEvent *e)
 
     if (m_completer && m_completer->popup()->isVisible()) {
         // The following keys are forwarded by the completer to the widget
-       switch (e->key()) {
-       case Qt::Key_Enter:
-       case Qt::Key_Return:
-       case Qt::Key_Escape:
-       case Qt::Key_Tab:
-       case Qt::Key_Backtab:
+        switch (e->key()) {
+        case Qt::Key_Enter:
+        case Qt::Key_Return:
+        case Qt::Key_Escape:
+        case Qt::Key_Tab:
+        case Qt::Key_Backtab:
             e->ignore();
             return; // let the completer do default behavior
-       default:
-           break;
-       }
+        default:
+            break;
+        }
     }
 
     if ((!m_completer || !isEscape) && !(isReturn && !m_acceptsReturn) && !isTab)
@@ -178,13 +191,15 @@ void CTextEdit::keyPressEvent(QKeyEvent *e)
         return;
 
     QString completionPrefix = textUnderCursor().replace("*","\\*");
+    completionPrefix = completionPrefix.replace("$", "\\$");
+    completionPrefix = completionPrefix.replace("{", "\\{");
 
     QStringList filteredList = m_model->stringList().filter(QRegExp("*"+completionPrefix+"*", m_completer->caseSensitivity(), QRegExp::WildcardUnix));
     m_filtered->setStringList(filteredList);
 
 
     if ((!m_enabled) || (shiftMod || e->text().isEmpty() || (completionPrefix.isEmpty() && !isEscape) ||
-                       (!filteredList.isEmpty() && completionPrefix == filteredList.first())))
+                         (!filteredList.isEmpty() && completionPrefix == filteredList.first())))
     {
         m_completer->popup()->hide();
     }

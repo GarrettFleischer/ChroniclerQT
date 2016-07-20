@@ -3,16 +3,29 @@
 #include <QAction>
 #include <QHBoxLayout>
 #include <QTextCursor>
+#include <QStringListModel>
+#include <QTabWidget>
 
 #include "Misc/ctextedit.h"
 #include "Misc/qactionbutton.h"
 #include "Bubbles/cstorybubble.h"
 
+#include "cgraphicsview.h"
+
+#include "Properties/cvariablesview.h"
+#include "Misc/cvariablesmodel.h"
+#include "Misc/cvariable.h"
+
+#include "Misc/chronicler.h"
+using Chronicler::shared;
 
 
 CStoryProperties::CStoryProperties(QWidget *parent)
     : CPropertiesWidget(parent), m_storyBubble(Q_NULLPTR), m_storyEdit(Q_NULLPTR)
 {
+    m_model = new QStringListModel(this);
+//    connect(shared().variablesView->model(), SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), this, SLOT(UpdateModel()));
+
     m_boldAction = new QAction(QIcon(":/images/icn_bold.png"), tr(""), Q_NULLPTR);
     m_boldAction->setShortcut(tr("Ctrl+B"));
     m_boldAction->setToolTip(tr("Toggle bold tags around selection"));
@@ -34,7 +47,7 @@ CStoryProperties::CStoryProperties(QWidget *parent)
     hl_font->addStretch(1);
 
     // Story Widget
-    m_storyEdit = new CTextEdit(this, shared().actionsModel);
+    m_storyEdit = new CTextEdit(this, m_model);
     m_storyEdit->addAction(m_boldAction);
     m_storyEdit->addAction(m_italicAction);
     connect(m_storyEdit, SIGNAL(textChanged()),
@@ -54,6 +67,8 @@ void CStoryProperties::setBubble(CBubble *bbl)
     m_storyBubble = qgraphicsitem_cast<CStoryBubble *>(bbl);
     if(m_storyBubble)
     {
+        UpdateModel();
+
         m_storyEdit->setText(m_storyBubble->getStory());
         m_storyEdit->setFont(m_storyBubble->getFont());
     }
@@ -90,6 +105,22 @@ void CStoryProperties::TagSelectedText(const QString &tag)
     m_storyEdit->setTextCursor(c);
 
     m_storyEdit->setFocus();
+}
+
+void CStoryProperties::UpdateModel()
+{
+    QStringList lst;
+
+    // Only add global variables, and those local to the currently visible scene
+    for(const CVariable &v : shared().variablesView->model()->variables())
+    {
+        CGraphicsView *view = dynamic_cast<CGraphicsView *>(shared().sceneTabs->currentWidget());
+
+        if(!v.scene() || (view && view->cScene() == v.scene()))
+            lst.append("${" + v.name() + "}");
+    }
+
+    m_model->setStringList(lst);
 }
 
 

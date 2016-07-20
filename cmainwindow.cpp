@@ -25,8 +25,6 @@
 using Chronicler::shared;
 
 
-#include <QDebug>
-
 CMainWindow::CMainWindow(QSettings *settings, const QString &filename)
 {
     setWindowTitle(tr("Chronicler ") + shared().ProgramVersion);
