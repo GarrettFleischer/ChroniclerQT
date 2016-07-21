@@ -1,14 +1,13 @@
-#include "cactionmenu.h"
+#include "qactionmenu.h"
 
 #include <QMouseEvent>
-#include "Misc/cpaletteaction.h"
 
-CActionMenu::CActionMenu(QWidget *parent)
+QActionMenu::QActionMenu(QWidget *parent)
     : QMenu(parent)
 {}
 
 
-void CActionMenu::mousePressEvent(QMouseEvent *event)
+void QActionMenu::mousePressEvent(QMouseEvent *event)
 {
     QAction *a = actionAt(event->pos());
     if(a)

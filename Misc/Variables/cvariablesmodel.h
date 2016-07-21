@@ -3,7 +3,7 @@
 
 #include <QAbstractTableModel>
 
-#include "Misc/cvariable.h"
+#include "Misc/Variables/cvariable.h"
 
 class CVariablesModel : public QAbstractTableModel
 {

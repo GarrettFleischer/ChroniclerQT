@@ -4,8 +4,8 @@
 #include <QContextMenuEvent>
 #include <QGuiApplication>
 
-#include "Misc/cactionmenu.h"
-#include "Misc/cpaletteaction.h"
+#include "Misc/qactionmenu.h"
+#include "Misc/Palette/cpaletteaction.h"
 #include "Properties/cpalettecreator.h"
 
 #include "Misc/chronicler.h"
@@ -25,7 +25,7 @@ CPaletteButton::CPaletteButton(QWidget *parent)
     // TODO add defaults for each bubble type
     m_current = shared().defaultStory;
 
-    m_menu = new CActionMenu();
+    m_menu = new QActionMenu();
     m_menu->addAction(shared().defaultStory);
     m_menu->addAction(shared().defaultChoice);
     m_menu->addAction(shared().defaultAction);

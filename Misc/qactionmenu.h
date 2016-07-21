@@ -3,12 +3,12 @@
 
 #include <QMenu>
 
-class CActionMenu : public QMenu
+class QActionMenu : public QMenu
 {
     Q_OBJECT
 
 public:
-    CActionMenu(QWidget *parent = 0);
+    QActionMenu(QWidget *parent = 0);
 
 protected:
     virtual void mousePressEvent(QMouseEvent *event) override;

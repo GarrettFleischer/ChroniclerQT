@@ -3,9 +3,9 @@
 //#include <QComboBox>
 #include <QLineEdit>
 
-#include "Misc/cvariablesmodel.h"
+#include "Misc/Variables/cvariablesmodel.h"
 
-#include "Misc/cscenecombobox.h"
+#include "Misc/Variables/cscenecombobox.h"
 
 #include "Properties/cprojectview.h"
 #include "Misc/cscenemodel.h"

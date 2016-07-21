@@ -4,7 +4,7 @@
 #include <QToolButton>
 
 class CPaletteCreator;
-class CActionMenu;
+class QActionMenu;
 class CPaletteAction;
 
 #include "Misc/cserializable.h"
@@ -37,7 +37,7 @@ private:
 
     CPaletteAction *m_editing;
 
-    CActionMenu *m_menu;
+    QActionMenu *m_menu;
 
     CPaletteCreator *m_creator;
 
