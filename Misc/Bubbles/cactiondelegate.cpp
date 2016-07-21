@@ -2,6 +2,12 @@
 
 #include <QComboBox>
 
+#include "Misc/Variables/cvariable.h"
+#include "Properties/cvariablesview.h"
+
+#include "Misc/chronicler.h"
+using Chronicler::shared;
+
 CActionDelegate::CActionDelegate()
 {
 
@@ -15,15 +21,36 @@ QWidget *CActionDelegate::createEditor(QWidget *parent, const QStyleOptionViewIt
     {
         QComboBox *editor = new QComboBox(parent);
         editor->addItems({"*set", "*page_break", "*input_text", "*label", "*goto", "*finish", "*purchase", "*check_purchase", "*advertisement"});
+
+        return editor;
     }
-    if(index.column() == 1)
+    else
     {
         QString first_column = index.model()->index(index.row(), 0).data().toString();
+
         if(first_column == "*set")
         {
+            if(index.column() == 1)
+            {
+                QComboBox *editor = new QComboBox(parent);
+                QList<CVariable> variables = shared().variablesView->getVariablesForScene(Q_NULLPTR);
 
+                for(const CVariable &v : variables)
+                    editor->addItem(v.name());
+
+                return editor;
+            }
+            else if(index.column() == 2)
+            {
+                QComboBox *editor = new QComboBox(parent);
+
+                editor->addItems({"=", "%=", "+=", "-="});
+
+                return editor;
+            }
         }
     }
+
 
     return QStyledItemDelegate::createEditor(parent, option, index);
 }

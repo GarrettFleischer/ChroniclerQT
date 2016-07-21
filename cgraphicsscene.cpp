@@ -23,8 +23,8 @@
 #include "Connections/cline.h"
 #include "Connections/cconnection.h"
 
-#include "Misc/cpalettebutton.h"
-#include "Misc/cpaletteaction.h"
+#include "Misc/Palette/cpalettebutton.h"
+#include "Misc/Palette/cpaletteaction.h"
 
 #include "Properties/cprojectview.h"
 

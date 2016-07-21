@@ -47,6 +47,7 @@ QStringList *CTextEdit::listFromFile(const QString & fileName)
 #ifndef QT_NO_CURSOR
     QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
 #endif
+
     QStringList * words = new QStringList();
 
     while (!file.atEnd()) {
@@ -75,13 +76,10 @@ void CTextEdit::setModel(QStringListModel *model)
 
 int moveCursorToWordStart(QTextCursor & tc)
 {
-    //tc.movePosition(tc.StartOfWord);
     tc.movePosition(tc.Left);
     tc.movePosition(tc.Right, QTextCursor::KeepAnchor);
 
     int offset = 1;
-
-    qDebug() << tc.selection().toPlainText();
 
     while(tc.selection().toPlainText() != " " && tc.selection().toPlainText() != "\n" && tc.position() > 1)
     {

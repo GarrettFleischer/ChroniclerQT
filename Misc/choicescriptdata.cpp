@@ -19,7 +19,7 @@
 #include "Bubbles/cstartbubble.h"
 #include "Bubbles/cstorybubble.h"
 #include "Bubbles/cchoicebubble.h"
-#include "Misc/cchoicemodel.h"
+#include "Misc/Bubbles/cchoicemodel.h"
 #include "Bubbles/cactionbubble.h"
 #include "Misc/cstringlistmodel.h"
 #include "Bubbles/cconditionbubble.h"

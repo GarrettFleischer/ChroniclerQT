@@ -16,8 +16,8 @@ using std::logic_error;
 
 #include "Connections/cconnection.h"
 #include "cgraphicsscene.h"
-#include "Misc/cpaletteaction.h"
-#include "Misc/cpalettebutton.h"
+#include "Misc/Palette/cpaletteaction.h"
+#include "Misc/Palette/cpalettebutton.h"
 
 #include "Misc/chronicler.h"
 using Chronicler::shared;

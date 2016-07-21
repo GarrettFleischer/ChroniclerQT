@@ -44,7 +44,7 @@
 #include "Bubbles/cstartbubble.h"
 #include "Bubbles/cstorybubble.h"
 #include "Bubbles/cchoicebubble.h"
-#include "Misc/cchoicemodel.h"
+#include "Misc/Bubbles/cchoicemodel.h"
 #include "Bubbles/cactionbubble.h"
 #include "Misc/cstringlistmodel.h"
 #include "Bubbles/cconditionbubble.h"
@@ -55,12 +55,12 @@
 
 #include "Properties/cindentselectiondialog.h"
 
-#include "Misc/cpalettebutton.h"
+#include "Misc/Palette/cpalettebutton.h"
 
 #include "csettingsview.h"
 
 #include "Properties/cvariablesview.h"
-#include "Misc/cvariablesmodel.h"
+#include "Misc/Variables/cvariablesmodel.h"
 
 #include "Misc/chronicler.h"
 using Chronicler::shared;

@@ -21,100 +21,101 @@ TARGET = Chronicler-Next
 FORMS +=
 
 HEADERS += \
+    Properties/cpalettecreator.h \
+    Bubbles/cactionbubble.h \
     Bubbles/cbubble.h \
     Bubbles/cchoice.h \
     Bubbles/cchoicebubble.h \
     Bubbles/cconditionbubble.h \
+    Bubbles/csinglelinkbubble.h \
+    Bubbles/cstartbubble.h \
     Bubbles/cstorybubble.h \
     Connections/cconnection.h \
+    Connections/cline.h \
+    Misc/Bubbles/cactiondelegate.h \
+    Misc/Bubbles/cchoicemodel.h \
+    Misc/Palette/ccolorbutton.h \
+    Misc/Palette/cpaletteaction.h \
+    Misc/Palette/cpalettebutton.h \
+    Misc/Variables/cscenecombobox.h \
+    Misc/Variables/cvariable.h \
+    Misc/Variables/cvariablesdelegate.h \
+    Misc/Variables/cvariablesmodel.h \
+    Misc/cfiledownloader.h \
+    Misc/choicescriptdata.h \
+    Misc/chronicler.h \
     Misc/clineedit.h \
+    Misc/cscenemodel.h \
+    Misc/cserializable.h \
+    Misc/cstringlistmodel.h \
     Misc/ctextedit.h \
     Misc/ctextitem.h \
-    Connections/cline.h \
-    cgraphicsview.h \
-    cgraphicsscene.h \
-    chomepage.h \
-    cmainwindow.h \
-    Properties/cprojectview.h \
-    Properties/cdockmanager.h \
-    Properties/cpropertiesmanager.h \
+    Misc/qactionbutton.h \
+    Properties/Widgets/cactionproperties.h \
     Properties/Widgets/cchoiceproperties.h \
     Properties/Widgets/cconditionproperties.h \
+    Properties/Widgets/clistpropertieswidget.h \
     Properties/Widgets/cpropertieswidget.h \
     Properties/Widgets/cstoryproperties.h \
-    Misc/chronicler.h \
-    csettingsview.h \
-    Misc/qactionbutton.h \
-    Bubbles/csinglelinkbubble.h \
-    Bubbles/cactionbubble.h \
-    Misc/cstringlistmodel.h \
-    Properties/Widgets/cactionproperties.h \
-    Misc/cchoicemodel.h \
-    Properties/Widgets/clistpropertieswidget.h \
-    Misc/cscenemodel.h \
-    Bubbles/cstartbubble.h \
-    Properties/cpalettecreator.h \
-    Misc/ccolorbutton.h \
-    Misc/cpalettebutton.h \
-    Misc/cpaletteaction.h \
-    Misc/cfiledownloader.h \
-    Misc/cactionmenu.h \
-    Misc/cserializable.h \
-    Misc/cactiondelegate.h \
+    Properties/cdockmanager.h \
     Properties/cindentselectiondialog.h \
-    Misc/choicescriptdata.h \
+    Properties/cprojectview.h \
+    Properties/cpropertiesmanager.h \
     Properties/cvariablesview.h \
-    Misc/cvariablesmodel.h \
-    Misc/cscenecombobox.h \
-    Misc/cvariablesdelegate.h \
-    Misc/cvariable.h
+    cgraphicsscene.h \
+    cgraphicsview.h \
+    chomepage.h \
+    cmainwindow.h \
+    csettingsview.h \
+    Misc/qactionmenu.h
 
 SOURCES += \
+    Bubbles/cactionbubble.cpp \
     Bubbles/cbubble.cpp \
     Bubbles/cchoice.cpp \
     Bubbles/cchoicebubble.cpp \
     Bubbles/cconditionbubble.cpp \
+    Bubbles/csinglelinkbubble.cpp \
+    Bubbles/cstartbubble.cpp \
     Bubbles/cstorybubble.cpp \
     Connections/cconnection.cpp \
+    Connections/cline.cpp \
+    Misc/Bubbles/cactiondelegate.cpp \
+    Misc/Bubbles/cchoicemodel.cpp \
+    Misc/Palette/ccolorbutton.cpp \
+    Misc/Palette/cpaletteaction.cpp \
+    Misc/Palette/cpalettebutton.cpp \
+    Misc/Variables/cscenecombobox.cpp \
+    Misc/Variables/cvariable.cpp \
+    Misc/Variables/cvariablesdelegate.cpp \
+    Misc/Variables/cvariablesmodel.cpp \
+    Misc/cfiledownloader.cpp \
+    Misc/choicescriptdata.cpp \
+    Misc/chronicler.cpp \
     Misc/clineedit.cpp \
+    Misc/cscenemodel.cpp \
+    Misc/cserializable.cpp \
+    Misc/cstringlistmodel.cpp \
     Misc/ctextedit.cpp \
     Misc/ctextitem.cpp \
-    main.cpp \
-    Connections/cline.cpp \
-    cgraphicsview.cpp \
-    cgraphicsscene.cpp \
-    chomepage.cpp \
-    cmainwindow.cpp \
-    Properties/cprojectview.cpp \
-    Properties/cdockmanager.cpp \
-    Properties/cpropertiesmanager.cpp \
+    Misc/qactionbutton.cpp \
+    Properties/Widgets/cactionproperties.cpp \
     Properties/Widgets/cchoiceproperties.cpp \
     Properties/Widgets/cconditionproperties.cpp \
+    Properties/Widgets/clistpropertieswidget.cpp \
     Properties/Widgets/cpropertieswidget.cpp \
     Properties/Widgets/cstoryproperties.cpp \
-    Misc/chronicler.cpp \
-    csettingsview.cpp \
-    Misc/qactionbutton.cpp \
-    Bubbles/csinglelinkbubble.cpp \
-    Bubbles/cactionbubble.cpp \
-    Misc/cstringlistmodel.cpp \
-    Properties/Widgets/cactionproperties.cpp \
-    Misc/cchoicemodel.cpp \
-    Properties/Widgets/clistpropertieswidget.cpp \
-    Misc/cscenemodel.cpp \
-    Bubbles/cstartbubble.cpp \
-    Properties/cpalettecreator.cpp \
-    Misc/ccolorbutton.cpp \
-    Misc/cpalettebutton.cpp \
-    Misc/cpaletteaction.cpp \
-    Misc/cfiledownloader.cpp \
-    Misc/cactionmenu.cpp \
-    Misc/cserializable.cpp \
-    Misc/cactiondelegate.cpp \
+    Properties/cdockmanager.cpp \
     Properties/cindentselectiondialog.cpp \
-    Misc/choicescriptdata.cpp \
+    Properties/cpalettecreator.cpp \
+    Properties/cprojectview.cpp \
+    Properties/cpropertiesmanager.cpp \
     Properties/cvariablesview.cpp \
-    Misc/cvariablesmodel.cpp \
-    Misc/cscenecombobox.cpp \
-    Misc/cvariablesdelegate.cpp \
-    Misc/cvariable.cpp
+    cgraphicsscene.cpp \
+    cgraphicsview.cpp \
+    chomepage.cpp \
+    cmainwindow.cpp \
+    csettingsview.cpp \
+    main.cpp \
+    Misc/qactionmenu.cpp
+

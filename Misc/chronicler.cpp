@@ -10,8 +10,8 @@
 #include "cgraphicsscene.h"
 #include "Connections/cline.h"
 #include "Properties/cprojectview.h"
-#include "Misc/cpalettebutton.h"
-#include "Misc/cpaletteaction.h"
+#include "Misc/Palette/cpalettebutton.h"
+#include "Misc/Palette/cpaletteaction.h"
 
 static Chronicler::SharedInstances shared_singleton = Chronicler::SharedInstances();
 

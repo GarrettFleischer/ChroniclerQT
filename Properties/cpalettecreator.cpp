@@ -12,9 +12,9 @@
 #include <QPushButton>
 
 #include "Bubbles/cstorybubble.h"
-#include "Misc/ccolorbutton.h"
+#include "Misc/Palette/ccolorbutton.h"
 
-#include "Misc/cpaletteaction.h"
+#include "Misc/Palette/cpaletteaction.h"
 
 #include "csettingsview.h"
 using Chronicler::shared;

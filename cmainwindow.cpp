@@ -18,8 +18,8 @@
 #include "Properties/cprojectview.h"
 
 #include "Properties/cpalettecreator.h"
-#include "Misc/cpalettebutton.h"
-#include "Misc/cpaletteaction.h"
+#include "Misc/Palette/cpalettebutton.h"
+#include "Misc/Palette/cpaletteaction.h"
 
 #include "Misc/chronicler.h"
 using Chronicler::shared;

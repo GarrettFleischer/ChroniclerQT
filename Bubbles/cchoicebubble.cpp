@@ -3,9 +3,9 @@
 #include <QtMath>
 #include <QFontMetrics>
 
-#include "Misc/cpaletteaction.h"
+#include "Misc/Palette/cpaletteaction.h"
 
-#include "Misc/cchoicemodel.h"
+#include "Misc/Bubbles/cchoicemodel.h"
 #include "cchoice.h"
 
 CChoiceBubble::CChoiceBubble(const QPointF &pos, CPaletteAction *palette, const QFont &font, QGraphicsItem *parent)

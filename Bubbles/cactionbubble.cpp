@@ -6,7 +6,7 @@
 #include "Misc/ctextitem.h"
 #include "Misc/cstringlistmodel.h"
 
-#include "Misc/cpaletteaction.h"
+#include "Misc/Palette/cpaletteaction.h"
 
 #include "Misc/chronicler.h"
 using Chronicler::shared;

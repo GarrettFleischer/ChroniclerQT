@@ -1,6 +1,6 @@
 #include "cconditionbubble.h"
 
-#include "Misc/cpaletteaction.h"
+#include "Misc/Palette/cpaletteaction.h"
 
 #include "Misc/ctextitem.h"
 #include "Connections/cconnection.h"

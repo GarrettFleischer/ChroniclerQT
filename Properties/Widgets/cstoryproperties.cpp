@@ -13,8 +13,8 @@
 #include "cgraphicsview.h"
 
 #include "Properties/cvariablesview.h"
-#include "Misc/cvariablesmodel.h"
-#include "Misc/cvariable.h"
+#include "Misc/Variables/cvariablesmodel.h"
+#include "Misc/Variables/cvariable.h"
 
 #include "Misc/chronicler.h"
 using Chronicler::shared;
@@ -111,14 +111,11 @@ void CStoryProperties::UpdateModel()
 {
     QStringList lst;
 
-    // Only add global variables, and those local to the currently visible scene
-    for(const CVariable &v : shared().variablesView->model()->variables())
-    {
-        CGraphicsView *view = dynamic_cast<CGraphicsView *>(shared().sceneTabs->currentWidget());
+    // grab the currently visible scene
+    CGraphicsView *view = dynamic_cast<CGraphicsView *>(shared().sceneTabs->currentWidget());
 
-        if(!v.scene() || (view && view->cScene() == v.scene()))
+    for(const CVariable &v : shared().variablesView->getVariablesForScene((view ? view->cScene() : Q_NULLPTR)))
             lst.append("${" + v.name() + "}");
-    }
 
     m_model->setStringList(lst);
 }

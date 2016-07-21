@@ -14,6 +14,7 @@ QT_END_NAMESPACE
 
 class CVariablesModel;
 class CVariable;
+class CGraphicsScene;
 
 class CVariablesView : public QWidget, public CSerializable
 {
@@ -26,6 +27,8 @@ public:
     void Reset();
 
     CVariablesModel *model() const;
+
+    QList<CVariable> getVariablesForScene(CGraphicsScene *scene);
 
 protected:
     virtual QDataStream &Deserialize(QDataStream &ds, const QString &version) Q_DECL_OVERRIDE;

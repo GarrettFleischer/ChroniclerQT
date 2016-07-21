@@ -9,7 +9,7 @@
 #include <QGraphicsSceneHoverEvent>
 #include <QGraphicsSceneMouseEvent>
 
-#include "Misc/cpaletteaction.h"
+#include "Misc/Palette/cpaletteaction.h"
 
 #include "Connections/cconnection.h"
 #include "cgraphicsscene.h"

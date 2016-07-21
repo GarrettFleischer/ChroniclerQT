@@ -6,7 +6,7 @@
 #include <QtMath>
 #include <QTransform>
 
-#include "Misc/cpaletteaction.h"
+#include "Misc/Palette/cpaletteaction.h"
 
 CLine::CLine(const QPointF &start, const QPointF &end, Anchor anc_start, Anchor anc_end, QObject *parent)
     : QObject(parent), QGraphicsItem(), m_start(start), m_end(end),

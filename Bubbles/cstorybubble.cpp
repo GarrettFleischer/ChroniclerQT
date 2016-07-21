@@ -3,7 +3,7 @@
 #include <QPainterPath>
 #include <QtMath>
 
-#include "Misc/cpaletteaction.h"
+#include "Misc/Palette/cpaletteaction.h"
 
 
 CStoryBubble::CStoryBubble(const QPointF &pos, CPaletteAction *palette, const QFont &font, QGraphicsItem *parent)

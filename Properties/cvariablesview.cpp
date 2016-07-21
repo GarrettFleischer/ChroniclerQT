@@ -8,8 +8,8 @@
 #include <QSortFilterProxyModel>
 
 
-#include "Misc/cvariablesmodel.h"
-#include "Misc/cvariablesdelegate.h"
+#include "Misc/Variables/cvariablesmodel.h"
+#include "Misc/Variables/cvariablesdelegate.h"
 
 #include "Misc/chronicler.h"
 using Chronicler::shared;
@@ -65,6 +65,20 @@ void CVariablesView::Reset()
 CVariablesModel *CVariablesView::model() const
 {
     return m_model;
+}
+
+QList<CVariable> CVariablesView::getVariablesForScene(CGraphicsScene *scene)
+{
+    QList<CVariable> lst;
+
+    // Only add global variables, and those local to the given scene
+    for(const CVariable &v : m_model->variables())
+    {
+        if(!scene || !v.scene() || (scene == v.scene()))
+            lst.append(v);
+    }
+
+    return lst;
 }
 
 QDataStream &CVariablesView::Deserialize(QDataStream &ds, const QString &version)

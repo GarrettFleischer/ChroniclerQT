@@ -3,7 +3,7 @@
 #include <QListView>
 //#include <QPushButton>
 
-#include "Misc/cchoicemodel.h"
+#include "Misc/Bubbles/cchoicemodel.h"
 #include "Bubbles/cchoicebubble.h"
 #include "Bubbles/cchoice.h"
 

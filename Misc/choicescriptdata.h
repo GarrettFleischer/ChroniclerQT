@@ -13,7 +13,7 @@ class CBubble;
 class CConnection;
 
 #include "Misc/cscenemodel.h"
-#include "Misc/cvariable.h"
+#include "Misc/Variables/cvariable.h"
 
 #include "Misc/chronicler.h"
 using Chronicler::CSIndent;
