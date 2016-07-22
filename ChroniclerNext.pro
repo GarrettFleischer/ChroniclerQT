@@ -67,7 +67,8 @@ HEADERS += \
     chomepage.h \
     cmainwindow.h \
     csettingsview.h \
-    Misc/qactionmenu.h
+    Misc/qactionmenu.h \
+    Misc/Bubbles/cactionmodel.h
 
 SOURCES += \
     Bubbles/cactionbubble.cpp \
@@ -117,5 +118,6 @@ SOURCES += \
     cmainwindow.cpp \
     csettingsview.cpp \
     main.cpp \
-    Misc/qactionmenu.cpp
+    Misc/qactionmenu.cpp \
+    Misc/Bubbles/cactionmodel.cpp
 
