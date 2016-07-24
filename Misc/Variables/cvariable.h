@@ -27,7 +27,7 @@ public:
 
 
 protected:
-    virtual QDataStream &Deserialize(QDataStream &ds, const QString &version) Q_DECL_OVERRIDE;
+    virtual QDataStream &Deserialize(QDataStream &ds, const CVersion &version) Q_DECL_OVERRIDE;
     virtual QDataStream &Serialize(QDataStream &ds) Q_DECL_OVERRIDE;
 
 private:

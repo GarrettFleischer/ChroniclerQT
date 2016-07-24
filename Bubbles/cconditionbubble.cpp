@@ -141,7 +141,7 @@ Chronicler::Anchor CConditionBubble::InputAnchorAtPosition(const QPointF &)
 }
 
 
-QDataStream &CConditionBubble::Deserialize(QDataStream &ds, const QString &version)
+QDataStream &CConditionBubble::Deserialize(QDataStream &ds, const Chronicler::CVersion &version)
 {
     CBubble::Deserialize(ds, version);
 

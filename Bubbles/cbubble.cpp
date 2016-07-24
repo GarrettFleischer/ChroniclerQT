@@ -245,7 +245,7 @@ t_uid CBubble::getUID()
     return m_UID;
 }
 
-QDataStream &CBubble::Deserialize(QDataStream &ds, const QString &version)
+QDataStream &CBubble::Deserialize(QDataStream &ds, const Chronicler::CVersion &version)
 {
     QPointF pos;
 

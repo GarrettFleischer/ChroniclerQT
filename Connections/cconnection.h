@@ -50,7 +50,7 @@ public:
     void ConnectToUIDs();
 
 protected:
-    virtual QDataStream &Deserialize(QDataStream &stream, const QString &version) override;
+    virtual QDataStream &Deserialize(QDataStream &stream, const CVersion &version) override;
     virtual QDataStream &Serialize(QDataStream &stream) override;
 
 private:

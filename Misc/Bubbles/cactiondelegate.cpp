@@ -13,10 +13,9 @@
 #include "Misc/chronicler.h"
 using Chronicler::shared;
 
-CActionDelegate::CActionDelegate()
-{
-
-}
+CActionDelegate::CActionDelegate(QObject *parent)
+    : QStyledItemDelegate(parent)
+{}
 
 QWidget *CActionDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
@@ -42,7 +41,7 @@ QWidget *CActionDelegate::createEditor(QWidget *parent, const QStyleOptionViewIt
             else if(index.column() == 2)
             {
                 QComboBox *editor = new QComboBox(parent);
-                editor->addItems({"=", "%=", "+=", "-="});
+                editor->addItems({"=", "%+" "%-", "+=", "-="});
 
                 return editor;
             }

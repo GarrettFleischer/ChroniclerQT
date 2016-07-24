@@ -60,11 +60,63 @@ namespace Chronicler
         quint8 count = 4;
     };
 
+    struct CVersion
+    {
+    public:
+        QString string;
+
+
+        CVersion(QString _version) : string(_version) {}
+
+        bool operator ==(const CVersion &rhs)
+        {
+            return rhs.string == string;
+        }
+
+        bool operator ==(const QString &rhs) const
+        {
+            return rhs == string;
+        }
+
+        bool operator <(QString _version) const
+        {
+            return versionToInt(string) < versionToInt(_version);
+        }
+
+        bool operator >(QString _version) const
+        {
+            return versionToInt(string) > versionToInt(_version);
+        }
+
+        bool operator <=(QString _version) const
+        {
+            return versionToInt(string) <= versionToInt(_version);
+        }
+
+        bool operator >=(QString _version) const
+        {
+            return versionToInt(string) >= versionToInt(_version);
+        }
+
+        friend QDataStream & operator<<(QDataStream &stream, const CVersion &rhs)
+        {
+            return stream << rhs.string;
+        }
+
+        friend QDataStream & operator>>(QDataStream &stream, CVersion &rhs)
+        {
+            return stream >> rhs.string;
+        }
+
+    private:
+        int versionToInt(const QString &versionToInt) const;
+    };
+
 
     // Do NOT instantiate this struct, use shared() singleton access.
     struct SharedInstances
     {
-        QString ProgramVersion = "0.9.5.0";
+        CVersion ProgramVersion = CVersion("0.9.6.0");
 
         CMainWindow *mainWindow;
 
@@ -117,7 +169,6 @@ namespace Chronicler
 
         void setMode(Mode mode);
 
-        int versionToInt(const QString &versionToInt);
     };
 
     SharedInstances &shared();

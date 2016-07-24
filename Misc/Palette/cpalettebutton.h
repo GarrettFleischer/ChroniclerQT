@@ -29,7 +29,7 @@ public:
 protected:
     virtual void contextMenuEvent(QContextMenuEvent *) override;
 
-    virtual QDataStream &Deserialize(QDataStream &ds, const QString &) override;
+    virtual QDataStream &Deserialize(QDataStream &ds, const CVersion &) override;
     virtual QDataStream &Serialize(QDataStream &ds) override;
 
 private:

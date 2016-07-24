@@ -21,15 +21,21 @@ void CSceneComboBox::setModel(CSceneModel *model)
 {
     if(m_model)
     {
-        disconnect(model, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(UpdateModel()));
-        disconnect(model, SIGNAL(rowsRemoved(QModelIndex,int,int)), this, SLOT(UpdateModel()));
+        disconnect(m_model, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(UpdateModel()));
+        disconnect(m_model, SIGNAL(rowsRemoved(QModelIndex,int,int)), this, SLOT(UpdateModel()));
+        disconnect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), this, SLOT(ModelDataChanged(QModelIndex,QModelIndex,QVector<int>)));
     }
 
     m_model = model;
-    UpdateModel();
 
-    connect(model, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(UpdateModel()));
-    connect(model, SIGNAL(rowsRemoved(QModelIndex,int,int)), this, SLOT(UpdateModel()));
+    if(m_model)
+    {
+        connect(m_model, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(UpdateModel()));
+        connect(m_model, SIGNAL(rowsRemoved(QModelIndex,int,int)), this, SLOT(UpdateModel()));
+        connect(m_model, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), this, SLOT(ModelDataChanged(QModelIndex,QModelIndex,QVector<int>)));
+
+        UpdateModel();
+    }
 }
 
 void CSceneComboBox::UpdateModel()
@@ -44,4 +50,12 @@ void CSceneComboBox::UpdateModel()
 
         QComboBox::setModel(new QStringListModel(lst, this));
     }
+}
+
+void CSceneComboBox::ModelDataChanged(QModelIndex first, QModelIndex last, QVector<int> roles)
+{
+    Q_UNUSED(roles)
+
+    for(int row = first.row(); row <= last.row(); ++row)
+        QComboBox::model()->setData(QComboBox::model()->index(row + 1, 0), first.model()->data(first.model()->index(row, 0)));
 }

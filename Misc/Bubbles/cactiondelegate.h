@@ -10,7 +10,7 @@ QT_END_NAMESPACE
 class CActionDelegate : public QStyledItemDelegate
 {
 public:
-    CActionDelegate();
+    CActionDelegate(QObject *parent = Q_NULLPTR);
 
     virtual QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const Q_DECL_OVERRIDE;
     virtual void setEditorData(QWidget *editor, const QModelIndex &index) const Q_DECL_OVERRIDE;

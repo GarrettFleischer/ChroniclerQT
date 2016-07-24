@@ -129,7 +129,7 @@ Chronicler::Anchor CChoiceBubble::InputAnchorAtPosition(const QPointF &pos)
 }
 
 
-QDataStream &CChoiceBubble::Deserialize(QDataStream &ds, const QString &version)
+QDataStream &CChoiceBubble::Deserialize(QDataStream &ds, const Chronicler::CVersion &version)
 {
     CBubble::Deserialize(ds, version);
 

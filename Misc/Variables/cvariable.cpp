@@ -25,7 +25,7 @@ bool CVariable::operator ==(const CVariable &rhs)
 }
 
 
-QDataStream &CVariable::Deserialize(QDataStream &ds, const QString &version)
+QDataStream &CVariable::Deserialize(QDataStream &ds, const CVersion &version)
 {
     Q_UNUSED(version)
 

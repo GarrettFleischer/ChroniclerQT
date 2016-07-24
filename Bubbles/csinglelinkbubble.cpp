@@ -57,7 +57,7 @@ QList<CConnection *> CSingleLinkBubble::links()
 }
 
 
-QDataStream &CSingleLinkBubble::Deserialize(QDataStream &ds, const QString &version)
+QDataStream &CSingleLinkBubble::Deserialize(QDataStream &ds, const Chronicler::CVersion &version)
 {
     CBubble::Deserialize(ds, version);
 

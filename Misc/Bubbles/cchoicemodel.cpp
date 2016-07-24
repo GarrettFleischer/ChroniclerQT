@@ -118,10 +118,10 @@ void CChoiceModel::MoveUp(const int index)
     }
 }
 
-void CChoiceModel::MoveDown(const int index)
+void CChoiceModel::MoveDown(const int row)
 {
-    if(index >= 0 && index < m_choices.length() - 1)
-        MoveUp(index + 1);
+    if(row >= 0 && row < m_choices.length() - 1)
+        MoveUp(row + 1);
 }
 
 void CChoiceModel::AddItem(CChoice *choice)
@@ -132,10 +132,10 @@ void CChoiceModel::AddItem(CChoice *choice)
     endInsertRows();
 }
 
-void CChoiceModel::RemoveItem(const int index)
+void CChoiceModel::RemoveItem(const int row)
 {
-    beginRemoveRows(QModelIndex(), index, index);
-    delete m_choices[index];
-    m_choices.removeAt(index);
+    beginRemoveRows(QModelIndex(), row, row);
+    delete m_choices[row];
+    m_choices.removeAt(row);
     endRemoveRows();
 }

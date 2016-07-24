@@ -4,7 +4,7 @@
 #include <QRectF>
 #include "Connections/cconnection.h"
 #include "Misc/ctextitem.h"
-#include "Misc/cstringlistmodel.h"
+#include "Misc/Bubbles/cactionmodel.h"
 
 #include "Misc/Palette/cpaletteaction.h"
 
@@ -19,7 +19,7 @@ CActionBubble::CActionBubble(const QPointF &pos, CPaletteAction *palette, const 
     m_actionsView = new CTextItem("", QRectF(), this);
     m_actionsView->SetStyle(Qt::AlignAbsolute | Qt::AlignVCenter);
 
-    m_actions = new CStringListModel(this);
+    m_actions = new CActionModel(this);
     connect(m_actions, SIGNAL(rowsInserted(QModelIndex,int,int)),
             this, SLOT(ModelUpdated()));
     connect(m_actions, SIGNAL(rowsMoved(QModelIndex,int,int,QModelIndex,int)),
@@ -70,14 +70,29 @@ void CActionBubble::setFont(const QFont &font)
     UpdatePolygon();
 }
 
-QDataStream &CActionBubble::Deserialize(QDataStream &ds, const QString &version)
+QDataStream &CActionBubble::Deserialize(QDataStream &ds, const Chronicler::CVersion &version)
 {
     CSingleLinkBubble::Deserialize(ds, version);
 
-    QStringList actions;
-    ds >> actions;
+    if(version <= "0.9.5.0")
+    {
+        QStringList actions;
+        ds >> actions;
 
-    m_actions->setStringList(actions);
+        QList<QStringList> actionList;
+
+        for(const QString &str : actions)
+            actionList.append(str.split(" "));
+
+        m_actions->setActions(actionList);
+    }
+    else
+    {
+        QList<QStringList> actions;
+        ds >> actions;
+
+        m_actions->setActions(actions);
+    }
 
     setPalette(m_palette);
 
@@ -88,12 +103,12 @@ QDataStream & CActionBubble::Serialize(QDataStream &ds)
 {
     CSingleLinkBubble::Serialize(ds);
 
-    ds << m_actions->stringList();
+    ds << m_actions->actions();
 
     return ds;
 }
 
-CStringListModel *CActionBubble::actions()
+CActionModel *CActionBubble::actions()
 {
     return m_actions;
 }

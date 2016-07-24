@@ -2,11 +2,11 @@
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
-#include <QPushButton>
 
 #include <QTableView>
 #include <QSortFilterProxyModel>
 
+#include "Misc/clistbuttons.h"
 
 #include "Misc/Variables/cvariablesmodel.h"
 #include "Misc/Variables/cvariablesdelegate.h"
@@ -17,18 +17,14 @@ using Chronicler::shared;
 CVariablesView::CVariablesView(QWidget *parent)
     : QWidget(parent)
 {
-    m_addButton = new QPushButton(QIcon(":/images/icn_add"), "");
-    m_addButton->setToolTip("Add new item");
-    connect(m_addButton, SIGNAL(clicked(bool)), this, SLOT(AddItem()));
-
-    m_removeButton = new QPushButton(QIcon(":/images/icn_trash"), "");
-    m_removeButton->setToolTip("<qt>Delete item.<br>This cannot be undone!</qt>");
-    connect(m_removeButton, SIGNAL(clicked(bool)), this, SLOT(RemoveItem()));
+    CListButtons *btns = new CListButtons(this, CListButtons::Add | CListButtons::Remove);
+    connect(btns, SIGNAL(addItem()), this, SLOT(AddItem()));
+    connect(btns, SIGNAL(removeItem()), this, SLOT(RemoveItem()));
 
     m_model = new CVariablesModel(this);
 
     m_sortModel = new QSortFilterProxyModel(this);
-    m_sortModel->setDynamicSortFilter(true);
+//    m_sortModel->setDynamicSortFilter(true);
     m_sortModel->setSourceModel(m_model);
     connect(m_sortModel, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(RowsInserted(QModelIndex,int,int)));
     connect(m_sortModel, SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)), this, SLOT(RowsAboutToBeRemoved(QModelIndex,int,int)));
@@ -39,14 +35,9 @@ CVariablesView::CVariablesView(QWidget *parent)
     m_view->setModel(m_sortModel);
     m_view->setItemDelegate(new CVariablesDelegate(this));
 
-    QVBoxLayout *vl_buttons = new QVBoxLayout();
-    vl_buttons->addWidget(m_addButton);
-    vl_buttons->addWidget(m_removeButton);
-    vl_buttons->addStretch(1);
-
     QHBoxLayout *hl_main = new QHBoxLayout(this);
     hl_main->addWidget(m_view);
-    hl_main->addLayout(vl_buttons);
+    hl_main->addWidget(btns);
 }
 
 CVariablesView::~CVariablesView()
@@ -81,9 +72,9 @@ QList<CVariable> CVariablesView::getVariablesForScene(CGraphicsScene *scene)
     return lst;
 }
 
-QDataStream &CVariablesView::Deserialize(QDataStream &ds, const QString &version)
+QDataStream &CVariablesView::Deserialize(QDataStream &ds, const CVersion &version)
 {
-    if(shared().versionToInt(version) > 920)
+    if(version > "0.9.2.0")
     {
         qint64 count;
         ds >> count;
@@ -135,7 +126,7 @@ void CVariablesView::RemoveItem()
 {
     if(m_view->currentIndex().isValid())
     {
-//        m_view->closePersistentEditor(m_sortModel->index(m_view->currentIndex().row(), 0));
+        m_view->closePersistentEditor(m_view->currentIndex());
         m_sortModel->removeRow(m_view->currentIndex().row());
     }
 }

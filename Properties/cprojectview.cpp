@@ -59,6 +59,8 @@
 
 #include "csettingsview.h"
 
+#include "Misc/clistbuttons.h"
+
 #include "Properties/cvariablesview.h"
 #include "Misc/Variables/cvariablesmodel.h"
 
@@ -72,32 +74,6 @@ Q_DECLARE_METATYPE(QStringList)
 CProjectView::CProjectView(QWidget *parent)
     : QWidget(parent), m_version(shared().ProgramVersion), m_path("")
 {
-    m_upButton = new QPushButton(QIcon(":/images/icn_up"), "");
-    m_upButton->setToolTip("Move scene up");
-    m_upButton->setEnabled(false);
-    connect(m_upButton, SIGNAL(clicked(bool)), this, SLOT(MoveUp()));
-
-    m_downButton = new QPushButton(QIcon(":/images/icn_down"), "");
-    m_downButton->setToolTip("Move scene down");
-    m_downButton->setEnabled(false);
-    connect(m_downButton, SIGNAL(clicked(bool)), this, SLOT(MoveDown()));
-
-    m_addButton = new QPushButton(QIcon(":/images/icn_add"), "");
-    m_addButton->setToolTip("Add new scene");
-    connect(m_addButton, SIGNAL(clicked(bool)), this, SLOT(AddItem()));
-
-    m_removeButton = new QPushButton(QIcon(":/images/icn_trash"), "");
-    m_removeButton->setToolTip("<qt>Delete scene.<br>WARNING: this cannot be undone!</qt>");
-    m_removeButton->setEnabled(false);
-    connect(m_removeButton, SIGNAL(clicked(bool)), this, SLOT(RemoveItem()));
-
-    QVBoxLayout *vl_buttons = new QVBoxLayout();
-    vl_buttons->addWidget(m_upButton);
-    vl_buttons->addWidget(m_downButton);
-    vl_buttons->addWidget(m_addButton);
-    vl_buttons->addWidget(m_removeButton);
-    vl_buttons->addStretch(1);
-
     m_sceneModel = new CSceneModel(this);
 
     m_modelView = new QListView();
@@ -107,9 +83,15 @@ CProjectView::CProjectView(QWidget *parent)
     connect(m_modelView, SIGNAL(clicked(QModelIndex)), this, SLOT(SelectedChanged(QModelIndex)));
     connect(m_sceneModel, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), this, SLOT(DataChanged(QModelIndex,QModelIndex)));
 
+    CListButtons *btns = new CListButtons(this);
+    connect(btns, SIGNAL(moveUp()), this, SLOT(MoveUp()));
+    connect(btns, SIGNAL(moveDown()), this, SLOT(MoveDown()));
+    connect(btns, SIGNAL(addItem()), this, SLOT(AddItem()));
+    connect(btns, SIGNAL(removeItem()), this, SLOT(RemoveItem()));
+
     QHBoxLayout *hl_viewButtons = new QHBoxLayout();
     hl_viewButtons->addWidget(m_modelView);
-    hl_viewButtons->addLayout(vl_buttons);
+    hl_viewButtons->addWidget(btns);
 
     m_title = new QLineEdit();
     connect(m_title, SIGNAL(textChanged(QString)), this, SLOT(ProjectNameChanged()));
@@ -444,7 +426,7 @@ CBubble *CProjectView::BubbleWithUID(uint uid)
     return 0;
 }
 
-const QString CProjectView::getVersion() const
+const CVersion &CProjectView::getVersion() const
 {
     return m_version;
 }
@@ -643,21 +625,11 @@ void CProjectView::SelectedChanged(QModelIndex current)
 {
     if(current.row() >= 0 && current.row() < m_modelView->model()->rowCount())
     {
-        m_upButton->setEnabled(true);
-        m_downButton->setEnabled(true);
-        m_removeButton->setEnabled(true);
-
         CGraphicsView *view = m_sceneModel->views()[current.row()];
 
         if(shared().sceneTabs->indexOf(view) == -1)
             shared().sceneTabs->addTab(view, view->cScene()->name());
         shared().sceneTabs->setCurrentWidget(view);
-    }
-    else
-    {
-        m_upButton->setEnabled(false);
-        m_downButton->setEnabled(false);
-        m_removeButton->setEnabled(false);
     }
 }
 
@@ -675,7 +647,7 @@ void CProjectView::DataChanged(const QModelIndex &topLeft, const QModelIndex &bo
 
 void CProjectView::ProjectNameChanged()
 {
-    shared().mainWindow->setWindowTitle("Chronicler " + shared().ProgramVersion + " - " + m_title->text());
+    shared().mainWindow->setWindowTitle("Chronicler " + shared().ProgramVersion.string + " - " + m_title->text());
 }
 
 void CProjectView::MoveUp()

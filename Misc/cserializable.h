@@ -3,6 +3,9 @@
 
 #include <QDataStream>
 
+#include "Misc/chronicler.h"
+using Chronicler::CVersion;
+
 class CSerializable
 {
 public:
@@ -14,7 +17,7 @@ public:
 protected:
     CSerializable();
 
-    virtual QDataStream &Deserialize(QDataStream &ds, const QString &version) = 0;
+    virtual QDataStream &Deserialize(QDataStream &ds, const CVersion &version) = 0;
     virtual QDataStream &Serialize(QDataStream &ds) = 0;
 };
 

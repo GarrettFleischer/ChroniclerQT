@@ -130,8 +130,10 @@ CBubble *CChoice::container()
     return dynamic_cast<CBubble *>(parentItem());
 }
 
-QDataStream & CChoice::Deserialize(QDataStream &ds, const QString &)
+QDataStream & CChoice::Deserialize(QDataStream &ds, const Chronicler::CVersion &version)
 {
+    Q_UNUSED(version)
+
     QString choice;
     bool linked;
 

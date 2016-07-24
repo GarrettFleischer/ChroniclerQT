@@ -111,7 +111,7 @@ void CPaletteButton::Saved()
 }
 
 
-QDataStream &CPaletteButton::Deserialize(QDataStream &ds, const QString &)
+QDataStream &CPaletteButton::Deserialize(QDataStream &ds, const Chronicler::CVersion &)
 {
     qint32 len;
     ds >> len;

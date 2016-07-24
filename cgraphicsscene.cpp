@@ -133,7 +133,7 @@ QDataStream &CGraphicsScene::Serialize(QDataStream &ds)
     return ds;
 }
 
-QDataStream &CGraphicsScene::Deserialize(QDataStream &ds, const QString &version)
+QDataStream &CGraphicsScene::Deserialize(QDataStream &ds, const Chronicler::CVersion &version)
 {
     Q_UNUSED(version)
 

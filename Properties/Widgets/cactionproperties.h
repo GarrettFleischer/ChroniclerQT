@@ -1,15 +1,15 @@
 #ifndef CACTIONPROPERTIES_H
 #define CACTIONPROPERTIES_H
 
-#include "clistpropertieswidget.h"
+#include "cpropertieswidget.h"
 
 QT_BEGIN_NAMESPACE
-class QListView;
+class QTableView;
 QT_END_NAMESPACE
 
 class CActionBubble;
 
-class CActionProperties : public CListPropertiesWidget
+class CActionProperties : public CPropertiesWidget
 {
     Q_OBJECT
 
@@ -19,13 +19,15 @@ public:
     virtual void setBubble(CBubble *bbl) override;
 
 private:
+    QTableView *m_view;
     CActionBubble *m_actionBubble;
 
-protected slots:
-    virtual void MoveUp() override;
-    virtual void MoveDown() override;
-    virtual void AddItem() override;
-    virtual void RemoveItem() override;
+
+private slots:
+    void MoveUp();
+    void MoveDown();
+    void AddItem();
+    void RemoveItem();
 };
 
 #endif // CACTIONPROPERTIES_H

@@ -82,7 +82,7 @@ void CStoryBubble::setPalette(CPaletteAction *palette)
 }
 
 
-QDataStream &CStoryBubble::Deserialize(QDataStream &ds, const QString &version)
+QDataStream &CStoryBubble::Deserialize(QDataStream &ds, const Chronicler::CVersion &version)
 {
     CSingleLinkBubble::Deserialize(ds, version);
 

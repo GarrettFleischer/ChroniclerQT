@@ -29,7 +29,7 @@ bool CSceneModel::setData(const QModelIndex &index, const QVariant &value, int r
     {
         m_views[index.row()]->cScene()->setName(value.toString());
 
-        emit dataChanged(index, index);
+        emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
         return true;
     }
 

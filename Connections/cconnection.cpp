@@ -167,7 +167,7 @@ void CConnection::ConnectToUIDs()
  * @param version The version of the program the data was created with
  * @return The modified datastream for chaining
  */
-QDataStream & CConnection::Deserialize(QDataStream &stream, const QString &version)
+QDataStream & CConnection::Deserialize(QDataStream &stream, const Chronicler::CVersion &version)
 {
     Q_UNUSED(version)
 

@@ -45,7 +45,7 @@ namespace Chronicler
         }
     }
 
-    int SharedInstances::versionToInt(const QString &version)
+    int CVersion::versionToInt(const QString &version) const
     {
         QStringList nums = version.split(".", QString::SkipEmptyParts);
         int mult = nums.length();

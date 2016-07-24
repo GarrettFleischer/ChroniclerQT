@@ -22,6 +22,7 @@ class CConnection;
 
 #include <Misc/chronicler.h>
 using Chronicler::CSIndent;
+using Chronicler::CVersion;
 
 class CProjectView : public QWidget
 {
@@ -34,7 +35,7 @@ public:
 
     CBubble *BubbleWithUID(uint uid);
 
-    const QString getVersion() const;
+    const CVersion &getVersion() const;
 
     CSceneModel *model();
 
@@ -57,14 +58,8 @@ private:
     QListView  *m_modelView;
     CSceneModel *m_sceneModel;
 
-    // list buttons
-    QPushButton *m_upButton;
-    QPushButton *m_downButton;
-    QPushButton *m_addButton;
-    QPushButton *m_removeButton;
-
     // project data
-    QString m_version;
+    CVersion m_version;
 
     // for quicksave
     QString m_path;

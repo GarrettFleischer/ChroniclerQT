@@ -31,16 +31,13 @@ public:
     QList<CVariable> getVariablesForScene(CGraphicsScene *scene);
 
 protected:
-    virtual QDataStream &Deserialize(QDataStream &ds, const QString &version) Q_DECL_OVERRIDE;
+    virtual QDataStream &Deserialize(QDataStream &ds, const CVersion &version) Q_DECL_OVERRIDE;
     virtual QDataStream &Serialize(QDataStream &ds) Q_DECL_OVERRIDE;
 
 private:
     QTableView              *m_view;
     CVariablesModel         *m_model;
     QSortFilterProxyModel   *m_sortModel;
-
-    QPushButton *m_addButton;
-    QPushButton *m_removeButton;
 
 private slots:
     void RowsInserted(QModelIndex parent, int first, int last);

@@ -24,6 +24,7 @@ private:
 
 private slots:
     void UpdateModel();
+    void ModelDataChanged(QModelIndex first, QModelIndex last, QVector<int> roles);
 };
 
 #endif // CSCENECOMBOBOX_H

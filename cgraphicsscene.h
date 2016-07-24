@@ -98,7 +98,7 @@ public:
     CBubble *BubbleAt(const QPointF &point, bool choiceAllowed = false);
 
     virtual QDataStream & Serialize(QDataStream &ds) override;
-    virtual QDataStream & Deserialize(QDataStream &ds, const QString &version) override;
+    virtual QDataStream & Deserialize(QDataStream &ds, const CVersion &version) override;
 
 protected:
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
