@@ -32,12 +32,24 @@ QVariant CActionModel::data(const QModelIndex &index, int role) const
 
 bool CActionModel::setData(const QModelIndex &index, const QVariant &variant, int role)
 {
-    if(role == Qt::DisplayRole || Qt::EditRole)
+    if(role == Qt::DisplayRole || role == Qt::EditRole)
     {
-        m_actions[index.row()][index.column()] = variant.toString();
+        if(index.isValid() && index.column() < m_actions[index.row()].length())
+        {
+            m_actions[index.row()][index.column()] = variant.toString();
 
-        emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
-        return true;
+            if(index.column() == 0)
+            {
+                for(int i = 1; i < m_actions[index.row()].length(); ++i)
+                    m_actions[index.row()][i] = "";
+
+                emit dataChanged(index, CActionModel::index(index.row(), columnCount() - 1), {Qt::DisplayRole, Qt::EditRole});
+            }
+            else
+                emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
+
+            return true;
+        }
     }
 
     return false;
@@ -47,10 +59,10 @@ bool CActionModel::insertRows(int row, int count, const QModelIndex &parent)
 {
     Q_UNUSED(parent)
 
-    beginInsertRows(QModelIndex(), row, row + count);
+    beginInsertRows(QModelIndex(), row, row + count - 1);
 
     for(int i = row; i < row + count; ++i)
-        m_actions.insert(i, QStringList());
+        m_actions.insert(i, QStringList({"", "", "", ""}));
 
     endInsertRows();
 
@@ -61,7 +73,7 @@ bool CActionModel::removeRows(int row, int count, const QModelIndex &parent)
 {
     Q_UNUSED(parent)
 
-    beginRemoveRows(QModelIndex(), row, row + count);
+    beginRemoveRows(QModelIndex(), row, row + count - 1);
 
     for(int i = row; i < row + count; ++i)
         m_actions.removeAt(i);
@@ -73,7 +85,7 @@ bool CActionModel::removeRows(int row, int count, const QModelIndex &parent)
 
 Qt::ItemFlags CActionModel::flags(const QModelIndex &index) const
 {
-    Q_UNUSED(index) // TODO use index.column() = 0 to return correct ItemIsEnabled flag
+    Q_UNUSED(index) // TODO use first column to return correct ItemIsEnabled flag
 
     return Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable;
 }
@@ -89,16 +101,16 @@ void CActionModel::setActions(const QList<QStringList> &actions)
     m_actions = actions;
 }
 
-QList<QString> CActionModel::stringList() const
+QStringList CActionModel::stringList() const
 {
-    QList<QString> lst;
+    QStringList lst;
 
     for(int i = 0; i < m_actions.length(); ++i)
     {
         lst.append("");
 
         for(const QString &str : m_actions[i])
-            lst[i] += str;
+            lst[i] += str + " ";
     }
 
     return lst;
@@ -118,4 +130,19 @@ void CActionModel::MoveDown(const int row)
 {
     if(row >= 0 && row < m_actions.length() - 1)
         MoveUp(row + 1);
+}
+
+void CActionModel::ResetRow()
+{
+
+}
+
+
+QVariant CActionModel::headerData(int section, Qt::Orientation orientation, int role) const
+{
+    Q_UNUSED(section)
+    Q_UNUSED(orientation)
+    Q_UNUSED(role)
+
+    return "";
 }

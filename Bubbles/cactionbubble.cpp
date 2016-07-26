@@ -31,6 +31,8 @@ CActionBubble::CActionBubble(const QPointF &pos, CPaletteAction *palette, const 
     connect(m_actions, SIGNAL(modelReset()),
             this, SLOT(ModelUpdated()));
 
+    ModelUpdated();
+
     AdjustMinSize();
     m_bounds = QRectF(-m_minSize.width()/2, -m_minSize.height()/2, m_minSize.width(), m_minSize.height());
     UpdatePolygon();
@@ -50,7 +52,7 @@ void CActionBubble::ModelUpdated()
 {
     QString txt;
     for(QString action : m_actions->stringList())
-        txt += " " + action + '\n';
+        txt += action + '\n';
 
     m_actionsView->setText(txt);
     AdjustMinSize();
@@ -82,7 +84,13 @@ QDataStream &CActionBubble::Deserialize(QDataStream &ds, const Chronicler::CVers
         QList<QStringList> actionList;
 
         for(const QString &str : actions)
-            actionList.append(str.split(" "));
+        {
+            QStringList lst = str.split(" ");
+            while(lst.length() < 4)
+                lst.append("");
+
+            actionList.append(lst);
+        }
 
         m_actions->setActions(actionList);
     }

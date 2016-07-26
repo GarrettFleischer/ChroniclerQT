@@ -9,6 +9,8 @@ QT_END_NAMESPACE
 
 class CActionDelegate : public QStyledItemDelegate
 {
+    Q_OBJECT
+
 public:
     CActionDelegate(QObject *parent = Q_NULLPTR);
 
@@ -20,6 +22,10 @@ public:
 
 private:
     QComboBox *createVariablesBox(QWidget *parent) const;
+
+
+private slots:
+    void PersistentEditorChanged();
 };
 
 #endif // CACTIONDELEGATE_H

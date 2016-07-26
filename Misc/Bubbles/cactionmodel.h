@@ -10,8 +10,9 @@ public:
 
     virtual int rowCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
     virtual int columnCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
+    virtual QVariant headerData(int section, Qt::Orientation orientation, int role) const Q_DECL_OVERRIDE;
     virtual QVariant data(const QModelIndex &index, int role) const Q_DECL_OVERRIDE;
-    virtual bool setData(const QModelIndex &index, const QVariant &variant, int role) Q_DECL_OVERRIDE;
+    virtual bool setData(const QModelIndex &index, const QVariant &variant, int role = Qt::EditRole) Q_DECL_OVERRIDE;
     virtual bool insertRows(int row, int count, const QModelIndex &parent = QModelIndex()) Q_DECL_OVERRIDE;
     virtual bool removeRows(int row, int count, const QModelIndex &parent = QModelIndex()) Q_DECL_OVERRIDE;
     virtual Qt::ItemFlags flags(const QModelIndex &index) const Q_DECL_OVERRIDE;
@@ -19,14 +20,18 @@ public:
     QList<QStringList> actions() const;
     void setActions(const QList<QStringList> &actions);
 
-    QList<QString> stringList() const;
+    QStringList stringList() const;
 
     void MoveUp(const int row);
     void MoveDown(const int row);
 
-
 private:
     QList<QStringList> m_actions;
+
+    void ResetRow();
+
+
+
 };
 
 #endif // CACTIONMODEL_H

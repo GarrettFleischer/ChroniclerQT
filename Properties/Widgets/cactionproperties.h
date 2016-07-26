@@ -3,11 +3,14 @@
 
 #include "cpropertieswidget.h"
 
+#include <QModelIndex>
+
 QT_BEGIN_NAMESPACE
 class QTableView;
 QT_END_NAMESPACE
 
 class CActionBubble;
+
 
 class CActionProperties : public CPropertiesWidget
 {
@@ -28,6 +31,10 @@ private slots:
     void MoveDown();
     void AddItem();
     void RemoveItem();
+
+    void OpenPersistentEditors(QModelIndex parent, int first, int last);
+    void ClosePersistentEditors(QModelIndex parent, int first, int last);
+    void DataChanged(QModelIndex first, QModelIndex last, QVector<int> roles);
 };
 
 #endif // CACTIONPROPERTIES_H
