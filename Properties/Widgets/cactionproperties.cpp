@@ -67,6 +67,7 @@ void CActionProperties::MoveUp()
     const int row = m_view->currentIndex().row();
     m_actionBubble->actions()->MoveUp(row);
     m_view->setCurrentIndex(m_actionBubble->actions()->index(row - 1, 0));
+
     m_view->setFocus();
 }
 
@@ -75,6 +76,7 @@ void CActionProperties::MoveDown()
     const int row = m_view->currentIndex().row();
     m_actionBubble->actions()->MoveDown(row);
     m_view->setCurrentIndex(m_actionBubble->actions()->index(row + 1, 0));
+
     m_view->setFocus();
 }
 

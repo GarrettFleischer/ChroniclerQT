@@ -28,7 +28,7 @@ QWidget *CActionDelegate::createEditor(QWidget *parent, const QStyleOptionViewIt
         if(index.column() == 0)
         {
             QComboBox *box = new QComboBox(parent);
-            connect(box, SIGNAL(currentIndexChanged(int)), this, SLOT(PersistentEditorChanged()));
+            connect(box, SIGNAL(currentTextChanged(QString)), this, SLOT(PersistentEditorChanged()));
             connect(box, SIGNAL(activated(int)), this, SLOT(PersistentEditorChanged()));
             box->addItems({"*set", "*page_break", "*input_text", "*label", "*goto", "*finish", "*purchase", "*check_purchase", "*advertisement"});
 
@@ -47,7 +47,7 @@ QWidget *CActionDelegate::createEditor(QWidget *parent, const QStyleOptionViewIt
                 else if(index.column() == 2)
                 {
                     QComboBox *box = new QComboBox(parent);
-                    connect(box, SIGNAL(currentIndexChanged(int)), this, SLOT(PersistentEditorChanged()));
+                    connect(box, SIGNAL(currentTextChanged(QString)), this, SLOT(PersistentEditorChanged()));
                     connect(box, SIGNAL(activated(int)), this, SLOT(PersistentEditorChanged()));
                     box->addItems({"=", "%+", "%-", "+=", "-="});
 
@@ -100,13 +100,12 @@ void CActionDelegate::setEditorData(QWidget *editor, const QModelIndex &index) c
             {
                 if(index.column() < 3)
                 {
-                    QComboBox *box = dynamic_cast<QComboBox *>(editor);
-                    if(box)
-                        box->setCurrentText(index.data(Qt::EditRole).toString());
+                    QComboBox *box = static_cast<QComboBox *>(editor);
+                    box->setCurrentText(index.data(Qt::EditRole).toString());
                 }
                 else
                 {
-                    QLineEdit *line = dynamic_cast<QLineEdit *>(editor);
+                    QLineEdit *line = static_cast<QLineEdit *>(editor);
                     if(line)
                         line->setText(index.data(Qt::EditRole).toString());
                 }
@@ -115,9 +114,8 @@ void CActionDelegate::setEditorData(QWidget *editor, const QModelIndex &index) c
             {
                 if(index.column() == 1)
                 {
-                    QComboBox *box = dynamic_cast<QComboBox *>(editor);
-                    if(box)
-                        box->setCurrentText(index.data(Qt::EditRole).toString());
+                    QComboBox *box = static_cast<QComboBox *>(editor);
+                    box->setCurrentText(index.data(Qt::EditRole).toString());
                 }
             }
             else if(first_column == "*label" || first_column == "*goto" ||
@@ -125,9 +123,8 @@ void CActionDelegate::setEditorData(QWidget *editor, const QModelIndex &index) c
             {
                 if(index.column() == 1)
                 {
-                    QLineEdit *line = dynamic_cast<QLineEdit *>(editor);
-                    if(line)
-                        line->setText(index.data(Qt::EditRole).toString());
+                    QLineEdit *line = static_cast<QLineEdit *>(editor);
+                    line->setText(index.data(Qt::EditRole).toString());
                 }
             }
         }
@@ -153,24 +150,21 @@ void CActionDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, c
             {
                 if(index.column() < 3)
                 {
-                    QComboBox *box = dynamic_cast<QComboBox *>(editor);
-                    if(box)
-                        actionModel->setData(index, box->currentText());
+                    QComboBox *box = static_cast<QComboBox *>(editor);
+                    actionModel->setData(index, box->currentText());
                 }
                 else
                 {
-                    QLineEdit *line = dynamic_cast<QLineEdit *>(editor);
-                    if(line)
-                        actionModel->setData(index, line->text());
+                    QLineEdit *line = static_cast<QLineEdit *>(editor);
+                    actionModel->setData(index, line->text());
                 }
             }
             else if(first_column == "*input_text")
             {
                 if(index.column() == 1)
                 {
-                    QComboBox *box = dynamic_cast<QComboBox *>(editor);
-                    if(box)
-                        actionModel->setData(index, box->currentText());
+                    QComboBox *box = static_cast<QComboBox *>(editor);
+                    actionModel->setData(index, box->currentText());
                 }
             }
             else if(first_column == "*label" || first_column == "*goto" ||
@@ -178,9 +172,8 @@ void CActionDelegate::setModelData(QWidget *editor, QAbstractItemModel *model, c
             {
                 if(index.column() == 1)
                 {
-                    QLineEdit *line = dynamic_cast<QLineEdit *>(editor);
-                    if(line)
-                        actionModel->setData(index, line->text());
+                    QLineEdit *line = static_cast<QLineEdit *>(editor);
+                    actionModel->setData(index, line->text());
                 }
             }
         }
@@ -197,7 +190,7 @@ void CActionDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionVi
 QComboBox *CActionDelegate::createVariablesBox(QWidget *parent) const
 {
     QComboBox *editor = new QComboBox(parent);
-    connect(editor, SIGNAL(currentIndexChanged(int)), this, SLOT(PersistentEditorChanged()));
+    connect(editor, SIGNAL(currentTextChanged(QString)), this, SLOT(PersistentEditorChanged()));
     connect(editor, SIGNAL(activated(int)), this, SLOT(PersistentEditorChanged()));
 
     QList<CVariable> variables = shared().variablesView->getVariablesForScene(Q_NULLPTR);
