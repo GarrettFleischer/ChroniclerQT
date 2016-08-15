@@ -23,8 +23,7 @@ using Chronicler::shared;
 CStoryProperties::CStoryProperties(QWidget *parent)
     : CPropertiesWidget(parent), m_storyBubble(Q_NULLPTR), m_storyEdit(Q_NULLPTR)
 {
-    m_model = new QStringListModel(this);
-//    connect(shared().variablesView->model(), SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), this, SLOT(UpdateModel()));
+    m_completionModel = new QStringListModel(this);
 
     m_boldAction = new QAction(QIcon(":/images/icn_bold.png"), tr(""), Q_NULLPTR);
     m_boldAction->setShortcut(tr("Ctrl+B"));
@@ -47,7 +46,7 @@ CStoryProperties::CStoryProperties(QWidget *parent)
     hl_font->addStretch(1);
 
     // Story Widget
-    m_storyEdit = new CTextEdit(this, m_model);
+    m_storyEdit = new CTextEdit(this, m_completionModel);
     m_storyEdit->addAction(m_boldAction);
     m_storyEdit->addAction(m_italicAction);
     connect(m_storyEdit, SIGNAL(textChanged()),
@@ -117,7 +116,7 @@ void CStoryProperties::UpdateModel()
     for(const CVariable &v : shared().variablesView->getVariablesForScene((view ? view->cScene() : Q_NULLPTR)))
             lst.append("${" + v.name() + "}");
 
-    m_model->setStringList(lst);
+    m_completionModel->setStringList(lst);
 }
 
 

@@ -1,24 +1,22 @@
 #include "cactionproperties.h"
 
-#include <QTableView>
+#include <QListView>
 
 #include "Misc/clistbuttons.h"
 
-#include "Misc/Bubbles/cactionmodel.h"
+#include "Misc/cstringlistmodel.h"
 #include "Misc/Bubbles/cactiondelegate.h"
 
 #include "Bubbles/cactionbubble.h"
 
 
-
 CActionProperties::CActionProperties(QWidget *parent)
     : CPropertiesWidget(parent), m_actionBubble(Q_NULLPTR)
 {
-    m_view = new QTableView();
+    m_view = new QListView();
     m_view->setItemDelegate(new CActionDelegate(this));
     m_view->setAlternatingRowColors(true);
     m_view->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::EditKeyPressed);
-    connect(m_view, SIGNAL(clicked(QModelIndex)), this, SLOT(SelectedChanged(QModelIndex)));
 
 
     CListButtons *btns = new CListButtons(this);
@@ -39,24 +37,9 @@ void CActionProperties::setBubble(CBubble *bbl)
 {
     CPropertiesWidget::setBubble(bbl);
 
-    if(m_actionBubble)
-    {
-        disconnect(m_actionBubble->actions(), SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(OpenPersistentEditors(QModelIndex,int,int)));
-        disconnect(m_actionBubble->actions(), SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)), this, SLOT(ClosePersistentEditors(QModelIndex,int,int)));
-        disconnect(m_actionBubble->actions(), SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), this, SLOT(DataChanged(QModelIndex,QModelIndex,QVector<int>)));
-    }
-
     m_actionBubble = dynamic_cast<CActionBubble *>(bbl);
     if(m_actionBubble)
-    {
         m_view->setModel(m_actionBubble->actions());
-        connect(m_actionBubble->actions(), SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(OpenPersistentEditors(QModelIndex,int,int)));
-        connect(m_actionBubble->actions(), SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)), this, SLOT(ClosePersistentEditors(QModelIndex,int,int)));
-        connect(m_actionBubble->actions(), SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), this, SLOT(DataChanged(QModelIndex,QModelIndex,QVector<int>)));
-
-        if(m_actionBubble->actions()->rowCount())
-            OpenPersistentEditors(QModelIndex(), 0, m_view->model()->rowCount() - 1);
-    }
     else
         m_view->setModel(Q_NULLPTR);
 }
@@ -82,42 +65,15 @@ void CActionProperties::MoveDown()
 
 void CActionProperties::AddItem()
 {
-    m_actionBubble->actions()->insertRow(m_actionBubble->actions()->rowCount());
-    m_view->edit(QModelIndex(m_view->model()->index(m_view->model()->rowCount() - 1, 0)));
+    m_actionBubble->actions()->AddItem("");
 
     m_view->setFocus();
+    m_view->edit(m_view->currentIndex());
 }
 
 void CActionProperties::RemoveItem()
 {
-    m_actionBubble->actions()->removeRow(m_view->currentIndex().row());
+    m_actionBubble->actions()->RemoveItem(m_view->currentIndex().row());
     m_view->setFocus();
-}
-
-void CActionProperties::OpenPersistentEditors(QModelIndex parent, int first, int last)
-{
-    Q_UNUSED(parent)
-
-    for(int i = first; i <= last; ++i)
-        for(int j = 0; j < m_view->model()->columnCount(); ++j)
-            m_view->openPersistentEditor(m_view->model()->index(i, j));
-}
-
-void CActionProperties::ClosePersistentEditors(QModelIndex parent, int first, int last)
-{
-    Q_UNUSED(parent)
-
-    for(int i = first; i <= last; ++i)
-        for(int j = 0; j < m_view->model()->columnCount(m_view->model()->index(i, 0)); ++j)
-            m_view->closePersistentEditor(m_view->model()->index(i, j));
-}
-
-void CActionProperties::DataChanged(QModelIndex first, QModelIndex last, QVector<int> roles)
-{
-    if(first.column() == 0 && roles.contains(Qt::EditRole))
-    {
-        ClosePersistentEditors(QModelIndex(), first.row(), last.row());
-        OpenPersistentEditors(QModelIndex(), first.row(), last.row());
-    }
 }
 

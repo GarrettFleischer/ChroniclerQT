@@ -21,7 +21,8 @@
 #include "Bubbles/cchoicebubble.h"
 #include "Misc/Bubbles/cchoicemodel.h"
 #include "Bubbles/cactionbubble.h"
-#include "Misc/Bubbles/cactionmodel.h"
+#include "Misc/cstringlistmodel.h"
+//#include "Misc/Bubbles/cactionmodel.h"
 #include "Bubbles/cconditionbubble.h"
 #include "Connections/cconnection.h"
 
@@ -414,13 +415,16 @@ CBubble * ChoiceScriptData::CSProcBubble(const CSBlock &csblock, QList<CSBubble>
     {
         CActionBubble *bbl = dynamic_cast<CActionBubble *>(scene->AddBubble(Chronicler::Action, pos, false));
 
-        QList<QStringList> actionList;
-
         QStringList actions = csblock.text.split('\n');
-        for(QString action : actions)
-            actionList.append(action.split(" "));
+        bbl->actions()->setStringList(actions);
 
-        bbl->actions()->setActions(actionList);
+//        QList<QStringList> actionList;
+
+//        QStringList actions = csblock.text.split('\n');
+//        for(QString action : actions)
+//            actionList.append(action.split(" "));
+
+//        bbl->actions()->setActions(actionList);
 
         bubble = bbl;
     }

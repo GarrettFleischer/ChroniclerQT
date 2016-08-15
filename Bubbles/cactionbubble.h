@@ -4,7 +4,7 @@
 #include "csinglelinkbubble.h"
 
 class CTextItem;
-class CActionModel;
+class CStringListModel;
 
 class CActionBubble : public CSingleLinkBubble
 {
@@ -19,7 +19,7 @@ public:
     virtual QDataStream &Deserialize(QDataStream &ds, const CVersion &version) override;
     virtual QDataStream &Serialize(QDataStream &ds) override;
 
-    CActionModel *actions();
+    CStringListModel *actions();
 
     QString actionString();
 
@@ -29,7 +29,7 @@ protected:
 private:
     void AdjustMinSize();
 
-    CActionModel *m_actions;
+    CStringListModel *m_actions;
     CTextItem *m_actionsView;
 
 private slots:

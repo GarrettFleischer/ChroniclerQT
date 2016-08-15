@@ -62,7 +62,7 @@ bool CActionModel::insertRows(int row, int count, const QModelIndex &parent)
     beginInsertRows(QModelIndex(), row, row + count - 1);
 
     for(int i = row; i < row + count; ++i)
-        m_actions.insert(i, QStringList({"", "", "", ""}));
+        m_actions.insert(i, QStringList({"*set", "", "=", ""}));
 
     endInsertRows();
 

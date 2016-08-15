@@ -21,13 +21,15 @@ class CTextEdit : public QTextEdit
     Q_OBJECT
 
 public:
-    CTextEdit(QWidget * parent, QStringListModel * model, const QString & text = "");
+    CTextEdit(QWidget * parent, QStringListModel * model = Q_NULLPTR, const QString & text = "");
 
     void setCompleter(QCompleter * completer);
     QCompleter *completer() const;
 
     QStringListModel *model() const;
     void setModel(QStringListModel *model);
+
+    void setAlwaysEnabled(bool alwaysEnabled);
 
 protected:
     virtual void keyPressEvent(QKeyEvent *e) override;
@@ -39,9 +41,10 @@ private:
 
 protected:
     QCompleter * m_completer;
-    QStringListModel * m_model;
+    QStringListModel * m_completionModel;
     QStringListModel * m_filtered;
     bool m_enabled;
+    bool m_alwaysEnabled;
 
     bool m_acceptsReturn;
 

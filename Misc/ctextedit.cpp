@@ -2,10 +2,15 @@
 
 
 CTextEdit::CTextEdit(QWidget * parent, QStringListModel * model, const QString & text)
-    : QTextEdit(parent), m_completer(0), m_model(model), m_enabled(true), m_acceptsReturn(true), m_ctrlHeld(false)
+    : QTextEdit(parent), m_completer(0), m_completionModel(model), m_enabled(true), m_alwaysEnabled(false), m_acceptsReturn(true), m_ctrlHeld(false)
 {
-    m_filtered = new QStringListModel(this);
     setText(text);
+
+    if(!m_completionModel)
+        m_completionModel = new QStringListModel(this);
+
+    m_filtered = new QStringListModel(this);
+
     setCompleter(new QCompleter(m_filtered, this));
 }
 
@@ -17,18 +22,19 @@ void CTextEdit::setCompleter(QCompleter *completer)
 
     m_completer = completer;
 
-    if (!m_completer)
-        return;
+    if (m_completer)
+    {
+        m_completionModel->setParent(m_completer);
 
-    m_model->setParent(m_completer);
-    m_completer->setWidget(this);
-    m_completer->setCompletionMode(QCompleter::PopupCompletion);
-    m_completer->setCaseSensitivity(Qt::CaseInsensitive);
-    m_completer->setModelSorting(QCompleter::CaseInsensitivelySortedModel);
-    m_completer->setModel(m_filtered);
+        m_completer->setWidget(this);
+        m_completer->setCompletionMode(QCompleter::PopupCompletion);
+        m_completer->setCaseSensitivity(Qt::CaseInsensitive);
+        m_completer->setModelSorting(QCompleter::CaseInsensitivelySortedModel);
+        m_completer->setModel(m_filtered);
 
-    QObject::connect(m_completer, SIGNAL(activated(QString)),
-                     this, SLOT(insertCompletion(QString)));
+        QObject::connect(m_completer, SIGNAL(activated(QString)),
+                         this, SLOT(insertCompletion(QString)));
+    }
 }
 
 
@@ -63,14 +69,21 @@ QStringList *CTextEdit::listFromFile(const QString & fileName)
     return words;
 }
 
+void CTextEdit::setAlwaysEnabled(bool alwaysEnabled)
+{
+    m_alwaysEnabled = alwaysEnabled;
+    if(m_alwaysEnabled)
+        m_completer->popup();
+}
+
 QStringListModel *CTextEdit::model() const
 {
-    return m_model;
+    return m_completionModel;
 }
 
 void CTextEdit::setModel(QStringListModel *model)
 {
-    m_model = model;
+    m_completionModel = model;
 }
 
 
@@ -192,12 +205,12 @@ void CTextEdit::keyPressEvent(QKeyEvent *e)
     completionPrefix = completionPrefix.replace("$", "\\$");
     completionPrefix = completionPrefix.replace("{", "\\{");
 
-    QStringList filteredList = m_model->stringList().filter(QRegExp("*"+completionPrefix+"*", m_completer->caseSensitivity(), QRegExp::WildcardUnix));
+    QStringList filteredList = m_completionModel->stringList().filter(QRegExp("*"+completionPrefix+"*", m_completer->caseSensitivity(), QRegExp::WildcardUnix));
     m_filtered->setStringList(filteredList);
 
 
-    if ((!m_enabled) || (shiftMod || e->text().isEmpty() || (completionPrefix.isEmpty() && !isEscape) ||
-                         (!filteredList.isEmpty() && completionPrefix == filteredList.first())))
+    if (!m_alwaysEnabled && ((!m_enabled) || (shiftMod || e->text().isEmpty() || (completionPrefix.isEmpty() && !isEscape) ||
+                                              (!filteredList.isEmpty() && completionPrefix == filteredList.first()))))
     {
         m_completer->popup()->hide();
     }

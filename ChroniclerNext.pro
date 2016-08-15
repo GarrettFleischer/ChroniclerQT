@@ -69,7 +69,8 @@ HEADERS += \
     csettingsview.h \
     Misc/qactionmenu.h \
     Misc/Bubbles/cactionmodel.h \
-    Misc/clistbuttons.h
+    Misc/clistbuttons.h \
+    Misc/Bubbles/cactionedit.h
 
 SOURCES += \
     Bubbles/cactionbubble.cpp \
@@ -121,5 +122,5 @@ SOURCES += \
     main.cpp \
     Misc/qactionmenu.cpp \
     Misc/Bubbles/cactionmodel.cpp \
-    Misc/clistbuttons.cpp
-
+    Misc/clistbuttons.cpp \
+    Misc/Bubbles/cactionedit.cpp

@@ -6,7 +6,7 @@
 #include <QModelIndex>
 
 QT_BEGIN_NAMESPACE
-class QTableView;
+class QListView;
 QT_END_NAMESPACE
 
 class CActionBubble;
@@ -22,7 +22,7 @@ public:
     virtual void setBubble(CBubble *bbl) override;
 
 private:
-    QTableView *m_view;
+    QListView *m_view;
     CActionBubble *m_actionBubble;
 
 
@@ -31,10 +31,6 @@ private slots:
     void MoveDown();
     void AddItem();
     void RemoveItem();
-
-    void OpenPersistentEditors(QModelIndex parent, int first, int last);
-    void ClosePersistentEditors(QModelIndex parent, int first, int last);
-    void DataChanged(QModelIndex first, QModelIndex last, QVector<int> roles);
 };
 
 #endif // CACTIONPROPERTIES_H

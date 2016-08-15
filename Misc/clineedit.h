@@ -10,7 +10,7 @@
 class CLineEdit : public CTextEdit
 {
 public:
-    CLineEdit(QWidget *parent, QStringListModel *model, const QString &text = "");
+    CLineEdit(QWidget *parent, QStringListModel *model = Q_NULLPTR, const QString &text = "");
 
 public:
     void SetFont(const QFont &font);

@@ -4,7 +4,7 @@
 #include <QRectF>
 #include "Connections/cconnection.h"
 #include "Misc/ctextitem.h"
-#include "Misc/Bubbles/cactionmodel.h"
+#include "Misc/cstringlistmodel.h"
 
 #include "Misc/Palette/cpaletteaction.h"
 
@@ -19,7 +19,7 @@ CActionBubble::CActionBubble(const QPointF &pos, CPaletteAction *palette, const 
     m_actionsView = new CTextItem("", QRectF(), this);
     m_actionsView->SetStyle(Qt::AlignAbsolute | Qt::AlignVCenter);
 
-    m_actions = new CActionModel(this);
+    m_actions = new CStringListModel(this);
     connect(m_actions, SIGNAL(rowsInserted(QModelIndex,int,int)),
             this, SLOT(ModelUpdated()));
     connect(m_actions, SIGNAL(rowsMoved(QModelIndex,int,int,QModelIndex,int)),
@@ -76,33 +76,12 @@ QDataStream &CActionBubble::Deserialize(QDataStream &ds, const Chronicler::CVers
 {
     CSingleLinkBubble::Deserialize(ds, version);
 
-    if(version <= "0.9.5.0")
-    {
-        QStringList actions;
-        ds >> actions;
-
-        QList<QStringList> actionList;
-
-        for(const QString &str : actions)
-        {
-            QStringList lst = str.split(" ");
-            while(lst.length() < 4)
-                lst.append("");
-
-            actionList.append(lst);
-        }
-
-        m_actions->setActions(actionList);
-    }
-    else
-    {
-        QList<QStringList> actions;
-        ds >> actions;
-
-        m_actions->setActions(actions);
-    }
-
     setPalette(m_palette);
+
+    QStringList actions;
+    ds >> actions;
+
+    m_actions->setStringList(actions);
 
     return ds;
 }
@@ -111,12 +90,12 @@ QDataStream & CActionBubble::Serialize(QDataStream &ds)
 {
     CSingleLinkBubble::Serialize(ds);
 
-    ds << m_actions->actions();
+    ds << m_actions->stringList();
 
     return ds;
 }
 
-CActionModel *CActionBubble::actions()
+CStringListModel *CActionBubble::actions()
 {
     return m_actions;
 }
@@ -129,7 +108,8 @@ QString CActionBubble::actionString()
     for(int i = 0; i < lst.length() - 1; ++i)
         a += lst[i] + "\n";
 
-    a += lst.last();
+    if(!lst.isEmpty())
+        a += lst.last();
 
     return a;
 }

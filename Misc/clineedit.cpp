@@ -15,26 +15,14 @@ CLineEdit::CLineEdit(QWidget *parent, QStringListModel *model, const QString &te
     setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-    AdjustHeight();
+//    AdjustHeight();
 }
 
 void CLineEdit::SetFont(const QFont &font)
 {
     CTextEdit::setFont(font);
-    AdjustHeight();
+//    AdjustHeight();
 }
-
-//void CLineEdit::keyPressEvent(QKeyEvent *e)
-//{
-//    CTextEdit::keyPressEvent(e);
-
-//    if(e->key() == Qt::Key_Enter || e->key() == Qt::Key_Return)
-//    {
-//        QTextCursor cursor = textCursor();
-//        setPlainText(toPlainText().remove('\r').remove('\n'));
-//        setTextCursor(cursor);
-//    }
-//}
 
 void CLineEdit::AdjustHeight()
 {
