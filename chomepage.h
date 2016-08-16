@@ -37,7 +37,9 @@ signals:
 
 private slots:
     void RecentItemSelected(QListWidgetItem *item);
-    void Downloaded();
+    void NewsDownloaded();
+    void CheckForUpdates();
+    void UpdateDownloaded();
 };
 
 #endif // CHOMEPAGE_H

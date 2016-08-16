@@ -1,6 +1,5 @@
 #include "cvariablesdelegate.h"
 
-//#include <QComboBox>
 #include <QLineEdit>
 
 #include "Misc/Variables/cvariablesmodel.h"
