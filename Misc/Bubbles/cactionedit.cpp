@@ -138,6 +138,16 @@ void CActionEdit::UpdateCompletionModel()
                 m_completionModel->setStringList(m_variables);
             }
         }
+
+        // fourth word
+        else if(cursorIndex == 3)
+        {
+            if(action == "*set")
+            {
+                UpdateVariables();
+                m_completionModel->setStringList(m_variables);
+            }
+        }
     }
 
 }

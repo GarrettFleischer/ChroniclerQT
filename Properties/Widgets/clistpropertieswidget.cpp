@@ -40,7 +40,7 @@ CListPropertiesWidget::CListPropertiesWidget(QWidget *parent)
 
 
     m_modelView = new QListView();
-    m_modelView->setAlternatingRowColors(true);
+//    m_modelView->setAlternatingRowColors(true);
     m_modelView->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::EditKeyPressed);
     connect(m_modelView, SIGNAL(clicked(QModelIndex)), this, SLOT(SelectedChanged(QModelIndex)));
 

@@ -77,7 +77,7 @@ CProjectView::CProjectView(QWidget *parent)
     m_sceneModel = new CSceneModel(this);
 
     m_modelView = new QListView();
-    m_modelView->setAlternatingRowColors(true);
+//    m_modelView->setAlternatingRowColors(true);
     m_modelView->setModel(m_sceneModel);
     m_modelView->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::EditKeyPressed);
     connect(m_modelView, SIGNAL(clicked(QModelIndex)), this, SLOT(SelectedChanged(QModelIndex)));

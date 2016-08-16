@@ -13,10 +13,13 @@
 CPropertiesWidget::CPropertiesWidget(QWidget *parent)
     : QWidget(parent), m_bubble(0), m_labelEdit(0), m_lockEdit(0), m_orderEdit(0)
 {
+    static QRegExpValidator validator(QRegExp("[a-zA-Z][a-zA-Z0-9_]*"));
+
     // WIDGETS
-        // Title
+        // Label
         QLabel *lblTitle = new QLabel(tr("Label:"), this);
         m_labelEdit = new QLineEdit(this);
+        m_labelEdit->setValidator(&validator);
         connect(m_labelEdit, SIGNAL(textChanged(QString)), this, SLOT(LabelChanged(QString)));
 
         // Lock

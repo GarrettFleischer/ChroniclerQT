@@ -15,7 +15,7 @@ CActionProperties::CActionProperties(QWidget *parent)
 {
     m_view = new QListView();
     m_view->setItemDelegate(new CActionDelegate(this));
-    m_view->setAlternatingRowColors(true);
+//    m_view->setAlternatingRowColors(true);
     m_view->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::EditKeyPressed);
 
 
@@ -68,7 +68,7 @@ void CActionProperties::AddItem()
     m_actionBubble->actions()->AddItem("");
 
     m_view->setFocus();
-    m_view->edit(m_view->currentIndex());
+    m_view->edit(m_view->model()->index(m_view->model()->rowCount() - 1, 0));
 }
 
 void CActionProperties::RemoveItem()

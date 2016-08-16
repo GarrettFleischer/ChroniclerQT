@@ -21,14 +21,22 @@ QWidget *CVariablesDelegate::createEditor(QWidget *parent, const QStyleOptionVie
 {
     Q_UNUSED(option)
 
+    static QRegExpValidator validator(QRegExp("[a-zA-Z][a-zA-Z0-9_]*"));
+
     if(index.column() == 0)
     {
         CSceneComboBox *box = new CSceneComboBox(parent, shared().projectView->model());
         connect(box, SIGNAL(currentIndexChanged(int)), this, SLOT(PersistentEditorChanged()));
         return box;
     }
+    else if(index.column() == 1)
+    {
+        QLineEdit *line = new QLineEdit(parent);
+        line->setValidator(&validator);
+        return line;
+    }
 
-    return QStyledItemDelegate::createEditor(parent, option, index);
+    return new QLineEdit(parent);
 }
 
 void CVariablesDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const

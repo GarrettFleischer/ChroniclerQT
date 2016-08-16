@@ -27,6 +27,9 @@ private:
     CActionEdit *m_editor;
     QStringListModel *m_emptyModel;
 
+private slots:
+    void EditorUpdated();
+
 };
 
 #endif // CACTIONDELEGATE_H

@@ -1,6 +1,5 @@
 #include "ctextedit.h"
 
-
 CTextEdit::CTextEdit(QWidget * parent, QStringListModel * model, const QString & text)
     : QTextEdit(parent), m_completer(0), m_completionModel(model), m_enabled(true), m_alwaysEnabled(false), m_acceptsReturn(true), m_ctrlHeld(false)
 {
@@ -120,10 +119,9 @@ QString CTextEdit::textUnderCursor() const
     QTextCursor tc = textCursor();
     int offset = moveCursorToWordStart(tc);
 
-    for(int i = 0; i < offset; ++i)
-        tc.movePosition(tc.Right, QTextCursor::KeepAnchor);
+    tc.movePosition(tc.Right, QTextCursor::KeepAnchor, offset);
 
-    if(tc.selectedText() == "*" || tc.selectedText() == "$" || tc.selectedText() == "${" )
+    if(tc.selectedText() == "*" || tc.selectedText() == "$" || tc.selectedText() == "${")
         selected_text = tc.selectedText();
 
     tc.select(QTextCursor::WordUnderCursor);
@@ -222,6 +220,6 @@ void CTextEdit::keyPressEvent(QKeyEvent *e)
         cr.setWidth(m_completer->popup()->sizeHintForColumn(0)
                     + m_completer->popup()->verticalScrollBar()->sizeHint().width());
 
-        m_completer->complete(cr); // popup it up!
+        m_completer->complete(cr); // pop it up!
     }
 }

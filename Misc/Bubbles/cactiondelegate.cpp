@@ -12,6 +12,7 @@ CActionDelegate::CActionDelegate(QObject *parent)
     : QStyledItemDelegate(parent)
 {
     m_editor = new CActionEdit(Q_NULLPTR);
+    connect(m_editor, SIGNAL(textChanged()), this, SLOT(EditorUpdated()));
 }
 
 CActionDelegate::~CActionDelegate()
@@ -60,4 +61,11 @@ void CActionDelegate::destroyEditor(QWidget *editor, const QModelIndex &index) c
 {
     Q_UNUSED(editor)
     Q_UNUSED(index)
+}
+
+void CActionDelegate::EditorUpdated()
+{
+    QTextCursor c = m_editor->textCursor();
+    commitData(m_editor);
+    m_editor->setTextCursor(c);
 }
