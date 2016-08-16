@@ -9,6 +9,11 @@
 #include "cgraphicsview.h"
 #include "cgraphicsscene.h"
 
+#include "Bubbles/cbubble.h"
+#include "Bubbles/cactionbubble.h"
+
+#include "Misc/cstringlistmodel.h"
+
 #include "Misc/chronicler.h"
 using Chronicler::shared;
 
@@ -17,7 +22,10 @@ CActionEdit::CActionEdit(QWidget *parent)
 {
     setAlwaysEnabled(true);
 
-    m_actions.append({"*bug", "*comment", "*ending", "*finish", "*gosub", "*gosub_scene", "*goto", "*goto_scene", "*hide_reuse", "*image", "*input_number", "*input_text", "*label", "*line_break", "*page_break", "*rand", "*return", "*set"});
+    // insert actions alphabetically
+    m_actions.append({"*bug", "*comment", "*ending", "*finish", "*gosub", "*gosub_scene",
+                      "*goto", "*goto_scene", "*hide_reuse", "*image", "*input_number", "*input_text",
+                      "*label", "*line_break", "*page_break", "*rand", "*return", "*set"});
 
     connect(this, SIGNAL(cursorPositionChanged()), this, SLOT(UpdateCompletionModel()));
 }
@@ -32,15 +40,39 @@ void CActionEdit::UpdateVariables()
 
 void CActionEdit::UpdateLabels(const QString &scene)
 {
+    m_labels.clear();
+
     if(scene.isEmpty())
     {
+        CGraphicsView *currentView = dynamic_cast<CGraphicsView *>(shared().sceneTabs->currentWidget());
+        if(currentView)
+        {
+            for(CBubble *b : currentView->cScene()->bubbles())
+            {
+                if(b->getLabel().length())
+                    m_labels.append(b->getLabel());
 
+                if(b->getType() == Chronicler::Action)
+                {
+                    CActionBubble *ab = static_cast<CActionBubble *>(b);
+                    for(QString action : ab->actions()->stringList())
+                    {
+                        QStringList words = action.split(" ", QString::SkipEmptyParts);
+                        if(words.length() > 1 && words[0] == "*label")
+                            m_labels.append(words[1]);
+                    }
+                }
+            }
+        }
     }
 }
 
 void CActionEdit::UpdateScenes()
 {
+    m_scenes.clear();
 
+    for(CGraphicsView *v : shared().projectView->getViews())
+        m_scenes.append(v->cScene()->name());
 }
 
 void CActionEdit::UpdateCompletionModel()
@@ -52,6 +84,7 @@ void CActionEdit::UpdateCompletionModel()
 
     m_completionModel->setStringList({});
 
+    // first word
     if(cursorIndex == 0)
     {
         m_completionModel->setStringList(m_actions);
@@ -86,13 +119,24 @@ void CActionEdit::UpdateCompletionModel()
         // third word
         else if(cursorIndex == 2)
         {
+            // labels
+            if(action == "*gosub_scene")
+            {
+                UpdateLabels(words[1]);
+                m_completionModel->setStringList(m_labels);
+            }
 
-        }
+            // misc
+            else if(action == "*set")
+            {
+                UpdateVariables();
+                m_variables.prepend("%-");
+                m_variables.prepend("%+");
+                m_variables.prepend("-");
+                m_variables.prepend("+");
 
-        // fourth word
-        else if(cursorIndex == 3)
-        {
-
+                m_completionModel->setStringList(m_variables);
+            }
         }
     }
 
