@@ -19,7 +19,7 @@
 #include <QMessageBox>
 #include <QStatusBar>
 #include <QCoreApplication>
-#include <QProcess>
+#include <QDesktopServices>
 
 #include "cmainwindow.h"
 
@@ -165,26 +165,18 @@ void CHomepage::NewsDownloaded()
 
 void CHomepage::CheckForUpdates()
 {
-    QString server_string = m_downloader->downloadedData();
-    server_string.remove('\r');
-    const int first_line = server_string.indexOf("\n");
-    QString server_version = server_string.mid(0, first_line);
-    QString update_info = server_string.mid(first_line + 1);
-
-    qDebug() << server_string;
-    qDebug() << server_version;
-    qDebug() << update_info;
+    QString server_version = m_downloader->downloadedData();
 
     if(shared().ProgramVersion < server_version)
     {
         QMessageBox msgBox;
-        msgBox.setText(tr("Version ") + server_version + tr(" available.\n") + update_info);
+        msgBox.setText(tr("Version ") + server_version + tr(" available.\n"));
         msgBox.setInformativeText("Download now?");
-        msgBox.setStandardButtons(QMessageBox::Apply | QMessageBox::Ignore);
-        msgBox.setDefaultButton(QMessageBox::Apply);
+        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+        msgBox.setDefaultButton(QMessageBox::Yes);
         int ret = msgBox.exec();
 
-        if(ret == QMessageBox::Apply)
+        if(ret == QMessageBox::Yes)
         {
             shared().statusBar->showMessage("Downloading update...");
 
@@ -215,24 +207,32 @@ void CHomepage::UpdateDownloaded()
 {
     QByteArray ba(m_downloader->downloadedData());
 
-    QString update = QFileInfo(shared().settingsView->settings()->fileName()).absolutePath();
-
-#ifdef Q_OS_WIN
-            update += "/Chronicler-Next.exe";
-#endif
-#ifdef Q_OS_OSX
-            news +=  "";
-#endif
-#ifdef Q_OS_LINUX
-            news += "Chronicler-Next";
-#endif
-
     if(ba.length() > 0)
     {
-        QFile file(update);
+
+        QString downloaded_program = QFileInfo(shared().settingsView->settings()->fileName()).absolutePath();
+        QString program_updater;
+
+#ifdef Q_OS_WIN
+        downloaded_program += "/Chronicler-Next.exe";
+        program_updater = "/Chronicler_Updater.exe";
+#endif
+#ifdef Q_OS_OSX
+        downloaded_program += "";
+        program_updater = "";
+#endif
+#ifdef Q_OS_LINUX
+        downloaded_program += "/Chronicler-Next";
+        program_updater = "/Chronicler_Updater";
+#endif
+
+
+        QFile file(downloaded_program);
         file.open(QFile::WriteOnly);
         file.write(ba);
         file.close();
+
+        shared().statusBar->showMessage("Download complete.");
 
         QMessageBox msgBox;
         msgBox.setText(tr("Update has been downloaded. Chronicler must be restarted in order to apply the update."));
@@ -243,24 +243,11 @@ void CHomepage::UpdateDownloaded()
 
         if(ret == QMessageBox::Yes)
         {
-            QString program;
-
-#ifdef Q_OS_WIN
-            program = "Chronicler_Updater.exe";
-#endif
-#ifdef Q_OS_OSX
-            program =  "";
-#endif
-#ifdef Q_OS_LINUX
-            program = "Chronicler_Updater";
-#endif
-
-            qDebug() << "executing " + QCoreApplication::applicationDirPath() + "/" + program;
-            QProcess process;
-            process.start(QCoreApplication::applicationDirPath() + "/" + program);
-
             shared().mainWindow->close();
+            QDesktopServices::openUrl(QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + program_updater));
         }
     }
+    else
+        shared().statusBar->showMessage("An error occured while downloading update...");
 }
 

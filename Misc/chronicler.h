@@ -116,7 +116,7 @@ namespace Chronicler
     // Do NOT instantiate this struct, use shared() singleton access.
     struct SharedInstances
     {
-        CVersion ProgramVersion = CVersion("0.9.7.0");
+        CVersion ProgramVersion = CVersion("0.9.7.1");
 
         CMainWindow *mainWindow;
 
