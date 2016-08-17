@@ -212,24 +212,21 @@ void CHomepage::UpdateDownloaded()
     {
 
         QString downloaded_program = QFileInfo(shared().settingsView->settings()->fileName()).absolutePath();
-        QString program_updater;
 
 #ifdef Q_OS_WIN
         downloaded_program += "/Chronicler-Next.exe";
-        program_updater = "/Chronicler_Updater.exe";
 #endif
 #ifdef Q_OS_OSX
         downloaded_program += "";
-        program_updater = "";
 #endif
 #ifdef Q_OS_LINUX
         downloaded_program += "/Chronicler-Next";
-        program_updater = "/Chronicler_Updater";
 #endif
 
 
         QFile file(downloaded_program);
         file.open(QFile::WriteOnly);
+        file.setPermissions(QFileDevice::ReadUser | QFileDevice::WriteUser | QFileDevice::ExeUser);
         file.write(ba);
         file.close();
 
@@ -247,13 +244,13 @@ void CHomepage::UpdateDownloaded()
 
 #ifdef Q_OS_WIN
             shared().mainWindow->close();
-            QDesktopServices::openUrl(QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + program_updater));
+            QDesktopServices::openUrl(QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + "/Chronicler_Updater.exe"));
 #endif
 
 #ifdef Q_OS_LINUX
-            QProcess process;
-            process.startDetached(QCoreApplication::applicationDirPath() + program_updater);
-            shared().mainWindow->close();
+            QProcess *process = new QProcess();
+            connect(process, SIGNAL(finished(int)), shared().mainWindow, SLOT(close()));
+            process->start(QCoreApplication::applicationDirPath() + "/Chronicler_Updater");
 #endif
         }
     }
