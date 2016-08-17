@@ -20,6 +20,7 @@
 #include <QStatusBar>
 #include <QCoreApplication>
 #include <QDesktopServices>
+#include <QProcess>
 
 #include "cmainwindow.h"
 
@@ -243,8 +244,17 @@ void CHomepage::UpdateDownloaded()
 
         if(ret == QMessageBox::Yes)
         {
+
+#ifdef Q_OS_WIN
             shared().mainWindow->close();
             QDesktopServices::openUrl(QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + program_updater));
+#endif
+
+#ifdef Q_OS_LINUX
+            QProcess process;
+            process.startDetached(QCoreApplication::applicationDirPath() + program_updater);
+            shared().mainWindow->close();
+#endif
         }
     }
     else
