@@ -160,7 +160,7 @@ void CHomepage::NewsDownloaded()
     shared().statusBar->showMessage("Checking for updates...");
 
     m_downloader->deleteLater();
-    QString version = "https://www.dropbox.com/s/6y6ozos568pox4b/Chronicler_Version.txt?dl=1";
+    QString version = "https://dl.orangedox.com/zX8B0yt1PVVBPLP04V/Chronicler_Version.txt?dl=1";
     m_downloader = new CFileDownloader(QUrl(version), SLOT(CheckForUpdates()), this);
 }
 
@@ -185,13 +185,13 @@ void CHomepage::CheckForUpdates()
 
             QString update;
 #ifdef Q_OS_WIN
-            update = "https://www.dropbox.com/s/07e6zjvino75hh5/Chronicler-Next.exe?dl=1";
+            update = "https://dl.orangedox.com/dyxG0UfWBkJXHq8e7b/Chronicler-Next.exe?dl=1";
 #endif
 #ifdef Q_OS_OSX
             update = "";
 #endif
 #ifdef Q_OS_LINUX
-            update = "https://www.dropbox.com/s/119iwpun4lxo16w/Chronicler-Next?dl=1";
+            update = "https://dl.orangedox.com/XWv5CcPVPIlNEmMxQA/Chronicler-Next?dl=1";
 #endif
 
             if(!update.isEmpty())

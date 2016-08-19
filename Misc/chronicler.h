@@ -116,7 +116,7 @@ namespace Chronicler
     // Do NOT instantiate this struct, use shared() singleton access.
     struct SharedInstances
     {
-        CVersion ProgramVersion = CVersion("0.9.7.1");
+        CVersion ProgramVersion = CVersion("0.9.8.1");
 
         CMainWindow *mainWindow;
 
@@ -146,6 +146,7 @@ namespace Chronicler
         QAction *exitAction;
         QAction *deleteAction;
         QAction *copyAction;
+        QAction *pasteAction;
         QAction *aboutAction;
         QAction *settingsAction;
         QAction *newProjectAction;

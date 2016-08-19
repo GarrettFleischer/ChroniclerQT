@@ -412,7 +412,7 @@ QList<CGraphicsView *> CProjectView::getViews()
 
 CBubble *CProjectView::BubbleWithUID(uint uid)
 {
-    CBubble *bubble = 0;
+    CBubble *bubble = Q_NULLPTR;
 
     for(CGraphicsView *view : m_sceneModel->views())
     {
@@ -423,7 +423,7 @@ CBubble *CProjectView::BubbleWithUID(uint uid)
         }
     }
 
-    return 0;
+    return Q_NULLPTR;
 }
 
 const CVersion &CProjectView::getVersion() const

@@ -49,6 +49,8 @@ public:
 
     void ConnectToUIDs();
 
+    bool isConnected() const;
+
 protected:
     virtual QDataStream &Deserialize(QDataStream &stream, const CVersion &version) override;
     virtual QDataStream &Serialize(QDataStream &stream) override;
@@ -61,6 +63,8 @@ private:
 
     t_uid m_fromUID;
     t_uid m_toUID;
+
+    bool m_connected;
     
 signals:
     

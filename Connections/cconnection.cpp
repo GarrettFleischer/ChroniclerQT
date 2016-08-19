@@ -1,14 +1,13 @@
 #include "cconnection.h"
 
 #include <QPointF>
-#include <QGraphicsScene>
 #include <QtMath>
 
 #include "cline.h"
 #include "Bubbles/cbubble.h"
 
 #include "Properties/cprojectview.h"
-//#include "cgraphicsscene.h"
+#include "cgraphicsscene.h"
 
 #include "Misc/chronicler.h"
 using Chronicler::shared;
@@ -18,7 +17,7 @@ CConnection::CConnection(QGraphicsScene *scn)
 {}
 
 CConnection::CConnection(CBubble *from, CBubble *to, Anchor anc_from, Anchor anc_to, QGraphicsScene *scn)
-    : m_from(0), m_to(0), m_fromUID(0), m_toUID(0)
+    : m_from(0), m_to(0), m_fromUID(0), m_toUID(0), m_connected(false)
 {
     m_line = new CLine(QPointF(), QPointF(), anc_from, anc_to);
     m_line->setZValue(-999999);
@@ -157,8 +156,19 @@ void CConnection::setEndAnchor(Chronicler::Anchor anchor)
  */
 void CConnection::ConnectToUIDs()
 {
-    setFrom(shared().projectView->BubbleWithUID(m_fromUID));
-    setTo(shared().projectView->BubbleWithUID(m_toUID));
+    CBubble *from = shared().projectView->BubbleWithUID(m_fromUID);
+    CBubble *to = shared().projectView->BubbleWithUID(m_toUID);
+
+    if(from && to)
+    {
+        setFrom(from);
+        setTo(to);
+        m_connected = true;
+    }
+    else if(from)
+        from->RemoveLink(startAnchor());
+    else
+        static_cast<CGraphicsScene *>(scene())->RemoveConnection(this);
 }
 
 /**
@@ -180,6 +190,7 @@ QDataStream & CConnection::Deserialize(QDataStream &stream, const Chronicler::CV
 
     m_line->setStartAnchor(Anchor(start));
     m_line->setEndAnchor(Anchor(end));
+    m_connected = false;
 
     return stream;
 }
@@ -197,5 +208,10 @@ QDataStream & CConnection::Serialize(QDataStream &stream)
            << m_to->GenerateUID();
 
     return stream;
+}
+
+bool CConnection::isConnected() const
+{
+    return m_connected;
 }
 

@@ -8,14 +8,19 @@
 #include <QSettings>
 #include <QMessageBox>
 #include <QStatusBar>
+#include <QMimeData>
+#include <QClipboard>
+#include <QCursor>
 
 #include "cgraphicsscene.h"
 #include "Bubbles/cstorybubble.h"
+#include "Bubbles/cstartbubble.h"
 #include "cgraphicsview.h"
 #include "chomepage.h"
 #include "Properties/cdockmanager.h"
 #include "csettingsview.h"
 #include "Properties/cprojectview.h"
+#include "Connections/cconnection.h"
 
 #include "Properties/cpalettecreator.h"
 #include "Misc/Palette/cpalettebutton.h"
@@ -81,7 +86,7 @@ CMainWindow::CMainWindow(QSettings *settings, const QString &filename)
 }
 
 
-void CMainWindow::DeleteItem()
+void CMainWindow::DeleteSelectedItems()
 {
     shared().dockManager->setBubble(0);
 
@@ -94,6 +99,92 @@ void CMainWindow::DeleteItem()
             CBubble *bubble = dynamic_cast<CBubble *>(item);
             if(bubble && bubble->getType() != Chronicler::Start)
                 bubble->deleteLater();
+        }
+    }
+}
+
+void CMainWindow::CopySelectedItems()
+{
+    CGraphicsView *view = dynamic_cast<CGraphicsView *>(shared().sceneTabs->currentWidget());
+
+    if(view)
+    {
+        // deselect start bubble
+        bool start_selected = view->cScene()->startBubble()->isSelected();
+        view->cScene()->startBubble()->setSelected(false);
+
+        if(view->cScene()->selectedItems().length())
+        {
+            QMimeData *data = new QMimeData();
+            QByteArray ba;
+            QDataStream ds(&ba, QIODevice::WriteOnly);
+            QPointF topLeft = view->cScene()->selectedItems().first()->pos();
+
+            // serialize bubbles & calculate top left
+            ds << static_cast<qint32>(view->cScene()->selectedItems().length());
+            for(QGraphicsItem *item : view->cScene()->selectedItems())
+            {
+                CBubble *bubble = dynamic_cast<CBubble *>(item);
+                if(bubble)
+                {
+                    ds << *bubble;
+
+                    if(bubble->pos().x() < topLeft.x() && bubble->pos().y() < topLeft.y())
+                        topLeft = bubble->pos();
+                }
+            }
+            ds << topLeft;
+
+            // copy to clipboard
+            data->setData("CopyBubbles", ba);
+            QApplication::clipboard()->setMimeData(data);
+        }
+
+        view->cScene()->startBubble()->setSelected(start_selected);
+    }
+}
+
+void CMainWindow::PasteItems()
+{
+    CGraphicsView *view = dynamic_cast<CGraphicsView *>(shared().sceneTabs->currentWidget());
+
+    if(view)
+    {
+        QDataStream ds(QApplication::clipboard()->mimeData()->data("CopyBubbles"));
+
+        if(!ds.atEnd())
+        {
+            qint32 len, t;
+            CBubble *bbl;
+
+            // deselect all
+            for(QGraphicsItem *item : view->cScene()->selectedItems())
+                item->setSelected(false);
+
+            // deserialize bubbles
+            ds >> len;
+            for(int i = 0; i < len; ++i)
+            {
+                ds >> t;
+                bbl = view->cScene()->AddBubble(Chronicler::BubbleType(t), QPointF(), false);
+                bbl->setSelected(true);
+                ds >> *bbl;
+            }
+
+            // calculate & move items to new offset
+            QPointF newPoint = view->mapToScene(view->mapFromGlobal(QCursor::pos()));
+            QPointF oldPoint;
+            ds >> oldPoint;
+            int diffx = newPoint.x() - oldPoint.x();
+            int diffy = newPoint.y() - oldPoint.y();
+
+            for(QGraphicsItem *item : view->cScene()->selectedItems())
+                item->moveBy(diffx, diffy);
+
+            // hook up deserialized connections (more efficient if done after move)
+            for(CConnection *connection : view->cScene()->connections())
+                if(!connection->isConnected())
+                    connection->ConnectToUIDs();
         }
     }
 }
@@ -216,10 +307,20 @@ void CMainWindow::ShowAbout()
 
 void CMainWindow::CreateActions()
 {
+    shared().copyAction = new QAction(QIcon(":/images/icn_copy"), tr("&Copy"), this);
+    shared().copyAction->setShortcut(QKeySequence::Copy);
+    shared().copyAction->setToolTip(tr("Copy selected bubbles to the clipboard"));
+    connect(shared().copyAction, SIGNAL(triggered()), this, SLOT(CopySelectedItems()));
+
+    shared().pasteAction = new QAction(QIcon(":/images/icn_paste"), tr("&Paste"), this);
+    shared().pasteAction->setShortcut(QKeySequence::Paste);
+    shared().pasteAction->setToolTip(tr("Paste bubbles from the clipboard"));
+    connect(shared().pasteAction, SIGNAL(triggered()), this, SLOT(PasteItems()));
+
     shared().deleteAction = new QAction(QIcon(":/images/icn_trash.png"), tr("&Delete"), this);
     shared().deleteAction->setShortcut(QKeySequence::Delete);
-    shared().deleteAction->setToolTip(tr("Delete selected bubble(S)"));
-    connect(shared().deleteAction, SIGNAL(triggered()), this, SLOT(DeleteItem()));
+    shared().deleteAction->setToolTip(tr("Delete selected bubbles"));
+    connect(shared().deleteAction, SIGNAL(triggered()), this, SLOT(DeleteSelectedItems()));
 
     shared().exitAction = new QAction(QIcon(":/images/icn_exit.png"), tr("E&xit"), this);
     shared().exitAction->setShortcuts(QKeySequence::Quit);
@@ -298,6 +399,8 @@ void CMainWindow::CreateMenus()
     shared().fileMenu->addAction(shared().exitAction);
 
     shared().editMenu = menuBar()->addMenu(tr("&Edit"));
+    shared().editMenu->addAction(shared().copyAction);
+    shared().editMenu->addAction(shared().pasteAction);
     shared().editMenu->addAction(shared().deleteAction);
 
     shared().viewMenu = menuBar()->addMenu(tr("&View"));

@@ -98,7 +98,9 @@ private slots:
     void SaveProject();
     void SaveAsProject();
 
-    void DeleteItem();
+    void DeleteSelectedItems();
+    void CopySelectedItems();
+    void PasteItems();
     void TabClosed(int);
     void SettingsChanged();
 

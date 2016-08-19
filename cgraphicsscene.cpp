@@ -417,7 +417,7 @@ void CGraphicsScene::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
     else if(shared().cursorMode == Chronicler::Cursor)
     {
         CBubble *bbl = BubbleAt(event->scenePos());
-        if(!bbl->isSelected())
+        if(bbl && !bbl->isSelected())
         {
             bbl->scene()->clearSelection();
             bbl->setSelected(true);
