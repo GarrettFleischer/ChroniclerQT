@@ -157,6 +157,8 @@ void CMainWindow::PasteItems()
             qint32 len, t;
             CBubble *bbl;
 
+
+
             // deselect all
             for(QGraphicsItem *item : view->cScene()->selectedItems())
                 item->setSelected(false);
@@ -184,7 +186,13 @@ void CMainWindow::PasteItems()
             // hook up deserialized connections (more efficient if done after move)
             for(CConnection *connection : view->cScene()->connections())
                 if(!connection->isConnected())
-                    connection->ConnectToUIDs();
+                    connection->ConnectToUIDs(true);
+
+            for(QGraphicsItem *item : view->cScene()->selectedItems())
+            {
+                if((bbl = dynamic_cast<CBubble *>(item)))
+                    bbl->UpdateUID();
+            }
         }
     }
 }

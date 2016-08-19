@@ -426,6 +426,19 @@ CBubble *CProjectView::BubbleWithUID(uint uid)
     return Q_NULLPTR;
 }
 
+CBubble *CProjectView::BubbleWithUID(uint uid, QGraphicsScene *scene)
+{
+    CBubble *bubble = Q_NULLPTR;
+
+    for(QGraphicsItem *item : scene->items())
+    {
+        if((bubble = dynamic_cast<CBubble *>(item)) && (bubble->getUID() == uid))
+            return bubble;
+    }
+
+    return Q_NULLPTR;
+}
+
 const CVersion &CProjectView::getVersion() const
 {
     return m_version;

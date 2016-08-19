@@ -72,7 +72,10 @@ public:
     virtual Anchor InputAnchorAtPosition(const QPointF &pos);
 
     t_uid getUID();
+    virtual void UpdateUID();
     t_uid GenerateUID();
+
+
 
 protected:
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *evt) override;

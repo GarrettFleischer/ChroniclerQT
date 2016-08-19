@@ -10,6 +10,7 @@ class QMenu;
 class QLineEdit;
 class QSaveFile;
 class QTextStream;
+class QGraphicsScene;
 QT_END_NAMESPACE
 
 #include <QModelIndex>
@@ -34,6 +35,7 @@ public:
     QList<CGraphicsView *> getViews();
 
     CBubble *BubbleWithUID(uint uid);
+    CBubble *BubbleWithUID(uint uid, QGraphicsScene *scene);
 
     const CVersion &getVersion() const;
 

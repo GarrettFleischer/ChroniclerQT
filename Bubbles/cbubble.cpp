@@ -146,6 +146,11 @@ void CBubble::AddUID(t_uid uid)
         m_UIDs.append(uid);
 }
 
+void CBubble::UpdateUID()
+{
+    m_UID = GenerateUID();
+}
+
 t_uid CBubble::GenerateUID()
 {
     return reinterpret_cast<t_uid>(this);

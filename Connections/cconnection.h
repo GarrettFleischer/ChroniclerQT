@@ -47,7 +47,7 @@ public:
     Anchor endAnchor() const;
     void setEndAnchor(Anchor anchor);
 
-    void ConnectToUIDs();
+    void ConnectToUIDs(bool paste = false);
 
     bool isConnected() const;
 

@@ -154,10 +154,20 @@ void CConnection::setEndAnchor(Chronicler::Anchor anchor)
  *
  *        To be called only after all bubbles have been instantiated
  */
-void CConnection::ConnectToUIDs()
+void CConnection::ConnectToUIDs(bool paste)
 {
-    CBubble *from = shared().projectView->BubbleWithUID(m_fromUID);
-    CBubble *to = shared().projectView->BubbleWithUID(m_toUID);
+    CBubble *from, *to;
+
+    if(paste)
+    {
+        from = shared().projectView->BubbleWithUID(m_fromUID, scene());
+        to = shared().projectView->BubbleWithUID(m_toUID, scene());
+    }
+    else
+    {
+        from = shared().projectView->BubbleWithUID(m_fromUID);
+        to = shared().projectView->BubbleWithUID(m_toUID);
+    }
 
     if(from && to)
     {
@@ -165,10 +175,15 @@ void CConnection::ConnectToUIDs()
         setTo(to);
         m_connected = true;
     }
-    else if(from)
-        from->RemoveLink(startAnchor());
     else
-        static_cast<CGraphicsScene *>(scene())->RemoveConnection(this);
+    {
+        if(from)
+            from->RemoveLink(startAnchor());
+        else
+            static_cast<CGraphicsScene *>(scene())->RemoveConnection(this);
+
+        deleteLater();
+    }
 }
 
 /**

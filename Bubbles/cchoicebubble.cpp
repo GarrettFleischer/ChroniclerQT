@@ -160,3 +160,12 @@ QDataStream & CChoiceBubble::Serialize(QDataStream &ds)
 
     return ds;
 }
+
+
+void CChoiceBubble::UpdateUID()
+{
+    CBubble::UpdateUID();
+
+    for(CChoice *choice : m_choices->choices())
+        choice->UpdateUID();
+}

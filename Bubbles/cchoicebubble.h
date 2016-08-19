@@ -43,6 +43,10 @@ private:
 private slots:
     void ModelUpdated();
 
+
+    // CBubble interface
+public:
+    virtual void UpdateUID() Q_DECL_OVERRIDE;
 };
 
 #endif // CCHOICEBUBBLE_H
