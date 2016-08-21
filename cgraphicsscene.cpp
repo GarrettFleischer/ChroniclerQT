@@ -344,33 +344,43 @@ void CGraphicsScene::keyReleaseEvent(QKeyEvent *event)
 
 CBubble * CGraphicsScene::AddBubble(BubbleType type, const QPointF &pos, bool shift)
 {
-    CBubble *bbl = 0;
+    CBubble *bubble = 0;
     if(type == Chronicler::Story)
-        bbl = new CStoryBubble(pos, shared().defaultStory, m_font);
+        bubble = new CStoryBubble(pos, shared().defaultStory, m_font);
     else if(type == Chronicler::Condition)
-        bbl = new CConditionBubble(pos, shared().defaultCondition, m_font);
+        bubble = new CConditionBubble(pos, shared().defaultCondition, m_font);
     else if(type == Chronicler::Action)
-        bbl = new CActionBubble(pos, shared().defaultAction, m_font);
+        bubble = new CActionBubble(pos, shared().defaultAction, m_font);
     else if(type == Chronicler::Choice)
-        bbl = new CChoiceBubble(pos, shared().defaultChoice, m_font);
+        bubble = new CChoiceBubble(pos, shared().defaultChoice, m_font);
     else if(type == Chronicler::Start)
-        bbl = new CStartBubble(pos, shared().defaultStart, m_font);
+        bubble = new CStartBubble(pos, shared().defaultStart, m_font);
 
-    if(bbl)
+    if(bubble)
     {
-        connect(bbl, SIGNAL(Selected(QGraphicsItem*)), this, SIGNAL(itemSelected(QGraphicsItem*)));
-        addItem(bbl);
-        bbl->setSelected(true);
+        connect(bubble, SIGNAL(Selected(QGraphicsItem*)), this, SIGNAL(itemSelected(QGraphicsItem*)));
+        addItem(bubble);
+        bubble->setSelected(true);
 
-        m_bubbles.append(bbl);
+        m_bubbles.append(bubble);
 
         if(!shift)
             shared().setMode(Chronicler::Cursor);
 
-        emit itemInserted(bbl);
+        emit itemInserted(bubble);
     }
 
-    return bbl;
+    return bubble;
+}
+
+void CGraphicsScene::AddBubble(CBubble *bubble)
+{
+    connect(bubble, SIGNAL(Selected(QGraphicsItem*)), this, SIGNAL(itemSelected(QGraphicsItem*)));
+
+    addItem(bubble);
+    m_bubbles.append(bubble);
+
+    emit itemInserted(bubble);
 }
 
 CConnection *CGraphicsScene::AddConnection(CBubble *start, CBubble *end, Anchor start_anchor, Anchor end_anchor)
@@ -391,6 +401,8 @@ CConnection *CGraphicsScene::AddConnection()
 
 void CGraphicsScene::RemoveBubble(CBubble *bubble)
 {
+    disconnect(bubble, SIGNAL(Selected(QGraphicsItem*)), this, SIGNAL(itemSelected(QGraphicsItem*)));
+    removeItem(bubble);
     m_bubbles.removeAll(bubble);
 }
 

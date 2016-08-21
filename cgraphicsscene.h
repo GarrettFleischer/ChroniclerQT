@@ -85,6 +85,7 @@ public:
     bool isRubberBandSelecting() const { return m_rubberBand; }
 
     CBubble *AddBubble(BubbleType type, const QPointF &pos, bool shift);
+    void AddBubble(CBubble *bubble);
     CConnection *AddConnection(CBubble *start, CBubble *end, Chronicler::Anchor start_anchor, Chronicler::Anchor end_anchor);
     CConnection *AddConnection();
 

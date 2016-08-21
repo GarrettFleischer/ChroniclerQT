@@ -70,7 +70,10 @@ HEADERS += \
     Misc/qactionmenu.h \
     Misc/Bubbles/cactionmodel.h \
     Misc/clistbuttons.h \
-    Misc/Bubbles/cactionedit.h
+    Misc/Bubbles/cactionedit.h \
+    Misc/History/cmovebubblecommand.h \
+    Misc/History/cremovebubblescommand.h \
+    Misc/History/caddbubblescommand.h
 
 SOURCES += \
     Bubbles/cactionbubble.cpp \
@@ -123,4 +126,7 @@ SOURCES += \
     Misc/qactionmenu.cpp \
     Misc/Bubbles/cactionmodel.cpp \
     Misc/clistbuttons.cpp \
-    Misc/Bubbles/cactionedit.cpp
+    Misc/Bubbles/cactionedit.cpp \
+    Misc/History/cmovebubblecommand.cpp \
+    Misc/History/cremovebubblescommand.cpp \
+    Misc/History/caddbubblescommand.cpp

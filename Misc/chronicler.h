@@ -12,6 +12,7 @@ class QButtonGroup;
 class QDockWidget;
 class QStringListModel;
 class QStatusBar;
+class QUndoStack;
 QT_END_NAMESPACE
 
 class CMainWindow;
@@ -156,6 +157,10 @@ namespace Chronicler
         QAction *saveAsProjectAction;
         QAction *showHomepageAction;
         QAction *showDockAction;
+        QAction *undoAction;
+        QAction *redoAction;
+
+        QUndoStack *history;
 
         CPaletteAction *defaultStory;
         CPaletteAction *defaultChoice;

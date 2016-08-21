@@ -21,6 +21,7 @@
 #include "csettingsview.h"
 #include "Properties/cprojectview.h"
 #include "Connections/cconnection.h"
+#include "Misc/History/cremovebubblescommand.h"
 
 #include "Properties/cpalettecreator.h"
 #include "Misc/Palette/cpalettebutton.h"
@@ -45,6 +46,8 @@ CMainWindow::CMainWindow(QSettings *settings, const QString &filename)
     connect(shared().settingsView, SIGNAL(SettingsChanged()),
             this, SLOT(SettingsChanged()));
     SettingsChanged();
+
+    shared().history = new QUndoStack(this);
 
     CreateActions();
     CreateMenus();
@@ -94,12 +97,17 @@ void CMainWindow::DeleteSelectedItems()
 
     if(view)
     {
+        QList<CBubble *> bubbles;
+
         for(QGraphicsItem *item : view->cScene()->selectedItems())
         {
             CBubble *bubble = dynamic_cast<CBubble *>(item);
             if(bubble && bubble->getType() != Chronicler::Start)
-                bubble->deleteLater();
+                bubbles.append(bubble);
         }
+
+        if(!bubbles.isEmpty())
+            shared().history->push(new CRemoveBubblesCommand(view->cScene(), bubbles));
     }
 }
 
@@ -376,6 +384,14 @@ void CMainWindow::CreateActions()
     escape_action->setShortcut(QKeySequence::Deselect);
     connect(escape_action, SIGNAL(triggered(bool)), this, SLOT(EscapePressed()));
 
+    shared().undoAction = new QAction(QIcon(":/images/icn_undo"), tr("&Undo"), this);
+    shared().undoAction->setShortcut(QKeySequence::Undo);
+    connect(shared().undoAction, SIGNAL(triggered()), shared().history, SLOT(undo()));
+
+    shared().redoAction = new QAction(QIcon(":/images/icn_redo"), tr("&Redo"), this);
+    shared().redoAction->setShortcut(QKeySequence::Redo);
+    connect(shared().redoAction, SIGNAL(triggered()), shared().history, SLOT(redo()));
+
     // Default Palettes
     CPalette dp_story, dp_choice, dp_action, dp_condition, dp_start;
     dp_story.fill = QColor(124, 140, 230);
@@ -406,7 +422,11 @@ void CMainWindow::CreateMenus()
     shared().fileMenu->addSeparator();
     shared().fileMenu->addAction(shared().exitAction);
 
+    // TODO - disable undo/redo actions if unavailable
     shared().editMenu = menuBar()->addMenu(tr("&Edit"));
+    shared().editMenu->addAction(shared().undoAction);
+    shared().editMenu->addAction(shared().redoAction);
+    shared().editMenu->addSeparator();
     shared().editMenu->addAction(shared().copyAction);
     shared().editMenu->addAction(shared().pasteAction);
     shared().editMenu->addAction(shared().deleteAction);

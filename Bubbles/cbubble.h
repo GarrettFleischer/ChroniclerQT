@@ -118,6 +118,8 @@ protected:
 private:
     Anchor AnchorAtPosition(const QPointF &pos);
 
+    QPointF m_oldPos;
+
     // for backwards compatability
     static QList<t_uid> m_UIDs;
     
