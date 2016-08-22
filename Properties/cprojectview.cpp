@@ -77,7 +77,7 @@ CProjectView::CProjectView(QWidget *parent)
     m_sceneModel = new CSceneModel(this);
 
     m_modelView = new QListView();
-//    m_modelView->setAlternatingRowColors(true);
+    //    m_modelView->setAlternatingRowColors(true);
     m_modelView->setModel(m_sceneModel);
     m_modelView->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::EditKeyPressed);
     connect(m_modelView, SIGNAL(clicked(QModelIndex)), this, SLOT(SelectedChanged(QModelIndex)));
@@ -218,6 +218,7 @@ void CProjectView::SaveToFile(QSaveFile &file)
 void CProjectView::OpenProject(QString filepath)
 {
     CloseProject();
+    shared().importSceneAction->setEnabled(true);
 
     QFile file(filepath);
     while(!file.open(QIODevice::ReadOnly))
@@ -294,8 +295,7 @@ void CProjectView::ImportChoiceScript(const QString &filepath)
     CIndentSelectionDialog dialog(this);
     dialog.exec();
 
-    CSIndent csindent = dialog.getIndent();
-    ChoiceScriptData csdata(file, csindent);
+    ChoiceScriptData csdata(file, dialog.getIndent());
     m_sceneModel->setViews(csdata.getViews());
     shared().variablesView->model()->setVariables(csdata.getVariables());
     m_title->setText(csdata.getTitle());
@@ -305,6 +305,29 @@ void CProjectView::ImportChoiceScript(const QString &filepath)
 
     SaveProjectAs();
     OpenProject(m_path);
+}
+
+void CProjectView::ImportChoiceScriptScene()
+{
+    QFile file;
+    while(!file.open(QIODevice::ReadOnly))
+    {
+        file.setFileName(QFileDialog::getOpenFileName(this, "Open", "", "ChoiceScript scene (*.txt)"));
+        if(!file.fileName().length())
+            return; // quit if user hits cancel
+    }
+    file.close();
+
+    CIndentSelectionDialog dialog(this);
+    dialog.exec();
+
+    ChoiceScriptData csdata(QFileInfo(file).absoluteFilePath(), dialog.getIndent());
+    m_sceneModel->AddItem(csdata.getViews().first());
+
+    for(const CVariable &var : csdata.getVariables())
+        if(!shared().variablesView->model()->variables().contains(var))
+            shared().variablesView->model()->AddItem(var);
+
 }
 
 void CProjectView::NewProject()
@@ -328,6 +351,8 @@ void CProjectView::NewProject()
 
 void CProjectView::CloseProject()
 {
+    shared().importSceneAction->setEnabled(false);
+
     m_title->setText("");
     m_path = "";
 

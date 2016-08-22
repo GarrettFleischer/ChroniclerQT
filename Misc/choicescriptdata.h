@@ -24,6 +24,7 @@ class ChoiceScriptData : public QObject
 
 public:
     ChoiceScriptData(QFile &startup, const Chronicler::CSIndent &csindent);
+    ChoiceScriptData(const QString &fileName, const Chronicler::CSIndent &csindent);
 
     QList<CGraphicsView *> getViews();
     QList<CVariable> getVariables();

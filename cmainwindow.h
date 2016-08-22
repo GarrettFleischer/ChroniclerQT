@@ -95,6 +95,7 @@ private slots:
     void NewProject();
     void OpenProject();
     void ImportProject();
+    void ImportScene();
     void SaveProject();
     void SaveAsProject();
 

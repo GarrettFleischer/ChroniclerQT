@@ -226,6 +226,11 @@ void CMainWindow::ImportProject()
     shared().projectView->ImportChoiceScript();
 }
 
+void CMainWindow::ImportScene()
+{
+    shared().projectView->ImportChoiceScriptScene();
+}
+
 void CMainWindow::SaveProject()
 {
     shared().projectView->SaveProject();
@@ -364,6 +369,11 @@ void CMainWindow::CreateActions()
     shared().importProjectAction->setToolTip(tr("Import ChoiceScript Project"));
     connect(shared().importProjectAction, SIGNAL(triggered(bool)), this, SLOT(ImportProject()));
 
+    shared().importSceneAction = new QAction(QIcon(":/images/icn_loadcs"), tr("Import Scene"), this);
+    shared().importSceneAction->setToolTip(tr("Import Single ChoiceScript Scene"));
+    shared().importSceneAction->setEnabled(false);
+    connect(shared().importSceneAction, SIGNAL(triggered(bool)), this, SLOT(ImportScene()));
+
     shared().saveProjectAction = new QAction(QIcon(":/images/icn_save"), tr("Save"), this);
     shared().saveProjectAction->setShortcut(QKeySequence::Save);
     shared().saveProjectAction->setToolTip(tr("Save Project"));
@@ -384,13 +394,15 @@ void CMainWindow::CreateActions()
     escape_action->setShortcut(QKeySequence::Deselect);
     connect(escape_action, SIGNAL(triggered(bool)), this, SLOT(EscapePressed()));
 
-    shared().undoAction = new QAction(QIcon(":/images/icn_undo"), tr("&Undo"), this);
-    shared().undoAction->setShortcut(QKeySequence::Undo);
-    connect(shared().undoAction, SIGNAL(triggered()), shared().history, SLOT(undo()));
+//    shared().undoAction = shared().history->createUndoAction(this);
+//    shared().undoAction->setIcon(QIcon(":/images/icn_undo"));
+//    shared().undoAction->setShortcut(QKeySequence::Undo);
+//    connect(shared().undoAction, SIGNAL(triggered()), shared().history, SLOT(undo()));
 
-    shared().redoAction = new QAction(QIcon(":/images/icn_redo"), tr("&Redo"), this);
-    shared().redoAction->setShortcut(QKeySequence::Redo);
-    connect(shared().redoAction, SIGNAL(triggered()), shared().history, SLOT(redo()));
+//    shared().redoAction = shared().history->createRedoAction(this);
+//    shared().redoAction->setIcon(QIcon(":/images/icn_redo"));
+//    shared().redoAction->setShortcut(QKeySequence::Redo);
+//    connect(shared().redoAction, SIGNAL(triggered()), shared().history, SLOT(redo()));
 
     // Default Palettes
     CPalette dp_story, dp_choice, dp_action, dp_condition, dp_start;
@@ -414,6 +426,7 @@ void CMainWindow::CreateMenus()
     shared().fileMenu->addAction(shared().newProjectAction);
     shared().fileMenu->addAction(shared().openProjectAction);
     shared().fileMenu->addAction(shared().importProjectAction);
+    shared().fileMenu->addAction(shared().importSceneAction);
     shared().fileMenu->addSeparator();
     shared().fileMenu->addAction(shared().saveProjectAction);
     shared().fileMenu->addAction(shared().saveAsProjectAction);
@@ -422,11 +435,10 @@ void CMainWindow::CreateMenus()
     shared().fileMenu->addSeparator();
     shared().fileMenu->addAction(shared().exitAction);
 
-    // TODO - disable undo/redo actions if unavailable
     shared().editMenu = menuBar()->addMenu(tr("&Edit"));
-    shared().editMenu->addAction(shared().undoAction);
-    shared().editMenu->addAction(shared().redoAction);
-    shared().editMenu->addSeparator();
+//    shared().editMenu->addAction(shared().undoAction);
+//    shared().editMenu->addAction(shared().redoAction);
+//    shared().editMenu->addSeparator();
     shared().editMenu->addAction(shared().copyAction);
     shared().editMenu->addAction(shared().pasteAction);
     shared().editMenu->addAction(shared().deleteAction);

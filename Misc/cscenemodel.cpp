@@ -27,7 +27,7 @@ bool CSceneModel::setData(const QModelIndex &index, const QVariant &value, int r
 {
     if (index.isValid() && (role == Qt::EditRole || role == Qt::DisplayRole))
     {
-        m_views[index.row()]->cScene()->setName(value.toString());
+        m_views[index.row()]->cScene()->setName(uniqueName(value.toString(), index.row()));
 
         emit dataChanged(index, index, {Qt::DisplayRole, Qt::EditRole});
         return true;
@@ -63,6 +63,29 @@ CGraphicsScene *CSceneModel::sceneWithName(const QString &name)
     return Q_NULLPTR;
 }
 
+QString CSceneModel::uniqueName(const QString &scene, int row)
+{
+    int val = 1;
+    QString name = scene;
+    bool found = true;
+
+    while(found)
+    {
+        found = false;
+        for(int i = 0; i < m_views.length(); ++i)
+        {
+            if(i != row && m_views[i]->cScene()->name() == name)
+            {
+                name = scene + "_" + QString::number(++val);
+                found = true;
+                break;
+            }
+        }
+    }
+
+    return name;
+}
+
 void CSceneModel::MoveUp(const int index)
 {
     if(index > 1 && index < m_views.length())
@@ -82,7 +105,9 @@ void CSceneModel::MoveDown(const int index)
 void CSceneModel::AddItem(CGraphicsView *view)
 {
     const int index = m_views.length();
+
     beginInsertRows(QModelIndex(), index, index);
+    view->cScene()->setName(uniqueName(view->cScene()->name(), -1));
     m_views.append(view);
     endInsertRows();
 }

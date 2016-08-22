@@ -24,7 +24,6 @@ CVariablesView::CVariablesView(QWidget *parent)
     m_model = new CVariablesModel(this);
 
     m_sortModel = new QSortFilterProxyModel(this);
-//    m_sortModel->setDynamicSortFilter(true);
     m_sortModel->setSourceModel(m_model);
     connect(m_sortModel, SIGNAL(rowsInserted(QModelIndex,int,int)), this, SLOT(RowsInserted(QModelIndex,int,int)));
     connect(m_sortModel, SIGNAL(rowsAboutToBeRemoved(QModelIndex,int,int)), this, SLOT(RowsAboutToBeRemoved(QModelIndex,int,int)));

@@ -22,7 +22,6 @@
 #include "Misc/Bubbles/cchoicemodel.h"
 #include "Bubbles/cactionbubble.h"
 #include "Misc/cstringlistmodel.h"
-//#include "Misc/Bubbles/cactionmodel.h"
 #include "Bubbles/cconditionbubble.h"
 #include "Connections/cconnection.h"
 
@@ -66,6 +65,18 @@ ChoiceScriptData::ChoiceScriptData(QFile &startup, const CSIndent &csindent)
     }
 }
 
+ChoiceScriptData::ChoiceScriptData(const QString &fileName, const Chronicler::CSIndent &csindent)
+{
+    QFile file(fileName);
+    file.open(QIODevice::ReadOnly);
+    if(file.isOpen())
+    {
+        m_currentScene = shared().projectView->model()->uniqueName(QFileInfo(file).completeBaseName());
+        ProcessFile(file, csindent);
+        file.close();
+    }
+}
+
 QList<CGraphicsView *> ChoiceScriptData::getViews()
 {
     return m_views;
@@ -93,7 +104,7 @@ const QString ChoiceScriptData::getAuthor() const
 
 QList<ChoiceScriptData::CSBlock> ChoiceScriptData::ProcessFile(QFile &file, const CSIndent &csindent)
 {
-    QString name = QFileInfo(file.fileName()).completeBaseName();
+    QString name = shared().projectView->model()->uniqueName(QFileInfo(file.fileName()).completeBaseName());
     CGraphicsView *view = new CGraphicsView(new CGraphicsScene(true, name));
 
     QTextStream stream(&file);
@@ -417,14 +428,6 @@ CBubble * ChoiceScriptData::CSProcBubble(const CSBlock &csblock, QList<CSBubble>
 
         QStringList actions = csblock.text.split('\n');
         bbl->actions()->setStringList(actions);
-
-//        QList<QStringList> actionList;
-
-//        QStringList actions = csblock.text.split('\n');
-//        for(QString action : actions)
-//            actionList.append(action.split(" "));
-
-//        bbl->actions()->setActions(actionList);
 
         bubble = bbl;
     }

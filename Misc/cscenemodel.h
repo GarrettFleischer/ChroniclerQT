@@ -23,6 +23,8 @@ public:
 
     CGraphicsScene *sceneWithName(const QString &name);
 
+    QString uniqueName(const QString &scene, int row = -1);
+
     void MoveUp(const int index);
     void MoveDown(const int index);
     void AddItem(CGraphicsView *view);

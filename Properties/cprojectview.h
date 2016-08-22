@@ -80,6 +80,7 @@ public slots:
     void SaveProjectAs();
     void OpenProject(QString filepath = "");
     void ImportChoiceScript(const QString &filepath = "");
+    void ImportChoiceScriptScene();
     void NewProject();
     void CloseProject();
     void ExportChoiceScript();
