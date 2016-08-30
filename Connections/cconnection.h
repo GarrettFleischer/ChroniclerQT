@@ -51,6 +51,8 @@ public:
 
     bool isConnected() const;
 
+    CLine *getLine() const;
+
 protected:
     virtual QDataStream &Deserialize(QDataStream &stream, const CVersion &version) override;
     virtual QDataStream &Serialize(QDataStream &stream) override;

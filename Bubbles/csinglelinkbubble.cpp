@@ -11,7 +11,9 @@ CSingleLinkBubble::CSingleLinkBubble(const QPointF &pos, CPaletteAction *palette
 
 CSingleLinkBubble::~CSingleLinkBubble()
 {
-    dynamic_cast<CGraphicsScene *>(scene())->RemoveConnection(m_link);
+    CGraphicsScene *scn = dynamic_cast<CGraphicsScene *>(scene());
+    if(scn)
+        scn->RemoveConnection(m_link);
     delete m_link;
 }
 

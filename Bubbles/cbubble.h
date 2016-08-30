@@ -115,10 +115,10 @@ protected:
     QPointF m_offset;
     QRectF m_lastBounds;
 
+    QPointF m_oldPos;
+
 private:
     Anchor AnchorAtPosition(const QPointF &pos);
-
-    QPointF m_oldPos;
 
     // for backwards compatability
     static QList<t_uid> m_UIDs;
@@ -127,6 +127,8 @@ signals:
     void Selected(QGraphicsItem *item);
     void ConnectionsChanged(int);
     void PositionOrShapeChanged();
+    void PositionChanged(const QPointF &oldPos, const QPointF &newPos);
+    void ShapeChanged(const QRectF &oldRect, const QRectF &newRect);
 
     void PaletteChanged();
 

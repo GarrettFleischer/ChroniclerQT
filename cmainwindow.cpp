@@ -37,6 +37,7 @@ CMainWindow::CMainWindow(QSettings *settings, const QString &filename)
     setUnifiedTitleAndToolBarOnMac(false);
 
     shared().mainWindow = this;
+    shared().history = new QUndoStack(this);
 
     shared().statusBar = new QStatusBar(this);
     setStatusBar(shared().statusBar);
@@ -46,8 +47,6 @@ CMainWindow::CMainWindow(QSettings *settings, const QString &filename)
     connect(shared().settingsView, SIGNAL(SettingsChanged()),
             this, SLOT(SettingsChanged()));
     SettingsChanged();
-
-    shared().history = new QUndoStack(this);
 
     CreateActions();
     CreateMenus();
@@ -394,15 +393,15 @@ void CMainWindow::CreateActions()
     escape_action->setShortcut(QKeySequence::Deselect);
     connect(escape_action, SIGNAL(triggered(bool)), this, SLOT(EscapePressed()));
 
-//    shared().undoAction = shared().history->createUndoAction(this);
-//    shared().undoAction->setIcon(QIcon(":/images/icn_undo"));
-//    shared().undoAction->setShortcut(QKeySequence::Undo);
-//    connect(shared().undoAction, SIGNAL(triggered()), shared().history, SLOT(undo()));
+    shared().undoAction = shared().history->createUndoAction(this);
+    shared().undoAction->setIcon(QIcon(":/images/icn_undo"));
+    shared().undoAction->setShortcut(QKeySequence::Undo);
+    connect(shared().undoAction, SIGNAL(triggered()), shared().history, SLOT(undo()));
 
-//    shared().redoAction = shared().history->createRedoAction(this);
-//    shared().redoAction->setIcon(QIcon(":/images/icn_redo"));
-//    shared().redoAction->setShortcut(QKeySequence::Redo);
-//    connect(shared().redoAction, SIGNAL(triggered()), shared().history, SLOT(redo()));
+    shared().redoAction = shared().history->createRedoAction(this);
+    shared().redoAction->setIcon(QIcon(":/images/icn_redo"));
+    shared().redoAction->setShortcut(QKeySequence::Redo);
+    connect(shared().redoAction, SIGNAL(triggered()), shared().history, SLOT(redo()));
 
     // Default Palettes
     CPalette dp_story, dp_choice, dp_action, dp_condition, dp_start;
@@ -436,9 +435,9 @@ void CMainWindow::CreateMenus()
     shared().fileMenu->addAction(shared().exitAction);
 
     shared().editMenu = menuBar()->addMenu(tr("&Edit"));
-//    shared().editMenu->addAction(shared().undoAction);
-//    shared().editMenu->addAction(shared().redoAction);
-//    shared().editMenu->addSeparator();
+    shared().editMenu->addAction(shared().undoAction);
+    shared().editMenu->addAction(shared().redoAction);
+    shared().editMenu->addSeparator();
     shared().editMenu->addAction(shared().copyAction);
     shared().editMenu->addAction(shared().pasteAction);
     shared().editMenu->addAction(shared().deleteAction);

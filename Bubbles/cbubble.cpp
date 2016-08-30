@@ -13,13 +13,11 @@ using std::logic_error;
 #include <QByteArray>
 #include <QFont>
 #include <QSizeF>
-#include <QUndoStack>
 
 #include "Connections/cconnection.h"
 #include "cgraphicsscene.h"
 #include "Misc/Palette/cpaletteaction.h"
 #include "Misc/Palette/cpalettebutton.h"
-#include "Misc/History/cmovebubblecommand.h"
 
 #include "Misc/chronicler.h"
 using Chronicler::shared;
@@ -30,7 +28,7 @@ QList<t_uid> CBubble::m_UIDs = QList<t_uid>();
 CBubble::CBubble(const QPointF &pos, CPaletteAction *palette, const QFont &font, QGraphicsItem *parent)
     : QGraphicsPolygonItem(parent),
       m_minSize(QSizeF(150, 100)), m_order(0), m_locked(false),
-      m_font(font), m_palette(palette), m_resize(false), m_oldPos(pos)
+      m_font(font), m_palette(palette), m_resize(false)
 {
     setFlag(QGraphicsItem::ItemIsMovable, true);
     setFlag(QGraphicsItem::ItemIsSelectable, true);
@@ -46,7 +44,8 @@ CBubble::CBubble(const QPointF &pos, CPaletteAction *palette, const QFont &font,
 CBubble::~CBubble()
 {
     CGraphicsScene *scn = dynamic_cast<CGraphicsScene *>(scene());
-    scn->RemoveBubble(this);
+    if(scn)
+        scn->RemoveBubble(this);
 
     // make a copy to prevent invalid iterator when connections are removed.
     QList<CConnection *> tmp = m_connections;
@@ -68,22 +67,20 @@ void CBubble::mousePressEvent(QGraphicsSceneMouseEvent *evt)
         m_offset = evt->scenePos();
         m_lastBounds = boundingRect();
     }
-    else
-    {
-        m_oldPos = pos();
-    }
 }
 
 void CBubble::mouseMoveEvent(QGraphicsSceneMouseEvent *evt)
 {
     if(m_resize)
     {
+        QRectF oldBounds = m_bounds;
         QPointF delta(evt->scenePos() - m_offset);
         m_bounds = QRectF(m_lastBounds.x(), m_lastBounds.y(),
                           qMax<float>(m_lastBounds.width() + delta.x(), m_minSize.width()),
                           qMax<float>(m_lastBounds.height() + delta.y(), m_minSize.height()));
         setPolygon(m_bounds);
         UpdatePolygon();
+        emit ShapeChanged(oldBounds, m_bounds);
         emit PositionOrShapeChanged();
     }
     else
@@ -98,9 +95,6 @@ void CBubble::mouseReleaseEvent(QGraphicsSceneMouseEvent *evt)
     QGraphicsPolygonItem::mouseReleaseEvent(evt);
     setCursor(Qt::PointingHandCursor);
     m_resize = false;
-
-    if(pos() != m_oldPos)
-        shared().history->push(new CMoveBubbleCommand(this, m_oldPos, pos()));
 }
 
 void CBubble::hoverMoveEvent(QGraphicsSceneHoverEvent *evt)
@@ -118,10 +112,14 @@ QVariant CBubble::itemChange(GraphicsItemChange change, const QVariant &value)
 {
     if (change == QGraphicsItem::ItemSelectedHasChanged && value.toBool())
         emit Selected(this);
+    else if(change == QGraphicsItem::ItemPositionChange)
+        m_oldPos = pos();
     else if (change == QGraphicsItem::ItemPositionHasChanged)
+    {
+        emit PositionChanged(m_oldPos, pos());
         emit PositionOrShapeChanged();
+    }
 
-//    return QGraphicsPolygonItem::itemChange(change, value);
     return value;
 }
 
@@ -236,8 +234,8 @@ void CBubble::AddConnection(CConnection *connection)
 
 void CBubble::RemoveConnection(CConnection *connection)
 {
+    disconnect(this, SIGNAL(PositionOrShapeChanged()), connection, SLOT(UpdatePosition()));
     m_connections.removeAll(connection);
-
     emit ConnectionsChanged(m_connections.length());
 }
 

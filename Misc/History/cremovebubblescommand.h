@@ -8,6 +8,7 @@ using Chronicler::BubbleType;
 
 class CGraphicsScene;
 class CBubble;
+class CConnection;
 
 class CRemoveBubblesCommand : public QUndoCommand
 {
@@ -21,7 +22,7 @@ public:
 private:
     CGraphicsScene *m_scene;
     QList<CBubble *> m_bubbles;
-    BubbleType m_type;
+    QList<CConnection *> m_connections;
 
     bool m_did;
 };

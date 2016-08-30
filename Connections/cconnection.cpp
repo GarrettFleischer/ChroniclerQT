@@ -225,6 +225,11 @@ QDataStream & CConnection::Serialize(QDataStream &stream)
     return stream;
 }
 
+CLine *CConnection::getLine() const
+{
+    return m_line;
+}
+
 bool CConnection::isConnected() const
 {
     return m_connected;

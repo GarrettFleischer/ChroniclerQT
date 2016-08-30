@@ -88,6 +88,7 @@ public:
     void AddBubble(CBubble *bubble);
     CConnection *AddConnection(CBubble *start, CBubble *end, Chronicler::Anchor start_anchor, Chronicler::Anchor end_anchor);
     CConnection *AddConnection();
+    void AddConnection(CConnection *connection);
 
     void RemoveBubble(CBubble *bubble);
     void RemoveConnection(CConnection *connection);
@@ -122,6 +123,8 @@ private:
     QList<CBubble *> m_bubbles;
     QList<CConnection *> m_connections;
 
+    QList<QPointF> m_oldPositions;
+
 signals:
     void itemInserted(CBubble *item);
     void itemSelected(QGraphicsItem *item);
@@ -131,9 +134,12 @@ signals:
 
 public slots:
     void SelectAll();
+    void DeselectAll();
 
 private slots:
     void ItemSelected(QGraphicsItem *selectedItem);
+    void ItemPositionChanged(const QPointF &oldPos, const QPointF &newPos);
+    void ItemShapeChanged(const QRectF &oldPos, const QRectF &newPos);
 
     void UpdateSceneRect();
 };

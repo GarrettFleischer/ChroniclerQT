@@ -2,10 +2,11 @@
 
 #include "Bubbles/cbubble.h"
 
-CMoveBubbleCommand::CMoveBubbleCommand(CBubble *bubble, const QPointF &oldPos, const QPointF &newPos)
+
+CMoveBubbleCommand::CMoveBubbleCommand(const QList<MoveData> &data)
+    : m_moveData(data)
 {
-    m_moveData.append(MoveData(bubble, oldPos, newPos));
-    setText("Move bubbles");
+        setText(QString("move bubble") + (data.length() > 1 ? "s" : ""));
 }
 
 void CMoveBubbleCommand::undo()
@@ -22,26 +23,3 @@ void CMoveBubbleCommand::redo()
         m_moveData[i].bubble->setPos(m_moveData[i].newPos);
 }
 
-
-bool CMoveBubbleCommand::mergeWith(const QUndoCommand *other)
-{
-    const CMoveBubbleCommand *moveCommand = dynamic_cast<const CMoveBubbleCommand *>(other);
-
-    if(moveCommand)
-    {
-        for(const MoveData &md : moveCommand->m_moveData)
-        {
-            if(!m_moveData.contains(md))
-                m_moveData.append(md);
-            else
-            {
-                m_moveData.removeAll(md);
-                m_moveData.append(md);
-            }
-        }
-
-        return true;
-    }
-
-    return false;
-}

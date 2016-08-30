@@ -33,6 +33,8 @@
 
 #include <QTimer>
 
+#include <QUndoStack>
+
 #include "Bubbles/cchoice.h"
 #include "Misc/cscenemodel.h"
 #include "cgraphicsscene.h"
@@ -275,6 +277,8 @@ void CProjectView::OpenProject(QString filepath)
 
     // show status message for 30 seconds
     shared().statusBar->showMessage("Successfully opened " + m_path, 30000);
+
+    shared().history->clear();
 }
 
 
@@ -305,6 +309,8 @@ void CProjectView::ImportChoiceScript(const QString &filepath)
 
     SaveProjectAs();
     OpenProject(m_path);
+
+    shared().history->clear();
 }
 
 void CProjectView::ImportChoiceScriptScene()
@@ -351,6 +357,8 @@ void CProjectView::NewProject()
 
 void CProjectView::CloseProject()
 {
+    shared().history->clear();
+
     shared().importSceneAction->setEnabled(false);
 
     m_title->setText("");

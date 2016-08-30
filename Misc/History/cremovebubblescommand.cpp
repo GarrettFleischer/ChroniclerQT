@@ -2,44 +2,40 @@
 
 #include "cgraphicsscene.h"
 #include "Bubbles/cbubble.h"
+#include "Connections/cconnection.h"
+
 
 CRemoveBubblesCommand::CRemoveBubblesCommand(CGraphicsScene *scene, const QList<CBubble *> &bubbles)
     : m_scene(scene), m_bubbles(bubbles), m_did(true)
 {
-//    QString name;
+    setText(QString("remove bubble") + (m_bubbles.length() > 1 ? "s" : ""));
 
-//    switch ((m_type = m_bubbles->getType()))
-//    {
-//    case Chronicler::Story:
-//        name = "story";
-//        break;
-//    case Chronicler::Action:
-//        name = "action";
-//        break;
-//    case Chronicler::Choice:
-//        name = "choice";
-//        break;
-//    case Chronicler::Condition:
-//        name = "condition";
-//        break;
-//    default:
-//        break;
-//    }
-
-//    setText("Remove " + name + "bubble");
+    for(CBubble *bbl : m_bubbles)
+    {
+        m_connections.append(bbl->connections());
+        m_connections.append(bbl->links());
+    }
 }
 
 CRemoveBubblesCommand::~CRemoveBubblesCommand()
 {
     if(m_did)
+    {
         for(CBubble *bubble : m_bubbles)
             bubble->deleteLater();
+
+        for(CConnection *c : m_connections)
+            c->deleteLater();
+    }
 }
 
 void CRemoveBubblesCommand::undo()
 {
     for(CBubble *bubble : m_bubbles)
         m_scene->AddBubble(bubble);
+
+    for(CConnection *c : m_connections)
+        m_scene->AddConnection(c);
 
     m_did = false;
 }
@@ -48,6 +44,9 @@ void CRemoveBubblesCommand::redo()
 {
     for(CBubble *bubble : m_bubbles)
         m_scene->RemoveBubble(bubble);
+
+    for(CConnection *c : m_connections)
+        m_scene->RemoveConnection(c);
 
     m_did = true;
 }
