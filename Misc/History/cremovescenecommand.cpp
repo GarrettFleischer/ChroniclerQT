@@ -1,5 +1,7 @@
 #include "cremovescenecommand.h"
 
+#include <QTabWidget>
+
 #include "Properties/cprojectview.h"
 #include "Misc/cscenemodel.h"
 
@@ -12,7 +14,6 @@ CRemoveSceneCommand::CRemoveSceneCommand(CGraphicsView *view, int index)
     setText("remove scene");
 }
 
-
 void CRemoveSceneCommand::undo()
 {
     shared().projectView->model()->InsertItem(m_view, m_index);
@@ -21,6 +22,7 @@ void CRemoveSceneCommand::undo()
 void CRemoveSceneCommand::redo()
 {
     shared().projectView->model()->ExtractItem(m_view);
+    shared().sceneTabs->removeTab(shared().sceneTabs->indexOf(m_view));
 }
 
 int CRemoveSceneCommand::id() const

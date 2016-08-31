@@ -66,6 +66,8 @@
 #include "Properties/cvariablesview.h"
 #include "Misc/Variables/cvariablesmodel.h"
 
+#include "Misc/History/cremovescenecommand.h"
+
 #include "Misc/chronicler.h"
 using Chronicler::shared;
 
@@ -715,5 +717,8 @@ void CProjectView::AddItem()
 void CProjectView::RemoveItem()
 {
     if(m_modelView->currentIndex().row() > 0)
-        m_sceneModel->RemoveItem(m_modelView->currentIndex().row());
+    {
+        const int index = m_modelView->currentIndex().row();
+        shared().history->push(new CRemoveSceneCommand(m_sceneModel->views()[index], index));
+    }
 }
