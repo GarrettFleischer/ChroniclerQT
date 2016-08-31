@@ -1,7 +1,7 @@
 #include "cmovebubblecommand.h"
 
 #include "Bubbles/cbubble.h"
-
+#include "Misc/chronicler.h"
 
 CMoveBubbleCommand::CMoveBubbleCommand(const QList<MoveData> &data)
     : m_moveData(data)
@@ -23,3 +23,7 @@ void CMoveBubbleCommand::redo()
         m_moveData[i].bubble->setPos(m_moveData[i].newPos);
 }
 
+int CMoveBubbleCommand::id() const
+{
+    return Chronicler::MoveBubblesCommand;
+}

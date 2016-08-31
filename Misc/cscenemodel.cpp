@@ -112,10 +112,27 @@ void CSceneModel::AddItem(CGraphicsView *view)
     endInsertRows();
 }
 
+void CSceneModel::InsertItem(CGraphicsView *view, int index)
+{
+    beginInsertRows(QModelIndex(), index, index);
+    view->cScene()->setName(uniqueName(view->cScene()->name(), -1));
+    m_views.insert(index, view);
+    endInsertRows();
+}
+
 void CSceneModel::RemoveItem(const int index)
 {
     beginRemoveRows(QModelIndex(), index, index);
     delete m_views[index];
+    m_views.removeAt(index);
+    endRemoveRows();
+}
+
+void CSceneModel::ExtractItem(CGraphicsView *view)
+{
+    const int index = m_views.indexOf(view);
+
+    beginRemoveRows(QModelIndex(), index, index);
     m_views.removeAt(index);
     endRemoveRows();
 }

@@ -138,8 +138,8 @@ public slots:
 
 private slots:
     void ItemSelected(QGraphicsItem *selectedItem);
-    void ItemPositionChanged(const QPointF &oldPos, const QPointF &newPos);
-    void ItemShapeChanged(const QRectF &oldPos, const QRectF &newPos);
+//    void ItemPositionChanged(const QPointF &oldPos, const QPointF &newPos);
+    void ItemShapeChanged(const QRectF &oldSize, const QRectF &newSize);
 
     void UpdateSceneRect();
 };

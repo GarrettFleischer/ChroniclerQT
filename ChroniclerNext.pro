@@ -73,7 +73,9 @@ HEADERS += \
     Misc/Bubbles/cactionedit.h \
     Misc/History/cmovebubblecommand.h \
     Misc/History/cremovebubblescommand.h \
-    Misc/History/caddbubblescommand.h
+    Misc/History/caddbubblescommand.h \
+    Misc/History/cresizebubblecommand.h \
+    Misc/History/cremovescenecommand.h
 
 SOURCES += \
     Bubbles/cactionbubble.cpp \
@@ -129,4 +131,6 @@ SOURCES += \
     Misc/Bubbles/cactionedit.cpp \
     Misc/History/cmovebubblecommand.cpp \
     Misc/History/cremovebubblescommand.cpp \
-    Misc/History/caddbubblescommand.cpp
+    Misc/History/caddbubblescommand.cpp \
+    Misc/History/cresizebubblecommand.cpp \
+    Misc/History/cremovescenecommand.cpp

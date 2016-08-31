@@ -30,7 +30,6 @@
 #include "Misc/chronicler.h"
 using Chronicler::shared;
 
-
 CMainWindow::CMainWindow(QSettings *settings, const QString &filename)
 {
     setWindowTitle(tr("Chronicler ") + shared().ProgramVersion.string);
@@ -304,7 +303,6 @@ void CMainWindow::PointerToolBarAreaChanged(bool)
 
 void CMainWindow::EscapePressed()
 {
-    qDebug() << "esc";
     shared().setMode(Chronicler::Cursor);
 }
 
@@ -396,12 +394,10 @@ void CMainWindow::CreateActions()
     shared().undoAction = shared().history->createUndoAction(this);
     shared().undoAction->setIcon(QIcon(":/images/icn_undo"));
     shared().undoAction->setShortcut(QKeySequence::Undo);
-    connect(shared().undoAction, SIGNAL(triggered()), shared().history, SLOT(undo()));
 
     shared().redoAction = shared().history->createRedoAction(this);
     shared().redoAction->setIcon(QIcon(":/images/icn_redo"));
     shared().redoAction->setShortcut(QKeySequence::Redo);
-    connect(shared().redoAction, SIGNAL(triggered()), shared().history, SLOT(redo()));
 
     // Default Palettes
     CPalette dp_story, dp_choice, dp_action, dp_condition, dp_start;

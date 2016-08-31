@@ -28,7 +28,9 @@ public:
     void MoveUp(const int index);
     void MoveDown(const int index);
     void AddItem(CGraphicsView *view);
+    void InsertItem(CGraphicsView *view, int index);
     void RemoveItem(const int index);
+    void ExtractItem(CGraphicsView *view);
 
     void Reset();
 

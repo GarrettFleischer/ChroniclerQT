@@ -34,6 +34,7 @@
 #include "Misc/History/cmovebubblecommand.h"
 #include "Misc/History/caddbubblescommand.h"
 #include "Misc/History/cremovebubblescommand.h"
+#include "Misc/History/cresizebubblecommand.h"
 
 #include "Misc/chronicler.h"
 using Chronicler::Anchor;
@@ -179,15 +180,14 @@ void CGraphicsScene::ItemSelected(QGraphicsItem *selectedItem)
     }
 }
 
-void CGraphicsScene::ItemPositionChanged(const QPointF &oldPos, const QPointF &newPos)
-{
-    //    CBubble *bbl = static_cast<CBubble *>(sender());
-    //    shared().history->push(new CMoveBubbleCommand(bbl, oldPos, newPos));
-}
+//void CGraphicsScene::ItemPositionChanged(const QPointF &oldPos, const QPointF &newPos)
+//{
 
-void CGraphicsScene::ItemShapeChanged(const QRectF &oldPos, const QRectF &newPos)
-{
+//}
 
+void CGraphicsScene::ItemShapeChanged(const QRectF &oldSize, const QRectF &newSize)
+{
+    shared().history->push(new CResizeBubbleCommand(static_cast<CBubble *>(sender()), oldSize, newSize));
 }
 
 void CGraphicsScene::SelectAll()
@@ -280,6 +280,7 @@ void CGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
             m_rubberBand = true;
         else if(shared().cursorMode == Chronicler::Cursor && bbl)
         {
+            // Move bubbles command
             for(QGraphicsItem *item : selectedItems())
                 m_oldPositions.append(item->pos());
         }
@@ -336,6 +337,7 @@ void CGraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
             if(!(event->modifiers() & Qt::ShiftModifier))
                 shared().setMode(Chronicler::Cursor);
         }
+        // Move bubbles command
         else if(shared().cursorMode == Chronicler::Cursor)
         {
             QList<CMoveBubbleCommand::MoveData> data;
@@ -345,7 +347,10 @@ void CGraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
                 selectedBubbles.append(static_cast<CBubble *>(item));
 
             for(int i = 0; i < selectedBubbles.length() && i < m_oldPositions.length(); ++i)
-                data.append(CMoveBubbleCommand::MoveData(selectedBubbles[i], m_oldPositions[i], selectedBubbles[i]->pos()));
+            {
+                if(selectedBubbles[i]->pos() != m_oldPositions[i])
+                    data.append(CMoveBubbleCommand::MoveData(selectedBubbles[i], m_oldPositions[i], selectedBubbles[i]->pos()));
+            }
 
             if(data.length())
                 shared().history->push(new CMoveBubbleCommand(data));
@@ -418,6 +423,7 @@ void CGraphicsScene::AddBubble(CBubble *bubble)
     m_bubbles.append(bubble);
 
     connect(bubble, SIGNAL(Selected(QGraphicsItem*)), this, SIGNAL(itemSelected(QGraphicsItem*)));
+    connect(bubble, SIGNAL(ShapeChanged(QRectF,QRectF)), this, SLOT(ItemShapeChanged(QRectF,QRectF)));
 
     emit itemInserted(bubble);
 }
@@ -425,7 +431,6 @@ void CGraphicsScene::AddBubble(CBubble *bubble)
 CConnection *CGraphicsScene::AddConnection(CBubble *start, CBubble *end, Anchor start_anchor, Anchor end_anchor)
 {
     m_connections.append(new CConnection(start, end, start_anchor, end_anchor, this));
-    addItem(m_connections.last());
 
     return m_connections.last();
 }
@@ -433,7 +438,6 @@ CConnection *CGraphicsScene::AddConnection(CBubble *start, CBubble *end, Anchor 
 CConnection *CGraphicsScene::AddConnection()
 {
     m_connections.append(new CConnection(this));
-//    addItem(m_connections.last());
 
     return m_connections.last();
 }
@@ -447,6 +451,7 @@ void CGraphicsScene::AddConnection(CConnection *connection)
 void CGraphicsScene::RemoveBubble(CBubble *bubble)
 {
     disconnect(bubble, SIGNAL(Selected(QGraphicsItem*)), this, SIGNAL(itemSelected(QGraphicsItem*)));
+    disconnect(bubble, SIGNAL(ShapeChanged(QRectF,QRectF)), this, SLOT(ItemShapeChanged(QRectF,QRectF)));
 
     removeItem(bubble);
     m_bubbles.removeAll(bubble);

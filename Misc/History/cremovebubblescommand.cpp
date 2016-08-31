@@ -4,6 +4,7 @@
 #include "Bubbles/cbubble.h"
 #include "Connections/cconnection.h"
 
+#include "Misc/chronicler.h"
 
 CRemoveBubblesCommand::CRemoveBubblesCommand(CGraphicsScene *scene, const QList<CBubble *> &bubbles)
     : m_scene(scene), m_bubbles(bubbles), m_did(true)
@@ -49,4 +50,9 @@ void CRemoveBubblesCommand::redo()
         m_scene->RemoveConnection(c);
 
     m_did = true;
+}
+
+int CRemoveBubblesCommand::id() const
+{
+    return Chronicler::RemoveBubblesCommand;
 }

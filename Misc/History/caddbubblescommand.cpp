@@ -3,11 +3,13 @@
 #include "cgraphicsscene.h"
 #include "Bubbles/cbubble.h"
 
+#include "Misc/chronicler.h"
+
 
 CAddBubblesCommand::CAddBubblesCommand(CGraphicsScene *scene, const QList<CBubble *> &bubbles)
     : m_scene(scene), m_bubbles(bubbles), m_undid(false)
 {
-    setText("add bubble");
+    setText(QString("add bubble") + (bubbles.length() > 1 ? "s" : ""));
 }
 
 CAddBubblesCommand::~CAddBubblesCommand()
@@ -32,4 +34,9 @@ void CAddBubblesCommand::redo()
         m_scene->AddBubble(bubble);
 
     m_undid = false;
+}
+
+int CAddBubblesCommand::id() const
+{
+    return Chronicler::AddBubblesCommand;
 }

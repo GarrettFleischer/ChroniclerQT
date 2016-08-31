@@ -17,6 +17,7 @@ public:
 
     virtual void undo() Q_DECL_OVERRIDE;
     virtual void redo() Q_DECL_OVERRIDE;
+    virtual int id() const Q_DECL_OVERRIDE;
 
 private:
     CGraphicsScene *m_scene;

@@ -215,6 +215,8 @@ void CBubble::setBounds(const QRectF &bounds)
 {
     m_bounds = bounds;
     UpdatePolygon();
+
+    emit PositionOrShapeChanged();
 }
 
 CBubble *CBubble::container()

@@ -37,6 +37,8 @@ namespace Chronicler
 
     enum Mode { InsertConnection, Cursor, InsertStory, InsertCondition, InsertChoice, InsertAction, Paint };
 
+    enum Command { AddBubblesCommand, RemoveBubblesCommand, MoveBubblesCommand, ResizeBubbleCommand, RemoveSceneCommand };
+
     struct CPalette
     {
         QColor fill = QColor(124, 140, 230);
