@@ -75,7 +75,8 @@ HEADERS += \
     Misc/History/cremovebubblescommand.h \
     Misc/History/caddbubblescommand.h \
     Misc/History/cresizebubblecommand.h \
-    Misc/History/cremovescenecommand.h
+    Misc/History/cremovescenecommand.h \
+    Misc/Bubbles/cconditionedit.h
 
 SOURCES += \
     Bubbles/cactionbubble.cpp \
@@ -133,4 +134,5 @@ SOURCES += \
     Misc/History/cremovebubblescommand.cpp \
     Misc/History/caddbubblescommand.cpp \
     Misc/History/cresizebubblecommand.cpp \
-    Misc/History/cremovescenecommand.cpp
+    Misc/History/cremovescenecommand.cpp \
+    Misc/Bubbles/cconditionedit.cpp

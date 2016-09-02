@@ -2,8 +2,9 @@
 
 #include <QLabel>
 #include <QHBoxLayout>
+#include <QFontMetrics>
 
-#include "Misc/clineedit.h"
+#include "Misc/Bubbles/cconditionedit.h"
 #include "Bubbles/cconditionbubble.h"
 
 CConditionProperties::CConditionProperties(QWidget *parent)
@@ -12,7 +13,8 @@ CConditionProperties::CConditionProperties(QWidget *parent)
     // Condition Widget
     QLabel *lblConditionStart = new QLabel(tr("*if ("), this);
     QLabel *lblConditionEnd = new QLabel(tr(")"), this);
-    m_conditionEdit = new CLineEdit(this, shared().actionsModel);
+    m_conditionEdit = new CConditionEdit(this);
+    m_conditionEdit->setFixedHeight(m_conditionEdit->fontMetrics().height() * 2);
     connect(m_conditionEdit, SIGNAL(textChanged()), this, SLOT(ConditionChanged()));
 
     // Condition Layout

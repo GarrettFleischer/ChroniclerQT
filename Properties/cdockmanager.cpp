@@ -19,9 +19,9 @@ CDockManager::CDockManager(QWidget *parent)
     m_tabView->setTabPosition(QTabWidget::South);
     connect(m_tabView, SIGNAL(currentChanged(int)), this, SLOT(TabChanged()));
 
+    shared().variablesView = new CVariablesView();
     m_properties = new CPropertiesManager();
     shared().projectView = new CProjectView();
-    shared().variablesView = new CVariablesView();
 
     m_lastView = shared().projectView;
 

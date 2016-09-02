@@ -10,6 +10,7 @@
 #include <QGuiApplication>
 #include <QAction>
 #include <QUndoStack>
+#include <QApplication>
 
 #include "cgraphicsview.h"
 
@@ -272,17 +273,21 @@ void CGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
         m_oldPositions.clear();
         QGraphicsScene::mousePressEvent(event);
-        CBubble *bbl = BubbleAt(event->scenePos());
-        if(bbl)
-            bbl->setSelected(true);
 
-        if(selectedItems().size() == 0)
-            m_rubberBand = true;
-        else if(shared().cursorMode == Chronicler::Cursor && bbl)
+        if(!(QApplication::keyboardModifiers() & Qt::ControlModifier))
         {
-            // Move bubbles command
-            for(QGraphicsItem *item : selectedItems())
-                m_oldPositions.append(item->pos());
+            CBubble *bbl = BubbleAt(event->scenePos());
+            if(bbl)
+                bbl->setSelected(true);
+
+            if(selectedItems().size() == 0)
+                m_rubberBand = true;
+            else if(shared().cursorMode == Chronicler::Cursor && bbl)
+            {
+                // Move bubbles command
+                for(QGraphicsItem *item : selectedItems())
+                    m_oldPositions.append(item->pos());
+            }
         }
 
         emit leftPressed();

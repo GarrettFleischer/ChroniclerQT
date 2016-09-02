@@ -36,10 +36,11 @@ CMainWindow::CMainWindow(QSettings *settings, const QString &filename)
     setUnifiedTitleAndToolBarOnMac(false);
 
     shared().mainWindow = this;
-    shared().history = new QUndoStack(this);
 
     shared().statusBar = new QStatusBar(this);
     setStatusBar(shared().statusBar);
+
+    shared().history = new QUndoStack(this);
 
     // Load the settings...
     shared().settingsView = new CSettingsView(settings);
@@ -49,9 +50,6 @@ CMainWindow::CMainWindow(QSettings *settings, const QString &filename)
 
     CreateActions();
     CreateMenus();
-
-    QStringList lst = QStringList() << "*set" << "*create" << "*temp" << "*if" << "*elseif" << "*else";
-    shared().actionsModel = new QStringListModel(lst, this);
 
     shared().dock = new QDockWidget(tr("Project"), this);
     connect(shared().dock, SIGNAL(dockLocationChanged(Qt::DockWidgetArea)),
@@ -315,6 +313,9 @@ void CMainWindow::SettingsChanged()
     pal.setColor(QPalette::WindowText, shared().settingsView->fontColor());
     pal.setColor(QPalette::Text, shared().settingsView->fontColor());
     setPalette(pal);
+
+    // Update history
+    shared().history->setUndoLimit(shared().settingsView->maxUndos());
 }
 
 void CMainWindow::ShowAbout()

@@ -9,6 +9,7 @@ class CRemoveSceneCommand : public QUndoCommand
 {
 public:
     CRemoveSceneCommand(CGraphicsView *view, int index);
+    ~CRemoveSceneCommand();
 
     virtual void undo() Q_DECL_OVERRIDE;
     virtual void redo() Q_DECL_OVERRIDE;

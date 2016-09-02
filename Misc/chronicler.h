@@ -139,8 +139,6 @@ namespace Chronicler
         QButtonGroup *pointerTypeGroup;
         CPaletteButton *paletteButton;
 
-        QStringListModel *actionsModel;
-
         QMenu *fileMenu;
         QMenu *editMenu;
         QMenu *viewMenu;

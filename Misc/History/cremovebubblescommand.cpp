@@ -16,6 +16,8 @@ CRemoveBubblesCommand::CRemoveBubblesCommand(CGraphicsScene *scene, const QList<
         m_connections.append(bbl->connections());
         m_connections.append(bbl->links());
     }
+
+    m_connections.removeAll(Q_NULLPTR);
 }
 
 CRemoveBubblesCommand::~CRemoveBubblesCommand()

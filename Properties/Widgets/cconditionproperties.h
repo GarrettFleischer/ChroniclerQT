@@ -4,6 +4,7 @@
 #include "cpropertieswidget.h"
 
 class CConditionBubble;
+class CConditionEdit;
 
 
 class CConditionProperties : public CPropertiesWidget
@@ -19,7 +20,7 @@ public:
 protected:
     CConditionBubble *m_conditionBubble;
 
-    CLineEdit *m_conditionEdit;
+    CConditionEdit *m_conditionEdit;
 
 signals:
 
