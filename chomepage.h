@@ -25,6 +25,8 @@ public:
     explicit CHomepage(QWidget *parent = 0);
 
 private:
+    enum OS { Windows, Mac, Linux };
+
     void SetupSidebar(QHBoxLayout *main_layout);
     void SetupMainWindow(QHBoxLayout *main_layout);
 
@@ -32,6 +34,10 @@ private:
     QListWidget *m_recentView;
 
     CFileDownloader *m_downloader;
+
+    QString m_download;
+    QString m_executable;
+    OS m_os;
 
 signals:
 

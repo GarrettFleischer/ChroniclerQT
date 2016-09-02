@@ -41,17 +41,33 @@ Q_DECLARE_METATYPE(QStringList)
 CHomepage::CHomepage(QWidget *parent)
     : QWidget(parent), m_webView(0), m_recentView(0)
 {
-    QHBoxLayout *main_layout = new QHBoxLayout(this);
+    // Set variables relevant to each OS
+#ifdef Q_OS_WIN
+    m_os = Windows;
+    m_download = "https://dl.orangedox.com/dyxG0UfWBkJXHq8e7b/Chronicler-Next.exe?dl=1";
+    m_executable = "/Chronicler-Next.exe";
+#endif
+#ifdef Q_OS_OSX
+    m_os = Mac;
+    m_download = "";
+    m_executable = "";
+#endif
+#ifdef Q_OS_LINUX
+    m_os = Linux;
+    m_download = "https://dl.orangedox.com/XWv5CcPVPIlNEmMxQA/Chronicler-Next?dl=1";
+    m_executable = "/Chronicler-Next";
+#endif
 
+    // Build the layout
+    QHBoxLayout *main_layout = new QHBoxLayout(this);
     SetupSidebar(main_layout);
     SetupMainWindow(main_layout);
 
-    setLayout(main_layout);
-
+    // Download the HTML news page
     shared().statusBar->showMessage("Acquiring the latest news...");
+    m_downloader = new CFileDownloader(QUrl("https://www.dropbox.com/s/tru5nkm9m4uukwe/Chronicler_news.html?dl=1"), SLOT(NewsDownloaded()), this);
 
-    QString news = "https://www.dropbox.com/s/tru5nkm9m4uukwe/Chronicler_news.html?dl=1";
-    m_downloader = new CFileDownloader(QUrl(news), SLOT(NewsDownloaded()), this);
+
 }
 
 void CHomepage::SetupSidebar(QHBoxLayout *main_layout)
@@ -158,18 +174,18 @@ void CHomepage::NewsDownloaded()
 
     // Check for updates
     shared().statusBar->showMessage("Checking for updates...");
-
     m_downloader->deleteLater();
-    QString version = "https://dl.orangedox.com/zX8B0yt1PVVBPLP04V/Chronicler_Version.txt?dl=1";
-    m_downloader = new CFileDownloader(QUrl(version), SLOT(CheckForUpdates()), this);
+    m_downloader = new CFileDownloader(QUrl("https://dl.orangedox.com/zX8B0yt1PVVBPLP04V/Chronicler_Version.txt?dl=1"), SLOT(CheckForUpdates()), this);
 }
 
 void CHomepage::CheckForUpdates()
 {
     QString server_version = m_downloader->downloadedData();
 
+    // if an update is available
     if(shared().ProgramVersion < server_version)
     {
+        // Ask if the user wishes to download the update
         QMessageBox msgBox;
         msgBox.setText(tr("Version ") + server_version + tr(" available.\n"));
         msgBox.setInformativeText("Download now?");
@@ -180,24 +196,11 @@ void CHomepage::CheckForUpdates()
         if(ret == QMessageBox::Yes)
         {
             shared().statusBar->showMessage("Downloading update...");
-
             m_downloader->deleteLater();
-
-            QString update;
-#ifdef Q_OS_WIN
-            update = "https://dl.orangedox.com/dyxG0UfWBkJXHq8e7b/Chronicler-Next.exe?dl=1";
-#endif
-#ifdef Q_OS_OSX
-            update = "";
-#endif
-#ifdef Q_OS_LINUX
-            update = "https://dl.orangedox.com/XWv5CcPVPIlNEmMxQA/Chronicler-Next?dl=1";
-#endif
-
-            if(!update.isEmpty())
-                m_downloader = new CFileDownloader(QUrl(update), SLOT(UpdateDownloaded()), this);
+            if(m_os == Windows || m_os == Linux)
+                m_downloader = new CFileDownloader(QUrl(m_download), SLOT(UpdateDownloaded()), this);
             else
-                shared().statusBar->showMessage("Unable to determine your current Operating System...");
+                shared().statusBar->showMessage("Your OS is not supported at this time...");
         }
     }
     else
@@ -210,21 +213,8 @@ void CHomepage::UpdateDownloaded()
 
     if(ba.length() > 0)
     {
-
-        QString downloaded_program = QFileInfo(shared().settingsView->settings()->fileName()).absolutePath();
-
-#ifdef Q_OS_WIN
-        downloaded_program += "/Chronicler-Next.exe";
-#endif
-#ifdef Q_OS_OSX
-        downloaded_program += "";
-#endif
-#ifdef Q_OS_LINUX
-        downloaded_program += "/Chronicler-Next";
-#endif
-
-
-        QFile file(downloaded_program);
+        // write the download to a file
+        QFile file(QFileInfo(shared().settingsView->settings()->fileName()).absolutePath() + m_executable);
         file.open(QFile::WriteOnly);
         file.setPermissions(QFileDevice::ReadUser | QFileDevice::WriteUser | QFileDevice::ExeUser);
         file.write(ba);
@@ -241,17 +231,17 @@ void CHomepage::UpdateDownloaded()
 
         if(ret == QMessageBox::Yes)
         {
-
-#ifdef Q_OS_WIN
-            shared().mainWindow->close();
-            QDesktopServices::openUrl(QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + "/Chronicler_Updater.exe"));
-#endif
-
-#ifdef Q_OS_LINUX
-            QProcess *process = new QProcess();
-            connect(process, SIGNAL(finished(int)), shared().mainWindow, SLOT(close()));
-            process->start(QCoreApplication::applicationDirPath() + "/Chronicler_Updater");
-#endif
+            if(m_os == Windows)
+            {
+                shared().mainWindow->close();
+                QDesktopServices::openUrl(QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + "/Chronicler_Updater.exe"));
+            }
+            else if(m_os == Linux)
+            {
+                QProcess *process = new QProcess();
+                connect(process, SIGNAL(finished(int)), shared().mainWindow, SLOT(close()));
+                process->start(QCoreApplication::applicationDirPath() + "/Chronicler_Updater");
+            }
         }
     }
     else
