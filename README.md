@@ -45,7 +45,8 @@ Naming convention: Prefix all .h .cpp files with "C"
 * **Project tab**  
 	After opening a project, you are presented with a dock containing three tabs.  
 	The project tab holds basic information about your project. Currently these options are the Title & Author of your game, and the scenes your project contains.  
-	The scene list has buttons on the right for creating or deleting scenes and adjusting their order. (**WARNING:** there is currently no confirmation dialog for deleting scenes!)  
+	The scene list has buttons on the right for creating or deleting scenes and adjusting their order.  
+	It is possible to undo if you accidently delete a scene.  
 	The "startup" scene cannot be renamed or moved in the order. (ChoiceScript limitation)  
 * **Variables tab**  
 	This tab allows you to create and edit choicescript variables.  
