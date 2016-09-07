@@ -184,6 +184,16 @@ QList<ChoiceScriptData::CSLine> ChoiceScriptData::CSProcLines(QTextStream &strea
             choices.top()->children.append(&csline);
         }
 
+        else if(csline.line.startsWith("*") && csline.line.contains("#"))
+        {
+            csline.type = Choice;
+
+            if(csline.indent <= choices.top()->indent)
+                choices.pop();
+
+            choices.top()->children.append(&csline);
+        }
+
         else if (csline.line.startsWith("*title", Qt::CaseInsensitive))
         {
             csline.type = Title;

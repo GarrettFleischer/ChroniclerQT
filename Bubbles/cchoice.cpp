@@ -53,7 +53,7 @@ void CChoice::setChoice(const QString &choice)
     m_choice->setText(choice);
 }
 
-QString CChoice::choice() const
+QString CChoice::text() const
 {
     return m_choice->Text();
 }

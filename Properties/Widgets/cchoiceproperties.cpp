@@ -4,13 +4,17 @@
 //#include <QPushButton>
 
 #include "Misc/Bubbles/cchoicemodel.h"
+#include "Misc/Bubbles/cchoicedelegate.h"
 #include "Bubbles/cchoicebubble.h"
 #include "Bubbles/cchoice.h"
 
 
+
 CChoiceProperties::CChoiceProperties(QWidget *parent)
     : CListPropertiesWidget(parent)
-{}
+{
+    m_modelView->setItemDelegate(new CChoiceDelegate(this));
+}
 
 
 void CChoiceProperties::setBubble(CBubble *bbl)

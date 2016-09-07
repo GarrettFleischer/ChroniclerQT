@@ -34,6 +34,8 @@ void CActionEdit::UpdateVariables()
 {
     m_variables.clear();
 
+    m_variables.append({"choice_purchase_supported", "choice_purchased_adfree", "choice_is_web"});
+
     for(const CVariable &v : shared().variablesView->model()->variables())
         m_variables.append(v.name());
 }

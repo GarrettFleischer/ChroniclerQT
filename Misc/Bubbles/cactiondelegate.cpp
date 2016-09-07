@@ -5,14 +5,11 @@
 #include "Misc/Bubbles/cactionmodel.h"
 #include "Misc/Bubbles/cactionedit.h"
 
-#include "Misc/chronicler.h"
-using Chronicler::shared;
-
 CActionDelegate::CActionDelegate(QObject *parent)
     : QStyledItemDelegate(parent)
 {
     m_editor = new CActionEdit(Q_NULLPTR);
-    connect(m_editor, SIGNAL(textChanged()), this, SLOT(EditorUpdated()));
+//    connect(m_editor, SIGNAL(textChanged()), this, SLOT(EditorUpdated()));
 }
 
 CActionDelegate::~CActionDelegate()

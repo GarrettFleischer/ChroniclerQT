@@ -539,12 +539,12 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
             cs += indent + "*choice";
 
             // increase indent level
-            indent = QString(indent_str).repeated(++indent_level);
+            indent = indent_str.repeated(++indent_level);
 
             for(CChoice *choice : choice_bubble->choiceBubbles())
             {
-                // TODO add section for conditional choices
-                cs += "\n" + indent + "#" + choice->choice() + "\n";
+                QString hash = (choice->text().contains("#") ? "" : "#");
+                cs += "\n" + indent + hash + choice->text() + "\n";
 
                 if(choice->link() && LabelNeeded(choice->link()->to(), bubbles))
                     cs += indent + indent_str + "*goto " + MakeLabel(choice->link()->to(), bubbles);

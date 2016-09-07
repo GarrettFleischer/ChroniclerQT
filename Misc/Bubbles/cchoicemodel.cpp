@@ -28,7 +28,7 @@ QVariant CChoiceModel::data(const QModelIndex &index, int role) const
         return QVariant();
 
     if (role == Qt::DisplayRole || role == Qt::EditRole)
-        return QVariant(m_choices[index.row()]->choice());
+        return QVariant(m_choices[index.row()]->text());
 
     return QVariant();
 }

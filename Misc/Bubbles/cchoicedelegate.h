@@ -1,21 +1,17 @@
-#ifndef CACTIONDELEGATE_H
-#define CACTIONDELEGATE_H
+#ifndef CCHOICEDELEGATE_H
+#define CCHOICEDELEGATE_H
 
 #include <QStyledItemDelegate>
 
-QT_BEGIN_NAMESPACE
-class QStringListModel;
-QT_END_NAMESPACE
+class CChoiceEdit;
 
-class CActionEdit;
-
-class CActionDelegate : public QStyledItemDelegate
+class CChoiceDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
 
 public:
-    CActionDelegate(QObject *parent = Q_NULLPTR);
-    virtual ~CActionDelegate();
+    CChoiceDelegate(QObject *parent = Q_NULLPTR);
+    ~CChoiceDelegate();
 
     virtual QWidget *createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const Q_DECL_OVERRIDE;
     virtual void setEditorData(QWidget *editor, const QModelIndex &index) const Q_DECL_OVERRIDE;
@@ -24,11 +20,10 @@ public:
     virtual void destroyEditor(QWidget *editor, const QModelIndex &index) const Q_DECL_OVERRIDE;
 
 private:
-    CActionEdit *m_editor;
+    CChoiceEdit *m_editor;
 
 private slots:
     void EditorUpdated();
-
 };
 
-#endif // CACTIONDELEGATE_H
+#endif // CCHOICEDELEGATE_H
