@@ -19,18 +19,26 @@ CGraphicsView::CGraphicsView(CGraphicsScene *scene, QWidget *parent)
     setMouseTracking(true);
     setDragMode(ScrollHandDrag);
     setRenderHint(QPainter::Antialiasing, true);
-//    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-//    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
-    QAction *select_all = new QAction(this);
-    select_all->setShortcut(QKeySequence::SelectAll);
-    connect(select_all, SIGNAL(triggered()), scene, SLOT(SelectAll()));
-    addAction(select_all);
+    QAction *selectAllAction = new QAction(this);
+    selectAllAction->setShortcut(QKeySequence::SelectAll);
+    connect(selectAllAction, SIGNAL(triggered()), scene, SLOT(SelectAll()));
+    addAction(selectAllAction);
 
-    QAction *go_home = new QAction(this);
-    go_home->setShortcut(tr("Ctrl+H"));
-    connect(go_home, SIGNAL(triggered()), this, SLOT(Recenter()));
-    addAction(go_home);
+    QAction *goHomeAction = new QAction(this);
+    goHomeAction->setShortcut(tr("Ctrl+H"));
+    connect(goHomeAction, SIGNAL(triggered()), this, SLOT(Recenter()));
+    addAction(goHomeAction);
+
+    QAction *zoomInAction = new QAction(this);
+    zoomInAction->setShortcuts({Qt::Key_Plus, Qt::Key_Equal});
+    connect(zoomInAction, SIGNAL(triggered(bool)), this, SLOT(HandleZoomInAction()));
+    addAction(zoomInAction);
+
+    QAction *zoomOutAction = new QAction(this);
+    zoomOutAction->setShortcut(Qt::Key_Minus);
+    connect(zoomOutAction, SIGNAL(triggered(bool)), this, SLOT(HandleZoomOutAction()));
+    addAction(zoomOutAction);
 }
 
 CGraphicsScene *CGraphicsView::cScene()
@@ -109,5 +117,15 @@ void CGraphicsView::GentleZoom(double factor, const QPointF & mouse_pos)
 void CGraphicsView::Recenter()
 {
     centerOn(cScene()->startBubble());
+}
+
+void CGraphicsView::HandleZoomInAction()
+{
+    GentleZoom(1.5, mapFromGlobal(QCursor::pos()));
+}
+
+void CGraphicsView::HandleZoomOutAction()
+{
+    GentleZoom(0.5, mapFromGlobal(QCursor::pos()));
 }
 

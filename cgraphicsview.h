@@ -34,6 +34,10 @@ private:
 
 public slots:
     void Recenter();
+
+private slots:
+    void HandleZoomInAction();
+    void HandleZoomOutAction();
 };
 
 #endif // CGRAPHICSVIEW_H
