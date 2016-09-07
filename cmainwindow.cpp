@@ -30,6 +30,7 @@
 #include "Misc/chronicler.h"
 using Chronicler::shared;
 
+
 CMainWindow::CMainWindow(QSettings *settings, const QString &filename)
 {
     setWindowTitle(tr("Chronicler ") + shared().ProgramVersion.string);
@@ -388,9 +389,10 @@ void CMainWindow::CreateActions()
     shared().showDockAction = new QAction(tr("Show &dock"), this);
     connect(shared().showDockAction, SIGNAL(triggered(bool)), this, SLOT(ShowDock()));
 
-    QAction *escape_action = new QAction(Q_NULLPTR);
-    escape_action->setShortcut(QKeySequence::Deselect);
+    QAction *escape_action = new QAction(this);
+    escape_action->setShortcut(Qt::Key_Escape);
     connect(escape_action, SIGNAL(triggered(bool)), this, SLOT(EscapePressed()));
+    addAction(escape_action);
 
     shared().undoAction = shared().history->createUndoAction(this);
     shared().undoAction->setIcon(QIcon(":/images/icn_undo"));
