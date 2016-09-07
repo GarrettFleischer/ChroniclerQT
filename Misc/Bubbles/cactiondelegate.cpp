@@ -56,8 +56,9 @@ void CActionDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionVi
 
 void CActionDelegate::destroyEditor(QWidget *editor, const QModelIndex &index) const
 {
-    Q_UNUSED(editor)
     Q_UNUSED(index)
+
+    editor->setParent(Q_NULLPTR);
 }
 
 void CActionDelegate::EditorUpdated()
