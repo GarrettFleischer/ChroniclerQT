@@ -348,6 +348,7 @@ void CProjectView::NewProject()
     shared().pointerToolBar->show();
     shared().dock->setWindowTitle(m_path);
     shared().sceneTabs->removeTab(shared().sceneTabs->indexOf(shared().homepage));
+    shared().paletteButton->Reset();
 
     CGraphicsView *view = new CGraphicsView(new CGraphicsScene(true, "startup"), this);
     m_sceneModel->AddItem(view);
@@ -360,6 +361,7 @@ void CProjectView::NewProject()
 void CProjectView::CloseProject()
 {
     shared().history->clear();
+    shared().paletteButton->Clear();
 
     shared().importSceneAction->setEnabled(false);
 

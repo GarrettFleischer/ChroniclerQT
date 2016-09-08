@@ -8,11 +8,15 @@
 #include "Misc/Palette/cpaletteaction.h"
 #include "Properties/cpalettecreator.h"
 
+#include "Properties/cprojectview.h"
+#include "cgraphicsview.h"
+#include "cgraphicsscene.h"
+
 #include "Misc/chronicler.h"
 using Chronicler::shared;
 
 CPaletteButton::CPaletteButton(QWidget *parent)
-    : QToolButton(parent), m_editing(0)
+    : QToolButton(parent), m_editing(Q_NULLPTR)
 {
     setPopupMode(QToolButton::MenuButtonPopup);
     setCheckable(true);
@@ -26,11 +30,7 @@ CPaletteButton::CPaletteButton(QWidget *parent)
     m_current = shared().defaultStory;
 
     m_menu = new QActionMenu();
-    m_menu->addAction(shared().defaultStory);
-    m_menu->addAction(shared().defaultChoice);
-    m_menu->addAction(shared().defaultAction);
-    m_menu->addAction(shared().defaultCondition);
-    m_menu->addAction(shared().defaultStart);
+    Reset();
     connect(m_menu, SIGNAL(leftTriggered(QAction*)), this, SLOT(SelectAction(QAction*)));
     connect(m_menu, SIGNAL(rightTriggered(QAction*)), this, SLOT(EditAction(QAction*)));
 
@@ -71,7 +71,7 @@ CPaletteAction *CPaletteButton::getCurrent()
 
 void CPaletteButton::contextMenuEvent(QContextMenuEvent *)
 {
-    m_editing = 0;
+    m_editing = Q_NULLPTR;
     m_creator->setName(tr("New Palette"));
     m_creator->setPalette(CPalette());
     m_creator->show();
@@ -85,10 +85,9 @@ void CPaletteButton::SelectAction(QAction *action)
 
 void CPaletteButton::EditAction(QAction *action)
 {
-    CPaletteAction *a = dynamic_cast<CPaletteAction *>(action);
-    m_editing = a;
-    m_creator->setName(a->text());
-    m_creator->setPalette(a->getPalette());
+    m_editing = dynamic_cast<CPaletteAction *>(action);
+    m_creator->setName(m_editing->text());
+    m_creator->setPalette(m_editing->getPalette());
     m_creator->show();
 }
 
@@ -96,10 +95,25 @@ void CPaletteButton::Saved()
 {
     if(m_editing)
     {
-        m_editing->setText(m_creator->getName());
-        m_editing->setPalette(m_creator->getPalette());
-        m_current = m_editing;
-        m_editing = 0;
+        if(m_editing == shared().defaultAction || m_editing == shared().defaultChoice || m_editing == shared().defaultCondition ||
+                m_editing == shared().defaultStart || m_editing == shared().defaultStory)
+        {
+            m_current = new CPaletteAction(this, m_creator->getPalette(), m_creator->getName());
+            m_menu->insertAction(m_editing, m_current);
+            m_menu->removeAction(m_editing);
+
+            for(CGraphicsView *view : shared().projectView->getViews())
+                for(CBubble *b : view->cScene()->bubbles())
+                    if(b->getPalette() == m_editing)
+                        b->setPalette(m_current);
+        }
+        else
+        {
+            m_editing->setText(m_creator->getName());
+            m_editing->setPalette(m_creator->getPalette());
+            m_current = m_editing;
+            m_editing = Q_NULLPTR;
+        }
     }
     else
     {
@@ -111,8 +125,10 @@ void CPaletteButton::Saved()
 }
 
 
-QDataStream &CPaletteButton::Deserialize(QDataStream &ds, const Chronicler::CVersion &)
+QDataStream &CPaletteButton::Deserialize(QDataStream &ds, const Chronicler::CVersion &version)
 {
+    Q_UNUSED(version)
+
     qint32 len;
     ds >> len;
 
@@ -150,4 +166,20 @@ QDataStream &CPaletteButton::Serialize(QDataStream &ds)
     }
 
     return ds;
+}
+
+void CPaletteButton::Clear()
+{
+    m_menu->clear();
+}
+
+void CPaletteButton::Reset()
+{
+    Clear();
+
+    m_menu->addAction(shared().defaultStory);
+    m_menu->addAction(shared().defaultChoice);
+    m_menu->addAction(shared().defaultAction);
+    m_menu->addAction(shared().defaultCondition);
+    m_menu->addAction(shared().defaultStart);
 }

@@ -29,7 +29,7 @@ public:
 protected:
     virtual void contextMenuEvent(QContextMenuEvent *) override;
 
-    virtual QDataStream &Deserialize(QDataStream &ds, const CVersion &) override;
+    virtual QDataStream &Deserialize(QDataStream &ds, const CVersion &version) override;
     virtual QDataStream &Serialize(QDataStream &ds) override;
 
 private:
@@ -40,6 +40,10 @@ private:
     QActionMenu *m_menu;
 
     CPaletteCreator *m_creator;
+
+public slots:
+    void Clear();
+    void Reset();
 
 private slots:
     void SelectAction(QAction *action);
