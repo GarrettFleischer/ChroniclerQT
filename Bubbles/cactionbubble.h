@@ -11,7 +11,7 @@ class CActionBubble : public CSingleLinkBubble
     Q_OBJECT
 
 public:
-    CActionBubble(const QPointF &pos, CPaletteAction *palette, const QFont &font = QFont(), QGraphicsItem *parent = 0);
+    CActionBubble(const QPointF &pos, CPaletteAction *palette, const QFont &font = QFont(), QGraphicsItem *parent = Q_NULLPTR);
 
     virtual void setPalette(CPaletteAction *palette) override;
     virtual void setFont(const QFont &font) override;

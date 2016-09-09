@@ -425,7 +425,7 @@ CBubble * ChoiceScriptData::CSProcBubble(const CSBlock &csblock, QList<CSBubble>
     // Story
     if(csblock.type == Text)
     {
-        CStoryBubble *bbl = dynamic_cast<CStoryBubble *>(scene->AddBubble(Chronicler::Story, pos, false));
+        CStoryBubble *bbl = dynamic_cast<CStoryBubble *>(scene->AddBubble(Chronicler::StoryBubble, pos, false));
         bbl->setStory(csblock.text);
 
         bubble = bbl;
@@ -434,7 +434,7 @@ CBubble * ChoiceScriptData::CSProcBubble(const CSBlock &csblock, QList<CSBubble>
     // Action
     else if(csblock.type == Action)
     {
-        CActionBubble *bbl = dynamic_cast<CActionBubble *>(scene->AddBubble(Chronicler::Action, pos, false));
+        CActionBubble *bbl = dynamic_cast<CActionBubble *>(scene->AddBubble(Chronicler::ActionBubble, pos, false));
 
         QStringList actions = csblock.text.split('\n');
         bbl->actions()->setStringList(actions);
@@ -445,7 +445,7 @@ CBubble * ChoiceScriptData::CSProcBubble(const CSBlock &csblock, QList<CSBubble>
     // Choice
     else if(csblock.type == ChoiceAction)
     {
-        CChoiceBubble *bbl = dynamic_cast<CChoiceBubble *>(scene->AddBubble(Chronicler::Choice, pos, false));
+        CChoiceBubble *bbl = dynamic_cast<CChoiceBubble *>(scene->AddBubble(Chronicler::ChoiceBubble, pos, false));
 
         int left_width = 0;
         for(int i = 0; i < csblock.children.length() / 2; ++i)
@@ -487,14 +487,14 @@ CBubble * ChoiceScriptData::CSProcBubble(const CSBlock &csblock, QList<CSBubble>
                     CSBubble csbubble;
                     csbubble.bubble = cschoice;
                     csbubble.link = child.text;
-                    csbubble.anchor = left ? Chronicler::Left : Chronicler::Right;
+                    csbubble.anchor = left ? Chronicler::WestAnchor : Chronicler::EastAnchor;
                     deferredLinks.append(csbubble);
                 }
                 else
                     next_child = CSProcBubble(child, deferredLinks, scene, nrow, ncol, prev_child);
 
                 if(!prev_child && next_child)
-                    scene->AddConnection(cschoice, next_child, left ? Chronicler::Left : Chronicler::Right, Chronicler::Up);
+                    scene->AddConnection(cschoice, next_child, left ? Chronicler::WestAnchor : Chronicler::EastAnchor, Chronicler::NorthAnchor);
 
                 prev_child = next_child;
             }
@@ -509,7 +509,7 @@ CBubble * ChoiceScriptData::CSProcBubble(const CSBlock &csblock, QList<CSBubble>
         if(csblock.type == ElseIf)
             pos.rx() += (column += qMax(1, csblock.width)) * column_width;
 
-        CConditionBubble *bbl = dynamic_cast<CConditionBubble *>(scene->AddBubble(Chronicler::Condition, pos, false));
+        CConditionBubble *bbl = dynamic_cast<CConditionBubble *>(scene->AddBubble(Chronicler::ConditionBubble, pos, false));
         bbl->setCondition(csblock.text);
 
         int ncol = column - qMax(1, csblock.width / 2);
@@ -527,7 +527,7 @@ CBubble * ChoiceScriptData::CSProcBubble(const CSBlock &csblock, QList<CSBubble>
                 CSBubble csbubble;
                 csbubble.bubble = bbl;
                 csbubble.link = child.text;
-                csbubble.anchor = Chronicler::Left;
+                csbubble.anchor = Chronicler::WestAnchor;
                 deferredLinks.append(csbubble);
             }
             else
@@ -535,7 +535,7 @@ CBubble * ChoiceScriptData::CSProcBubble(const CSBlock &csblock, QList<CSBubble>
 
             // link true output
             if(!prev_child && next_child)
-                scene->AddConnection(bbl, next_child, Chronicler::Left, Chronicler::Up);
+                scene->AddConnection(bbl, next_child, Chronicler::WestAnchor, Chronicler::NorthAnchor);
 
             nrow += child.height;
             prev_child = next_child;
@@ -561,7 +561,7 @@ CBubble * ChoiceScriptData::CSProcBubble(const CSBlock &csblock, QList<CSBubble>
                 CSBubble csbubble;
                 csbubble.bubble = prev;
                 csbubble.link = child.text;
-                csbubble.anchor = Chronicler::Right;
+                csbubble.anchor = Chronicler::EastAnchor;
                 deferredLinks.append(csbubble);
             }
             else
@@ -580,7 +580,7 @@ CBubble * ChoiceScriptData::CSProcBubble(const CSBlock &csblock, QList<CSBubble>
         CSBubble csbubble;
         csbubble.bubble = prev;
         csbubble.link = csblock.text;
-        csbubble.anchor = Chronicler::Down;
+        csbubble.anchor = Chronicler::SouthAnchor;
         deferredLinks.append(csbubble);
     }
 
@@ -600,11 +600,11 @@ CBubble * ChoiceScriptData::CSProcBubble(const CSBlock &csblock, QList<CSBubble>
         // TODO ensure that the last Action bubble doesn't contain a *goto
         if(prev != bubble && prev)
         {
-            if(prev->getType() != Chronicler::Choice && prev->getType() != Chronicler::Condition && prev->getType() != Chronicler::Action)
-                scene->AddConnection(prev, bubble, Chronicler::Down, Chronicler::Up);
-            else if (prev->getType() == Chronicler::Condition)
-                scene->AddConnection(prev, bubble, Chronicler::Right, Chronicler::Up);
-            else if(prev->getType() == Chronicler::Action)
+            if(prev->getType() != Chronicler::ChoiceBubble && prev->getType() != Chronicler::ConditionBubble && prev->getType() != Chronicler::ActionBubble)
+                scene->AddConnection(prev, bubble, Chronicler::SouthAnchor, Chronicler::NorthAnchor);
+            else if (prev->getType() == Chronicler::ConditionBubble)
+                scene->AddConnection(prev, bubble, Chronicler::EastAnchor, Chronicler::NorthAnchor);
+            else if(prev->getType() == Chronicler::ActionBubble)
             {
                 bool has_goto = false;
                 for(const QString &str : dynamic_cast<CActionBubble *>(prev)->actions()->stringList())
@@ -617,7 +617,7 @@ CBubble * ChoiceScriptData::CSProcBubble(const CSBlock &csblock, QList<CSBubble>
                 }
 
                 if(!has_goto)
-                    scene->AddConnection(prev, bubble, Chronicler::Down, Chronicler::Up);
+                    scene->AddConnection(prev, bubble, Chronicler::SouthAnchor, Chronicler::NorthAnchor);
             }
         }
     }
@@ -633,7 +633,7 @@ void ChoiceScriptData::CSLinkBubbles(QList<ChoiceScriptData::CSBubble> &csbubble
         {
             CBubble *to = CSBubbleWithLabel(scene, csbubble.link);
             if(to)
-                scene->AddConnection(csbubble.bubble, to, csbubble.anchor, Chronicler::Up);
+                scene->AddConnection(csbubble.bubble, to, csbubble.anchor, Chronicler::NorthAnchor);
         }
     }
 }

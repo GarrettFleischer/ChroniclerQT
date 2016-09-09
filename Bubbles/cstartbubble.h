@@ -6,7 +6,7 @@
 class CStartBubble : public CSingleLinkBubble
 {
 public:
-    CStartBubble(const QPointF &pos, CPaletteAction *palette, const QFont &font, QGraphicsItem *parent = 0);
+    CStartBubble(const QPointF &pos, CPaletteAction *palette, const QFont &font, QGraphicsItem *parent = Q_NULLPTR);
 
 protected:
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *) override;

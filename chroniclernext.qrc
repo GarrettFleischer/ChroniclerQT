@@ -30,5 +30,6 @@
         <file>images/icn_up.png</file>
         <file>images/icn_down.png</file>
         <file>images/icn_paste.png</file>
+        <file>images/icn_code.png</file>
     </qresource>
 </RCC>

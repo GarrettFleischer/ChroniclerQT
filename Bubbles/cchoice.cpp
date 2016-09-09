@@ -17,7 +17,7 @@
 CChoice::CChoice(CPaletteAction *palette, const QFont &font, QGraphicsItem *parent, const QString &choice)
     : CSingleLinkBubble(QPointF(), palette, font, parent)
 {
-    m_type = Chronicler::ChoiceItem;
+    m_type = Chronicler::ChoiceItemBubble;
 
     setFlag(QGraphicsItem::ItemIsMovable, false);
     setFlag(QGraphicsItem::ItemIsSelectable, false);
@@ -114,15 +114,15 @@ void CChoice::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
 Chronicler::Anchor CChoice::OutputAnchorAtPosition(const QPointF &pos)
 {
     if(pos.x() < sceneBoundingRect().center().x())
-        return Chronicler::Left;
+        return Chronicler::WestAnchor;
 
-    return Chronicler::Right;
+    return Chronicler::EastAnchor;
 }
 
 // Inputs are applied to the CChoiceBubble that contains this choice.
 Chronicler::Anchor CChoice::InputAnchorAtPosition(const QPointF &)
 {
-    return Chronicler::None;
+    return Chronicler::NoAnchor;
 }
 
 CBubble *CChoice::container()

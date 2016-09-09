@@ -14,7 +14,7 @@ using Chronicler::shared;
 CActionBubble::CActionBubble(const QPointF &pos, CPaletteAction *palette, const QFont &font, QGraphicsItem *parent)
     : CSingleLinkBubble(pos, palette, font, parent)
 {
-    m_type = Chronicler::Action;
+    m_type = Chronicler::ActionBubble;
 
     m_actionsView = new CTextItem("", QRectF(), this);
     m_actionsView->SetStyle(Qt::AlignAbsolute | Qt::AlignVCenter);

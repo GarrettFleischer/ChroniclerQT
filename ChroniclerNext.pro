@@ -78,7 +78,10 @@ HEADERS += \
     Misc/History/cremovescenecommand.h \
     Misc/Bubbles/cconditionedit.h \
     Misc/Bubbles/cchoiceedit.h \
-    Misc/Bubbles/cchoicedelegate.h
+    Misc/Bubbles/cchoicedelegate.h \
+    Bubbles/ccodebubble.h \
+    Properties/Widgets/ccodeproperties.h \
+    Misc/Bubbles/ccodeedit.h
 
 SOURCES += \
     Bubbles/cactionbubble.cpp \
@@ -139,4 +142,7 @@ SOURCES += \
     Misc/History/cremovescenecommand.cpp \
     Misc/Bubbles/cconditionedit.cpp \
     Misc/Bubbles/cchoiceedit.cpp \
-    Misc/Bubbles/cchoicedelegate.cpp
+    Misc/Bubbles/cchoicedelegate.cpp \
+    Bubbles/ccodebubble.cpp \
+    Properties/Widgets/ccodeproperties.cpp \
+    Misc/Bubbles/ccodeedit.cpp

@@ -15,9 +15,8 @@ class CStoryProperties : public CPropertiesWidget
     Q_OBJECT
 
 public:
-    CStoryProperties(QWidget *parent = 0);
+    CStoryProperties(QWidget *parent = Q_NULLPTR);
 
-public:
     virtual void setBubble(CBubble *bbl);
 
 private:

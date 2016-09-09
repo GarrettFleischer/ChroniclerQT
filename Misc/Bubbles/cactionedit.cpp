@@ -54,7 +54,7 @@ void CActionEdit::UpdateLabels(const QString &scene)
                 if(b->getLabel().length())
                     m_labels.append(b->getLabel());
 
-                if(b->getType() == Chronicler::Action)
+                if(b->getType() == Chronicler::ActionBubble)
                 {
                     CActionBubble *ab = static_cast<CActionBubble *>(b);
                     for(QString action : ab->actions()->stringList())

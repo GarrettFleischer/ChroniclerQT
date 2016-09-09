@@ -55,7 +55,7 @@ CStoryProperties::CStoryProperties(QWidget *parent)
     m_layout->addLayout(hl_font);
     m_layout->addWidget(m_storyEdit);
 
-    setBubble(0);
+    setBubble(Q_NULLPTR);
 }
 
 

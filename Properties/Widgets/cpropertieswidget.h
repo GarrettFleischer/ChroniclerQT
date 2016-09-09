@@ -20,8 +20,9 @@ using Chronicler::shared;
 class CPropertiesWidget : public QWidget
 {
     Q_OBJECT
+
 public:
-    explicit CPropertiesWidget(QWidget *parent = 0);
+    explicit CPropertiesWidget(QWidget *parent = Q_NULLPTR);
 
     virtual void setBubble(CBubble *bbl);
 

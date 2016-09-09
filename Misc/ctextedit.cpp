@@ -1,7 +1,7 @@
 #include "ctextedit.h"
 
 CTextEdit::CTextEdit(QWidget * parent, QStringListModel * model, const QString & text)
-    : QTextEdit(parent), m_completer(0), m_completionModel(model), m_enabled(true), m_alwaysEnabled(false), m_acceptsReturn(true), m_ctrlHeld(false)
+    : QTextEdit(parent), m_completer(0), m_completionModel(model), m_enabled(true), m_alwaysEnabled(false), m_acceptsReturn(true), m_acceptsTab(false), m_ctrlHeld(false)
 {
     setText(text);
 
@@ -66,6 +66,16 @@ QStringList *CTextEdit::listFromFile(const QString & fileName)
 #endif
 
     return words;
+}
+
+bool CTextEdit::acceptsTab() const
+{
+    return m_acceptsTab;
+}
+
+void CTextEdit::setAcceptsTab(bool acceptsTab)
+{
+    m_acceptsTab = acceptsTab;
 }
 
 void CTextEdit::setAlwaysEnabled(bool alwaysEnabled)
@@ -189,8 +199,13 @@ void CTextEdit::keyPressEvent(QKeyEvent *e)
         }
     }
 
-    if ((!m_completer || !isEscape) && !(isReturn && !m_acceptsReturn) && !isTab)
-        QTextEdit::keyPressEvent(e);
+    if ((!m_completer || !isEscape) && !(isReturn && !m_acceptsReturn) && !(isTab && !m_acceptsTab))
+    {
+        if(isTab)
+            textCursor().insertText("    ");
+        else
+            QTextEdit::keyPressEvent(e);
+    }
 
 
     // exit if disabled, or one of the modifiers is pressed

@@ -13,7 +13,7 @@
 using Chronicler::shared;
 
 CConnection::CConnection(QGraphicsScene *scn)
-    : CConnection(0, 0, Anchor::Down, Anchor::Up, scn)
+    : CConnection(0, 0, Anchor::SouthAnchor, Anchor::NorthAnchor, scn)
 {}
 
 CConnection::CConnection(CBubble *from, CBubble *to, Anchor anc_from, Anchor anc_to, QGraphicsScene *scn)

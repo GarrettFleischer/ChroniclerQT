@@ -13,7 +13,7 @@ class CChoiceBubble : public CBubble
 public:
     typedef QList<CChoice *> choiceList;
 
-    CChoiceBubble(const QPointF &pos, CPaletteAction *palette, const QFont &font = QFont(), QGraphicsItem *parent = 0);
+    CChoiceBubble(const QPointF &pos, CPaletteAction *palette, const QFont &font = QFont(), QGraphicsItem *parent = Q_NULLPTR);
 
     virtual void setPalette(CPaletteAction *palette) override;
     virtual void setFont(const QFont &font) override;

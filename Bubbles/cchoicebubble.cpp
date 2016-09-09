@@ -11,7 +11,7 @@
 CChoiceBubble::CChoiceBubble(const QPointF &pos, CPaletteAction *palette, const QFont &font, QGraphicsItem *parent)
     : CBubble(pos, palette, font, parent)
 {
-    m_type = Chronicler::Choice;
+    m_type = Chronicler::ChoiceBubble;
 
     m_choices = new CChoiceModel(choiceList(), this);
     connect(m_choices, SIGNAL(rowsInserted(QModelIndex,int,int)),
@@ -117,15 +117,15 @@ void CChoiceBubble::ModelUpdated()
 
 Chronicler::Anchor CChoiceBubble::OutputAnchorAtPosition(const QPointF &)
 {
-    return Chronicler::None;
+    return Chronicler::NoAnchor;
 }
 
 Chronicler::Anchor CChoiceBubble::InputAnchorAtPosition(const QPointF &pos)
 {
     if(pos.y() > sceneBoundingRect().center().y())
-        return Chronicler::Down;
+        return Chronicler::SouthAnchor;
 
-    return Chronicler::Up;
+    return Chronicler::NorthAnchor;
 }
 
 

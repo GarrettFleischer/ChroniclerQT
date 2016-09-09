@@ -172,13 +172,13 @@ Anchor CBubble::AnchorAtPosition(const QPointF &pos)
     qreal diff_y = qAbs(center.y() - pos.y());
 
     if(pos.x() < center.x() && diff_x > diff_y)
-        return Anchor::Left;
+        return Anchor::WestAnchor;
     if(pos.x() > center.x() && diff_x > diff_y)
-        return Anchor::Right;
+        return Anchor::EastAnchor;
     if(pos.y() > center.y())
-        return Anchor::Down;
+        return Anchor::SouthAnchor;
 
-    return Anchor::Up;
+    return Anchor::NorthAnchor;
 }
 
 void CBubble::UpdatePalette()

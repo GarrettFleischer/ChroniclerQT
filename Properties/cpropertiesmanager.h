@@ -12,6 +12,7 @@ class CStoryProperties;
 class CConditionProperties;
 class CChoiceProperties;
 class CActionProperties;
+class CCodeProperties;
 class CBubble;
 
 class CPropertiesManager : public QWidget
@@ -30,7 +31,7 @@ private:
     CConditionProperties *m_conditionProperties;
     CChoiceProperties *m_choiceProperties;
     CActionProperties *m_actionProperties;
-
+    CCodeProperties *m_codeProperties;
 signals:
 
 public slots:

@@ -22,6 +22,7 @@
 #include "Bubbles/cchoicebubble.h"
 #include "Bubbles/cchoice.h"
 #include "Bubbles/cactionbubble.h"
+#include "Bubbles/ccodebubble.h"
 #include "Connections/cline.h"
 #include "Connections/cconnection.h"
 
@@ -57,7 +58,7 @@ CGraphicsScene::CGraphicsScene(bool create_start, const QString &name, QObject *
     connect(this, SIGNAL(changed(QList<QRectF>)), this, SLOT(UpdateSceneRect()));
 
     if(create_start)
-        m_startBubble = dynamic_cast<CStartBubble *>(AddBubble(Chronicler::Start, sceneRect().center(), false));
+        m_startBubble = dynamic_cast<CStartBubble *>(AddBubble(Chronicler::StartBubble, sceneRect().center(), false));
 }
 
 void CGraphicsScene::setFont(const QFont &font)
@@ -154,7 +155,7 @@ QDataStream &CGraphicsScene::Deserialize(QDataStream &ds, const Chronicler::CVer
         bbl = AddBubble(Chronicler::BubbleType(t), QPointF(), false);
         ds >> *bbl;
 
-        if(bbl->getType() == Chronicler::Start)
+        if(bbl->getType() == Chronicler::StartBubble)
             m_startBubble = dynamic_cast<CStartBubble*>(bbl);
     }
 
@@ -233,26 +234,30 @@ void CGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
         switch (shared().cursorMode)
         {
         case Chronicler::InsertStory:
-            AddBubble(Chronicler::Story, event->scenePos(), (event->modifiers() & Qt::ShiftModifier));
+            AddBubble(Chronicler::StoryBubble, event->scenePos(), (event->modifiers() & Qt::ShiftModifier));
             break;
 
         case Chronicler::InsertCondition:
-            AddBubble(Chronicler::Condition, event->scenePos(), (event->modifiers() & Qt::ShiftModifier));
+            AddBubble(Chronicler::ConditionBubble, event->scenePos(), (event->modifiers() & Qt::ShiftModifier));
             break;
 
         case Chronicler::InsertChoice:
-            AddBubble(Chronicler::Choice, event->scenePos(), (event->modifiers() & Qt::ShiftModifier));
+            AddBubble(Chronicler::ChoiceBubble, event->scenePos(), (event->modifiers() & Qt::ShiftModifier));
             break;
 
         case Chronicler::InsertAction:
-            AddBubble(Chronicler::Action, event->scenePos(), (event->modifiers() & Qt::ShiftModifier));
+            AddBubble(Chronicler::ActionBubble, event->scenePos(), (event->modifiers() & Qt::ShiftModifier));
+            break;
+
+        case Chronicler::InsertCode:
+            AddBubble(Chronicler::CodeBubble, event->scenePos(), (event->modifiers() & Qt::ShiftModifier));
             break;
 
         case Chronicler::InsertConnection:
             if(clickItem)
             {
                 Anchor out = clickItem->OutputAnchorAtPosition(event->scenePos());
-                if(out != Anchor::None)
+                if(out != Anchor::NoAnchor)
                 {
                     m_line->setStart(event->scenePos());
                     m_line->setStartAnchor(out);
@@ -334,7 +339,7 @@ void CGraphicsScene::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
                 {
                     Anchor start_anchor = m_line->startAnchor();
                     Anchor end_anchor = m_line->endAnchor();
-                    if(start_anchor != Anchor::None && end_anchor != Anchor::None)
+                    if(start_anchor != Anchor::NoAnchor && end_anchor != Anchor::NoAnchor)
                         AddConnection(startItem, endItem, start_anchor, end_anchor);
                 }
             }
@@ -400,15 +405,17 @@ void CGraphicsScene::keyReleaseEvent(QKeyEvent *event)
 CBubble * CGraphicsScene::AddBubble(BubbleType type, const QPointF &pos, bool shift)
 {
     CBubble *bubble = Q_NULLPTR;
-    if(type == Chronicler::Story)
+    if(type == Chronicler::StoryBubble)
         bubble = new CStoryBubble(pos, shared().defaultStory, m_font);
-    else if(type == Chronicler::Condition)
+    else if(type == Chronicler::ConditionBubble)
         bubble = new CConditionBubble(pos, shared().defaultCondition, m_font);
-    else if(type == Chronicler::Action)
+    else if(type == Chronicler::ActionBubble)
         bubble = new CActionBubble(pos, shared().defaultAction, m_font);
-    else if(type == Chronicler::Choice)
+    else if(type == Chronicler::ChoiceBubble)
         bubble = new CChoiceBubble(pos, shared().defaultChoice, m_font);
-    else if(type == Chronicler::Start)
+    else if(type == Chronicler::CodeBubble)
+        bubble = new CCodeBubble(pos, shared().defaultStory, m_font);
+    else if(type == Chronicler::StartBubble)
         bubble = new CStartBubble(pos, shared().defaultStart, m_font);
 
     if(bubble)

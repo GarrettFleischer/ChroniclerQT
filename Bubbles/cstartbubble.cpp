@@ -3,7 +3,7 @@
 CStartBubble::CStartBubble(const QPointF &pos, CPaletteAction *palette, const QFont &font, QGraphicsItem *parent)
     : CSingleLinkBubble(pos, palette, font, parent)
 {
-    m_type = Chronicler::Start;
+    m_type = Chronicler::StartBubble;
 
     m_order = -1;
 
@@ -34,5 +34,5 @@ void CStartBubble::UpdatePolygon()
 
 Chronicler::Anchor CStartBubble::InputAnchorAtPosition(const QPointF &)
 {
-    return Chronicler::None;
+    return Chronicler::NoAnchor;
 }

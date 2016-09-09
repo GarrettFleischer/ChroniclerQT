@@ -31,11 +31,11 @@ namespace Chronicler
 
     typedef quint64 t_uid;
 
-    enum BubbleType { Story, Choice, Action, Condition, Start, ChoiceItem };
+    enum BubbleType { StoryBubble, ChoiceBubble, ActionBubble, ConditionBubble, StartBubble, ChoiceItemBubble, CodeBubble };
 
-    enum Anchor { Right, Down, Left, Up, None };
+    enum Anchor { EastAnchor, SouthAnchor, WestAnchor, NorthAnchor, NoAnchor };
 
-    enum Mode { InsertConnection, Cursor, InsertStory, InsertCondition, InsertChoice, InsertAction, Paint };
+    enum Mode { InsertConnection, Cursor, InsertStory, InsertCondition, InsertChoice, InsertAction, InsertCode, Paint };
 
     enum Command { AddBubblesCommand, RemoveBubblesCommand, MoveBubblesCommand, ResizeBubbleCommand, RemoveSceneCommand };
 
@@ -167,6 +167,7 @@ namespace Chronicler
         CPaletteAction *defaultChoice;
         CPaletteAction *defaultAction;
         CPaletteAction *defaultCondition;
+        CPaletteAction *defaultCode;
         CPaletteAction *defaultStart;
 
         QString globalVariableTitle = "Global";

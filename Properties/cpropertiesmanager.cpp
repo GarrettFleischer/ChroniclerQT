@@ -6,6 +6,7 @@
 #include "Widgets/cconditionproperties.h"
 #include "Widgets/cchoiceproperties.h"
 #include "Widgets/cactionproperties.h"
+#include "Widgets/ccodeproperties.h"
 #include "Bubbles/cbubble.h"
 
 
@@ -27,12 +28,17 @@ CPropertiesManager::CPropertiesManager(QWidget *parent)
     m_actionProperties->setEnabled(false);
     m_actionProperties->hide();
 
+    m_codeProperties = new CCodeProperties(parent);
+    m_codeProperties->setEnabled(false);
+    m_codeProperties->hide();
+
     
     QVBoxLayout *layout = new QVBoxLayout(this);
     layout->addWidget(m_storyProperties);
     layout->addWidget(m_conditionProperties);
     layout->addWidget(m_choiceProperties);
     layout->addWidget(m_actionProperties);
+    layout->addWidget(m_codeProperties);
     setLayout(layout);
 
 //    QPalette Pal(palette());
@@ -57,31 +63,37 @@ void CPropertiesManager::setBubble(CBubble *bbl)
         m_conditionProperties->hide();
         m_choiceProperties->hide();
         m_actionProperties->hide();
+        m_codeProperties->hide();
 
         switch(bbl->getType())
         {
-        case Chronicler::Start:
+        case Chronicler::StartBubble:
             break;
 
-        case Chronicler::Story:
+        case Chronicler::StoryBubble:
             m_storyProperties->setBubble(bbl);
             m_storyProperties->show();
         break;
 
-        case Chronicler::Choice:
+        case Chronicler::ChoiceBubble:
             m_choiceProperties->setBubble(bbl);
             m_choiceProperties->show();
         break;
 
-        case Chronicler::Action:
+        case Chronicler::ActionBubble:
             m_actionProperties->setBubble(bbl);
             m_actionProperties->show();
         break;
 
-        case Chronicler::Condition:
+        case Chronicler::ConditionBubble:
             m_conditionProperties->setBubble(bbl);
             m_conditionProperties->show();
         break;
+
+        case Chronicler::CodeBubble:
+            m_codeProperties->setBubble(bbl);
+            m_codeProperties->show();
+            break;
 
         default:
             break;
@@ -89,10 +101,11 @@ void CPropertiesManager::setBubble(CBubble *bbl)
     }
     else
     {
-        m_storyProperties->setBubble(0);
-        m_conditionProperties->setBubble(0);
-        m_choiceProperties->setBubble(0);
-        m_actionProperties->setBubble(0);
+        m_storyProperties->setBubble(Q_NULLPTR);
+        m_conditionProperties->setBubble(Q_NULLPTR);
+        m_choiceProperties->setBubble(Q_NULLPTR);
+        m_actionProperties->setBubble(Q_NULLPTR);
+        m_codeProperties->setBubble(Q_NULLPTR);
     }
 }
 

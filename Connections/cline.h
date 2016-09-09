@@ -21,7 +21,7 @@ class CLine : public QObject, public QGraphicsItem
     Q_INTERFACES(QGraphicsItem)
 
 public:
-    explicit CLine(const QPointF &start, const QPointF &end, Anchor anc_start = Anchor::Down, Anchor anc_end = Anchor::Up, QObject *parent = 0);
+    explicit CLine(const QPointF &start, const QPointF &end, Anchor anc_start = Anchor::SouthAnchor, Anchor anc_end = Anchor::NorthAnchor, QObject *parent = 0);
     explicit CLine(const CLine & copy);
 
     CLine & operator=(const CLine & rhs);

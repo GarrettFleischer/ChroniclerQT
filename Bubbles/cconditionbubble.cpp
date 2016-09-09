@@ -10,12 +10,10 @@
 CConditionBubble::CConditionBubble(const QPointF &pos, CPaletteAction *palette, const QFont &font, QGraphicsItem *parent)
     : CBubble(pos, palette, font, parent), m_trueLink(0), m_falseLink(0)
 {
-    m_type = Chronicler::Condition;
+    m_type = Chronicler::ConditionBubble;
 
     m_condition = new CTextItem("", QRectF(), this);
     m_condition->SetStyle(Qt::AlignCenter);
-    
-    setCursor(Qt::PointingHandCursor);
 
     AdjustMinSize();
     m_bounds = QRectF(-m_minSize.width()/2, -m_minSize.height()/2, m_minSize.width(), m_minSize.height());
@@ -99,7 +97,7 @@ void CConditionBubble::AddLink(CConnection *link)
 {
     if(link)
     {
-        if(link->startAnchor() == Anchor::Left)
+        if(link->startAnchor() == Anchor::WestAnchor)
         {
             if(m_trueLink != link)
             {
@@ -109,7 +107,7 @@ void CConditionBubble::AddLink(CConnection *link)
 
             m_trueLink = link;
         }
-        else if(link->startAnchor() == Anchor::Right)
+        else if(link->startAnchor() == Anchor::EastAnchor)
         {
             if(m_falseLink != link)
             {
@@ -130,14 +128,14 @@ QList<CConnection *> CConditionBubble::links()
 Anchor CConditionBubble::OutputAnchorAtPosition(const QPointF &pos)
 {
     if(pos.x() < sceneBoundingRect().center().x())
-        return Anchor::Left;
+        return Anchor::WestAnchor;
 
-    return Anchor::Right;
+    return Anchor::EastAnchor;
 }
 
 Chronicler::Anchor CConditionBubble::InputAnchorAtPosition(const QPointF &)
 {
-    return Anchor::Up;
+    return Anchor::NorthAnchor;
 }
 
 

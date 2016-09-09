@@ -9,18 +9,15 @@
 CStoryBubble::CStoryBubble(const QPointF &pos, CPaletteAction *palette, const QFont &font, QGraphicsItem *parent)
     : CSingleLinkBubble(pos, palette, font, parent)
 {
-    m_type = Chronicler::Story;
+    m_type = Chronicler::StoryBubble;
     
     setPolygon(QPolygonF(QRectF(-100,-100,200,200)));
 
     m_title = new CTextItem("", QRectF(), this);
     m_title->SetStyle(Qt::AlignHCenter);
-//    setLabel("Title");
 
-    m_story = new CTextItem("Story", QRectF(), this);
+    m_story = new CTextItem("", QRectF(), this);
     m_story->SetStyle(Qt::AlignLeft);
-    
-    setCursor(Qt::PointingHandCursor);
 
     UpdatePolygon();
     moveBy(-boundingRect().width() / 2, -boundingRect().height() / 2);

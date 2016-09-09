@@ -52,6 +52,18 @@ CMainWindow::CMainWindow(QSettings *settings, const QString &filename)
     CreateActions();
     CreateMenus();
 
+    shared().sceneTabs = new QTabWidget(this);
+    shared().sceneTabs->setMovable(true);
+    shared().sceneTabs->setTabsClosable(true);
+    connect(shared().sceneTabs, SIGNAL(tabCloseRequested(int)), this, SLOT(TabClosed(int)));
+
+    shared().homepage = new CHomepage(this);
+    shared().sceneTabs->addTab(shared().homepage, tr("Homepage"));
+
+    setCentralWidget(shared().sceneTabs);
+
+    CreateToolbars();
+
     shared().dock = new QDockWidget(tr("Project"), this);
     connect(shared().dock, SIGNAL(dockLocationChanged(Qt::DockWidgetArea)),
             this, SLOT(DockAreaChanged(Qt::DockWidgetArea)));
@@ -65,20 +77,6 @@ CMainWindow::CMainWindow(QSettings *settings, const QString &filename)
     Qt::DockWidgetArea area = static_cast<Qt::DockWidgetArea>(shared().settingsView->settings()->value("MainWindow/DockArea",
                                                                                                        static_cast<int>(Qt::LeftDockWidgetArea)).toInt());
     addDockWidget(area, shared().dock);
-
-    shared().homepage = new CHomepage(this);
-
-    shared().sceneTabs = new QTabWidget(this);
-    shared().sceneTabs->setMovable(true);
-    shared().sceneTabs->setTabsClosable(true);
-    connect(shared().sceneTabs, SIGNAL(tabCloseRequested(int)),
-            this, SLOT(TabClosed(int)));
-
-    shared().sceneTabs->addTab(shared().homepage, tr("Homepage"));
-
-    setCentralWidget(shared().sceneTabs);
-
-    CreateToolbars();
 
     // to allow .chron files to be opened with Chronicler
     if(filename.length())
@@ -99,7 +97,7 @@ void CMainWindow::DeleteSelectedItems()
         for(QGraphicsItem *item : view->cScene()->selectedItems())
         {
             CBubble *bubble = dynamic_cast<CBubble *>(item);
-            if(bubble && bubble->getType() != Chronicler::Start)
+            if(bubble && bubble->getType() != Chronicler::StartBubble)
                 bubbles.append(bubble);
         }
 
@@ -403,18 +401,20 @@ void CMainWindow::CreateActions()
     shared().redoAction->setShortcut(QKeySequence::Redo);
 
     // Default Palettes
-    CPalette dp_story, dp_choice, dp_action, dp_condition, dp_start;
+    CPalette dp_story, dp_choice, dp_action, dp_condition, dp_code, dp_start;
     dp_story.fill = QColor(124, 140, 230);
     dp_choice.fill = QColor(104, 160, 210);
     dp_action.fill = QColor(161,88,136);
     dp_condition.fill = QColor(151,118,166);
+    dp_code.fill = QColor(124, 140, 230);
     dp_start.fill = Qt::darkGreen;
 
     shared().defaultStory = new CPaletteAction(this, dp_story, tr("Story"), 1);
     shared().defaultChoice = new CPaletteAction(this, dp_choice, tr("Choice"), 2);
     shared().defaultAction = new CPaletteAction(this, dp_action, tr("Action"), 3);
     shared().defaultCondition = new CPaletteAction(this, dp_condition, tr("Condition"), 4);
-    shared().defaultStart = new CPaletteAction(this, dp_start, tr("Start"), 5);
+    shared().defaultCode = new CPaletteAction(this, dp_code, tr("Code"), 5);
+    shared().defaultStart = new CPaletteAction(this, dp_start, tr("Start"), 6);
 }
 
 
@@ -479,6 +479,10 @@ void CMainWindow::CreateToolbars()
     tb_choice->setCheckable(true);
     tb_choice->setIcon(QIcon(":/images/icn_choice2.png"));
     tb_choice->setToolTip(tr("Choice bubble"));
+    QToolButton *tb_code = new QToolButton();
+    tb_code->setCheckable(true);
+    tb_code->setIcon(QIcon(":/images/icn_code.png"));
+    tb_code->setToolTip(tr("Code bubble"));
 
     // Palette creator
     shared().paletteButton = new CPaletteButton();
@@ -490,6 +494,7 @@ void CMainWindow::CreateToolbars()
     shared().pointerTypeGroup->addButton(tb_condition, int(Chronicler::InsertCondition));
     shared().pointerTypeGroup->addButton(tb_choice, int(Chronicler::InsertChoice));
     shared().pointerTypeGroup->addButton(tb_action, int(Chronicler::InsertAction));
+    shared().pointerTypeGroup->addButton(tb_code, int(Chronicler::InsertCode));
     shared().pointerTypeGroup->addButton(shared().paletteButton, int(Chronicler::Paint));
     connect(shared().pointerTypeGroup, SIGNAL(buttonClicked(int)),
             this, SLOT(PointerGroupClicked(int)));
@@ -505,6 +510,7 @@ void CMainWindow::CreateToolbars()
     shared().pointerToolBar->addWidget(tb_choice);
     shared().pointerToolBar->addWidget(tb_action);
     shared().pointerToolBar->addWidget(tb_condition);
+    shared().pointerToolBar->addWidget(tb_code);
     shared().pointerToolBar->addWidget(shared().paletteButton);
     shared().pointerToolBar->setIconSize(QSize(32,32));
     addToolBar(area, shared().pointerToolBar);

@@ -50,6 +50,7 @@
 #include "Bubbles/cactionbubble.h"
 #include "Misc/cstringlistmodel.h"
 #include "Bubbles/cconditionbubble.h"
+#include "Bubbles/ccodebubble.h"
 #include "Connections/cconnection.h"
 
 
@@ -268,7 +269,7 @@ void CProjectView::OpenProject(QString filepath)
 
     shared().dock->show();
     shared().pointerToolBar->show();
-    shared().dock->setWindowTitle(m_path);//(QFileInfo(m_path).fileName());
+    shared().dock->setWindowTitle(m_path);
     shared().sceneTabs->removeTab(shared().sceneTabs->indexOf(shared().homepage));
 
     // grab the startup view
@@ -504,9 +505,9 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
             indent = QString(indent_str).repeated(indent_level);
 
         // ------------ Start bubble ------------
-        if(bubble->getType() == Chronicler::Start)
+        if(bubble->getType() == Chronicler::StartBubble)
         {
-            CStartBubble *start = dynamic_cast<CStartBubble *>(bubble);
+            CStartBubble *start = static_cast<CStartBubble *>(bubble);
             if(start->link())
                 cs += BubbleToChoiceScript(bubbles, processed, indent_level, start->link()->to());
             else
@@ -514,9 +515,9 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
         }
 
         // ------------ Story bubble ------------
-        if(bubble->getType() == Chronicler::Story)
+        if(bubble->getType() == Chronicler::StoryBubble)
         {
-            CStoryBubble *story = dynamic_cast<CStoryBubble *>(bubble);
+            CStoryBubble *story = static_cast<CStoryBubble *>(bubble);
 
             cs += indent + story->getStory().replace("\n", "\n" + indent) + "\n";
 
@@ -534,9 +535,9 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
         }
 
         // ------------ Choice bubble ------------
-        else if(bubble->getType() == Chronicler::Choice)
+        else if(bubble->getType() == Chronicler::ChoiceBubble)
         {
-            CChoiceBubble *choice_bubble = dynamic_cast<CChoiceBubble *>(bubble);
+            CChoiceBubble *choice_bubble = static_cast<CChoiceBubble *>(bubble);
 
             cs += indent + "*choice";
 
@@ -560,9 +561,9 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
         }
 
         // ------------ Action bubble ------------
-        else if(bubble->getType() == Chronicler::Action)
+        else if(bubble->getType() == Chronicler::ActionBubble)
         {
-            CActionBubble *action = dynamic_cast<CActionBubble *>(bubble);
+            CActionBubble *action = static_cast<CActionBubble *>(bubble);
 
             cs += indent + action->actionString().replace("\n", "\n" + indent) + "\n";
 
@@ -575,9 +576,9 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
         }
 
         // ------------ Condition bubble ------------
-        else if(bubble->getType() == Chronicler::Condition)
+        else if(bubble->getType() == Chronicler::ConditionBubble)
         {
-            CConditionBubble *cb = dynamic_cast<CConditionBubble *>(bubble);
+            CConditionBubble *cb = static_cast<CConditionBubble *>(bubble);
 
             cs += indent + "*if(" + cb->getCondition() + ")\n";
 
@@ -604,6 +605,22 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
             }
             else
                 cs += indent + indent_str + "*finish";
+        }
+
+        // ------------ Code bubble ------------
+        else if(bubble->getType() == Chronicler::CodeBubble)
+        {
+            CCodeBubble *code = static_cast<CCodeBubble *>(bubble);
+
+            cs += indent + code->getCode().replace("\n", "\n" + indent) + "\n";
+
+            if(code->link())
+            {
+                if(LabelNeeded(code->link()->to(), bubbles))
+                    cs += indent + "*goto " + MakeLabel(code->link()->to(), bubbles);
+                else
+                    cs += "\n" + BubbleToChoiceScript(bubbles, processed, indent_level, code->link()->to());
+            }
         }
     }
 

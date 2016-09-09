@@ -31,6 +31,9 @@ public:
 
     void setAlwaysEnabled(bool alwaysEnabled);
 
+    bool acceptsTab() const;
+    void setAcceptsTab(bool acceptsTab);
+
 protected:
     virtual void keyPressEvent(QKeyEvent *e) override;
     virtual void focusInEvent(QFocusEvent *e) override;
@@ -47,6 +50,7 @@ protected:
     bool m_alwaysEnabled;
 
     bool m_acceptsReturn;
+    bool m_acceptsTab;
 
     bool m_ctrlHeld;
 

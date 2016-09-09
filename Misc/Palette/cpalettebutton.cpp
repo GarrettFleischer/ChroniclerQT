@@ -95,8 +95,8 @@ void CPaletteButton::Saved()
 {
     if(m_editing)
     {
-        if(m_editing == shared().defaultAction || m_editing == shared().defaultChoice || m_editing == shared().defaultCondition ||
-                m_editing == shared().defaultStart || m_editing == shared().defaultStory)
+        if(m_editing == shared().defaultAction || m_editing == shared().defaultChoice || m_editing == shared().defaultCode ||
+           m_editing == shared().defaultCondition || m_editing == shared().defaultStart || m_editing == shared().defaultStory)
         {
             m_current = new CPaletteAction(this, m_creator->getPalette(), m_creator->getName());
             m_menu->insertAction(m_editing, m_current);
@@ -181,5 +181,6 @@ void CPaletteButton::Reset()
     m_menu->addAction(shared().defaultChoice);
     m_menu->addAction(shared().defaultAction);
     m_menu->addAction(shared().defaultCondition);
+    m_menu->addAction(shared().defaultCode);
     m_menu->addAction(shared().defaultStart);
 }
