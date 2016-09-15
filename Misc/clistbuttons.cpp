@@ -11,7 +11,7 @@ CListButtons::CListButtons(QWidget *parent, int activeButtons)
     if(activeButtons & Up)
     {
         QPushButton *btn_up = new QPushButton(QIcon(":/images/icn_up"), "");
-        btn_up->setToolTip("Move item up");
+        btn_up->setToolTip(tr("Move item up"));
         connect(btn_up, SIGNAL(clicked(bool)), this, SIGNAL(moveUp()));
 
         vl_main->addWidget(btn_up);
@@ -20,7 +20,7 @@ CListButtons::CListButtons(QWidget *parent, int activeButtons)
     if(activeButtons & Down)
     {
         QPushButton *btn_down = new QPushButton(QIcon(":/images/icn_down"), "");
-        btn_down->setToolTip("Move item down");
+        btn_down->setToolTip(tr("Move item down"));
         connect(btn_down, SIGNAL(clicked(bool)), this, SIGNAL(moveDown()));
 
         vl_main->addWidget(btn_down);
@@ -29,7 +29,7 @@ CListButtons::CListButtons(QWidget *parent, int activeButtons)
     if(activeButtons & Add)
     {
         QPushButton *btn_add = new QPushButton(QIcon(":/images/icn_add"), "");
-        btn_add->setToolTip("Add new item");
+        btn_add->setToolTip(tr("Add new item"));
         connect(btn_add, SIGNAL(clicked(bool)), this, SIGNAL(addItem()));
 
         vl_main->addWidget(btn_add);
@@ -38,7 +38,7 @@ CListButtons::CListButtons(QWidget *parent, int activeButtons)
     if(activeButtons & Remove)
     {
         QPushButton *btn_remove = new QPushButton(QIcon(":/images/icn_trash"), "");
-        btn_remove->setToolTip("<qt>Delete item.<br>Warning! this cannot be undone!</qt>");
+        btn_remove->setToolTip(tr("Delete item.\nWarning! this cannot be undone!"));
         connect(btn_remove, SIGNAL(clicked(bool)), this, SIGNAL(removeItem()));
 
         vl_main->addWidget(btn_remove);

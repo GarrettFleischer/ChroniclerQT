@@ -238,18 +238,19 @@ void CProjectView::OpenProject(QString filepath)
 
     // Load data from the file
     QDataStream ds(file.readAll());
+    file.close();
 
     int num_scenes;
     QString project_title;
     QString project_author;
 
     ds >> m_version;
-    if(m_version == "0.8.1.0")
-        ds >> project_title >> num_scenes;
-    else if(m_version == "0.8.6.0")
-        ds >> project_title >> *(shared().paletteButton) >> num_scenes;
-    else
+    if(m_version > "0.8.6.0")
         ds >> project_title >> project_author >> *(shared().paletteButton) >> num_scenes;
+    else if(m_version > "0.8.1.0")
+        ds >> project_title >> *(shared().paletteButton) >> num_scenes;
+    else if (m_version == "0.8.1.0")
+        ds >> project_title >> num_scenes;
 
     m_title->setText(project_title);
     m_author->setText(project_author);

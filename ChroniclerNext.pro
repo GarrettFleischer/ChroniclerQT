@@ -54,7 +54,6 @@ HEADERS += \
     Properties/Widgets/cactionproperties.h \
     Properties/Widgets/cchoiceproperties.h \
     Properties/Widgets/cconditionproperties.h \
-    Properties/Widgets/clistpropertieswidget.h \
     Properties/Widgets/cpropertieswidget.h \
     Properties/Widgets/cstoryproperties.h \
     Properties/cdockmanager.h \
@@ -81,7 +80,9 @@ HEADERS += \
     Misc/Bubbles/cchoicedelegate.h \
     Bubbles/ccodebubble.h \
     Properties/Widgets/ccodeproperties.h \
-    Misc/Bubbles/ccodeedit.h
+    Misc/Bubbles/ccodeedit.h \
+    Misc/Stats/cstaticon.h \
+    Properties/cstatseditor.h
 
 SOURCES += \
     Bubbles/cactionbubble.cpp \
@@ -116,7 +117,6 @@ SOURCES += \
     Properties/Widgets/cactionproperties.cpp \
     Properties/Widgets/cchoiceproperties.cpp \
     Properties/Widgets/cconditionproperties.cpp \
-    Properties/Widgets/clistpropertieswidget.cpp \
     Properties/Widgets/cpropertieswidget.cpp \
     Properties/Widgets/cstoryproperties.cpp \
     Properties/cdockmanager.cpp \
@@ -145,4 +145,6 @@ SOURCES += \
     Misc/Bubbles/cchoicedelegate.cpp \
     Bubbles/ccodebubble.cpp \
     Properties/Widgets/ccodeproperties.cpp \
-    Misc/Bubbles/ccodeedit.cpp
+    Misc/Bubbles/ccodeedit.cpp \
+    Misc/Stats/cstaticon.cpp \
+    Properties/cstatseditor.cpp

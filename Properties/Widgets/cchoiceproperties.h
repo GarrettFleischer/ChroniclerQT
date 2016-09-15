@@ -1,11 +1,15 @@
 #ifndef CCHOICEPROPERTIES_H
 #define CCHOICEPROPERTIES_H
 
-#include "clistpropertieswidget.h"
+#include "cpropertieswidget.h"
+
+QT_BEGIN_NAMESPACE
+class QListView;
+QT_END_NAMESPACE
 
 class CChoiceBubble;
 
-class CChoiceProperties : public CListPropertiesWidget
+class CChoiceProperties : public CPropertiesWidget
 {
     Q_OBJECT
 
@@ -16,12 +20,13 @@ public:
 
 private:
     CChoiceBubble *m_choiceBubble;
+    QListView  *m_view;
 
 protected slots:
-    virtual void MoveUp() override;
-    virtual void MoveDown() override;
-    virtual void AddItem() override;
-    virtual void RemoveItem() override;
+    virtual void MoveUp();
+    virtual void MoveDown();
+    virtual void AddItem();
+    virtual void RemoveItem();
 };
 
 #endif // CCHOICEPROPERTIES_H

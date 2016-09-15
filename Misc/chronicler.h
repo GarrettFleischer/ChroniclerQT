@@ -39,6 +39,8 @@ namespace Chronicler
 
     enum Command { AddBubblesCommand, RemoveBubblesCommand, MoveBubblesCommand, ResizeBubbleCommand, RemoveSceneCommand };
 
+    enum Stat { TextStat, PercentStat, OpposedPairStat, CustomStat };
+
     struct CPalette
     {
         QColor fill = QColor(124, 140, 230);
