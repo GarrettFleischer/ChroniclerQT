@@ -23,10 +23,24 @@ CPaletteButton::CPaletteButton(QWidget *parent)
     setIcon(QIcon(":/images/icn_palette"));
     setToolTip(tr("Palette tool\nRight click on the tool to add new palette.\nRight click on an existing palette to edit it."));
 
+    // Default Palettes
+    m_story.fill = QColor(124, 140, 230);
+    m_choice.fill = QColor(104, 160, 210);
+    m_action.fill = QColor(161,88,136);
+    m_condition.fill = QColor(151,118,166);
+    m_code.fill = QColor(124, 140, 230);
+    m_start.fill = Qt::darkGreen;
+
+    shared().defaultStory = new CPaletteAction(this, m_story, tr("Story"), 1);
+    shared().defaultChoice = new CPaletteAction(this, m_choice, tr("Choice"), 2);
+    shared().defaultAction = new CPaletteAction(this, m_action, tr("Action"), 3);
+    shared().defaultCondition = new CPaletteAction(this, m_condition, tr("Condition"), 4);
+    shared().defaultCode = new CPaletteAction(this, m_code, tr("Code"), 6);
+    shared().defaultStart = new CPaletteAction(this, m_start, tr("Start"), 5);
+
     m_creator = new CPaletteCreator(this);
     connect(m_creator, SIGNAL(accepted()), this, SLOT(Saved()));
 
-    // TODO add defaults for each bubble type
     m_current = shared().defaultStory;
 
     m_menu = new QActionMenu();
@@ -51,7 +65,7 @@ CPaletteAction *CPaletteButton::getPaletteWithUID(Chronicler::t_uid uid)
             return a;
     }
 
-    return 0;
+    return Q_NULLPTR;
 }
 
 void CPaletteButton::setCurrent(CPaletteAction *palette)
@@ -95,25 +109,10 @@ void CPaletteButton::Saved()
 {
     if(m_editing)
     {
-        if(m_editing == shared().defaultAction || m_editing == shared().defaultChoice || m_editing == shared().defaultCode ||
-           m_editing == shared().defaultCondition || m_editing == shared().defaultStart || m_editing == shared().defaultStory)
-        {
-            m_current = new CPaletteAction(this, m_creator->getPalette(), m_creator->getName());
-            m_menu->insertAction(m_editing, m_current);
-            m_menu->removeAction(m_editing);
-
-            for(CGraphicsView *view : shared().projectView->getViews())
-                for(CBubble *b : view->cScene()->bubbles())
-                    if(b->getPalette() == m_editing)
-                        b->setPalette(m_current);
-        }
-        else
-        {
-            m_editing->setText(m_creator->getName());
-            m_editing->setPalette(m_creator->getPalette());
-            m_current = m_editing;
-            m_editing = Q_NULLPTR;
-        }
+        m_editing->setText(m_creator->getName());
+        m_editing->setPalette(m_creator->getPalette());
+        m_current = m_editing;
+        m_editing = Q_NULLPTR;
     }
     else
     {
@@ -129,9 +128,10 @@ QDataStream &CPaletteButton::Deserialize(QDataStream &ds, const Chronicler::CVer
 {
     Q_UNUSED(version)
 
+    Reset();
+
     qint32 len;
     ds >> len;
-
     for(int i = 0; i < len; ++i)
     {
         t_uid uid;
@@ -156,8 +156,8 @@ QDataStream &CPaletteButton::Deserialize(QDataStream &ds, const Chronicler::CVer
 QDataStream &CPaletteButton::Serialize(QDataStream &ds)
 {
     QList<QAction *> actions = m_menu->actions();
-    ds << static_cast<qint32>(actions.length());
 
+    ds << static_cast<qint32>(actions.length());
     for(QAction *action : actions)
     {
         CPaletteAction *a = dynamic_cast<CPaletteAction *>(action);
@@ -175,8 +175,16 @@ void CPaletteButton::Clear()
 
 void CPaletteButton::Reset()
 {
-    Clear();
+    // reset defaults
+    shared().defaultStory->setPalette(m_story);
+    shared().defaultChoice->setPalette(m_choice);
+    shared().defaultAction->setPalette(m_action);
+    shared().defaultCondition->setPalette(m_condition);
+    shared().defaultCode->setPalette(m_code);
+    shared().defaultStart->setPalette(m_start);
 
+    // reset menu
+    Clear();
     m_menu->addAction(shared().defaultStory);
     m_menu->addAction(shared().defaultChoice);
     m_menu->addAction(shared().defaultAction);

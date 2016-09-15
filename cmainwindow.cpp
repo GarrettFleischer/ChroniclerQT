@@ -139,7 +139,7 @@ void CMainWindow::CopySelectedItems()
             ds << topLeft;
 
             // copy to clipboard
-            data->setData("CopyBubbles", ba);
+            data->setData("application/clip-bubbles", ba);
             QApplication::clipboard()->setMimeData(data);
         }
 
@@ -153,7 +153,7 @@ void CMainWindow::PasteItems()
 
     if(view)
     {
-        QDataStream ds(QApplication::clipboard()->mimeData()->data("CopyBubbles"));
+        QDataStream ds(QApplication::clipboard()->mimeData()->data("application/clip-bubbles"));
 
         if(!ds.atEnd())
         {
@@ -400,21 +400,7 @@ void CMainWindow::CreateActions()
     shared().redoAction->setIcon(QIcon(":/images/icn_redo"));
     shared().redoAction->setShortcut(QKeySequence::Redo);
 
-    // Default Palettes
-    CPalette dp_story, dp_choice, dp_action, dp_condition, dp_code, dp_start;
-    dp_story.fill = QColor(124, 140, 230);
-    dp_choice.fill = QColor(104, 160, 210);
-    dp_action.fill = QColor(161,88,136);
-    dp_condition.fill = QColor(151,118,166);
-    dp_code.fill = QColor(124, 140, 230);
-    dp_start.fill = Qt::darkGreen;
 
-    shared().defaultStory = new CPaletteAction(this, dp_story, tr("Story"), 1);
-    shared().defaultChoice = new CPaletteAction(this, dp_choice, tr("Choice"), 2);
-    shared().defaultAction = new CPaletteAction(this, dp_action, tr("Action"), 3);
-    shared().defaultCondition = new CPaletteAction(this, dp_condition, tr("Condition"), 4);
-    shared().defaultCode = new CPaletteAction(this, dp_code, tr("Code"), 5);
-    shared().defaultStart = new CPaletteAction(this, dp_start, tr("Start"), 6);
 }
 
 

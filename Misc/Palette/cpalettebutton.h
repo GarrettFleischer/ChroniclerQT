@@ -41,6 +41,13 @@ private:
 
     CPaletteCreator *m_creator;
 
+    CPalette m_story;
+    CPalette m_choice;
+    CPalette m_action;
+    CPalette m_condition;
+    CPalette m_code;
+    CPalette m_start;
+
 public slots:
     void Clear();
     void Reset();
