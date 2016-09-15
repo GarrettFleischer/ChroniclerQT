@@ -73,7 +73,7 @@ namespace Chronicler
 
         CVersion(QString _version) : string(_version) {}
 
-        bool operator ==(const CVersion &rhs)
+        bool operator ==(const CVersion &rhs) const
         {
             return rhs.string == string;
         }
@@ -121,7 +121,7 @@ namespace Chronicler
     // Do NOT instantiate this struct, use shared() singleton access.
     struct SharedInstances
     {
-        CVersion ProgramVersion = CVersion("0.9.12.2");
+        const CVersion ProgramVersion = CVersion("0.9.12.3");
 
         CMainWindow *mainWindow;
 
