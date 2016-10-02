@@ -25,20 +25,23 @@ CStatsEditor::CStatsEditor(QWidget *parent)
 
 void CStatsEditor::mousePressEvent(QMouseEvent *event)
 {
-    CStatIcon *child = static_cast<CStatIcon *>(childAt(event->pos())->childAt(event->pos()));
+    QWidget *child = childAt(event->pos());
     if (!child)
         return;
 
     QByteArray itemData;
     QDataStream dataStream(&itemData, QIODevice::WriteOnly);
-    dataStream << int(child->type());
+    dataStream << reinterpret_cast<qint32>(child);
 
     QMimeData *mimeData = new QMimeData;
-    mimeData->setData("application/dnd-stat_type", itemData);
+    mimeData->setData("application/dnd-stat_pointer", itemData);
+
+    QPixmap pixmap;
+    child->render(&pixmap);
 
     QDrag *drag = new QDrag(this);
     drag->setMimeData(mimeData);
-    drag->setPixmap(child->pixmap());
+    drag->setPixmap(pixmap);
     drag->setHotSpot(event->pos() - child->pos());
 
     drag->exec(Qt::MoveAction);

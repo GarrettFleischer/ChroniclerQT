@@ -82,7 +82,8 @@ HEADERS += \
     Properties/Widgets/ccodeproperties.h \
     Misc/Bubbles/ccodeedit.h \
     Misc/Stats/cstaticon.h \
-    Properties/cstatseditor.h
+    Properties/Stats/cstatseditor.h \
+    Properties/Stats/cstatsmodel.h
 
 SOURCES += \
     Bubbles/cactionbubble.cpp \
@@ -147,4 +148,5 @@ SOURCES += \
     Properties/Widgets/ccodeproperties.cpp \
     Misc/Bubbles/ccodeedit.cpp \
     Misc/Stats/cstaticon.cpp \
-    Properties/cstatseditor.cpp
+    Properties/Stats/cstatseditor.cpp \
+    Properties/Stats/cstatsmodel.cpp
