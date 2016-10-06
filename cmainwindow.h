@@ -110,6 +110,9 @@ private slots:
 
     void EscapePressed();
 
+    void PlayProject();
+    void DebugProject();
+
 };
 
 #endif // MAINWINDOW_H

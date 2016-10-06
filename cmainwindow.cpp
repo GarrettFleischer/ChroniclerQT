@@ -303,6 +303,16 @@ void CMainWindow::EscapePressed()
     shared().setMode(Chronicler::Cursor);
 }
 
+void CMainWindow::PlayProject()
+{
+
+}
+
+void CMainWindow::DebugProject()
+{
+
+}
+
 void CMainWindow::SettingsChanged()
 {
     // Update font and font color.
@@ -438,6 +448,8 @@ void CMainWindow::CreateMenus()
 
 void CMainWindow::CreateToolbars()
 {
+
+    // Pointer and link
     QToolButton *tb_pointer = new QToolButton();
     tb_pointer->setCheckable(true);
     tb_pointer->setChecked(true);
@@ -449,6 +461,7 @@ void CMainWindow::CreateToolbars()
     tb_link->setToolTip(tr("Link tool\nLeft drag: create link\nRight click: remove link"));
 
 
+    // Bubbles
     QToolButton *tb_story = new QToolButton();
     tb_story->setCheckable(true);
     tb_story->setIcon(QIcon(":/images/icn_story.png"));
@@ -473,6 +486,7 @@ void CMainWindow::CreateToolbars()
     // Palette creator
     shared().paletteButton = new CPaletteButton();
 
+    // Pointer group
     shared().pointerTypeGroup = new QButtonGroup(this);
     shared().pointerTypeGroup->addButton(tb_pointer, int(Chronicler::Cursor));
     shared().pointerTypeGroup->addButton(tb_link, int(Chronicler::InsertConnection));
@@ -485,7 +499,18 @@ void CMainWindow::CreateToolbars()
     connect(shared().pointerTypeGroup, SIGNAL(buttonClicked(int)),
             this, SLOT(PointerGroupClicked(int)));
 
+    // Playtest
+    QToolButton *tb_play = new QToolButton();
+    tb_play->setIcon(QIcon(":/images/icn_play.png"));
+    tb_play->setToolTip(tr("Play game"));
+    connect(tb_play, SIGNAL(clicked(bool)), this, SLOT(PlayProject()));
+    QToolButton *tb_debug = new QToolButton();
+    tb_debug->setIcon(QIcon(":/images/icn_code.png"));
+    tb_debug->setToolTip(tr("Debug game"));
+    connect(tb_debug, SIGNAL(clicked(bool)), this, SLOT(DebugProject()));
 
+
+    // Pointer toolbar
     Qt::ToolBarArea area = static_cast<Qt::ToolBarArea>(shared().settingsView->settings()->value("MainWindow/ToolBarArea",
                                                                                                  static_cast<int>(Qt::RightToolBarArea)).toInt());
     shared().pointerToolBar = new QToolBar(tr("Pointer type"));
@@ -498,10 +523,16 @@ void CMainWindow::CreateToolbars()
     shared().pointerToolBar->addWidget(tb_condition);
     shared().pointerToolBar->addWidget(tb_code);
     shared().pointerToolBar->addWidget(shared().paletteButton);
+    shared().pointerToolBar->addWidget(tb_play);
+    shared().pointerToolBar->addWidget(tb_debug);
     shared().pointerToolBar->setIconSize(QSize(32,32));
     addToolBar(area, shared().pointerToolBar);
-    connect(shared().pointerToolBar, SIGNAL(topLevelChanged(bool)),
-            this, SLOT(PointerToolBarAreaChanged(bool)));
+    connect(shared().pointerToolBar, SIGNAL(topLevelChanged(bool)), this, SLOT(PointerToolBarAreaChanged(bool)));
+
+//    connect(playtestToolBar, SIGNAL(topLevelChanged(bool)), this, SLOT(PointerToolBarAreaChanged(bool)));
+
+
+
 }
 
 void CMainWindow::closeEvent(QCloseEvent *event)

@@ -2,5 +2,5 @@
 
 CStatsModel::CStatsModel(QObject *parent)
 {
-
+    Q_UNUSED(parent)
 }
