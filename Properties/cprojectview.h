@@ -11,6 +11,7 @@ class QLineEdit;
 class QSaveFile;
 class QTextStream;
 class QGraphicsScene;
+class QWebView;
 QT_END_NAMESPACE
 
 #include <QModelIndex>
@@ -69,6 +70,8 @@ private:
     // for keeping track of autosaves
     qint64 m_autosave_num;
 
+    QWebView *m_webView;
+
     // TODO
     // member variable for project history
 
@@ -76,6 +79,8 @@ signals:
     void sceneSelected(CGraphicsView *);
 
 public slots:
+    void PlayProject();
+    void DebugProject();
     void SaveProject();
     void SaveProjectAs();
     void OpenProject(QString filepath = "");
@@ -83,7 +88,7 @@ public slots:
     void ImportChoiceScriptScene();
     void NewProject();
     void CloseProject();
-    void ExportChoiceScript();
+    void ExportChoiceScript(const QString &path);
 
 private slots:
     void SelectedChanged(QModelIndex current);

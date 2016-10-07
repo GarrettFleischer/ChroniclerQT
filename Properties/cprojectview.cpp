@@ -35,6 +35,9 @@
 
 #include <QUndoStack>
 
+#include <QWebView>
+#include <QUrl>
+
 #include "Bubbles/cchoice.h"
 #include "Misc/cscenemodel.h"
 #include "cgraphicsscene.h"
@@ -88,6 +91,8 @@ CProjectView::CProjectView(QWidget *parent)
     connect(m_modelView, SIGNAL(clicked(QModelIndex)), this, SLOT(SelectedChanged(QModelIndex)));
     connect(m_sceneModel, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), this, SLOT(DataChanged(QModelIndex,QModelIndex)));
 
+    m_webView = new QWebView();
+
     CListButtons *btns = new CListButtons(this);
     connect(btns, SIGNAL(moveUp()), this, SLOT(MoveUp()));
     connect(btns, SIGNAL(moveDown()), this, SLOT(MoveDown()));
@@ -134,7 +139,7 @@ void CProjectView::SaveProject()
                 QDir().mkdir(dir + "/scenes");
 
             // Update order before saving...
-            ExportChoiceScript();
+            ExportChoiceScript(QFileInfo(m_path).absolutePath());
 
             QSaveFile file(m_path);
             SaveToFile(file);
@@ -218,6 +223,41 @@ void CProjectView::SaveToFile(QSaveFile &file)
 
     file.open(QIODevice::WriteOnly);
     file.write(ba);
+}
+
+void CProjectView::PlayProject()
+{
+    if(QDir(shared().settingsView->choiceScriptDirectory() + "/web").exists())
+    {
+        QString web_dir = shared().settingsView->choiceScriptDirectory() + "/web";
+        ExportChoiceScript(web_dir + "/mygame");
+
+        m_webView->setUrl(QUrl::fromLocalFile(web_dir + "/mygame/index.html"));
+        m_webView->reload();
+
+        if(shared().sceneTabs->indexOf(m_webView) == -1)
+            shared().sceneTabs->insertTab(0, m_webView, tr("Play"));
+        shared().sceneTabs->setCurrentWidget(m_webView);
+    }
+    else
+    {
+        QMessageBox msgBox;
+        msgBox.setText(tr("ChoiceScript settings are not valid."));
+        msgBox.exec();
+
+        if(shared().sceneTabs->indexOf(shared().settingsView) == -1)
+            shared().sceneTabs->insertTab(0, shared().settingsView, tr("Settings"));
+
+        shared().sceneTabs->setCurrentWidget(shared().settingsView);
+    }
+}
+
+void CProjectView::DebugProject()
+{
+    if(QDir(shared().settingsView->choiceScriptDirectory()).exists())
+    {
+        // TODO add ExportDebugChoiceScript
+    }
 }
 
 void CProjectView::OpenProject(QString filepath)
@@ -392,12 +432,11 @@ bool SortByOrderAscending(CBubble *first, CBubble *second)
     return first->getOrder() < second->getOrder();
 }
 
-void CProjectView::ExportChoiceScript()
+void CProjectView::ExportChoiceScript(const QString &path)
 {
-    QString project_folder = QFileInfo(m_path).absolutePath();
     for(CGraphicsView *view : m_sceneModel->views())
     {
-        QFile file(project_folder + "/scenes/" + view->cScene()->name() + ".txt");
+        QFile file(path + "/scenes/" + view->cScene()->name() + ".txt");
 
         QString cs;
         if(view->cScene()->name() == "startup")
@@ -685,8 +724,6 @@ void CProjectView::CalculateOrder(CConnection *connection, QList<CConnection *> 
             CalculateOrder(c, processed, new_order + 1);
     }
 }
-
-
 
 
 void CProjectView::SelectedChanged(QModelIndex current)

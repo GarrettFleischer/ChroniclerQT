@@ -265,13 +265,14 @@ void CMainWindow::TabClosed(int index)
         {
             QCheckBox dontShow(tr("Remember my choice and don't show again."));
             dontShow.blockSignals(true); // performance
-            QMessageBox msgBox;
-            msgBox.setText(tr("Settings have been modified."));
-            msgBox.setInformativeText(tr("Do you wish to apply these changes?"));
-            msgBox.setStandardButtons(QMessageBox::Apply | QMessageBox::Discard | QMessageBox::Cancel);
-            msgBox.setDefaultButton(QMessageBox::Apply);
-            msgBox.setCheckBox(&dontShow);
-            int ret = msgBox.exec();
+            QMessageBox *msgBox = new QMessageBox();
+            msgBox->setText(tr("Settings have been modified."));
+            msgBox->setInformativeText(tr("Do you wish to apply these changes?"));
+            msgBox->setStandardButtons(QMessageBox::Apply | QMessageBox::Discard | QMessageBox::Cancel);
+            msgBox->setDefaultButton(QMessageBox::Apply);
+            msgBox->setCheckBox(&dontShow);
+            int ret = msgBox->exec();
+            msgBox->deleteLater();
 
             if(ret == QMessageBox::Apply)
                 shared().settingsView->ApplyPendingChanges();
@@ -305,12 +306,12 @@ void CMainWindow::EscapePressed()
 
 void CMainWindow::PlayProject()
 {
-
+    shared().projectView->PlayProject();
 }
 
 void CMainWindow::DebugProject()
 {
-
+    shared().projectView->DebugProject();
 }
 
 void CMainWindow::SettingsChanged()
@@ -505,9 +506,11 @@ void CMainWindow::CreateToolbars()
     tb_play->setToolTip(tr("Play game"));
     connect(tb_play, SIGNAL(clicked(bool)), this, SLOT(PlayProject()));
     QToolButton *tb_debug = new QToolButton();
-    tb_debug->setIcon(QIcon(":/images/icn_code.png"));
+    tb_debug->setIcon(QIcon(":/images/icn_debug.png"));
     tb_debug->setToolTip(tr("Debug game"));
     connect(tb_debug, SIGNAL(clicked(bool)), this, SLOT(DebugProject()));
+
+    tb_debug->setEnabled(false);
 
 
     // Pointer toolbar
@@ -522,7 +525,9 @@ void CMainWindow::CreateToolbars()
     shared().pointerToolBar->addWidget(tb_action);
     shared().pointerToolBar->addWidget(tb_condition);
     shared().pointerToolBar->addWidget(tb_code);
+    shared().pointerToolBar->addSeparator();
     shared().pointerToolBar->addWidget(shared().paletteButton);
+    shared().pointerToolBar->addSeparator();
     shared().pointerToolBar->addWidget(tb_play);
     shared().pointerToolBar->addWidget(tb_debug);
     shared().pointerToolBar->setIconSize(QSize(32,32));

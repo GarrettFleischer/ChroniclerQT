@@ -21,6 +21,7 @@
 #include <QColorDialog>
 #include <QPixmap>
 #include <QPainter>
+#include <QMessageBox>
 
 CSettingsView::CSettingsView(QSettings *settings, QWidget *parent)
     : QWidget(parent), m_settings(settings)
@@ -116,6 +117,7 @@ void CSettingsView::SetupChoiceScript(QLayout *main_layout)
 
     // ChoiceScript directory
     m_csdir = new QLineEdit();
+    m_csdir->setReadOnly(true);
     connect(m_csdir, SIGNAL(textChanged(QString)),
             this, SLOT(SettingChanged()));
 
@@ -166,7 +168,7 @@ void CSettingsView::SetupEditor(QLayout *main_layout)
 
     // Add rows
     fl_editor->addRow("Font", hl_font);
-    fl_editor->addRow("Theme", new QCheckBox("dark"));
+    //    fl_editor->addRow("Theme", new QCheckBox("dark"));
 }
 
 void CSettingsView::SetupHistory(QLayout *main_layout)
@@ -208,6 +210,7 @@ void CSettingsView::SetupHistory(QLayout *main_layout)
     hl_undos->addWidget(m_undos, 0, Qt::AlignLeft);
 
     m_history = new QCheckBox("store history in project");
+    m_history->setEnabled(false);
     connect(m_history, SIGNAL(stateChanged(int)),
             this, SLOT(SettingChanged()));
     hl_undos->addWidget(m_history, 0, Qt::AlignLeft);
@@ -291,6 +294,30 @@ QIcon CSettingsView::ColorIcon(const QSize &size, const QColor &color)
 
 
 
+static bool cpDir(const QString &srcPath, const QString &dstPath)
+{
+    //    rmDir(dstPath);
+    QDir parentDstDir(QFileInfo(dstPath).path());
+    if (!parentDstDir.mkdir(QFileInfo(dstPath).fileName()))
+        return false;
+
+    QDir srcDir(srcPath);
+    foreach(const QFileInfo &info, srcDir.entryInfoList(QDir::Dirs | QDir::Files | QDir::NoDotAndDotDot)) {
+        QString srcItemPath = srcPath + "/" + info.fileName();
+        QString dstItemPath = dstPath + "/" + info.fileName();
+        if (info.isDir()) {
+            if (!cpDir(srcItemPath, dstItemPath)) {
+                return false;
+            }
+        } else if (info.isFile()) {
+            if (!QFile::copy(srcItemPath, dstItemPath)) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
+
 void CSettingsView::CSDirButtonPressed()
 {
     QFileDialog fd;
@@ -300,8 +327,24 @@ void CSettingsView::CSDirButtonPressed()
     dir.cdUp();
 
     QString new_dir = fd.getExistingDirectory(0, "ChoiceScript directory", dir.path());
-    if(new_dir.length() > 0)
-        m_csdir->setText(new_dir);
+    if(new_dir.length())
+    {
+        if(QDir(new_dir + "/web").exists())
+        {
+            // update the directory and backup the web folder
+            m_csdir->setText(new_dir);
+            if(!QDir(new_dir + "/web_backup").exists())
+                cpDir(new_dir + "/web", new_dir + "/web_backup");
+        }
+        else
+        {
+            m_csdir->setText("");
+            QMessageBox msg;
+            msg.setText("Invalid directory.");
+            msg.setInformativeText("The ChoiceScript directory must contain a \"web\" folder");
+            msg.exec();
+        }
+    }
 }
 
 void CSettingsView::FontColorButtonPressed()
