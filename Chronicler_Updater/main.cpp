@@ -26,9 +26,15 @@ int main(int argc, char *argv[])
         program_dir += program;
         update_dir += program;
 
-        QFile::remove(program_dir);
-        QFile::copy(update_dir, program_dir);
+        // remove old exe
+        int iterations = 0;
+        while(!QFile::remove(program_dir) && ++iterations < 10000);
 
+        // copy new exe
+        iterations = 0;
+        while(!QFile::copy(update_dir, program_dir) && ++iterations < 10000);
+
+        // start new exe
         QProcess process;
         process.startDetached(program_dir);
     }
