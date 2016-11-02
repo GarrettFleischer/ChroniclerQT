@@ -540,7 +540,7 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
 
         // generate label...
         if(LabelNeeded(bubble, bubbles))
-            cs +=  "\n\n*label " + MakeLabel(bubble, bubbles) + "\n";
+            cs +=  "\n\n*label " + MakeLabel(bubble, bubbles);
         else
             indent = QString(indent_str).repeated(indent_level);
 
@@ -702,7 +702,7 @@ QString CProjectView::MakeLabel(CBubble *bubble, const QList<CBubble *> &bubbles
         }
     }
 
-    return label;
+    return label + "\n";
 }
 
 void CProjectView::CalculateOrder(CConnection *connection, QList<CConnection *> &processed, qint64 order)
