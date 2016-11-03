@@ -2,6 +2,8 @@
 **Description:**  
 Chronicler is a cross-platform visual code editor for [ChoiceScript](https://www.choiceofgames.com/make-your-own-games/choicescript-intro/). It allows both beginners and veteran novelists alike to design interactive fiction with a flowchart-like layout rather than typing code in a text editor.
 
+Forum post and pre-built binaries may be found [here](https://forum.choiceofgames.com/t/tool-chronicler-choicescript-visual-code-editor).
+
 **Technologies:**  
 C++, Qt
 
