@@ -7,6 +7,7 @@
 #include "Bubbles/cbubble.h"
 
 #include "Properties/cprojectview.h"
+#include "cgraphicsview.h"
 #include "cgraphicsscene.h"
 
 #include "Misc/chronicler.h"
@@ -160,8 +161,8 @@ void CConnection::ConnectToUIDs(bool paste)
 
     if(paste)
     {
-        from = shared().projectView->BubbleWithUID(m_fromUID, scene());
-        to = shared().projectView->BubbleWithUID(m_toUID, scene());
+        from = shared().projectView->BubbleWithUID(m_fromUID, m_line->scene());
+        to = shared().projectView->BubbleWithUID(m_toUID, m_line->scene());
     }
     else
     {
@@ -179,10 +180,11 @@ void CConnection::ConnectToUIDs(bool paste)
     {
         if(from)
             from->RemoveLink(startAnchor());
-        else
-            static_cast<CGraphicsScene *>(scene())->RemoveConnection(this);
-
-        deleteLater();
+        else if(m_line->scene())
+        {
+            static_cast<CGraphicsScene *>(m_line->scene())->RemoveConnection(this);
+            deleteLater();
+        }
     }
 }
 

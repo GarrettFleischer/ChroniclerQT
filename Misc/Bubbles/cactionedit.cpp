@@ -40,29 +40,39 @@ void CActionEdit::UpdateVariables()
         m_variables.append(v.name());
 }
 
-void CActionEdit::UpdateLabels(const QString &scene)
+void CActionEdit::UpdateLabels(const QString &scene_name)
 {
     m_labels.clear();
 
-    if(scene.isEmpty())
+    if(scene_name.isEmpty())
     {
         CGraphicsView *currentView = dynamic_cast<CGraphicsView *>(shared().sceneTabs->currentWidget());
         if(currentView)
-        {
-            for(CBubble *b : currentView->cScene()->bubbles())
-            {
-                if(b->getLabel().length())
-                    m_labels.append(b->getLabel());
+            AddLabelsFromScene(currentView->cScene());
+    }
+    else
+    {
+        AddLabelsFromScene(shared().projectView->model()->sceneWithName(scene_name));
+    }
+}
 
-                if(b->getType() == Chronicler::ActionBubble)
+void CActionEdit::AddLabelsFromScene(CGraphicsScene *scene)
+{
+    if(scene)
+    {
+        for(CBubble *b : scene->bubbles())
+        {
+            if(b->getLabel().length())
+                m_labels.append(b->getLabel());
+
+            if(b->getType() == Chronicler::ActionBubble)
+            {
+                CActionBubble *ab = static_cast<CActionBubble *>(b);
+                for(QString action : ab->actions()->stringList())
                 {
-                    CActionBubble *ab = static_cast<CActionBubble *>(b);
-                    for(QString action : ab->actions()->stringList())
-                    {
-                        QStringList words = action.split(" ", QString::SkipEmptyParts);
-                        if(words.length() > 1 && words[0] == "*label")
-                            m_labels.append(words[1]);
-                    }
+                    QStringList words = action.split(" ", QString::SkipEmptyParts);
+                    if(words.length() > 1 && words[0] == "*label")
+                        m_labels.append(words[1]);
                 }
             }
         }
@@ -122,7 +132,7 @@ void CActionEdit::UpdateCompletionModel()
         else if(cursorIndex == 2)
         {
             // labels
-            if(action == "*gosub_scene")
+            if(action == "*gosub_scene" || action == "*goto_scene")
             {
                 UpdateLabels(words[1]);
                 m_completionModel->setStringList(m_labels);

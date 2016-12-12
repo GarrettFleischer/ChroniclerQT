@@ -198,6 +198,15 @@ void CProjectView::Autosave()
 {
     if(shared().settingsView->maxAutosaves() > 0 && m_sceneModel->rowCount() > 0 && m_path.length())
     {
+        // Create necessary directories
+        QString dir = QFileInfo(m_path).absolutePath();
+
+        if(!QDir(dir + "/backups").exists())
+            QDir().mkdir(dir + "/backups");
+
+        if(!QDir(dir + "/scenes").exists())
+            QDir().mkdir(dir + "/scenes");
+
         QString filename = QFileInfo(m_path).absolutePath() + "/backups/" + QFileInfo(m_path).completeBaseName() +
                 ".backup" + QString::number((m_autosave_num = (m_autosave_num % shared().settingsView->maxAutosaves()) + 1)) + ".chronx";
         QSaveFile file(filename);
@@ -275,6 +284,15 @@ void CProjectView::OpenProject(QString filepath)
     }
 
     m_path = file.fileName();
+
+    // Create necessary directories
+    QString dir = QFileInfo(m_path).absolutePath();
+
+    if(!QDir(dir + "/backups").exists())
+        QDir().mkdir(dir + "/backups");
+
+    if(!QDir(dir + "/scenes").exists())
+        QDir().mkdir(dir + "/scenes");
 
     // Load data from the file
     QDataStream ds(file.readAll());
@@ -473,7 +491,6 @@ void CProjectView::ExportChoiceScript(const QString &path)
 
         QList<CBubble *> processed;
 
-
         for(CBubble *bbl : bubbles)
             cs += BubbleToChoiceScript(bubbles, processed, 0, bbl);
 
@@ -506,12 +523,14 @@ CBubble *CProjectView::BubbleWithUID(uint uid)
 
 CBubble *CProjectView::BubbleWithUID(uint uid, QGraphicsScene *scene)
 {
-    CBubble *bubble = Q_NULLPTR;
-
-    for(QGraphicsItem *item : scene->items())
+    if(scene)
     {
-        if((bubble = dynamic_cast<CBubble *>(item)) && (bubble->getUID() == uid))
-            return bubble;
+        CBubble *bubble = Q_NULLPTR;
+        for(QGraphicsItem *item : scene->items())
+        {
+            if((bubble = dynamic_cast<CBubble *>(item)) && (bubble->getUID() == uid))
+                return bubble;
+        }
     }
 
     return Q_NULLPTR;
@@ -539,8 +558,8 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
         QString indent;
 
         // generate label...
-        if(LabelNeeded(bubble, bubbles))
-            cs +=  "\n\n*label " + MakeLabel(bubble, bubbles);
+        if(LabelNeeded(bubble, bubbles, processed))
+            cs +=  "\n\n*label " + MakeLabel(bubble, bubbles, processed);
         else
             indent = QString(indent_str).repeated(indent_level);
 
@@ -563,10 +582,8 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
 
             if(story->link())
             {
-                if(LabelNeeded(story->link()->to(), bubbles))
-                    cs += indent + "*goto " + MakeLabel(story->link()->to(), bubbles);
-                //                if(story->link()->to()->getType() == Chronicler::Story)
-                //                    cs += indent + "*page_break";
+                if(LabelNeeded(story->link()->to(), bubbles, processed))
+                    cs += indent + "*goto " + MakeLabel(story->link()->to(), bubbles, processed);\
                 else
                     cs += "\n" + BubbleToChoiceScript(bubbles, processed, indent_level, story->link()->to());
             }
@@ -589,8 +606,8 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
                 QString hash = (choice->text().contains("#") ? "" : "#");
                 cs += "\n" + indent + hash + choice->text() + "\n";
 
-                if(choice->link() && LabelNeeded(choice->link()->to(), bubbles))
-                    cs += indent + indent_str + "*goto " + MakeLabel(choice->link()->to(), bubbles);
+                if(choice->link() && LabelNeeded(choice->link()->to(), bubbles, processed))
+                    cs += indent + indent_str + "*goto " + MakeLabel(choice->link()->to(), bubbles, processed);
                 else if(choice->link())
                     cs += "\n" + BubbleToChoiceScript(bubbles, processed, indent_level + 1, choice->link()->to());
                 else
@@ -607,12 +624,16 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
 
             cs += indent + action->actionString().replace("\n", "\n" + indent) + "\n";
 
-            if(action->link() && LabelNeeded(action->link()->to(), bubbles))
-                cs += indent + "*goto " + MakeLabel(action->link()->to(), bubbles);
+            if(action->link() && LabelNeeded(action->link()->to(), bubbles, processed))
+                cs += indent + "*goto " + MakeLabel(action->link()->to(), bubbles, processed);
             else if(action->link())
                 cs += "\n" + BubbleToChoiceScript(bubbles, processed, indent_level, action->link()->to());
             else
-                cs += indent + "*finish";
+            {
+                QRegularExpression re("\\*(goto|gosub|goto_scene|gosub_scene)");
+                if(!re.match(action->actionString()).hasMatch())
+                    cs += indent + "*finish";
+            }
         }
 
         // ------------ Condition bubble ------------
@@ -625,8 +646,8 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
             // true
             if(cb->trueLink())
             {
-                if(LabelNeeded(cb->trueLink()->to(), bubbles))
-                    cs += indent + indent_str + "*goto " + MakeLabel(cb->trueLink()->to(), bubbles);
+                if(LabelNeeded(cb->trueLink()->to(), bubbles, processed))
+                    cs += indent + indent_str + "*goto " + MakeLabel(cb->trueLink()->to(), bubbles, processed);
                 else
                     cs += BubbleToChoiceScript(bubbles, processed, indent_level + 1, cb->trueLink()->to());
             }
@@ -638,8 +659,8 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
             // false
             if(cb->falseLink())
             {
-                if(LabelNeeded(cb->falseLink()->to(), bubbles))
-                    cs += indent + indent_str + "*goto " + MakeLabel(cb->falseLink()->to(), bubbles);
+                if(LabelNeeded(cb->falseLink()->to(), bubbles, processed))
+                    cs += indent + indent_str + "*goto " + MakeLabel(cb->falseLink()->to(), bubbles, processed);
                 else
                     cs += BubbleToChoiceScript(bubbles, processed, indent_level + 1, cb->falseLink()->to());
             }
@@ -656,8 +677,8 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
 
             if(code->link())
             {
-                if(LabelNeeded(code->link()->to(), bubbles))
-                    cs += indent + "*goto " + MakeLabel(code->link()->to(), bubbles);
+                if(LabelNeeded(code->link()->to(), bubbles, processed))
+                    cs += indent + "*goto " + MakeLabel(code->link()->to(), bubbles, processed);
                 else
                     cs += "\n" + BubbleToChoiceScript(bubbles, processed, indent_level, code->link()->to());
             }
@@ -667,25 +688,58 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
     return cs;
 }
 
-bool CProjectView::LabelNeeded(CBubble *bubble, const QList<CBubble *> &bubbles)
+bool CProjectView::LabelNeeded(CBubble *bubble, const QList<CBubble *> &bubbles, const QList<CBubble *> &processed)
 {
     QList<CConnection *> connections = bubble->connections();
 
-    // figure out if we need a label or not
-    bool make_label = connections.length() > 1 || bubble->getLocked();
-    if(!make_label && connections.length() > 0)
+    // if there is more than one connection, or the bubble is locked and processed already
+    if(connections.length() > 1 || (bubble->getLocked() && processed.contains(bubble)))
+        return true;
+
+    // if the only connecting bubble hasn't been processed yet...
+    //    if(connections.length() > 0 && !processed.contains(connections.first()->from()->container()))
+    //        return true;
+    if(connections.length() > 0)
     {
         // if the only connecting bubble hasn't been processed yet...
         CBubble *from = connections.first()->from()->container();
-        int diff = (bubbles.indexOf(from) - bubbles.indexOf(bubble));
+        int diff = (bubbles.indexOf(bubble) - bubbles.indexOf(from));
         if((diff > 1) && !dynamic_cast<CChoiceBubble *>(from))
-            make_label = true;
+            return true;
     }
 
-    return make_label;
+    // check if there is a *goto directive to this label
+    QRegularExpression re;
+    QString current_scene_pattern = "^((\\*goto)|(\\*gosub))\\s+";
+    QString all_scenes_pattern = "^((\\*goto_scene)|(\\*gosub_scene))\\s+.+\\s+";
+
+    for (CGraphicsView *view : getViews())
+    {
+        for(CBubble *b : view->cScene()->bubbles())
+        {
+            if(b != bubble && b->getType() == Chronicler::ActionBubble)
+            {
+                CActionBubble *ab = static_cast<CActionBubble *>(b);
+                for(QString action : ab->actions()->stringList())
+                {
+                    CGraphicsView *currentView = dynamic_cast<CGraphicsView *>(shared().sceneTabs->currentWidget());
+
+                    if(view == currentView)
+                        re.setPattern(current_scene_pattern + MakeLabel(bubble, bubbles, processed).remove('\n'));
+                    else
+                        re.setPattern(all_scenes_pattern + MakeLabel(bubble, bubbles, processed).remove('\n'));
+
+                    if(re.match(action).hasMatch())
+                        return true;
+                }
+            }
+        }
+    }
+
+    return false;
 }
 
-QString CProjectView::MakeLabel(CBubble *bubble, const QList<CBubble *> &bubbles)
+QString CProjectView::MakeLabel(CBubble *bubble, const QList<CBubble *> &bubbles, const QList<CBubble *> &processed)
 {
     QString label = bubble->getLabel().replace(" ", "_");
     if(!label.length())
@@ -694,7 +748,7 @@ QString CProjectView::MakeLabel(CBubble *bubble, const QList<CBubble *> &bubbles
     {
         for(CBubble *b : bubbles)
         {
-            if(b != bubble && LabelNeeded(b, bubbles) && b->getLabel() == bubble->getLabel())
+            if(b != bubble && b->getLabel() == bubble->getLabel()) //&& LabelNeeded(b, bubbles, processed)
             {
                 label += "_" + QString::number(bubble->GenerateUID());
                 break;

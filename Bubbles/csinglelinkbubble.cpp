@@ -37,7 +37,7 @@ void CSingleLinkBubble::AddLink(CConnection *link)
 void CSingleLinkBubble::RemoveLink(CConnection *link)
 {
     if(m_link == link)
-        m_link = 0;
+        m_link = Q_NULLPTR;
 }
 
 void CSingleLinkBubble::RemoveLink(Chronicler::Anchor anchor)
@@ -46,7 +46,7 @@ void CSingleLinkBubble::RemoveLink(Chronicler::Anchor anchor)
     {
         dynamic_cast<CGraphicsScene *>(scene())->RemoveConnection(m_link);
         delete m_link;
-        m_link = 0;
+        m_link = Q_NULLPTR;
     }
 }
 

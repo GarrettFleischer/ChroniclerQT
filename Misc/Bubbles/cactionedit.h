@@ -3,6 +3,8 @@
 
 #include "Misc/clineedit.h"
 
+class CGraphicsScene;
+
 class CActionEdit : public CLineEdit
 {
     Q_OBJECT
@@ -13,6 +15,7 @@ public:
 private:
     void UpdateVariables();
     void UpdateLabels(const QString &scene = "");
+    void AddLabelsFromScene(CGraphicsScene *scene);
     void UpdateScenes();
 
     QStringList m_actions;

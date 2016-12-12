@@ -99,16 +99,16 @@ public:
 
     CBubble *BubbleAt(const QPointF &point, bool choiceAllowed = false);
 
-    virtual QDataStream & Serialize(QDataStream &ds) override;
-    virtual QDataStream & Deserialize(QDataStream &ds, const CVersion &version) override;
+    virtual QDataStream & Serialize(QDataStream &ds) Q_DECL_OVERRIDE;
+    virtual QDataStream & Deserialize(QDataStream &ds, const CVersion &version) Q_DECL_OVERRIDE;
 
 protected:
-    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
-    virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event);
-    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event);
-    virtual void keyPressEvent(QKeyEvent *event) override;
-    virtual void keyReleaseEvent(QKeyEvent *event) override;
-    virtual void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) override;
+    virtual void mousePressEvent(QGraphicsSceneMouseEvent *event) Q_DECL_OVERRIDE;
+    virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event) Q_DECL_OVERRIDE;
+    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) Q_DECL_OVERRIDE;
+    virtual void keyPressEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
+    virtual void keyReleaseEvent(QKeyEvent *event) Q_DECL_OVERRIDE;
+    virtual void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) Q_DECL_OVERRIDE;
 
 private:
     QString m_name;

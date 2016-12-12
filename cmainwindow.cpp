@@ -157,10 +157,8 @@ void CMainWindow::PasteItems()
 
         if(!ds.atEnd())
         {
-            qint32 len, t;
+            qint32 len, bubble_type;
             CBubble *bbl;
-
-
 
             // deselect all
             for(QGraphicsItem *item : view->cScene()->selectedItems())
@@ -170,8 +168,8 @@ void CMainWindow::PasteItems()
             ds >> len;
             for(int i = 0; i < len; ++i)
             {
-                ds >> t;
-                bbl = view->cScene()->AddBubble(Chronicler::BubbleType(t), QPointF(), false);
+                ds >> bubble_type;
+                bbl = view->cScene()->AddBubble(Chronicler::BubbleType(bubble_type), QPointF(), false);
                 bbl->setSelected(true);
                 ds >> *bbl;
             }

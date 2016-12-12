@@ -457,6 +457,10 @@ CConnection *CGraphicsScene::AddConnection()
 void CGraphicsScene::AddConnection(CConnection *connection)
 {
     m_connections.append(connection);
+
+    connection->from()->AddLink(connection);
+    connection->to()->AddConnection(connection);
+
     addItem(connection->getLine());
 }
 
@@ -472,7 +476,13 @@ void CGraphicsScene::RemoveBubble(CBubble *bubble)
 void CGraphicsScene::RemoveConnection(CConnection *connection)
 {
     if(connection)
+    {
+        if(connection->from())
+            connection->from()->RemoveLink(connection);
+        if(connection->to())
+            connection->to()->RemoveConnection(connection);
         removeItem(connection->getLine());
+    }
     m_connections.removeAll(connection);
 }
 

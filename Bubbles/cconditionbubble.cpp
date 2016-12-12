@@ -71,9 +71,9 @@ void CConditionBubble::RemoveLink(CConnection *link)
     if(link)
     {
         if(link == m_trueLink)
-            m_trueLink = 0;
+            m_trueLink = Q_NULLPTR;
         else if(link == m_falseLink)
-            m_falseLink = 0;
+            m_falseLink = Q_NULLPTR;
     }
 }
 
@@ -83,13 +83,13 @@ void CConditionBubble::RemoveLink(Chronicler::Anchor anchor)
     {
         dynamic_cast<CGraphicsScene *>(scene())->RemoveConnection(m_trueLink);
         delete m_trueLink;
-        m_trueLink = 0;
+        m_trueLink = Q_NULLPTR;
     }
     else if(m_falseLink && m_falseLink->startAnchor() == anchor)
     {
         dynamic_cast<CGraphicsScene *>(scene())->RemoveConnection(m_falseLink);
         delete m_falseLink;
-        m_falseLink = 0;
+        m_falseLink = Q_NULLPTR;
     }
 }
 
