@@ -49,7 +49,7 @@ private:
     void CalculateOrder(CConnection *connection, QList<CConnection *> &processed, qint64 order);
     QString BubbleToChoiceScript(const QList<CBubble *> &bubbles, QList<CBubble *> &processed, int indent_level, CBubble *bubble);
     bool LabelNeeded(CBubble *bubble, const QList<CBubble *> &bubbles, const QList<CBubble *> &processed);
-    QString MakeLabel(CBubble *bubble, const QList<CBubble *> &bubbles, const QList<CBubble *> &processed);
+    QString MakeLabel(CBubble *bubble, const QList<CBubble *> &bubbles);
 
     void SaveToFile(QSaveFile &file);
 

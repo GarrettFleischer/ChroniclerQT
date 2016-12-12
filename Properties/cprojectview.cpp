@@ -559,7 +559,7 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
 
         // generate label...
         if(LabelNeeded(bubble, bubbles, processed))
-            cs +=  "\n\n*label " + MakeLabel(bubble, bubbles, processed);
+            cs +=  "\n\n*label " + MakeLabel(bubble, bubbles);
         else
             indent = QString(indent_str).repeated(indent_level);
 
@@ -583,7 +583,7 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
             if(story->link())
             {
                 if(LabelNeeded(story->link()->to(), bubbles, processed))
-                    cs += indent + "*goto " + MakeLabel(story->link()->to(), bubbles, processed);\
+                    cs += indent + "*goto " + MakeLabel(story->link()->to(), bubbles);\
                 else
                     cs += "\n" + BubbleToChoiceScript(bubbles, processed, indent_level, story->link()->to());
             }
@@ -607,7 +607,7 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
                 cs += "\n" + indent + hash + choice->text() + "\n";
 
                 if(choice->link() && LabelNeeded(choice->link()->to(), bubbles, processed))
-                    cs += indent + indent_str + "*goto " + MakeLabel(choice->link()->to(), bubbles, processed);
+                    cs += indent + indent_str + "*goto " + MakeLabel(choice->link()->to(), bubbles);
                 else if(choice->link())
                     cs += "\n" + BubbleToChoiceScript(bubbles, processed, indent_level + 1, choice->link()->to());
                 else
@@ -625,7 +625,7 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
             cs += indent + action->actionString().replace("\n", "\n" + indent) + "\n";
 
             if(action->link() && LabelNeeded(action->link()->to(), bubbles, processed))
-                cs += indent + "*goto " + MakeLabel(action->link()->to(), bubbles, processed);
+                cs += indent + "*goto " + MakeLabel(action->link()->to(), bubbles);
             else if(action->link())
                 cs += "\n" + BubbleToChoiceScript(bubbles, processed, indent_level, action->link()->to());
             else
@@ -647,7 +647,7 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
             if(cb->trueLink())
             {
                 if(LabelNeeded(cb->trueLink()->to(), bubbles, processed))
-                    cs += indent + indent_str + "*goto " + MakeLabel(cb->trueLink()->to(), bubbles, processed);
+                    cs += indent + indent_str + "*goto " + MakeLabel(cb->trueLink()->to(), bubbles);
                 else
                     cs += BubbleToChoiceScript(bubbles, processed, indent_level + 1, cb->trueLink()->to());
             }
@@ -660,7 +660,7 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
             if(cb->falseLink())
             {
                 if(LabelNeeded(cb->falseLink()->to(), bubbles, processed))
-                    cs += indent + indent_str + "*goto " + MakeLabel(cb->falseLink()->to(), bubbles, processed);
+                    cs += indent + indent_str + "*goto " + MakeLabel(cb->falseLink()->to(), bubbles);
                 else
                     cs += BubbleToChoiceScript(bubbles, processed, indent_level + 1, cb->falseLink()->to());
             }
@@ -678,7 +678,7 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
             if(code->link())
             {
                 if(LabelNeeded(code->link()->to(), bubbles, processed))
-                    cs += indent + "*goto " + MakeLabel(code->link()->to(), bubbles, processed);
+                    cs += indent + "*goto " + MakeLabel(code->link()->to(), bubbles);
                 else
                     cs += "\n" + BubbleToChoiceScript(bubbles, processed, indent_level, code->link()->to());
             }
@@ -725,9 +725,9 @@ bool CProjectView::LabelNeeded(CBubble *bubble, const QList<CBubble *> &bubbles,
                     CGraphicsView *currentView = dynamic_cast<CGraphicsView *>(shared().sceneTabs->currentWidget());
 
                     if(view == currentView)
-                        re.setPattern(current_scene_pattern + MakeLabel(bubble, bubbles, processed).remove('\n'));
+                        re.setPattern(current_scene_pattern + MakeLabel(bubble, bubbles).remove('\n'));
                     else
-                        re.setPattern(all_scenes_pattern + MakeLabel(bubble, bubbles, processed).remove('\n'));
+                        re.setPattern(all_scenes_pattern + MakeLabel(bubble, bubbles).remove('\n'));
 
                     if(re.match(action).hasMatch())
                         return true;
@@ -739,7 +739,7 @@ bool CProjectView::LabelNeeded(CBubble *bubble, const QList<CBubble *> &bubbles,
     return false;
 }
 
-QString CProjectView::MakeLabel(CBubble *bubble, const QList<CBubble *> &bubbles, const QList<CBubble *> &processed)
+QString CProjectView::MakeLabel(CBubble *bubble, const QList<CBubble *> &bubbles)
 {
     QString label = bubble->getLabel().replace(" ", "_");
     if(!label.length())

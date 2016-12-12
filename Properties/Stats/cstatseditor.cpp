@@ -7,7 +7,8 @@
 #include <QScrollArea>
 
 #include "Misc/Stats/cstaticon.h"
-
+#include "Misc/chronicler.h"
+using Chronicler::t_uid;
 
 CStatsEditor::CStatsEditor(QWidget *parent)
     : QWidget(parent)
@@ -31,7 +32,7 @@ void CStatsEditor::mousePressEvent(QMouseEvent *event)
 
     QByteArray itemData;
     QDataStream dataStream(&itemData, QIODevice::WriteOnly);
-    dataStream << reinterpret_cast<qint32>(child);
+    dataStream << reinterpret_cast<t_uid>(child);
 
     QMimeData *mimeData = new QMimeData;
     mimeData->setData("application/dnd-stat_pointer", itemData);
