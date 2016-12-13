@@ -17,7 +17,7 @@ CPropertiesWidget::CPropertiesWidget(QWidget *parent)
 
     // WIDGETS
         // Label
-        QLabel *lblTitle = new QLabel(tr("Label:"), this);
+        QLabel *lblLabel = new QLabel(tr("Label:"), this);
         m_labelEdit = new QLineEdit(this);
         m_labelEdit->setValidator(&validator);
         connect(m_labelEdit, SIGNAL(textChanged(QString)), this, SLOT(LabelChanged(QString)));
@@ -40,7 +40,7 @@ CPropertiesWidget::CPropertiesWidget(QWidget *parent)
     // LABELS
         // Title
         QHBoxLayout *lTitle = new QHBoxLayout();
-        lTitle->addWidget(lblTitle);
+        lTitle->addWidget(lblLabel);
         lTitle->addWidget(m_labelEdit);
 
         // Order

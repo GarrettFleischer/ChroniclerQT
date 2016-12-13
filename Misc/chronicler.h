@@ -31,7 +31,7 @@ namespace Chronicler
 
     typedef quint64 t_uid;
 
-    enum BubbleType { StoryBubble, ChoiceBubble, ActionBubble, ConditionBubble, StartBubble, ChoiceItemBubble, CodeBubble };
+    enum BubbleType { StoryBubble, ChoiceBubble, ActionBubble, ConditionBubble, StartBubble, ChoiceItemBubble, CodeBubble, StartHereBubble };
 
     enum Anchor { EastAnchor, SouthAnchor, WestAnchor, NorthAnchor, NoAnchor };
 

@@ -14,14 +14,15 @@
 #include "Misc/chronicler.h"
 using Chronicler::shared;
 
-CVariablesView::CVariablesView(QWidget *parent)
-    : QWidget(parent)
+CVariablesView::CVariablesView(QWidget *parent, CVariablesModel *model)
+    : QWidget(parent), m_model(model)
 {
     CListButtons *btns = new CListButtons(this, CListButtons::Add | CListButtons::Remove);
     connect(btns, SIGNAL(addItem()), this, SLOT(AddItem()));
     connect(btns, SIGNAL(removeItem()), this, SLOT(RemoveItem()));
 
-    m_model = new CVariablesModel(this);
+    if(!m_model)
+        m_model = new CVariablesModel(this);
 
     m_sortModel = new QSortFilterProxyModel(this);
     m_sortModel->setSourceModel(m_model);

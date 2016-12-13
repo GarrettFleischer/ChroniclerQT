@@ -20,7 +20,7 @@ class CVariablesView : public QWidget, public CSerializable
 {
     Q_OBJECT
 public:
-    explicit CVariablesView(QWidget *parent = 0);
+    explicit CVariablesView(QWidget *parent = Q_NULLPTR, CVariablesModel *model = Q_NULLPTR);
 
     virtual ~CVariablesView();
 

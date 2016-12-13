@@ -7,6 +7,7 @@
 #include "Widgets/cchoiceproperties.h"
 #include "Widgets/cactionproperties.h"
 #include "Widgets/ccodeproperties.h"
+#include "Widgets/cstarthereproperties.h"
 #include "Bubbles/cbubble.h"
 
 
@@ -31,6 +32,10 @@ CPropertiesManager::CPropertiesManager(QWidget *parent)
     m_codeProperties = new CCodeProperties(parent);
     m_codeProperties->setEnabled(false);
     m_codeProperties->hide();
+
+    m_startHereProperties = new CStartHereProperties(parent);
+    m_startHereProperties->setEnabled(false);
+    m_startHereProperties->hide();
 
     
     QVBoxLayout *layout = new QVBoxLayout(this);
@@ -95,6 +100,11 @@ void CPropertiesManager::setBubble(CBubble *bbl)
             m_codeProperties->show();
             break;
 
+        case Chronicler::StartHereBubble:
+            m_startHereProperties->setBubble(bbl);
+            m_startHereProperties->show();
+            break;
+
         default:
             break;
         }
@@ -108,13 +118,3 @@ void CPropertiesManager::setBubble(CBubble *bbl)
         m_codeProperties->setBubble(Q_NULLPTR);
     }
 }
-
-
-//void CPropertiesManager::setFont(const QFont &font)
-//{
-//    QWidget::setFont(font);
-//    m_storyProperties->setFont(font);
-//    m_conditionProperties->setFont(font);
-//    m_choiceProperties->setFont(font);
-//    m_actionProperties->setFont(font);
-//}

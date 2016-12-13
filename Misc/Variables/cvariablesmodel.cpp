@@ -1,10 +1,18 @@
 #include "cvariablesmodel.h"
 
+#include <QStringList>
+
 #include "Properties/cprojectview.h"
 #include "Misc/cscenemodel.h"
 #include "cgraphicsview.h"
 #include "cgraphicsscene.h"
 #include "Bubbles/cstorybubble.h"
+#include "Bubbles/cchoicebubble.h"
+#include "Bubbles/cchoice.h"
+#include "Bubbles/cactionbubble.h"
+#include "Misc/cstringlistmodel.h"
+#include "Bubbles/cconditionbubble.h"
+#include "Bubbles/ccodebubble.h"
 
 #include "Misc/chronicler.h"
 using Chronicler::shared;
@@ -159,9 +167,34 @@ QVariant CVariablesModel::data(const QModelIndex &index, int role) const
             {
                 for(CBubble *b : view->cScene()->bubbles())
                 {
-                    CStoryBubble *sb = dynamic_cast<CStoryBubble *>(b);
-                    if(sb)
-                        sb->setStory(sb->getStory().replace("${" + current.name() + "}", "${" + newname + "}"));
+                    if(b->getType() == Chronicler::StoryBubble)
+                    {
+                        CStoryBubble *bbl = static_cast<CStoryBubble *>(b);
+                        bbl->setStory(bbl->getStory().replace("${" + current.name() + "}", "${" + newname + "}"));
+                    }
+                    else if(b->getType() == Chronicler::ChoiceBubble)
+                    {
+                        CChoiceBubble *bbl = static_cast<CChoiceBubble *>(b);
+                        for(CChoice *choice : bbl->choiceBubbles())
+                            choice->setChoice(choice->text().replace("${" + current.name() + "}", "${" + newname + "}"));
+                    }
+                    else if(b->getType() == Chronicler::ActionBubble)
+                    {
+                        CActionBubble *bbl = static_cast<CActionBubble *>(b);
+                        QStringList actions = bbl->actions()->stringList();
+                        for(int i = 0; i < actions.length(); ++i)
+                            actions.replace(i, QString(actions.at(i)).replace(current.name(), newname));
+                    }
+                    else if(b->getType() == Chronicler::ConditionBubble)
+                    {
+                        CConditionBubble *bbl = static_cast<CConditionBubble *>(b);
+                        bbl->setCondition(bbl->getCondition().replace(current.name(), newname));
+                    }
+                    else if(b->getType() == Chronicler::CodeBubble)
+                    {
+                        CCodeBubble *bbl = static_cast<CCodeBubble *>(b);
+                        bbl->setCode(bbl->getCode().replace(current.name(), newname));
+                    }
                 }
             }
         }

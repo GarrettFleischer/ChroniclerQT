@@ -83,7 +83,14 @@ HEADERS += \
     Misc/Bubbles/ccodeedit.h \
     Misc/Stats/cstaticon.h \
     Properties/Stats/cstatseditor.h \
-    Properties/Stats/cstatsmodel.h
+    Properties/Stats/cstatsmodel.h \
+    Models/cchoicescriptmodel.h \
+    Models/cprojectmodel.h \
+    Bubbles/cstartherebubble.h \
+    Misc/Bubbles/cstartheremodel.h \
+    Misc/Bubbles/cstartheredelegate.h \
+    Misc/Bubbles/cstarthereedit.h \
+    Properties/Widgets/cstarthereproperties.h
 
 SOURCES += \
     Bubbles/cactionbubble.cpp \
@@ -149,4 +156,11 @@ SOURCES += \
     Misc/Bubbles/ccodeedit.cpp \
     Misc/Stats/cstaticon.cpp \
     Properties/Stats/cstatseditor.cpp \
-    Properties/Stats/cstatsmodel.cpp
+    Properties/Stats/cstatsmodel.cpp \
+    Models/cchoicescriptmodel.cpp \
+    Models/cprojectmodel.cpp \
+    Bubbles/cstartherebubble.cpp \
+    Misc/Bubbles/cstartheremodel.cpp \
+    Misc/Bubbles/cstartheredelegate.cpp \
+    Misc/Bubbles/cstarthereedit.cpp \
+    Properties/Widgets/cstarthereproperties.cpp
