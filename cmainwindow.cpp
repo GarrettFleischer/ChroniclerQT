@@ -481,6 +481,10 @@ void CMainWindow::CreateToolbars()
     tb_code->setCheckable(true);
     tb_code->setIcon(QIcon(":/images/icn_code.png"));
     tb_code->setToolTip(tr("Code bubble"));
+    QToolButton *tb_startHere = new QToolButton();
+    tb_startHere->setCheckable(true);
+    tb_startHere->setIcon(QIcon(":/images/icn_debug.png"));
+    tb_startHere->setToolTip(tr("Start Here bubble"));
 
     // Palette creator
     shared().paletteButton = new CPaletteButton();
@@ -494,6 +498,7 @@ void CMainWindow::CreateToolbars()
     shared().pointerTypeGroup->addButton(tb_choice, int(Chronicler::InsertChoice));
     shared().pointerTypeGroup->addButton(tb_action, int(Chronicler::InsertAction));
     shared().pointerTypeGroup->addButton(tb_code, int(Chronicler::InsertCode));
+    shared().pointerTypeGroup->addButton(tb_startHere, int(Chronicler::InsertStartHere));
     shared().pointerTypeGroup->addButton(shared().paletteButton, int(Chronicler::Paint));
     connect(shared().pointerTypeGroup, SIGNAL(buttonClicked(int)),
             this, SLOT(PointerGroupClicked(int)));
@@ -503,12 +508,12 @@ void CMainWindow::CreateToolbars()
     tb_play->setIcon(QIcon(":/images/icn_play.png"));
     tb_play->setToolTip(tr("Play game"));
     connect(tb_play, SIGNAL(clicked(bool)), this, SLOT(PlayProject()));
-    QToolButton *tb_debug = new QToolButton();
-    tb_debug->setIcon(QIcon(":/images/icn_debug.png"));
-    tb_debug->setToolTip(tr("Debug game"));
-    connect(tb_debug, SIGNAL(clicked(bool)), this, SLOT(DebugProject()));
+    shared().debugButton = new QToolButton();
+    shared().debugButton->setIcon(QIcon(":/images/icn_debug.png"));
+    shared().debugButton->setToolTip(tr("Debug game"));
+    connect(shared().debugButton, SIGNAL(clicked(bool)), this, SLOT(DebugProject()));
 
-    tb_debug->setEnabled(false);
+    shared().debugButton->setEnabled(false);
 
 
     // Pointer toolbar
@@ -523,19 +528,15 @@ void CMainWindow::CreateToolbars()
     shared().pointerToolBar->addWidget(tb_action);
     shared().pointerToolBar->addWidget(tb_condition);
     shared().pointerToolBar->addWidget(tb_code);
+    shared().pointerToolBar->addWidget(tb_startHere);
     shared().pointerToolBar->addSeparator();
     shared().pointerToolBar->addWidget(shared().paletteButton);
     shared().pointerToolBar->addSeparator();
     shared().pointerToolBar->addWidget(tb_play);
-    shared().pointerToolBar->addWidget(tb_debug);
+    shared().pointerToolBar->addWidget(shared().debugButton);
     shared().pointerToolBar->setIconSize(QSize(32,32));
     addToolBar(area, shared().pointerToolBar);
     connect(shared().pointerToolBar, SIGNAL(topLevelChanged(bool)), this, SLOT(PointerToolBarAreaChanged(bool)));
-
-//    connect(playtestToolBar, SIGNAL(topLevelChanged(bool)), this, SLOT(PointerToolBarAreaChanged(bool)));
-
-
-
 }
 
 void CMainWindow::closeEvent(QCloseEvent *event)

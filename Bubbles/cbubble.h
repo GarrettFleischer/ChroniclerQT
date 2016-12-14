@@ -73,7 +73,7 @@ public:
 
     t_uid getUID();
     virtual void UpdateUID();
-    t_uid GenerateUID();
+    t_uid GenerateUID() const;
 
 
 
@@ -90,7 +90,7 @@ protected:
     virtual void UpdatePolygon();
 
     virtual QDataStream &Deserialize(QDataStream &ds, const CVersion &version) override;
-    virtual QDataStream &Serialize(QDataStream &ds) override;
+    virtual QDataStream &Serialize(QDataStream &ds) const override;
 
     // for backwards compatability
     static void AddUID(Chronicler::t_uid uid);

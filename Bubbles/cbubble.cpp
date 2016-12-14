@@ -160,7 +160,7 @@ void CBubble::UpdateUID()
     m_UID = GenerateUID();
 }
 
-t_uid CBubble::GenerateUID()
+t_uid CBubble::GenerateUID() const
 {
     return reinterpret_cast<t_uid>(this);
 }
@@ -299,7 +299,7 @@ QDataStream &CBubble::Deserialize(QDataStream &ds, const Chronicler::CVersion &v
     return ds;
 }
 
-QDataStream & CBubble::Serialize(QDataStream &ds)
+QDataStream & CBubble::Serialize(QDataStream &ds) const
 {
     ds << static_cast<qint32>(m_type)
        << GenerateUID()

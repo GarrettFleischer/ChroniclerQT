@@ -6,14 +6,14 @@ CStartHereModel::CStartHereModel(QObject *parent)
 
 }
 
-int CStartHereModel::rowCount(const QModelIndex &parent) const
+int CStartHereModel::rowCount(const QModelIndex &parent = QModelIndex()) const
 {
     Q_UNUSED(parent)
 
     return m_variables.length();
 }
 
-int CStartHereModel::columnCount(const QModelIndex &parent) const
+int CStartHereModel::columnCount(const QModelIndex &parent = QModelIndex()) const
 {
     Q_UNUSED(parent)
 
@@ -54,9 +54,7 @@ bool CStartHereModel::setData(const QModelIndex &index, const QVariant &value, i
 
 QVariant CStartHereModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    Q_UNUSED(orientation)
-
-    if(role == Qt::DisplayRole)
+    if(orientation == Qt::Horizontal && role == Qt::DisplayRole)
     {
         if(section == 0)
             return "Name";
@@ -69,15 +67,45 @@ QVariant CStartHereModel::headerData(int section, Qt::Orientation orientation, i
 
 void CStartHereModel::AddItem(const CVariable &item)
 {
+    int row = rowCount();
+
+    beginInsertRows(QModelIndex(), row, row);
     m_variables.append(item);
+    endInsertRows();
 }
 
 void CStartHereModel::RemoveItem(const CVariable &item)
 {
-    m_variables.removeAll(item);
+    int row = m_variables.indexOf(item);
+
+    beginRemoveRows(QModelIndex(), row, row);
+    m_variables.removeAt(row);
+    endRemoveRows();
 }
 
-voie CStartHereModel::RemoveItemAt(const int row)
+void CStartHereModel::RemoveItemAt(int row)
 {
+    beginRemoveRows(QModelIndex(), row, row);
     m_variables.removeAt(row);
+    endRemoveRows();
+}
+
+QList<CVariable> CStartHereModel::variables() const
+{
+    return m_variables;
+}
+
+void CStartHereModel::setVariables(const QList<CVariable> &variables)
+{
+    beginResetModel();
+    m_variables = variables;
+    endResetModel();
+}
+
+
+Qt::ItemFlags CStartHereModel::flags(const QModelIndex &index) const
+{
+    Q_UNUSED(index)
+
+    return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
 }

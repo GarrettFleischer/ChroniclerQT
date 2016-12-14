@@ -13,6 +13,8 @@
 #include "Misc/cstringlistmodel.h"
 #include "Bubbles/cconditionbubble.h"
 #include "Bubbles/ccodebubble.h"
+#include "Bubbles/cstartherebubble.h"
+#include "Misc/Bubbles/cstartheremodel.h"
 
 #include "Misc/chronicler.h"
 using Chronicler::shared;
@@ -194,6 +196,17 @@ QVariant CVariablesModel::data(const QModelIndex &index, int role) const
                     {
                         CCodeBubble *bbl = static_cast<CCodeBubble *>(b);
                         bbl->setCode(bbl->getCode().replace(current.name(), newname));
+                    }
+                    else if(b->getType() == Chronicler::StartHereBubble)
+                    {
+                        CStartHereBubble *bbl = static_cast<CStartHereBubble *>(b);
+                        CStartHereModel *model = bbl->model();
+                        for(int i = 0; i < model->variables().length(); ++i)
+                        {
+                            QModelIndex ix = model->index(i, 0);
+                            if(model->data(ix, Qt::EditRole).toString() == current.name())
+                                model->setData(ix, newname, Qt::EditRole);
+                        }
                     }
                 }
             }

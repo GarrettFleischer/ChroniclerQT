@@ -44,6 +44,7 @@ CPropertiesManager::CPropertiesManager(QWidget *parent)
     layout->addWidget(m_choiceProperties);
     layout->addWidget(m_actionProperties);
     layout->addWidget(m_codeProperties);
+    layout->addWidget(m_startHereProperties);
     setLayout(layout);
 
 //    QPalette Pal(palette());
@@ -69,6 +70,7 @@ void CPropertiesManager::setBubble(CBubble *bbl)
         m_choiceProperties->hide();
         m_actionProperties->hide();
         m_codeProperties->hide();
+        m_startHereProperties->hide();
 
         switch(bbl->getType())
         {
@@ -116,5 +118,6 @@ void CPropertiesManager::setBubble(CBubble *bbl)
         m_choiceProperties->setBubble(Q_NULLPTR);
         m_actionProperties->setBubble(Q_NULLPTR);
         m_codeProperties->setBubble(Q_NULLPTR);
+        m_startHereProperties->setBubble(Q_NULLPTR);
     }
 }

@@ -5,7 +5,7 @@
 #include "Misc/chronicler.h"
 using Chronicler::shared;
 
-QDataStream &operator <<(QDataStream &stream, CSerializable &serializable)
+QDataStream &operator <<(QDataStream &stream, const CSerializable &serializable)
 {
     return serializable.Serialize(stream);
 }

@@ -32,7 +32,7 @@ public:
 
 protected:
     virtual QDataStream &Deserialize(QDataStream &ds, const CVersion &version) Q_DECL_OVERRIDE;
-    virtual QDataStream &Serialize(QDataStream &ds) Q_DECL_OVERRIDE;
+    virtual QDataStream &Serialize(QDataStream &ds) const Q_DECL_OVERRIDE;
 
 private:
     QTableView              *m_view;

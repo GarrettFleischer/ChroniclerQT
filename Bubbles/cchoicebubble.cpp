@@ -148,7 +148,7 @@ QDataStream &CChoiceBubble::Deserialize(QDataStream &ds, const Chronicler::CVers
     return ds;
 }
 
-QDataStream & CChoiceBubble::Serialize(QDataStream &ds)
+QDataStream & CChoiceBubble::Serialize(QDataStream &ds) const
 {
     CBubble::Serialize(ds);
 

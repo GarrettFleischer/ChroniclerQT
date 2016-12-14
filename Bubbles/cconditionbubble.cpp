@@ -165,7 +165,7 @@ QDataStream &CConditionBubble::Deserialize(QDataStream &ds, const Chronicler::CV
     return ds;
 }
 
-QDataStream & CConditionBubble::Serialize(QDataStream &ds)
+QDataStream & CConditionBubble::Serialize(QDataStream &ds) const
 {
     CBubble::Serialize(ds);
 

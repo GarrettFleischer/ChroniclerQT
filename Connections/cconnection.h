@@ -55,7 +55,7 @@ public:
 
 protected:
     virtual QDataStream &Deserialize(QDataStream &stream, const CVersion &version) override;
-    virtual QDataStream &Serialize(QDataStream &stream) override;
+    virtual QDataStream &Serialize(QDataStream &stream) const override;
 
 private:
     CBubble *m_from;

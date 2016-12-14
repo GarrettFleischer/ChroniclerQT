@@ -21,10 +21,12 @@ CStartHereProperties::CStartHereProperties(QWidget *parent)
 
     m_view = new QTableView(this);
     m_view->setItemDelegate(new CStartHereDelegate(this));
+    m_view->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::EditKeyPressed);
 
-    QLineEdit *label = new QLineEdit(this);
+    m_label = new QLineEdit(this);
+    connect(m_label, SIGNAL(textChanged(QString)), this, SLOT(LabelChanged(QString)));
     QFormLayout *fl_label = new QFormLayout();
-    fl_label->addRow("Label", label);
+    fl_label->addRow("Label:", m_label);
 
     QHBoxLayout *hl_view = new QHBoxLayout();
     hl_view->addWidget(m_view);
@@ -33,16 +35,29 @@ CStartHereProperties::CStartHereProperties(QWidget *parent)
     QVBoxLayout *vl_main = new QVBoxLayout(this);
     vl_main->addLayout(fl_label);
     vl_main->addLayout(hl_view);
+    vl_main->addStretch(0.5);
 
     setLayout(vl_main);
 }
 
 void CStartHereProperties::setBubble(CBubble *bbl)
 {
-    CStartHereBubble *startHereBubble = static_cast<CStartHereBubble *>(bbl);
+    m_bubble = dynamic_cast<CStartHereBubble *>(bbl);
 
-    m_view->setModel(startHereBubble->model());
-    m_view->setFont(startHereBubble->getFont());
+    if(m_bubble)
+    {
+        m_label->setText(m_bubble->getLabel());
+        m_view->setModel(m_bubble->model());
+        m_view->setFont(m_bubble->getFont());
+
+        setEnabled(true);
+    }
+    else
+    {
+        m_view->setModel(Q_NULLPTR);
+
+        setEnabled(false);
+    }
 }
 
 void CStartHereProperties::AddItem()
@@ -54,4 +69,9 @@ void CStartHereProperties::RemoveItem()
 {
     if(m_view->currentIndex().isValid())
         static_cast<CStartHereModel *>(m_view->model())->RemoveItemAt(m_view->currentIndex().row());
+}
+
+void CStartHereProperties::LabelChanged(QString label)
+{
+    m_bubble->setLabel(label);
 }

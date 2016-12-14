@@ -23,6 +23,7 @@
 #include "Bubbles/cchoice.h"
 #include "Bubbles/cactionbubble.h"
 #include "Bubbles/ccodebubble.h"
+#include "Bubbles/cstartherebubble.h"
 #include "Connections/cline.h"
 #include "Connections/cconnection.h"
 
@@ -132,7 +133,7 @@ CBubble *CGraphicsScene::BubbleAt(const QPointF &point, bool choiceAllowed)
     return bubble;
 }
 
-QDataStream &CGraphicsScene::Serialize(QDataStream &ds)
+QDataStream &CGraphicsScene::Serialize(QDataStream &ds) const
 {
     ds << m_name << static_cast<qint32>(m_bubbles.length());
     for(CBubble *bbl : m_bubbles)
@@ -172,6 +173,13 @@ void CGraphicsScene::ItemSelected(QGraphicsItem *selectedItem)
 {
     if(!m_rubberBand)
     {
+        // activate the debug button if only a start here bubble is selected
+        if(selectedItems().count() == 1)
+        {
+            CStartHereBubble *bbl = dynamic_cast<CStartHereBubble *>(selectedItem);
+            shared().debugButton->setEnabled(bbl != Q_NULLPTR);
+        }
+
         // decrease all z values by a ridiculously small number
         // to preserve current stacking order & help prevent float overflow
         foreach (QGraphicsItem *item, items())
@@ -225,6 +233,7 @@ void CGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton)
     {
+        shared().debugButton->setEnabled(false);
         CBubble *clickItem = BubbleAt(event->scenePos(), true);
 
         if(!(event->modifiers() & Qt::ControlModifier) && (!clickItem || !clickItem->isSelected()))
@@ -251,6 +260,10 @@ void CGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 
         case Chronicler::InsertCode:
             AddBubble(Chronicler::CodeBubble, event->scenePos(), (event->modifiers() & Qt::ShiftModifier));
+            break;
+
+        case Chronicler::InsertStartHere:
+            AddBubble(Chronicler::StartHereBubble, event->scenePos(), (event->modifiers() & Qt::ShiftModifier));
             break;
 
         case Chronicler::InsertConnection:
@@ -417,6 +430,8 @@ CBubble * CGraphicsScene::AddBubble(BubbleType type, const QPointF &pos, bool sh
         bubble = new CCodeBubble(pos, shared().defaultStory, m_font);
     else if(type == Chronicler::StartBubble)
         bubble = new CStartBubble(pos, shared().defaultStart, m_font);
+    else if(type == Chronicler::StartHereBubble)
+        bubble = new CStartHereBubble(pos, shared().defaultStart, m_font);
 
     if(bubble)
     {

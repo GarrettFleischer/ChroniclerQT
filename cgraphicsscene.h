@@ -99,7 +99,7 @@ public:
 
     CBubble *BubbleAt(const QPointF &point, bool choiceAllowed = false);
 
-    virtual QDataStream & Serialize(QDataStream &ds) Q_DECL_OVERRIDE;
+    virtual QDataStream & Serialize(QDataStream &ds) const Q_DECL_OVERRIDE;
     virtual QDataStream & Deserialize(QDataStream &ds, const CVersion &version) Q_DECL_OVERRIDE;
 
 protected:

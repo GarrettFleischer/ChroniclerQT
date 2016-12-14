@@ -15,10 +15,11 @@ public:
     virtual QVariant data(const QModelIndex &index, int role) const Q_DECL_OVERRIDE;
     virtual bool setData(const QModelIndex &index, const QVariant &value, int role) Q_DECL_OVERRIDE;
     virtual QVariant headerData(int section, Qt::Orientation orientation, int role) const Q_DECL_OVERRIDE;
+    virtual Qt::ItemFlags flags(const QModelIndex &index) const Q_DECL_OVERRIDE;
 
     void AddItem(const CVariable &item);
     void RemoveItem(const CVariable &item);
-    voie RemoveItemAt(const int row);
+    void RemoveItemAt(int row);
 
     QList<CVariable> variables() const;
     void setVariables(const QList<CVariable> &variables);

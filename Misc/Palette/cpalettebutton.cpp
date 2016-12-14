@@ -153,7 +153,7 @@ QDataStream &CPaletteButton::Deserialize(QDataStream &ds, const Chronicler::CVer
     return ds;
 }
 
-QDataStream &CPaletteButton::Serialize(QDataStream &ds)
+QDataStream &CPaletteButton::Serialize(QDataStream &ds) const
 {
     QList<QAction *> actions = m_menu->actions();
 

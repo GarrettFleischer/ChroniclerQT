@@ -93,7 +93,7 @@ QDataStream &CStoryBubble::Deserialize(QDataStream &ds, const Chronicler::CVersi
     return ds;
 }
 
-QDataStream & CStoryBubble::Serialize(QDataStream &ds)
+QDataStream & CStoryBubble::Serialize(QDataStream &ds) const
 {
     CSingleLinkBubble::Serialize(ds);
 

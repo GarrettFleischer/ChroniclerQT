@@ -20,7 +20,7 @@ protected:
     virtual void UpdatePolygon() Q_DECL_OVERRIDE;
 
     virtual QDataStream &Deserialize(QDataStream &ds, const Chronicler::CVersion &version) Q_DECL_OVERRIDE;
-    virtual QDataStream &Serialize(QDataStream &ds) Q_DECL_OVERRIDE;
+    virtual QDataStream &Serialize(QDataStream &ds) const Q_DECL_OVERRIDE;
 
 private:
     void AdjustMinSize();

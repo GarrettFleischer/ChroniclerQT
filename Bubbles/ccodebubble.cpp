@@ -61,7 +61,7 @@ QDataStream &CCodeBubble::Deserialize(QDataStream &ds, const Chronicler::CVersio
     return ds;
 }
 
-QDataStream &CCodeBubble::Serialize(QDataStream &ds)
+QDataStream &CCodeBubble::Serialize(QDataStream &ds) const
 {
     CSingleLinkBubble::Serialize(ds);
 

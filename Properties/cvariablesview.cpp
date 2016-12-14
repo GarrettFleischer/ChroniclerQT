@@ -92,7 +92,7 @@ QDataStream &CVariablesView::Deserialize(QDataStream &ds, const CVersion &versio
     return ds;
 }
 
-QDataStream &CVariablesView::Serialize(QDataStream &ds)
+QDataStream &CVariablesView::Serialize(QDataStream &ds) const
 {
     ds << static_cast<qint64>(m_model->rowCount());
     for(CVariable &v : m_model->variables())

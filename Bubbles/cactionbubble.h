@@ -17,7 +17,7 @@ public:
     virtual void setFont(const QFont &font) override;
 
     virtual QDataStream &Deserialize(QDataStream &ds, const CVersion &version) override;
-    virtual QDataStream &Serialize(QDataStream &ds) override;
+    virtual QDataStream &Serialize(QDataStream &ds) const override;
 
     CStringListModel *actions();
 

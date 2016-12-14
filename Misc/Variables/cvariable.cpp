@@ -37,7 +37,7 @@ QDataStream &CVariable::Deserialize(QDataStream &ds, const CVersion &version)
     return ds >> m_name >> m_data;
 }
 
-QDataStream &CVariable::Serialize(QDataStream &ds)
+QDataStream &CVariable::Serialize(QDataStream &ds) const
 {
     return ds << (m_scene ? m_scene->name() : QString()) << m_name << m_data;
 }

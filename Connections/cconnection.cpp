@@ -217,7 +217,7 @@ QDataStream & CConnection::Deserialize(QDataStream &stream, const Chronicler::CV
  * @param stream The QDataStream to insert the data into
  * @return The modified datastream for chaining
  */
-QDataStream & CConnection::Serialize(QDataStream &stream)
+QDataStream & CConnection::Serialize(QDataStream &stream) const
 {
     stream << static_cast<qint32>(m_line->startAnchor())
            << static_cast<qint32>(m_line->endAnchor())

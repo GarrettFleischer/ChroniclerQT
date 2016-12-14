@@ -12,16 +12,16 @@ public:
     virtual ~CSingleLinkBubble();
 
     CConnection * link();
-    virtual void AddLink(CConnection *link) override;
-    virtual void RemoveLink(CConnection *link) override;
-    virtual void RemoveLink(Chronicler::Anchor anchor) override;
-    virtual QList<CConnection *> links() override;
+    virtual void AddLink(CConnection *link) Q_DECL_OVERRIDE;
+    virtual void RemoveLink(CConnection *link) Q_DECL_OVERRIDE;
+    virtual void RemoveLink(Chronicler::Anchor anchor) Q_DECL_OVERRIDE;
+    virtual QList<CConnection *> links() Q_DECL_OVERRIDE;
 
 protected:
     CConnection *m_link;
 
-    virtual QDataStream &Deserialize(QDataStream &ds, const CVersion &version) override;
-    virtual QDataStream &Serialize(QDataStream &ds) override;
+    virtual QDataStream &Deserialize(QDataStream &ds, const CVersion &version) Q_DECL_OVERRIDE;
+    virtual QDataStream &Serialize(QDataStream &ds) const Q_DECL_OVERRIDE;
 
 };
 

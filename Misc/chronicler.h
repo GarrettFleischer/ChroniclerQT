@@ -8,6 +8,7 @@ class QTabWidget;
 class QAction;
 class QMenu;
 class QToolBar;
+class QToolButton;
 class QButtonGroup;
 class QDockWidget;
 class QStringListModel;
@@ -35,7 +36,7 @@ namespace Chronicler
 
     enum Anchor { EastAnchor, SouthAnchor, WestAnchor, NorthAnchor, NoAnchor };
 
-    enum Mode { InsertConnection, Cursor, InsertStory, InsertCondition, InsertChoice, InsertAction, InsertCode, Paint };
+    enum Mode { InsertConnection, Cursor, InsertStory, InsertCondition, InsertChoice, InsertAction, InsertCode, InsertStartHere, Paint };
 
     enum Command { AddBubblesCommand, RemoveBubblesCommand, MoveBubblesCommand, ResizeBubbleCommand, RemoveSceneCommand };
 
@@ -140,6 +141,8 @@ namespace Chronicler
         QToolBar *pointerToolBar;
         QButtonGroup *pointerTypeGroup;
         CPaletteButton *paletteButton;
+
+        QToolButton *debugButton;
 
         QMenu *fileMenu;
         QMenu *editMenu;

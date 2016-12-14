@@ -152,7 +152,7 @@ QDataStream & CChoice::Deserialize(QDataStream &ds, const Chronicler::CVersion &
     return ds;
 }
 
-QDataStream & CChoice::Serialize(QDataStream &ds)
+QDataStream & CChoice::Serialize(QDataStream &ds) const
 {
     ds << GenerateUID() << m_choice->Text() << bool(m_link);
 

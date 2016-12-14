@@ -33,7 +33,7 @@ protected:
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
 
     virtual QDataStream &Deserialize(QDataStream &ds, const CVersion &version) override;
-    virtual QDataStream &Serialize(QDataStream &ds) override;
+    virtual QDataStream &Serialize(QDataStream &ds) const override;
 
     virtual void UpdatePolygon() override;
 
