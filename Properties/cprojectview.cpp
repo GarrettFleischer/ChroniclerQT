@@ -72,6 +72,9 @@
 
 #include "Misc/History/cremovescenecommand.h"
 
+#include "Bubbles/cstartherebubble.h"
+#include "Misc/Bubbles/cstartheremodel.h"
+
 #include "Misc/chronicler.h"
 using Chronicler::shared;
 
@@ -234,12 +237,12 @@ void CProjectView::SaveToFile(QSaveFile &file)
     file.write(ba);
 }
 
-void CProjectView::PlayProject()
+void CProjectView::PlayProject(CStartHereBubble *debugStart)
 {
     if(QDir(shared().settingsView->choiceScriptDirectory() + "/web").exists())
     {
         QString web_dir = shared().settingsView->choiceScriptDirectory() + "/web";
-        ExportChoiceScript(web_dir + "/mygame");
+        ExportChoiceScript(web_dir + "/mygame", debugStart);
 
         m_webView->setUrl(QUrl::fromLocalFile(web_dir + "/mygame/index.html"));
         m_webView->reload();
@@ -258,14 +261,6 @@ void CProjectView::PlayProject()
             shared().sceneTabs->insertTab(0, shared().settingsView, tr("Settings"));
 
         shared().sceneTabs->setCurrentWidget(shared().settingsView);
-    }
-}
-
-void CProjectView::DebugProject()
-{
-    if(QDir(shared().settingsView->choiceScriptDirectory()).exists())
-    {
-        // TODO add ExportDebugChoiceScript
     }
 }
 
@@ -450,7 +445,7 @@ bool SortByOrderAscending(CBubble *first, CBubble *second)
     return first->getOrder() < second->getOrder();
 }
 
-void CProjectView::ExportChoiceScript(const QString &path)
+void CProjectView::ExportChoiceScript(const QString &path, CStartHereBubble *debugStart)
 {
     for(CGraphicsView *view : m_sceneModel->views())
     {
@@ -473,6 +468,9 @@ void CProjectView::ExportChoiceScript(const QString &path)
                 if(v.scene() == Q_NULLPTR)
                     cs += "*create " + v.name() + " " + v.data() + "\n";
             }
+
+            if(debugStart != Q_NULLPTR)
+                cs += "*goto_scene " + static_cast<CGraphicsScene *>(debugStart->scene())->name() + " " + MakeLabel(debugStart, QList<CBubble *>());
         }
 
         for(const CVariable &v : shared().variablesView->model()->variables())
@@ -492,7 +490,7 @@ void CProjectView::ExportChoiceScript(const QString &path)
         QList<CBubble *> processed;
 
         for(CBubble *bbl : bubbles)
-            cs += BubbleToChoiceScript(bubbles, processed, 0, bbl);
+            cs += BubbleToChoiceScript(bubbles, processed, 0, bbl, debugStart);
 
         file.open(QIODevice::WriteOnly);
         file.write(cs.toStdString().c_str());
@@ -546,7 +544,7 @@ CSceneModel *CProjectView::model()
     return m_sceneModel;
 }
 
-QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QList<CBubble *> &processed, int indent_level, CBubble *bubble)
+QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QList<CBubble *> &processed, int indent_level, CBubble *bubble, CStartHereBubble *debugStart)
 {
     QString cs;
 
@@ -556,6 +554,16 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
 
         QString indent_str = "    ";
         QString indent;
+
+        // ------------ Debug Start Here bubble ------------
+        if(debugStart && debugStart->link() && bubble == debugStart->link()->to())
+        {
+            const QList<CVariable> variables = debugStart->model()->variables();
+
+            cs += indent + "\n*label " + MakeLabel(debugStart, {});
+            for(CVariable v : variables)
+                cs += indent + "*set " + v.name() + " " + v.data() + "\n";
+        }
 
         // generate label...
         if(LabelNeeded(bubble, bubbles, processed))
@@ -568,7 +576,7 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
         {
             CStartBubble *start = static_cast<CStartBubble *>(bubble);
             if(start->link())
-                cs += BubbleToChoiceScript(bubbles, processed, indent_level, start->link()->to());
+                cs += BubbleToChoiceScript(bubbles, processed, indent_level, start->link()->to(), debugStart);
             else
                 cs += indent + "*finish\n";
         }
@@ -585,7 +593,7 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
                 if(LabelNeeded(story->link()->to(), bubbles, processed))
                     cs += indent + "*goto " + MakeLabel(story->link()->to(), bubbles);\
                 else
-                    cs += "\n" + BubbleToChoiceScript(bubbles, processed, indent_level, story->link()->to());
+                    cs += "\n" + BubbleToChoiceScript(bubbles, processed, indent_level, story->link()->to(), debugStart);
             }
             else
                 cs += indent + "*finish";
@@ -609,7 +617,7 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
                 if(choice->link() && LabelNeeded(choice->link()->to(), bubbles, processed))
                     cs += indent + indent_str + "*goto " + MakeLabel(choice->link()->to(), bubbles);
                 else if(choice->link())
-                    cs += "\n" + BubbleToChoiceScript(bubbles, processed, indent_level + 1, choice->link()->to());
+                    cs += "\n" + BubbleToChoiceScript(bubbles, processed, indent_level + 1, choice->link()->to(), debugStart);
                 else
                     cs += indent + indent_str + "*finish";
 
@@ -627,7 +635,7 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
             if(action->link() && LabelNeeded(action->link()->to(), bubbles, processed))
                 cs += indent + "*goto " + MakeLabel(action->link()->to(), bubbles);
             else if(action->link())
-                cs += "\n" + BubbleToChoiceScript(bubbles, processed, indent_level, action->link()->to());
+                cs += "\n" + BubbleToChoiceScript(bubbles, processed, indent_level, action->link()->to(), debugStart);
             else
             {
                 QRegularExpression re("\\*(goto|gosub|goto_scene|gosub_scene)");
@@ -649,7 +657,7 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
                 if(LabelNeeded(cb->trueLink()->to(), bubbles, processed))
                     cs += indent + indent_str + "*goto " + MakeLabel(cb->trueLink()->to(), bubbles);
                 else
-                    cs += BubbleToChoiceScript(bubbles, processed, indent_level + 1, cb->trueLink()->to());
+                    cs += BubbleToChoiceScript(bubbles, processed, indent_level + 1, cb->trueLink()->to(), debugStart);
             }
             else
                 cs += indent + indent_str + "*finish";
@@ -662,7 +670,7 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
                 if(LabelNeeded(cb->falseLink()->to(), bubbles, processed))
                     cs += indent + indent_str + "*goto " + MakeLabel(cb->falseLink()->to(), bubbles);
                 else
-                    cs += BubbleToChoiceScript(bubbles, processed, indent_level + 1, cb->falseLink()->to());
+                    cs += BubbleToChoiceScript(bubbles, processed, indent_level + 1, cb->falseLink()->to(), debugStart);
             }
             else
                 cs += indent + indent_str + "*finish";
@@ -680,7 +688,7 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
                 if(LabelNeeded(code->link()->to(), bubbles, processed))
                     cs += indent + "*goto " + MakeLabel(code->link()->to(), bubbles);
                 else
-                    cs += "\n" + BubbleToChoiceScript(bubbles, processed, indent_level, code->link()->to());
+                    cs += "\n" + BubbleToChoiceScript(bubbles, processed, indent_level, code->link()->to(), debugStart);
             }
         }
     }

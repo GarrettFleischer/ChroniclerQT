@@ -15,6 +15,7 @@
 #include "cgraphicsscene.h"
 #include "Bubbles/cstorybubble.h"
 #include "Bubbles/cstartbubble.h"
+#include "Bubbles/cstartherebubble.h"
 #include "cgraphicsview.h"
 #include "chomepage.h"
 #include "Properties/cdockmanager.h"
@@ -309,7 +310,19 @@ void CMainWindow::PlayProject()
 
 void CMainWindow::DebugProject()
 {
-    shared().projectView->DebugProject();
+    CStartHereBubble *debugStart = Q_NULLPTR;
+
+    for(CGraphicsView *view : shared().projectView->getViews())
+    {
+        for(QGraphicsItem *item : view->cScene()->selectedItems())
+        {
+            if((debugStart = dynamic_cast<CStartHereBubble *>(item)))
+            {
+                shared().projectView->PlayProject(debugStart);
+                return;
+            }
+        }
+    }
 }
 
 void CMainWindow::SettingsChanged()

@@ -186,6 +186,8 @@ QVariant CVariablesModel::data(const QModelIndex &index, int role) const
                         QStringList actions = bbl->actions()->stringList();
                         for(int i = 0; i < actions.length(); ++i)
                             actions.replace(i, QString(actions.at(i)).replace(current.name(), newname));
+
+                        bbl->actions()->setStringList(actions);
                     }
                     else if(b->getType() == Chronicler::ConditionBubble)
                     {

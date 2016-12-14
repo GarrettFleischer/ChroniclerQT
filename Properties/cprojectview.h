@@ -21,6 +21,7 @@ class CGraphicsScene;
 class CSceneModel;
 class CBubble;
 class CConnection;
+class CStartHereBubble;
 
 #include <Misc/chronicler.h>
 using Chronicler::CSIndent;
@@ -47,7 +48,7 @@ private:
     void CreateBubbles();
 
     void CalculateOrder(CConnection *connection, QList<CConnection *> &processed, qint64 order);
-    QString BubbleToChoiceScript(const QList<CBubble *> &bubbles, QList<CBubble *> &processed, int indent_level, CBubble *bubble);
+    QString BubbleToChoiceScript(const QList<CBubble *> &bubbles, QList<CBubble *> &processed, int indent_level, CBubble *bubble, CStartHereBubble *debugStart);
     bool LabelNeeded(CBubble *bubble, const QList<CBubble *> &bubbles, const QList<CBubble *> &processed);
     QString MakeLabel(CBubble *bubble, const QList<CBubble *> &bubbles);
 
@@ -79,8 +80,7 @@ signals:
     void sceneSelected(CGraphicsView *);
 
 public slots:
-    void PlayProject();
-    void DebugProject();
+    void PlayProject(CStartHereBubble *debugStart = Q_NULLPTR);
     void SaveProject();
     void SaveProjectAs();
     void OpenProject(QString filepath = "");
@@ -88,7 +88,7 @@ public slots:
     void ImportChoiceScriptScene();
     void NewProject();
     void CloseProject();
-    void ExportChoiceScript(const QString &path);
+    void ExportChoiceScript(const QString &path, CStartHereBubble *debugStart = Q_NULLPTR);
 
 private slots:
     void SelectedChanged(QModelIndex current);
