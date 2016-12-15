@@ -496,7 +496,7 @@ void CMainWindow::CreateToolbars()
     tb_code->setToolTip(tr("Code bubble"));
     QToolButton *tb_startHere = new QToolButton();
     tb_startHere->setCheckable(true);
-    tb_startHere->setIcon(QIcon(":/images/icn_debug.png"));
+    tb_startHere->setIcon(QIcon(":/images/icn_startHere.png"));
     tb_startHere->setToolTip(tr("Start Here bubble"));
 
     // Palette creator

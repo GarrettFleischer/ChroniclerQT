@@ -32,5 +32,6 @@
         <file>images/icn_paste.png</file>
         <file>images/icn_code.png</file>
         <file>images/icn_debug.png</file>
+        <file>images/icn_startHere.png</file>
     </qresource>
 </RCC>
