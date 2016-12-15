@@ -16,6 +16,10 @@ public:
 
     virtual void setLabel(QString label) Q_DECL_OVERRIDE;
     virtual void setFont(const QFont &font) Q_DECL_OVERRIDE;
+    virtual void setPalette(CPaletteAction *palette) Q_DECL_OVERRIDE;
+
+    QString customCode() const;
+    void setCustomCode(const QString &customCode);
 
     CStartHereModel *model() const;
 
@@ -28,10 +32,7 @@ protected:
 private:
     CStartHereModel *m_model;
     CTextItem *m_title;
-
-    // CBubble interface
-public:
-    virtual void setPalette(CPaletteAction *palette) Q_DECL_OVERRIDE;
+    QString m_customCode;
 };
 
 #endif // CSTARTHEREBUBBLE_H

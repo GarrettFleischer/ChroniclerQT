@@ -10,6 +10,7 @@ QT_END_NAMESPACE
 
 class CBubble;
 class CStartHereBubble;
+class CCodeEdit;
 
 class CStartHereProperties : public QWidget
 {
@@ -22,14 +23,16 @@ public:
 
 private:
     QLineEdit *m_label;
-    QTableView *m_view;
+    QTableView *m_variablesView;
     CStartHereBubble *m_bubble;
+    CCodeEdit *m_customCodeEdit;
 
 public slots:
     void AddItem();
     void RemoveItem();
 
     void LabelChanged(QString label);
+    void CodeChanged();
 };
 
 #endif // CSTARTHEREPROPERTIES_H

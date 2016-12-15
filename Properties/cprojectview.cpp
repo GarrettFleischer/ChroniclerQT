@@ -470,7 +470,7 @@ void CProjectView::ExportChoiceScript(const QString &path, CStartHereBubble *deb
             }
 
             if(debugStart != Q_NULLPTR)
-                cs += "*goto_scene " + static_cast<CGraphicsScene *>(debugStart->scene())->name() + " " + MakeLabel(debugStart, QList<CBubble *>());
+                cs += "\n*goto_scene " + static_cast<CGraphicsScene *>(debugStart->scene())->name() + " " + MakeLabel(debugStart, {});
         }
 
         for(const CVariable &v : shared().variablesView->model()->variables())
@@ -563,10 +563,12 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
             cs += indent + "\n*label " + MakeLabel(debugStart, {});
             for(CVariable v : variables)
                 cs += indent + "*set " + v.name() + " " + v.data() + "\n";
+
+            cs += indent + debugStart->customCode().replace("\n", "\n" + indent) + "\n";
         }
 
         // generate label...
-        if(LabelNeeded(bubble, bubbles, processed))
+        if(LabelNeeded(bubble, bubbles, processed, debugStart))
             cs +=  "\n\n*label " + MakeLabel(bubble, bubbles);
         else
             indent = QString(indent_str).repeated(indent_level);
@@ -590,7 +592,7 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
 
             if(story->link())
             {
-                if(LabelNeeded(story->link()->to(), bubbles, processed))
+                if(LabelNeeded(story->link()->to(), bubbles, processed, debugStart))
                     cs += indent + "*goto " + MakeLabel(story->link()->to(), bubbles);\
                 else
                     cs += "\n" + BubbleToChoiceScript(bubbles, processed, indent_level, story->link()->to(), debugStart);
@@ -614,7 +616,7 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
                 QString hash = (choice->text().contains("#") ? "" : "#");
                 cs += "\n" + indent + hash + choice->text() + "\n";
 
-                if(choice->link() && LabelNeeded(choice->link()->to(), bubbles, processed))
+                if(choice->link() && LabelNeeded(choice->link()->to(), bubbles, processed, debugStart))
                     cs += indent + indent_str + "*goto " + MakeLabel(choice->link()->to(), bubbles);
                 else if(choice->link())
                     cs += "\n" + BubbleToChoiceScript(bubbles, processed, indent_level + 1, choice->link()->to(), debugStart);
@@ -632,7 +634,7 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
 
             cs += indent + action->actionString().replace("\n", "\n" + indent) + "\n";
 
-            if(action->link() && LabelNeeded(action->link()->to(), bubbles, processed))
+            if(action->link() && LabelNeeded(action->link()->to(), bubbles, processed, debugStart))
                 cs += indent + "*goto " + MakeLabel(action->link()->to(), bubbles);
             else if(action->link())
                 cs += "\n" + BubbleToChoiceScript(bubbles, processed, indent_level, action->link()->to(), debugStart);
@@ -654,7 +656,7 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
             // true
             if(cb->trueLink())
             {
-                if(LabelNeeded(cb->trueLink()->to(), bubbles, processed))
+                if(LabelNeeded(cb->trueLink()->to(), bubbles, processed, debugStart))
                     cs += indent + indent_str + "*goto " + MakeLabel(cb->trueLink()->to(), bubbles);
                 else
                     cs += BubbleToChoiceScript(bubbles, processed, indent_level + 1, cb->trueLink()->to(), debugStart);
@@ -667,7 +669,7 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
             // false
             if(cb->falseLink())
             {
-                if(LabelNeeded(cb->falseLink()->to(), bubbles, processed))
+                if(LabelNeeded(cb->falseLink()->to(), bubbles, processed, debugStart))
                     cs += indent + indent_str + "*goto " + MakeLabel(cb->falseLink()->to(), bubbles);
                 else
                     cs += BubbleToChoiceScript(bubbles, processed, indent_level + 1, cb->falseLink()->to(), debugStart);
@@ -685,7 +687,7 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
 
             if(code->link())
             {
-                if(LabelNeeded(code->link()->to(), bubbles, processed))
+                if(LabelNeeded(code->link()->to(), bubbles, processed, debugStart))
                     cs += indent + "*goto " + MakeLabel(code->link()->to(), bubbles);
                 else
                     cs += "\n" + BubbleToChoiceScript(bubbles, processed, indent_level, code->link()->to(), debugStart);
@@ -696,23 +698,35 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
     return cs;
 }
 
-bool CProjectView::LabelNeeded(CBubble *bubble, const QList<CBubble *> &bubbles, const QList<CBubble *> &processed)
+bool CProjectView::LabelNeeded(CBubble *bubble, const QList<CBubble *> &bubbles, const QList<CBubble *> &processed, CStartHereBubble *debugStart)
 {
-    QList<CConnection *> connections = bubble->connections();
+    const QList<CConnection *> connections = bubble->connections();
+
 
     // if there is more than one connection, or the bubble is locked and processed already
-    if(connections.length() > 1 || (bubble->getLocked() && processed.contains(bubble)))
-        return true;
+    bool locked_and_processed = bubble->getLocked() && processed.contains(bubble);
 
-    // if the only connecting bubble hasn't been processed yet...
-    //    if(connections.length() > 0 && !processed.contains(connections.first()->from()->container()))
-    //        return true;
+    // if it is in debug mode
+    if(debugStart && (connections.length() > 1 || locked_and_processed))
+        return true;
+    else
+    {
+        // not in debug mode
+        int debug_links = 0;
+        for(CConnection *c : connections)
+            if(c->from()->getType() == Chronicler::StartHereBubble)
+                ++debug_links;
+
+        if((connections.length() - debug_links) > 1 || locked_and_processed)
+            return true;
+    }
+
     if(connections.length() > 0)
     {
         // if the only connecting bubble hasn't been processed yet...
         CBubble *from = connections.first()->from()->container();
-        int diff = (bubbles.indexOf(bubble) - bubbles.indexOf(from));
-        if((diff > 1) && !dynamic_cast<CChoiceBubble *>(from))
+        int diff = (bubble->getOrder() - from->getOrder());
+        if((diff > 1) && !processed.contains(from))
             return true;
     }
 

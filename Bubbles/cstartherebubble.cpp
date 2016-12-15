@@ -31,6 +31,9 @@ QDataStream &CStartHereBubble::Deserialize(QDataStream &ds, const Chronicler::CV
 
     m_model->setVariables(modelData);
 
+    if(version >= "0.9.15.1")
+        ds >> m_customCode;
+
     return ds;
 }
 
@@ -38,7 +41,8 @@ QDataStream &CStartHereBubble::Serialize(QDataStream &ds) const
 {
     CSingleLinkBubble::Serialize(ds);
 
-    ds << m_model->variables();
+    ds << m_model->variables()
+       << m_customCode;
 
     return ds;
 }
@@ -54,6 +58,16 @@ void CStartHereBubble::UpdatePolygon()
     CSingleLinkBubble::UpdatePolygon();
 
     m_title->Resize(boundingRect());
+}
+
+QString CStartHereBubble::customCode() const
+{
+    return m_customCode;
+}
+
+void CStartHereBubble::setCustomCode(const QString &customCode)
+{
+    m_customCode = customCode;
 }
 
 
