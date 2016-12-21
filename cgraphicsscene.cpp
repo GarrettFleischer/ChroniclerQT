@@ -178,6 +178,7 @@ void CGraphicsScene::ItemSelected(QGraphicsItem *selectedItem)
         {
             CStartHereBubble *bbl = dynamic_cast<CStartHereBubble *>(selectedItem);
             shared().debugButton->setEnabled(bbl != Q_NULLPTR);
+            shared().debugAction->setEnabled(bbl != Q_NULLPTR);
         }
 
         // decrease all z values by a ridiculously small number
@@ -234,6 +235,7 @@ void CGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
     if (event->button() == Qt::LeftButton)
     {
         shared().debugButton->setEnabled(false);
+        shared().debugAction->setEnabled(false);
         CBubble *clickItem = BubbleAt(event->scenePos(), true);
 
         if(!(event->modifiers() & Qt::ControlModifier) && (!clickItem || !clickItem->isSelected()))

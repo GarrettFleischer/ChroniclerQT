@@ -11,6 +11,7 @@
 #include <QMimeData>
 #include <QClipboard>
 #include <QCursor>
+#include <QWebView>
 
 #include "cgraphicsscene.h"
 #include "Bubbles/cstorybubble.h"
@@ -256,6 +257,11 @@ void CMainWindow::ShowDock()
     shared().dock->setVisible(!shared().dock->isVisible());
 }
 
+void CMainWindow::ShowForum()
+{
+    QDesktopServices::openUrl(QUrl("https://forum.choiceofgames.com/t/tool-chronicler-choicescript-visual-code-editor/6811"));
+}
+
 void CMainWindow::TabClosed(int index)
 {
     if(shared().sceneTabs->widget(index) == shared().settingsView)
@@ -325,6 +331,72 @@ void CMainWindow::DebugProject()
     }
 }
 
+void CMainWindow::QuickTest()
+{
+    QString cs_dir = shared().settingsView->choiceScriptDirectory();
+    if(QDir(cs_dir + "/web").exists())
+    {
+        shared().projectView->ExportChoiceScript(cs_dir + "/web/mygame", Q_NULLPTR);
+
+        QDesktopServices::openUrl(QUrl::fromLocalFile(cs_dir + "/quicktest.html"));
+    }
+    else
+    {
+        QMessageBox msgBox;
+        msgBox.setText(tr("ChoiceScript settings are not valid."));
+        msgBox.exec();
+
+        if(shared().sceneTabs->indexOf(shared().settingsView) == -1)
+            shared().sceneTabs->insertTab(0, shared().settingsView, tr("Settings"));
+
+        shared().sceneTabs->setCurrentWidget(shared().settingsView);
+    }
+}
+
+void CMainWindow::RandomTest()
+{
+    QString cs_dir = shared().settingsView->choiceScriptDirectory();
+    if(QDir(cs_dir + "/web").exists())
+    {
+        shared().projectView->ExportChoiceScript(cs_dir + "/web/mygame", Q_NULLPTR);
+
+        QDesktopServices::openUrl(QUrl::fromLocalFile(cs_dir + "/randomtest.html"));
+    }
+    else
+    {
+        QMessageBox msgBox;
+        msgBox.setText(tr("ChoiceScript settings are not valid."));
+        msgBox.exec();
+
+        if(shared().sceneTabs->indexOf(shared().settingsView) == -1)
+            shared().sceneTabs->insertTab(0, shared().settingsView, tr("Settings"));
+
+        shared().sceneTabs->setCurrentWidget(shared().settingsView);
+    }
+}
+
+void CMainWindow::Compile()
+{
+    QString cs_dir = shared().settingsView->choiceScriptDirectory();
+    if(QDir(cs_dir + "/web").exists())
+    {
+        shared().projectView->ExportChoiceScript(cs_dir + "/web/mygame", Q_NULLPTR);
+
+        QDesktopServices::openUrl(QUrl::fromLocalFile(cs_dir + "/compile.html"));
+    }
+    else
+    {
+        QMessageBox msgBox;
+        msgBox.setText(tr("ChoiceScript settings are not valid."));
+        msgBox.exec();
+
+        if(shared().sceneTabs->indexOf(shared().settingsView) == -1)
+            shared().sceneTabs->insertTab(0, shared().settingsView, tr("Settings"));
+
+        shared().sceneTabs->setCurrentWidget(shared().settingsView);
+    }
+}
+
 void CMainWindow::SettingsChanged()
 {
     // Update font and font color.
@@ -347,6 +419,7 @@ void CMainWindow::ShowAbout()
 
 void CMainWindow::CreateActions()
 {
+    // Edit
     shared().copyAction = new QAction(QIcon(":/images/icn_copy"), tr("&Copy"), this);
     shared().copyAction->setShortcut(QKeySequence::Copy);
     shared().copyAction->setToolTip(tr("Copy selected bubbles to the clipboard"));
@@ -362,6 +435,22 @@ void CMainWindow::CreateActions()
     shared().deleteAction->setToolTip(tr("Delete selected bubbles"));
     connect(shared().deleteAction, SIGNAL(triggered()), this, SLOT(DeleteSelectedItems()));
 
+    shared().undoAction = shared().history->createUndoAction(this);
+    shared().undoAction->setIcon(QIcon(":/images/icn_undo"));
+    shared().undoAction->setShortcut(QKeySequence::Undo);
+
+    shared().redoAction = shared().history->createRedoAction(this);
+    shared().redoAction->setIcon(QIcon(":/images/icn_redo"));
+    shared().redoAction->setShortcut(QKeySequence::Redo);
+
+    // Help
+    shared().aboutAction = new QAction(QIcon(":/images/icn_info"), tr("&About"), this);
+    connect(shared().aboutAction, SIGNAL(triggered()), this, SLOT(ShowAbout()));
+
+    shared().forumAction = new QAction(QIcon(":/images/icn_cslogo"), tr("Visit &forum"), this);
+    connect(shared().forumAction, SIGNAL(triggered()), this, SLOT(ShowForum()));
+
+    // File
     shared().exitAction = new QAction(QIcon(":/images/icn_exit.png"), tr("E&xit"), this);
     shared().exitAction->setShortcuts(QKeySequence::Quit);
     shared().exitAction->setToolTip(tr("Quit program"));
@@ -370,9 +459,6 @@ void CMainWindow::CreateActions()
     shared().settingsAction = new QAction(QIcon(":/images/icn_settings"), tr("&Settings"), this);
     shared().settingsAction->setShortcut(QKeySequence::Preferences);
     connect(shared().settingsAction, SIGNAL(triggered(bool)), this, SLOT(ShowSettings()));
-
-    shared().aboutAction = new QAction(QIcon(":/images/icn_info"), tr("A&bout"), this);
-    connect(shared().aboutAction, SIGNAL(triggered()), this, SLOT(ShowAbout()));
 
     shared().newProjectAction = new QAction(QIcon(":/images/icn_new"), tr("New Project"), this);
     shared().newProjectAction->setShortcut(QKeySequence::New);
@@ -409,26 +495,39 @@ void CMainWindow::CreateActions()
     shared().showDockAction = new QAction(tr("Show &dock"), this);
     connect(shared().showDockAction, SIGNAL(triggered(bool)), this, SLOT(ShowDock()));
 
+    // Tools
+    QString testToolTip = tr("Before running, make sure your web directory is clean and the default program for opening .html files is NOT Google Chrome.");
+    shared().quickTestAction = new QAction(tr("&Quick test"), this);
+    shared().quickTestAction->setToolTip(testToolTip);
+    connect(shared().quickTestAction, SIGNAL(triggered(bool)), this, SLOT(QuickTest()));
+
+    shared().randomTestAction = new QAction(tr("&Random test"), this);
+    shared().randomTestAction->setToolTip(testToolTip);
+    connect(shared().randomTestAction, SIGNAL(triggered(bool)), this, SLOT(RandomTest()));
+
+    shared().compileAction = new QAction(tr("&Compile"), this);
+    shared().compileAction->setToolTip(testToolTip);
+    connect(shared().compileAction, SIGNAL(triggered(bool)), this, SLOT(Compile()));
+
+    shared().playAction = new QAction(QIcon(":/images/icn_play"), tr("&Play"), this);
+    connect(shared().playAction, SIGNAL(triggered(bool)), this, SLOT(PlayProject()));
+
+    shared().debugAction = new QAction(QIcon(":/images/icn_debug"), tr("&Debug"), this);
+    shared().debugAction->setEnabled(false);
+    connect(shared().debugAction, SIGNAL(triggered(bool)), this, SLOT(DebugProject()));
+
+    // Other
     QAction *escape_action = new QAction(this);
     escape_action->setShortcut(Qt::Key_Escape);
     connect(escape_action, SIGNAL(triggered(bool)), this, SLOT(EscapePressed()));
     addAction(escape_action);
-
-    shared().undoAction = shared().history->createUndoAction(this);
-    shared().undoAction->setIcon(QIcon(":/images/icn_undo"));
-    shared().undoAction->setShortcut(QKeySequence::Undo);
-
-    shared().redoAction = shared().history->createRedoAction(this);
-    shared().redoAction->setIcon(QIcon(":/images/icn_redo"));
-    shared().redoAction->setShortcut(QKeySequence::Redo);
-
-
 }
 
 
 void CMainWindow::CreateMenus()
 {
     shared().fileMenu = menuBar()->addMenu(tr("&File"));
+    shared().fileMenu->setToolTipsVisible(true);
     shared().fileMenu->addAction(shared().newProjectAction);
     shared().fileMenu->addAction(shared().openProjectAction);
     shared().fileMenu->addAction(shared().importProjectAction);
@@ -442,18 +541,31 @@ void CMainWindow::CreateMenus()
     shared().fileMenu->addAction(shared().exitAction);
 
     shared().editMenu = menuBar()->addMenu(tr("&Edit"));
+    shared().editMenu->setToolTipsVisible(true);
     shared().editMenu->addAction(shared().undoAction);
     shared().editMenu->addAction(shared().redoAction);
     shared().editMenu->addSeparator();
     shared().editMenu->addAction(shared().copyAction);
     shared().editMenu->addAction(shared().pasteAction);
-    shared().editMenu->addAction(shared().deleteAction);
+    shared().editMenu->addAction(shared().deleteAction);    
 
     shared().viewMenu = menuBar()->addMenu(tr("&View"));
+    shared().viewMenu->setToolTipsVisible(true);
     shared().viewMenu->addAction(shared().showHomepageAction);
     shared().viewMenu->addAction(shared().showDockAction);
 
+    shared().toolsMenu = menuBar()->addMenu(tr("&Tools"));
+    shared().toolsMenu->setToolTipsVisible(true);
+    shared().toolsMenu->addAction(shared().playAction);
+    shared().toolsMenu->addAction(shared().debugAction);
+    shared().toolsMenu->addSeparator();
+    shared().toolsMenu->addAction(shared().quickTestAction);
+    shared().toolsMenu->addAction(shared().randomTestAction);
+    shared().toolsMenu->addAction(shared().compileAction);
+
     shared().helpMenu = menuBar()->addMenu(tr("&Help"));
+    shared().helpMenu->setToolTipsVisible(true);
+    shared().helpMenu->addAction(shared().forumAction);
     shared().helpMenu->addAction(shared().aboutAction);
 }
 
@@ -467,6 +579,7 @@ void CMainWindow::CreateToolbars()
     tb_pointer->setChecked(true);
     tb_pointer->setIcon(QIcon(":/images/icn_pointer.png"));
     tb_pointer->setToolTip(tr("Selection tool"));
+
     QToolButton *tb_link = new QToolButton();
     tb_link->setCheckable(true);
     tb_link->setIcon(QIcon(":/images/icn_link.png"));
@@ -478,22 +591,27 @@ void CMainWindow::CreateToolbars()
     tb_story->setCheckable(true);
     tb_story->setIcon(QIcon(":/images/icn_story.png"));
     tb_story->setToolTip(tr("Story bubble"));
+
     QToolButton *tb_condition = new QToolButton();
     tb_condition->setCheckable(true);
     tb_condition->setIcon(QIcon(":/images/icn_condition.png"));
     tb_condition->setToolTip(tr("Condition bubble\nLeft anchor: TRUE\nRight anchor: FALSE"));
+
     QToolButton *tb_action = new QToolButton();
     tb_action->setCheckable(true);
     tb_action->setIcon(QIcon(":/images/icn_action.png"));
     tb_action->setToolTip(tr("Action bubble"));
+
     QToolButton *tb_choice = new QToolButton();
     tb_choice->setCheckable(true);
     tb_choice->setIcon(QIcon(":/images/icn_choice2.png"));
     tb_choice->setToolTip(tr("Choice bubble"));
+
     QToolButton *tb_code = new QToolButton();
     tb_code->setCheckable(true);
     tb_code->setIcon(QIcon(":/images/icn_code.png"));
     tb_code->setToolTip(tr("Code bubble"));
+
     QToolButton *tb_startHere = new QToolButton();
     tb_startHere->setCheckable(true);
     tb_startHere->setIcon(QIcon(":/images/icn_startHere.png"));
@@ -521,13 +639,12 @@ void CMainWindow::CreateToolbars()
     tb_play->setIcon(QIcon(":/images/icn_play.png"));
     tb_play->setToolTip(tr("Play game"));
     connect(tb_play, SIGNAL(clicked(bool)), this, SLOT(PlayProject()));
+
     shared().debugButton = new QToolButton();
     shared().debugButton->setIcon(QIcon(":/images/icn_debug.png"));
     shared().debugButton->setToolTip(tr("Debug game"));
-    connect(shared().debugButton, SIGNAL(clicked(bool)), this, SLOT(DebugProject()));
-
     shared().debugButton->setEnabled(false);
-
+    connect(shared().debugButton, SIGNAL(clicked(bool)), this, SLOT(DebugProject()));
 
     // Pointer toolbar
     Qt::ToolBarArea area = static_cast<Qt::ToolBarArea>(shared().settingsView->settings()->value("MainWindow/ToolBarArea",

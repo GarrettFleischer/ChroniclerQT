@@ -122,7 +122,7 @@ namespace Chronicler
     /// @brief Do NOT instantiate this struct, use shared() singleton access.
     struct SharedInstances
     {
-        const CVersion ProgramVersion = CVersion("0.9.16.0");
+        const CVersion ProgramVersion = CVersion("0.9.17.0");
 
         CMainWindow *mainWindow;
 
@@ -147,6 +147,7 @@ namespace Chronicler
         QMenu *fileMenu;
         QMenu *editMenu;
         QMenu *viewMenu;
+        QMenu *toolsMenu;
         QMenu *helpMenu;
 
         QAction *exitAction;
@@ -154,6 +155,7 @@ namespace Chronicler
         QAction *copyAction;
         QAction *pasteAction;
         QAction *aboutAction;
+        QAction *forumAction;
         QAction *settingsAction;
         QAction *newProjectAction;
         QAction *openProjectAction;
@@ -165,6 +167,11 @@ namespace Chronicler
         QAction *showDockAction;
         QAction *undoAction;
         QAction *redoAction;
+        QAction *quickTestAction;
+        QAction *randomTestAction;
+        QAction *compileAction;
+        QAction *playAction;
+        QAction *debugAction;
 
         QUndoStack *history;
 

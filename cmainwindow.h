@@ -91,6 +91,7 @@ private slots:
     void ShowSettings();
     void ShowHomepage();
     void ShowDock();
+    void ShowForum();
 
     void NewProject();
     void OpenProject();
@@ -112,6 +113,9 @@ private slots:
 
     void PlayProject();
     void DebugProject();
+    void QuickTest();
+    void RandomTest();
+    void Compile();
 
 };
 
