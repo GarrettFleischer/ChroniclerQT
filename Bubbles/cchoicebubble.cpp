@@ -29,7 +29,7 @@ CChoiceBubble::CChoiceBubble(const QPointF &pos, CPaletteAction *palette, const 
     m_bounds = QRectF(-m_minSize.width() / 2, -m_minSize.height() / 2, m_minSize.width(), m_minSize.height());
     UpdatePolygon();
 
-    setPalette(m_palette);
+    setPalette(m_paletteAction);
 }
 
 void CChoiceBubble::setPalette(CPaletteAction *palette)
@@ -138,12 +138,12 @@ QDataStream &CChoiceBubble::Deserialize(QDataStream &ds, const Chronicler::CVers
 
     for(int i = 0; i < num_choices; ++i)
     {
-        CChoice *choice = new CChoice(m_palette, m_font, this);
+        CChoice *choice = new CChoice(m_paletteAction, m_font, this);
         ds >> *choice;
         m_choices->AddItem(choice);
     }
 
-    setPalette(m_palette);
+    setPalette(m_paletteAction);
 
     return ds;
 }

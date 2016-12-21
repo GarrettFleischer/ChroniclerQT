@@ -55,8 +55,9 @@ public:
 
     void setBounds(const QRectF &bounds);
 
-    // if this bubble is contained inside another bubble, return that
-    // else return itself
+    virtual CPaletteAction *getPaletteForAnchor(Anchor anchor);
+
+    /// @brief if this bubble is contained inside another bubble, return that else return itself
     virtual CBubble * container();
 
     void AddConnection(CConnection *connection);
@@ -109,7 +110,7 @@ protected:
     bool m_locked;
 
     QFont m_font;
-    CPaletteAction *m_palette;
+    CPaletteAction *m_paletteAction;
 
     bool m_resize;
     QPointF m_offset;

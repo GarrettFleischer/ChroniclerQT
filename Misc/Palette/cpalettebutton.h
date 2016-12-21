@@ -47,6 +47,8 @@ private:
     CPalette m_condition;
     CPalette m_code;
     CPalette m_start;
+    CPalette m_true;
+    CPalette m_false;
 
 public slots:
     void Clear();

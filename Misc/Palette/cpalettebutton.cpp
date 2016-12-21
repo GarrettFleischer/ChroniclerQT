@@ -30,13 +30,17 @@ CPaletteButton::CPaletteButton(QWidget *parent)
     m_condition.fill = QColor(151,118,166);
     m_code.fill = QColor(124, 140, 230);
     m_start.fill = Qt::darkGreen;
+    m_true.fill = Qt::darkGreen;
+    m_false.fill = Qt::darkRed;
 
     shared().defaultStory = new CPaletteAction(this, m_story, tr("Story"), 1);
     shared().defaultChoice = new CPaletteAction(this, m_choice, tr("Choice"), 2);
     shared().defaultAction = new CPaletteAction(this, m_action, tr("Action"), 3);
     shared().defaultCondition = new CPaletteAction(this, m_condition, tr("Condition"), 4);
-    shared().defaultCode = new CPaletteAction(this, m_code, tr("Code"), 6);
     shared().defaultStart = new CPaletteAction(this, m_start, tr("Start"), 5);
+    shared().defaultCode = new CPaletteAction(this, m_code, tr("Code"), 6);
+    shared().defaultTrue = new CPaletteAction(this, m_true, "", 7);
+    shared().defaultFalse = new CPaletteAction(this, m_false, "", 8);
 
     m_creator = new CPaletteCreator(this);
     connect(m_creator, SIGNAL(accepted()), this, SLOT(Saved()));

@@ -481,7 +481,7 @@ void CMainWindow::CreateToolbars()
     QToolButton *tb_condition = new QToolButton();
     tb_condition->setCheckable(true);
     tb_condition->setIcon(QIcon(":/images/icn_condition.png"));
-    tb_condition->setToolTip(tr("Condition bubble"));
+    tb_condition->setToolTip(tr("Condition bubble\nLeft anchor: TRUE\nRight anchor: FALSE"));
     QToolButton *tb_action = new QToolButton();
     tb_action->setCheckable(true);
     tb_action->setIcon(QIcon(":/images/icn_action.png"));

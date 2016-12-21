@@ -122,7 +122,7 @@ namespace Chronicler
     /// @brief Do NOT instantiate this struct, use shared() singleton access.
     struct SharedInstances
     {
-        const CVersion ProgramVersion = CVersion("0.9.15.1");
+        const CVersion ProgramVersion = CVersion("0.9.16.0");
 
         CMainWindow *mainWindow;
 
@@ -174,6 +174,8 @@ namespace Chronicler
         CPaletteAction *defaultCondition;
         CPaletteAction *defaultCode;
         CPaletteAction *defaultStart;
+        CPaletteAction *defaultTrue;
+        CPaletteAction *defaultFalse;
 
         QString globalVariableTitle = "Global";
 

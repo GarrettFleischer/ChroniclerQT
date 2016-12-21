@@ -14,7 +14,7 @@ CCodeBubble::CCodeBubble(const QPointF &pos, CPaletteAction *palette, const QFon
     m_bounds = QRectF(-m_minSize.width()/2, -m_minSize.height()/2, m_minSize.width(), m_minSize.height());
     UpdatePolygon();
 
-    setPalette(m_palette);
+    setPalette(m_paletteAction);
 }
 
 void CCodeBubble::setFont(const QFont &font)

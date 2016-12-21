@@ -31,7 +31,7 @@ CChoice::CChoice(CPaletteAction *palette, const QFont &font, QGraphicsItem *pare
     m_bounds = QRectF(0, 0, m_minSize.width(), m_minSize.height());
     UpdatePolygon();
 
-    setPalette(m_palette);
+    setPalette(m_paletteAction);
 }
 
 void CChoice::setPalette(CPaletteAction *palette)
@@ -147,7 +147,7 @@ QDataStream & CChoice::Deserialize(QDataStream &ds, const Chronicler::CVersion &
 
     m_choice->setText(choice);
 
-    setPalette(m_palette);
+    setPalette(m_paletteAction);
 
     return ds;
 }

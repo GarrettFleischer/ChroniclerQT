@@ -57,7 +57,7 @@ void CConnection::setFrom(CBubble *from)
         connect(m_from, SIGNAL(PositionOrShapeChanged()), this, SLOT(UpdatePosition()));
         connect(m_from, SIGNAL(PaletteChanged()), this, SLOT(FromPaletteChanged()));
 
-        m_line->setPalette(m_from->getPalette());
+        m_line->setPalette(m_from->getPaletteForAnchor(startAnchor()));
     }
 
     UpdatePosition();
@@ -91,11 +91,6 @@ CPaletteAction *CConnection::getPalette()
     return m_line->getPalette();
 }
 
-void CConnection::setPalette(CPaletteAction *palette)
-{
-    m_line->setPalette(palette);
-}
-
 void CConnection::UpdatePosition()
 {
     if(m_from)
@@ -118,7 +113,7 @@ void CConnection::UpdatePosition()
 
 void CConnection::FromPaletteChanged()
 {
-    m_line->setPalette(m_from->getPalette());
+    m_line->setPalette(m_from->getPaletteForAnchor(startAnchor()));
 }
 
 QRectF CConnection::boundingRect() const

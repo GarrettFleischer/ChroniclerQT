@@ -18,7 +18,7 @@ CStartHereBubble::CStartHereBubble(const QPointF &pos, CPaletteAction *palette, 
 
     m_bounds = QRectF(QPointF(0, 0), m_minSize);
     UpdatePolygon();
-    setPalette(m_palette);
+    setPalette(m_paletteAction);
 }
 
 

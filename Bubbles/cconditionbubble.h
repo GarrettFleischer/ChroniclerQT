@@ -14,16 +14,18 @@ public:
     CConditionBubble(const QPointF &pos, CPaletteAction *palette, const QFont &font = QFont(), QGraphicsItem *parent = Q_NULLPTR);
     virtual ~CConditionBubble();
 
-    virtual void setFont(const QFont &font) override;
-    virtual void setPalette(CPaletteAction *palette) override;
+    virtual void setFont(const QFont &font) Q_DECL_OVERRIDE;
+    virtual void setPalette(CPaletteAction *palette) Q_DECL_OVERRIDE;
 
-    virtual void AddLink(CConnection *link) override;
-    virtual void RemoveLink(CConnection *link) override;
-    virtual void RemoveLink(Chronicler::Anchor anchor) override;
-    virtual QList<CConnection *> links() override;
+    virtual void AddLink(CConnection *link) Q_DECL_OVERRIDE;
+    virtual void RemoveLink(CConnection *link) Q_DECL_OVERRIDE;
+    virtual void RemoveLink(Chronicler::Anchor anchor) Q_DECL_OVERRIDE;
+    virtual QList<CConnection *> links() Q_DECL_OVERRIDE;
 
-    virtual Anchor OutputAnchorAtPosition(const QPointF &pos) override;
-    virtual Anchor InputAnchorAtPosition(const QPointF &) override;
+    virtual Anchor OutputAnchorAtPosition(const QPointF &pos) Q_DECL_OVERRIDE;
+    virtual Anchor InputAnchorAtPosition(const QPointF &) Q_DECL_OVERRIDE;
+
+    virtual CPaletteAction *getPaletteForAnchor(Chronicler::Anchor anchor) Q_DECL_OVERRIDE;
 
     CConnection *trueLink();
     CConnection *falseLink();
@@ -32,11 +34,11 @@ public:
     QString getCondition() { return m_conditionText; }
 
 protected:
-    virtual void UpdatePolygon() override;
+    virtual void UpdatePolygon() Q_DECL_OVERRIDE;
     void AdjustMinSize();
 
-    virtual QDataStream &Deserialize(QDataStream &ds, const CVersion &version) override;
-    virtual QDataStream &Serialize(QDataStream &ds) const override;
+    virtual QDataStream &Deserialize(QDataStream &ds, const CVersion &version) Q_DECL_OVERRIDE;
+    virtual QDataStream &Serialize(QDataStream &ds) const Q_DECL_OVERRIDE;
 
 private:
     CTextItem *m_condition;
@@ -45,6 +47,14 @@ private:
     CConnection *m_trueLink;
     CConnection *m_falseLink;
 
+
+    // CBubble interface
+public:
+
+
+    // QGraphicsItem interface
+public:
+    virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget) Q_DECL_OVERRIDE;
 };
 
 #endif // CCONDITIONBUBBLE_H

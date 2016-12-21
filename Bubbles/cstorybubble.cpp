@@ -22,7 +22,7 @@ CStoryBubble::CStoryBubble(const QPointF &pos, CPaletteAction *palette, const QF
     UpdatePolygon();
     moveBy(-boundingRect().width() / 2, -boundingRect().height() / 2);
 
-    setPalette(m_palette);
+    setPalette(m_paletteAction);
 }
 
 void CStoryBubble::UpdatePolygon()
@@ -88,7 +88,7 @@ QDataStream &CStoryBubble::Deserialize(QDataStream &ds, const Chronicler::CVersi
 
     m_story->setText(story);
 
-    setPalette(m_palette);
+    setPalette(m_paletteAction);
 
     return ds;
 }

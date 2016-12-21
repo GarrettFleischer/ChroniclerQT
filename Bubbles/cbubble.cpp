@@ -28,7 +28,7 @@ QList<t_uid> CBubble::m_UIDs = QList<t_uid>();
 CBubble::CBubble(const QPointF &pos, CPaletteAction *palette, const QFont &font, QGraphicsItem *parent)
     : QGraphicsPolygonItem(parent),
       m_minSize(QSizeF(150, 100)), m_order(0), m_locked(false),
-      m_font(font), m_palette(palette), m_resize(false)
+      m_font(font), m_paletteAction(palette), m_resize(false)
 {
     setFlag(QGraphicsItem::ItemIsMovable, true);
     setFlag(QGraphicsItem::ItemIsSelectable, true);
@@ -125,9 +125,9 @@ QVariant CBubble::itemChange(GraphicsItemChange change, const QVariant &value)
 
 void CBubble::paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *)
 {
-    QPen outline = (isSelected() ? QPen(m_palette->getPalette().select, 2) : QPen(m_palette->getPalette().line, 1.5));
+    QPen outline = (isSelected() ? QPen(m_paletteAction->getPalette().select, 2) : QPen(m_paletteAction->getPalette().line, 1.5));
     painter->setPen(outline);
-    painter->setBrush(QBrush(m_palette->getPalette().fill));
+    painter->setBrush(QBrush(m_paletteAction->getPalette().fill));
     painter->drawPolygon(polygon(), Qt::WindingFill);
 }
 
@@ -183,7 +183,7 @@ Anchor CBubble::AnchorAtPosition(const QPointF &pos)
 
 void CBubble::UpdatePalette()
 {
-    this->setPalette(m_palette);
+    this->setPalette(m_paletteAction);
 }
 
 
@@ -198,9 +198,9 @@ void CBubble::setFont(const QFont &font)
 
 void CBubble::setPalette(CPaletteAction *palette)
 {
-    disconnect(m_palette, SIGNAL(changed()), this, SLOT(UpdatePalette()));
-    m_palette = palette;
-    connect(m_palette, SIGNAL(changed()), this, SLOT(UpdatePalette()));
+    disconnect(m_paletteAction, SIGNAL(changed()), this, SLOT(UpdatePalette()));
+    m_paletteAction = palette;
+    connect(m_paletteAction, SIGNAL(changed()), this, SLOT(UpdatePalette()));
     update();
 
     emit PaletteChanged();
@@ -208,7 +208,7 @@ void CBubble::setPalette(CPaletteAction *palette)
 
 CPaletteAction * CBubble::getPalette()
 {
-    return m_palette;
+    return m_paletteAction;
 }
 
 void CBubble::setBounds(const QRectF &bounds)
@@ -217,6 +217,13 @@ void CBubble::setBounds(const QRectF &bounds)
     UpdatePolygon();
 
     emit PositionOrShapeChanged();
+}
+
+CPaletteAction *CBubble::getPaletteForAnchor(Anchor anchor)
+{
+    Q_UNUSED(anchor)
+
+    return m_paletteAction;
 }
 
 CBubble *CBubble::container()
@@ -289,7 +296,7 @@ QDataStream &CBubble::Deserialize(QDataStream &ds, const Chronicler::CVersion &v
                 >> palette_uid
                 >> m_bounds >> pos;
 
-        m_palette = shared().paletteButton->getPaletteWithUID(palette_uid);
+        m_paletteAction = shared().paletteButton->getPaletteWithUID(palette_uid);
     }
 
     setLabel(m_label);
@@ -304,7 +311,7 @@ QDataStream & CBubble::Serialize(QDataStream &ds) const
     ds << static_cast<qint32>(m_type)
        << GenerateUID()
        << m_label << m_order << m_locked
-       << m_palette->getUID()
+       << m_paletteAction->getUID()
        << m_bounds << scenePos();
 
     return ds;

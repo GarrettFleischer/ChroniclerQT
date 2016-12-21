@@ -1,10 +1,15 @@
 #include "cconditionbubble.h"
 
+#include <QLinearGradient>
+
 #include "Misc/Palette/cpaletteaction.h"
 
 #include "Misc/ctextitem.h"
 #include "Connections/cconnection.h"
 #include "cgraphicsscene.h"
+
+#include "Misc/chronicler.h"
+using Chronicler::shared;
 
 
 CConditionBubble::CConditionBubble(const QPointF &pos, CPaletteAction *palette, const QFont &font, QGraphicsItem *parent)
@@ -19,7 +24,7 @@ CConditionBubble::CConditionBubble(const QPointF &pos, CPaletteAction *palette, 
     m_bounds = QRectF(-m_minSize.width()/2, -m_minSize.height()/2, m_minSize.width(), m_minSize.height());
     UpdatePolygon();
 
-    setPalette(m_palette);
+    setPalette(m_paletteAction);
 }
 
 CConditionBubble::~CConditionBubble()
@@ -160,7 +165,7 @@ QDataStream &CConditionBubble::Deserialize(QDataStream &ds, const Chronicler::CV
 
     setCondition(m_conditionText);
 
-    setPalette(m_palette);
+    setPalette(m_paletteAction);
 
     return ds;
 }
@@ -187,4 +192,32 @@ CConnection *CConditionBubble::trueLink()
 CConnection *CConditionBubble::falseLink()
 {
     return m_falseLink;
+}
+
+
+CPaletteAction *CConditionBubble::getPaletteForAnchor(Chronicler::Anchor anchor)
+{
+    if(anchor == Chronicler::WestAnchor)
+        return shared().defaultTrue;
+
+    return shared().defaultFalse;
+}
+
+
+void CConditionBubble::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+{
+    Q_UNUSED(option)
+    Q_UNUSED(widget)
+
+    QRectF b = polygon().boundingRect();
+    QLinearGradient gradient(b.topLeft(), b.topRight());
+    gradient.setColorAt(0, shared().defaultTrue->getPalette().fill);
+    gradient.setColorAt(0.12, m_paletteAction->getPalette().fill);
+    gradient.setColorAt(0.88, m_paletteAction->getPalette().fill);
+    gradient.setColorAt(1, shared().defaultFalse->getPalette().fill);
+
+    QPen outline = (isSelected() ? QPen(m_paletteAction->getPalette().select, 2) : QPen(m_paletteAction->getPalette().line, 1.5));
+    painter->setPen(outline);
+    painter->setBrush(QBrush(gradient));
+    painter->drawPolygon(polygon(), Qt::WindingFill);
 }

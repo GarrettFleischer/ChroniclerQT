@@ -37,7 +37,7 @@ CActionBubble::CActionBubble(const QPointF &pos, CPaletteAction *palette, const 
     m_bounds = QRectF(-m_minSize.width()/2, -m_minSize.height()/2, m_minSize.width(), m_minSize.height());
     UpdatePolygon();
 
-    setPalette(m_palette);
+    setPalette(m_paletteAction);
 }
 
 void CActionBubble::UpdatePolygon()
@@ -76,7 +76,7 @@ QDataStream &CActionBubble::Deserialize(QDataStream &ds, const Chronicler::CVers
 {
     CSingleLinkBubble::Deserialize(ds, version);
 
-    setPalette(m_palette);
+    setPalette(m_paletteAction);
 
     QStringList actions;
     ds >> actions;

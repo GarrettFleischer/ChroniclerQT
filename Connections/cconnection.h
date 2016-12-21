@@ -37,7 +37,6 @@ public:
     void setTo(CBubble *to);
     
     CPaletteAction *getPalette();
-    void setPalette(CPaletteAction *palette);
 
     virtual QRectF boundingRect() const;
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *, QWidget *);
