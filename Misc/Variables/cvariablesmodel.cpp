@@ -162,52 +162,55 @@ QVariant CVariablesModel::data(const QModelIndex &index, int role) const
 
     void CVariablesModel::RefactorBubbles(const CVariable &current, QString newname)
     {
-        for(CGraphicsView *view : shared().projectView->model()->views())
+        if(current.name().length())
         {
-            // if global, replace everywhere, else replace only in local scene
-            if(!current.scene() || current.scene() == view->cScene())
+            for(CGraphicsView *view : shared().projectView->model()->views())
             {
-                for(CBubble *b : view->cScene()->bubbles())
+                // if global, replace everywhere, else replace only in local scene
+                if(!current.scene() || current.scene() == view->cScene())
                 {
-                    if(b->getType() == Chronicler::StoryBubble)
+                    for(CBubble *b : view->cScene()->bubbles())
                     {
-                        CStoryBubble *bbl = static_cast<CStoryBubble *>(b);
-                        bbl->setStory(bbl->getStory().replace("${" + current.name() + "}", "${" + newname + "}"));
-                    }
-                    else if(b->getType() == Chronicler::ChoiceBubble)
-                    {
-                        CChoiceBubble *bbl = static_cast<CChoiceBubble *>(b);
-                        for(CChoice *choice : bbl->choiceBubbles())
-                            choice->setChoice(choice->text().replace("${" + current.name() + "}", "${" + newname + "}"));
-                    }
-                    else if(b->getType() == Chronicler::ActionBubble)
-                    {
-                        CActionBubble *bbl = static_cast<CActionBubble *>(b);
-                        QStringList actions = bbl->actions()->stringList();
-                        for(int i = 0; i < actions.length(); ++i)
-                            actions.replace(i, QString(actions.at(i)).replace(current.name(), newname));
-
-                        bbl->actions()->setStringList(actions);
-                    }
-                    else if(b->getType() == Chronicler::ConditionBubble)
-                    {
-                        CConditionBubble *bbl = static_cast<CConditionBubble *>(b);
-                        bbl->setCondition(bbl->getCondition().replace(current.name(), newname));
-                    }
-                    else if(b->getType() == Chronicler::CodeBubble)
-                    {
-                        CCodeBubble *bbl = static_cast<CCodeBubble *>(b);
-                        bbl->setCode(bbl->getCode().replace(current.name(), newname));
-                    }
-                    else if(b->getType() == Chronicler::StartHereBubble)
-                    {
-                        CStartHereBubble *bbl = static_cast<CStartHereBubble *>(b);
-                        CStartHereModel *model = bbl->model();
-                        for(int i = 0; i < model->variables().length(); ++i)
+                        if(b->getType() == Chronicler::StoryBubble)
                         {
-                            QModelIndex ix = model->index(i, 0);
-                            if(model->data(ix, Qt::EditRole).toString() == current.name())
-                                model->setData(ix, newname, Qt::EditRole);
+                            CStoryBubble *bbl = static_cast<CStoryBubble *>(b);
+                            bbl->setStory(bbl->getStory().replace("${" + current.name() + "}", "${" + newname + "}"));
+                        }
+                        else if(b->getType() == Chronicler::ChoiceBubble)
+                        {
+                            CChoiceBubble *bbl = static_cast<CChoiceBubble *>(b);
+                            for(CChoice *choice : bbl->choiceBubbles())
+                                choice->setChoice(choice->text().replace("${" + current.name() + "}", "${" + newname + "}"));
+                        }
+//                        else if(b->getType() == Chronicler::ActionBubble)
+//                        {
+//                            CActionBubble *bbl = static_cast<CActionBubble *>(b);
+//                            QStringList actions = bbl->actions()->stringList();
+//                            for(int i = 0; i < actions.length(); ++i)
+//                                actions.replace(i, QString(actions.at(i)).replace(current.name(), newname));
+
+//                            bbl->actions()->setStringList(actions);
+//                        }
+                        else if(b->getType() == Chronicler::ConditionBubble)
+                        {
+                            CConditionBubble *bbl = static_cast<CConditionBubble *>(b);
+                            bbl->setCondition(bbl->getCondition().replace(current.name(), newname));
+                        }
+//                        else if(b->getType() == Chronicler::CodeBubble)
+//                        {
+//                            CCodeBubble *bbl = static_cast<CCodeBubble *>(b);
+//                            bbl->setCode(bbl->getCode().replace(current.name(), newname));
+//                        }
+                        else if(b->getType() == Chronicler::StartHereBubble)
+                        {
+                            CStartHereBubble *bbl = static_cast<CStartHereBubble *>(b);
+                            CStartHereModel *model = bbl->model();
+                            for(int i = 0; i < model->variables().length(); ++i)
+                            {
+                                QModelIndex ix = model->index(i, 0);
+                                if(model->data(ix, Qt::EditRole).toString() == current.name())
+                                    model->setData(ix, newname, Qt::EditRole);
+                            }
                         }
                     }
                 }
