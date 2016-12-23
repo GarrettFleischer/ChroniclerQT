@@ -6,6 +6,7 @@
 
 #include "Misc/Bubbles/cconditionedit.h"
 #include "Bubbles/cconditionbubble.h"
+#include "Misc/cshighlighter.h"
 
 CConditionProperties::CConditionProperties(QWidget *parent)
     : CPropertiesWidget(parent), m_conditionBubble(0), m_conditionEdit(0)
@@ -16,6 +17,8 @@ CConditionProperties::CConditionProperties(QWidget *parent)
     m_conditionEdit = new CConditionEdit(this);
     m_conditionEdit->setFixedHeight(m_conditionEdit->fontMetrics().height() * 2);
     connect(m_conditionEdit, SIGNAL(textChanged()), this, SLOT(ConditionChanged()));
+
+    new CSHighlighter(m_conditionEdit->document());
 
     // Condition Layout
     QHBoxLayout *lCondition = new QHBoxLayout();

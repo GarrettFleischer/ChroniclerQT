@@ -18,7 +18,6 @@ CActionProperties::CActionProperties(QWidget *parent)
 //    m_view->setAlternatingRowColors(true);
     m_view->setEditTriggers(QAbstractItemView::DoubleClicked | QAbstractItemView::EditKeyPressed);
 
-
     CListButtons *btns = new CListButtons(this);
     connect(btns, SIGNAL(moveUp()), this, SLOT(MoveUp()));
     connect(btns, SIGNAL(moveDown()), this, SLOT(MoveDown()));

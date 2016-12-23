@@ -4,12 +4,12 @@
 
 #include "Misc/Bubbles/cactionmodel.h"
 #include "Misc/Bubbles/cactionedit.h"
+#include "Misc/cshighlighter.h"
 
 CActionDelegate::CActionDelegate(QObject *parent)
     : QStyledItemDelegate(parent)
 {
     m_editor = new CActionEdit(Q_NULLPTR);
-//    connect(m_editor, SIGNAL(textChanged()), this, SLOT(EditorUpdated()));
 }
 
 CActionDelegate::~CActionDelegate()
@@ -61,9 +61,11 @@ void CActionDelegate::destroyEditor(QWidget *editor, const QModelIndex &index) c
     editor->setParent(Q_NULLPTR);
 }
 
-void CActionDelegate::EditorUpdated()
+void CActionDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
-    QTextCursor c = m_editor->textCursor();
-    commitData(m_editor);
-    m_editor->setTextCursor(c);
+    QTextDocument doc;
+    new CSHighlighter(&doc);
+
+    doc.setPlainText(index.data().toString());
+    doc.drawContents(painter, option.rect);
 }

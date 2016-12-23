@@ -11,8 +11,6 @@ class CActionEdit;
 
 class CActionDelegate : public QStyledItemDelegate
 {
-    Q_OBJECT
-
 public:
     CActionDelegate(QObject *parent = Q_NULLPTR);
     virtual ~CActionDelegate();
@@ -22,12 +20,10 @@ public:
     virtual void setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const Q_DECL_OVERRIDE;
     virtual void updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const Q_DECL_OVERRIDE;
     virtual void destroyEditor(QWidget *editor, const QModelIndex &index) const Q_DECL_OVERRIDE;
+    virtual void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const Q_DECL_OVERRIDE;
 
 private:
     CActionEdit *m_editor;
-
-private slots:
-    void EditorUpdated();
 
 };
 

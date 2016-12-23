@@ -160,7 +160,7 @@ QVariant CVariablesModel::data(const QModelIndex &index, int role) const
         return m_variables;
     }
 
-    void CVariablesModel::RefactorBubbles(const CVariable &current, QString newname)
+    void CVariablesModel::RefactorBubbles(const CVariable &current, QString newName)
     {
         if(current.name().length())
         {
@@ -174,33 +174,59 @@ QVariant CVariablesModel::data(const QModelIndex &index, int role) const
                         if(b->getType() == Chronicler::StoryBubble)
                         {
                             CStoryBubble *bbl = static_cast<CStoryBubble *>(b);
-                            bbl->setStory(bbl->getStory().replace("${" + current.name() + "}", "${" + newname + "}"));
+                            bbl->setStory(bbl->getStory().replace("${" + current.name() + "}", "${" + newName + "}"));
                         }
                         else if(b->getType() == Chronicler::ChoiceBubble)
                         {
                             CChoiceBubble *bbl = static_cast<CChoiceBubble *>(b);
                             for(CChoice *choice : bbl->choiceBubbles())
-                                choice->setChoice(choice->text().replace("${" + current.name() + "}", "${" + newname + "}"));
+                                choice->setChoice(choice->text().replace("${" + current.name() + "}", "${" + newName + "}"));
                         }
-//                        else if(b->getType() == Chronicler::ActionBubble)
-//                        {
-//                            CActionBubble *bbl = static_cast<CActionBubble *>(b);
-//                            QStringList actions = bbl->actions()->stringList();
-//                            for(int i = 0; i < actions.length(); ++i)
-//                                actions.replace(i, QString(actions.at(i)).replace(current.name(), newname));
+                        else if(b->getType() == Chronicler::ActionBubble)
+                        {
+                            CActionBubble *bbl = static_cast<CActionBubble *>(b);
+                            QStringList actions = bbl->actions()->stringList();
+                            for(int i = 0; i < actions.length(); ++i)
+                            {
+                                QString a = actions.at(i);
+                                int space = a.indexOf(QRegularExpression("\\s"));
 
-//                            bbl->actions()->setStringList(actions);
-//                        }
+                                actions.replace(i, a.left(space) + a.mid(space).replace(current.name(), newName));
+                            }
+
+                            bbl->actions()->setStringList(actions);
+                        }
                         else if(b->getType() == Chronicler::ConditionBubble)
                         {
                             CConditionBubble *bbl = static_cast<CConditionBubble *>(b);
-                            bbl->setCondition(bbl->getCondition().replace(current.name(), newname));
+                            bbl->setCondition(bbl->getCondition().replace(current.name(), newName));
                         }
-//                        else if(b->getType() == Chronicler::CodeBubble)
-//                        {
-//                            CCodeBubble *bbl = static_cast<CCodeBubble *>(b);
-//                            bbl->setCode(bbl->getCode().replace(current.name(), newname));
-//                        }
+                        else if(b->getType() == Chronicler::CodeBubble)
+                        {
+                            CCodeBubble *bbl = static_cast<CCodeBubble *>(b);
+                            QString code = bbl->getCode();
+
+                            QRegularExpression action("\\*\\w+");
+                            QRegularExpression white_space("\\s|\\n");
+
+                            int start = 0;
+                            int end = code.indexOf(white_space);
+                            int diff = end;
+                            QString token = code.left(end);
+
+                            while(end != -1)
+                            {
+                                if(!action.match(token).hasMatch() && token.contains(current.name()))
+                                    code.replace(start, diff, code.mid(start, diff).replace(current.name(), newName));
+
+                                start = end + 1;
+                                end = code.indexOf(white_space, start);
+                                diff = end - start;
+                                token = code.mid(start, diff);
+                            }
+
+                            bbl->setCode(code);
+                        }
                         else if(b->getType() == Chronicler::StartHereBubble)
                         {
                             CStartHereBubble *bbl = static_cast<CStartHereBubble *>(b);
@@ -209,7 +235,7 @@ QVariant CVariablesModel::data(const QModelIndex &index, int role) const
                             {
                                 QModelIndex ix = model->index(i, 0);
                                 if(model->data(ix, Qt::EditRole).toString() == current.name())
-                                    model->setData(ix, newname, Qt::EditRole);
+                                    model->setData(ix, newName, Qt::EditRole);
                             }
                         }
                     }

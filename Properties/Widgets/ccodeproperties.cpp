@@ -2,6 +2,7 @@
 
 #include "Bubbles/ccodebubble.h"
 #include "Misc/Bubbles/ccodeedit.h"
+#include "Misc/cshighlighter.h"
 
 CCodeProperties::CCodeProperties(QWidget *parent)
     : CPropertiesWidget(parent)
@@ -9,6 +10,8 @@ CCodeProperties::CCodeProperties(QWidget *parent)
     // Code Widget
     m_codeEdit = new CCodeEdit(this);
     connect(m_codeEdit, SIGNAL(textChanged()), this, SLOT(CodeChanged()));
+
+    new CSHighlighter(m_codeEdit->document());
 
     m_layout->addWidget(m_codeEdit);
 

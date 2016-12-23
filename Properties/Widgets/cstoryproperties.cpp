@@ -16,6 +16,8 @@
 #include "Misc/Variables/cvariablesmodel.h"
 #include "Misc/Variables/cvariable.h"
 
+#include "Misc/cshighlighter.h"
+
 #include "Misc/chronicler.h"
 using Chronicler::shared;
 
@@ -54,6 +56,8 @@ CStoryProperties::CStoryProperties(QWidget *parent)
 
     m_layout->addLayout(hl_font);
     m_layout->addWidget(m_storyEdit);
+
+    new CSHighlighter(m_storyEdit->document());
 
     setBubble(Q_NULLPTR);
 }

@@ -29,7 +29,7 @@ public:
     QList<CVariable> variables() const;
 
 private:
-    void RefactorBubbles(const CVariable &current, QString newname);
+    void RefactorBubbles(const CVariable &current, QString newName);
 
     QList<CVariable> m_variables;
 
