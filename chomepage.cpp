@@ -200,7 +200,7 @@ void CHomepage::FileDownloaded(QVariant userData, QByteArray data)
 void CHomepage::NewsDownloaded(const QByteArray &data)
 {
     QString news = QFileInfo(shared().settingsView->settings()->fileName()).absolutePath() + "/Chronicler_news.html";
-    WriteToFile(news, data, QFileDevice::ReadUser);
+    WriteToFile(news, data, QFileDevice::ReadUser | QFileDevice::WriteUser);
 
     m_webView->load(QUrl::fromLocalFile(news));
 }
