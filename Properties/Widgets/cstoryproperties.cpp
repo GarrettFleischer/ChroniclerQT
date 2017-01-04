@@ -120,6 +120,8 @@ void CStoryProperties::UpdateModel()
     for(const CVariable &v : shared().variablesView->getVariablesForScene((view ? view->cScene() : Q_NULLPTR)))
             lst.append("${" + v.name() + "}");
 
+    lst.append({"*line_break", "*page_break"});
+
     m_completionModel->setStringList(lst);
 }
 

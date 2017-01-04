@@ -6,28 +6,26 @@
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
+#include <QVariant>
 
 class CFileDownloader : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit CFileDownloader(QUrl file, const char *slot = 0, QObject *parent = 0);
+    explicit CFileDownloader(QObject *parent = Q_NULLPTR);
     virtual ~CFileDownloader();
-    QByteArray downloadedData() const;
 
-    void Download(QUrl file, const char *slot);
+    void Download(QUrl url, QVariant userData = QVariant());
 
 private:
     QNetworkAccessManager m_WebCtrl;
-    QByteArray m_DownloadedData;
 
 signals:
-    void downloaded();
+    void downloaded(QVariant id, QByteArray data);
 
 private slots:
     void fileDownloaded(QNetworkReply* pReply);
-
 
 };
 

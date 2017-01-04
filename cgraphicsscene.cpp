@@ -238,7 +238,7 @@ void CGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
         shared().debugAction->setEnabled(false);
         CBubble *clickItem = BubbleAt(event->scenePos(), true);
 
-        if(!(event->modifiers() & Qt::ControlModifier) && (!clickItem || !clickItem->isSelected()))
+        if(!(event->modifiers() & Qt::ControlModifier) && (!clickItem || !clickItem->container()->isSelected()))
             for(QGraphicsItem *item : items())
                 item->setSelected(false);
 
@@ -276,7 +276,7 @@ void CGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
                 {
                     m_line->setStart(event->scenePos());
                     m_line->setStartAnchor(out);
-                    m_line->setPalette(clickItem->getPalette());
+                    m_line->setPalette(clickItem->getPaletteAction());
                     m_line->show();
                 }
             }
@@ -318,7 +318,7 @@ void CGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
         {
             CBubble *clickItem = BubbleAt(event->scenePos(), true);
             if(clickItem)
-                shared().paletteButton->setCurrent(clickItem->getPalette());
+                shared().paletteButton->setCurrent(clickItem->getPaletteAction());
         }
     }
 }
@@ -412,7 +412,9 @@ void CGraphicsScene::keyPressEvent(QKeyEvent *event)
 
 void CGraphicsScene::keyReleaseEvent(QKeyEvent *event)
 {
-    if(event->key() == Qt::Key_Shift && !m_line->isVisible())
+    // only reset the cursor if it was previously in cursor mode
+    // this allows for placing multiple bubbles
+    if(event->key() == Qt::Key_Shift && !m_line->isVisible() && shared().pointerTypeGroup->checkedId() == 1)
         shared().setMode(Chronicler::Cursor);
 }
 

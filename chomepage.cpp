@@ -14,13 +14,18 @@
 #include <QPushButton>
 #include <QAction>
 #include <QStandardPaths>
-#include <QFile>
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QStatusBar>
 #include <QCoreApplication>
 #include <QDesktopServices>
 #include <QProcess>
+#include <QDir>
+
+#include <QByteArray>
+#include <QJsonDocument>
+#include <QJsonArray>
+#include <QJsonObject>
 
 #include "cmainwindow.h"
 
@@ -34,17 +39,19 @@
 using Chronicler::shared;
 using Chronicler::CVersion;
 
+#include <QDebug>
+
 // for QSettings
 Q_DECLARE_METATYPE(QStringList)
+Q_DECLARE_METATYPE(UpdateFile)
 
 
 CHomepage::CHomepage(QWidget *parent)
-    : QWidget(parent), m_webView(0), m_recentView(0)
+    : QWidget(parent), m_webView(Q_NULLPTR), m_recentView(Q_NULLPTR), m_filesDownloaded(0)
 {
     // Set variables relevant to each OS
 #ifdef Q_OS_WIN
     m_os = Windows;
-    m_download = "https://dl.orangedox.com/dyxG0UfWBkJXHq8e7b/Chronicler-Next.exe?dl=1";
     m_executable = "/Chronicler-Next.exe";
 #endif
 #ifdef Q_OS_OSX
@@ -54,7 +61,6 @@ CHomepage::CHomepage(QWidget *parent)
 #endif
 #ifdef Q_OS_LINUX
     m_os = Linux;
-    m_download = "https://dl.orangedox.com/XWv5CcPVPIlNEmMxQA/Chronicler-Next?dl=1";
     m_executable = "/Chronicler-Next";
 #endif
 
@@ -63,11 +69,15 @@ CHomepage::CHomepage(QWidget *parent)
     SetupSidebar(main_layout);
     SetupMainWindow(main_layout);
 
-    // Download the HTML news page
-    shared().statusBar->showMessage("Acquiring the latest news...");
-    m_downloader = new CFileDownloader(QUrl("https://www.dropbox.com/s/tru5nkm9m4uukwe/Chronicler_news.html?dl=1"), SLOT(NewsDownloaded()), this);
+    // Setup the downloader
+    m_settingsPath = QFileInfo(shared().settingsView->settings()->fileName()).absolutePath();
 
+    m_downloader = new CFileDownloader(this);
+    connect(m_downloader, SIGNAL(downloaded(QVariant,QByteArray)), this, SLOT(FileDownloaded(QVariant,QByteArray)));
 
+    shared().statusBar->showMessage("Checking for updates and acquiring the latest news...");
+    m_downloader->Download(QUrl("https://www.dropbox.com/s/tru5nkm9m4uukwe/Chronicler_news.html?dl=1"), (int)News);
+    m_downloader->Download(QUrl("https://www.dropbox.com/s/vozka09alf1xtnh/Chronicler_Versions.json?dl=1"), (int)Versions);
 }
 
 void CHomepage::SetupSidebar(QHBoxLayout *main_layout)
@@ -109,7 +119,11 @@ void CHomepage::SetupSidebar(QHBoxLayout *main_layout)
 
 void CHomepage::SetupMainWindow(QHBoxLayout *main_layout)
 {
+    QString news = QFileInfo(shared().settingsView->settings()->fileName()).absolutePath() + "/Chronicler_news.html";
     m_webView = new QWebView();
+    m_webView->load(QUrl::fromLocalFile(news));
+    m_webView->page()->setLinkDelegationPolicy(QWebPage::DelegateAllLinks);
+    connect(m_webView, SIGNAL(linkClicked(QUrl)), this, SLOT(LinkClicked(QUrl)));
 
     // Add to main layout
     main_layout->addWidget(m_webView, 4);
@@ -157,94 +171,152 @@ void CHomepage::RecentItemSelected(QListWidgetItem *item)
     }
 }
 
-void CHomepage::NewsDownloaded()
+void CHomepage::FileDownloaded(QVariant userData, QByteArray data)
+{
+    if(data.length() > 0)
+    {
+        if(userData.type() == QVariant::Int)
+        {
+            if(userData.toInt() == News)
+                NewsDownloaded(data);
+            else
+                CheckForUpdates(data);
+        }
+        else
+        {
+            UpdateFile uf = userData.value<UpdateFile>();
+            QString basePath = ((uf.path == m_executable) ? m_settingsPath : QCoreApplication::applicationDirPath());
+
+            WriteToFile(basePath + uf.path, data, uf.permissions);
+
+            if(++m_filesDownloaded <= m_updateVersion.files.length())
+                FinishInstallingUpdates();
+        }
+    }
+    else
+        shared().statusBar->showMessage("An error occured while downloading the file...");
+}
+
+void CHomepage::NewsDownloaded(const QByteArray &data)
 {
     QString news = QFileInfo(shared().settingsView->settings()->fileName()).absolutePath() + "/Chronicler_news.html";
-    QByteArray ba(m_downloader->downloadedData());
-
-    if(ba.length() > 0)
-    {
-        QFile file(news);
-        file.open(QFile::WriteOnly);
-        file.write(ba);
-        file.close();
-    }
+    WriteToFile(news, data, QFileDevice::ReadUser);
 
     m_webView->load(QUrl::fromLocalFile(news));
-
-    // Check for updates
-    shared().statusBar->showMessage("Checking for updates...");
-    m_downloader->deleteLater();
-    m_downloader = new CFileDownloader(QUrl("https://dl.orangedox.com/zX8B0yt1PVVBPLP04V/Chronicler_Version.txt?dl=1"), SLOT(CheckForUpdates()), this);
 }
 
-void CHomepage::CheckForUpdates()
+void CHomepage::CheckForUpdates(const QByteArray &data)
 {
-    QString server_version = m_downloader->downloadedData();
+    // Parse the returned JSON data into UpdateVersion's
+    QList<UpdateVersion> updateVersions;
 
-    // if an update is available
-    if(shared().ProgramVersion < server_version)
+    QJsonDocument document = QJsonDocument::fromJson(data);
+    QJsonArray array = document.object()["versions"].toArray();
+
+    for(const QJsonValue &jsonVersion : array)
     {
-        // Ask if the user wishes to download the update
-        QMessageBox msgBox;
-        msgBox.setText(tr("Version ") + server_version + tr(" available.\n"));
-        msgBox.setInformativeText("Download now?");
-        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-        msgBox.setDefaultButton(QMessageBox::Yes);
-        int ret = msgBox.exec();
+        QString osName = ((m_os == Windows) ? "windows" : ((m_os == Linux) ? "linux" : "mac"));
 
-        if(ret == QMessageBox::Yes)
+        UpdateVersion uv;
+        QJsonObject oVersion = jsonVersion.toObject();
+
+        uv.version = oVersion["version"].toString();
+        for(const QJsonValue &jsonFile : oVersion[osName].toArray())
         {
-            shared().statusBar->showMessage("Downloading update...");
-            m_downloader->deleteLater();
-            if(m_os == Windows || m_os == Linux)
-                m_downloader = new CFileDownloader(QUrl(m_download), SLOT(UpdateDownloaded()), this);
-            else
-                shared().statusBar->showMessage("Your OS is not supported at this time...");
+            UpdateFile uf;
+            QJsonObject oFile = jsonFile.toObject();
+
+            uf.path = oFile["path"].toString();
+            uf.url = oFile["url"].toString();
+            for(QChar c : oFile["permissions"].toString())
+            {
+                if(c == 'r')
+                    uf.permissions |= QFileDevice::ReadUser;
+                if(c == 'w')
+                    uf.permissions |= QFileDevice::WriteUser;
+                if(c == 'e')
+                    uf.permissions |= QFileDevice::ExeUser;
+            }
+
+            uv.files.append(uf);
         }
+
+        updateVersions.append(uv);
     }
-    else
-        shared().statusBar->showMessage("Chronicler is up to date.");
+
+    // Use the parsed data
+    for(UpdateVersion uv : updateVersions)
+    {
+        // Find the first available update
+        if(shared().ProgramVersion < uv.version)
+        {
+            // Ask if the user wishes to download the update
+            QMessageBox msgBox;
+            msgBox.setText(tr("Version ") + uv.version + tr(" available.\n"));
+            msgBox.setInformativeText("Download now?");
+            msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+            msgBox.setDefaultButton(QMessageBox::Yes);
+            int ret = msgBox.exec();
+
+            if(ret == QMessageBox::Yes)
+            {
+                m_updateVersion = uv;
+                shared().statusBar->showMessage("Downloading update...");
+                for(UpdateFile uf : uv.files)
+                    m_downloader->Download(QUrl(uf.url), QVariant::fromValue(uf));
+            }
+
+            // only install this update. Chronicler must restart to install more updates.
+            break;
+        }
+        else
+            shared().statusBar->showMessage("Chronicler is up to date.");
+    }
 }
 
-void CHomepage::UpdateDownloaded()
+void CHomepage::FinishInstallingUpdates()
 {
-    QByteArray ba(m_downloader->downloadedData());
+    shared().statusBar->showMessage("Download complete.");
 
-    if(ba.length() > 0)
+    QMessageBox msgBox;
+    msgBox.setText(tr("Update has been downloaded. Chronicler must be restarted in order to apply the update."));
+    msgBox.setInformativeText(tr("Restart now?"));
+    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    msgBox.setDefaultButton(QMessageBox::Yes);
+    int ret = msgBox.exec();
+
+    if(ret == QMessageBox::Yes)
     {
-        // write the download to a file
-        QFile file(QFileInfo(shared().settingsView->settings()->fileName()).absolutePath() + m_executable);
-        file.open(QFile::WriteOnly);
-        file.setPermissions(QFileDevice::ReadUser | QFileDevice::WriteUser | QFileDevice::ExeUser);
-        file.write(ba);
-        file.close();
-
-        shared().statusBar->showMessage("Download complete.");
-
-        QMessageBox msgBox;
-        msgBox.setText(tr("Update has been downloaded. Chronicler must be restarted in order to apply the update."));
-        msgBox.setInformativeText(tr("Restart now?"));
-        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-        msgBox.setDefaultButton(QMessageBox::Yes);
-        int ret = msgBox.exec();
-
-        if(ret == QMessageBox::Yes)
+        if(m_os == Windows)
         {
-            if(m_os == Windows)
-            {
-                shared().mainWindow->close();
-                QDesktopServices::openUrl(QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + "/Chronicler_Updater.exe"));
-            }
-            else if(m_os == Linux)
-            {
-                QProcess *process = new QProcess();
-                connect(process, SIGNAL(finished(int)), shared().mainWindow, SLOT(close()));
-                process->start(QCoreApplication::applicationDirPath() + "/Chronicler_Updater");
-            }
+            shared().mainWindow->close();
+            QDesktopServices::openUrl(QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + "/Chronicler_Updater.exe"));
+        }
+        else if(m_os == Linux)
+        {
+            QProcess *process = new QProcess();
+            connect(process, SIGNAL(finished(int)), shared().mainWindow, SLOT(close()));
+            process->start(QCoreApplication::applicationDirPath() + "/Chronicler_Updater");
         }
     }
-    else
-        shared().statusBar->showMessage("An error occured while downloading update...");
+}
+
+bool CHomepage::WriteToFile(QString path, const QByteArray &data, QFlags<QFileDevice::Permission> permissions)
+{
+    QFile file(path);
+    file.open(QFile::WriteOnly);
+    if(!file.isOpen())
+        return false;
+
+    file.setPermissions(permissions);
+    file.write(data);
+    file.close();
+
+    return true;
+}
+
+void CHomepage::LinkClicked(const QUrl &url)
+{
+    QDesktopServices::openUrl(url);
 }
 

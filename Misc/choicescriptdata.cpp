@@ -458,7 +458,7 @@ CBubble * ChoiceScriptData::CSProcBubble(const CSBlock &csblock, QList<CSBubble>
         for(int i = 0; i < csblock.children.length(); ++i)
         {
             const CSBlock &choice = csblock.children[i];
-            CChoice *cschoice = new CChoice(bbl->getPalette(), bbl->getFont(), bbl, choice.text);
+            CChoice *cschoice = new CChoice(bbl->getPaletteAction(), bbl->getFont(), bbl, choice.text);
             bbl->choices()->AddItem(cschoice);
 
             bool left = (i < csblock.children.length() / 2);

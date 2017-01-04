@@ -6,6 +6,7 @@
 QT_BEGIN_NAMESPACE
 class QColorDialog;
 class QLineEdit;
+class QListView;
 QT_END_NAMESPACE
 
 class CStoryBubble;
@@ -19,7 +20,7 @@ class CPaletteCreator : public QDialog
     Q_OBJECT
 
 public:
-    CPaletteCreator(QWidget *parent = 0);
+    CPaletteCreator(QWidget *parent = Q_NULLPTR);
 
     void setPalette(const CPalette &palette);
     const Chronicler::CPalette getPalette() const;
@@ -29,6 +30,8 @@ public:
 
 private:
     CStoryBubble *m_bubble;
+
+    QListView *m_palettesView;
 
     QColorDialog *m_colorDialog;
 

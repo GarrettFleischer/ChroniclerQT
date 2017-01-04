@@ -49,7 +49,7 @@ public:
     QFont getFont() const { return m_font; }
 
     virtual void setPalette(CPaletteAction *palette);
-    CPaletteAction *getPalette();
+    CPaletteAction *getPaletteAction();
 
     BubbleType getType() const { return m_type; }
 

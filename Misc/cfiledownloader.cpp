@@ -1,43 +1,31 @@
 #include "cfiledownloader.h"
 
-CFileDownloader::CFileDownloader(QUrl file, const char *slot, QObject *parent)
+CFileDownloader::CFileDownloader(QObject *parent)
     : QObject(parent)
 {
-    connect(&m_WebCtrl, SIGNAL(finished(QNetworkReply*)),
-            this, SLOT(fileDownloaded(QNetworkReply*)));
-
-    Download(file, slot);
+    connect(&m_WebCtrl, SIGNAL(finished(QNetworkReply*)), this, SLOT(fileDownloaded(QNetworkReply*)));
 }
 
 CFileDownloader::~CFileDownloader()
 {}
 
-void CFileDownloader::Download(QUrl file, const char *slot)
+void CFileDownloader::Download(QUrl url, QVariant userData)
 {
-    if(slot)
-        connect(this, SIGNAL(downloaded()), parent(), slot);
+    QNetworkRequest request(url);
+    request.setAttribute(QNetworkRequest::User, userData);
 
-    QNetworkRequest request(file);
     m_WebCtrl.get(request);
 }
 
 void CFileDownloader::fileDownloaded(QNetworkReply* pReply)
 {
+    QVariant userData = pReply->request().attribute(QNetworkRequest::User);
     QUrl redirect = pReply->attribute(QNetworkRequest::RedirectionTargetAttribute).value<QUrl>();
-    if(redirect.toString().length())
-        Download(redirect, 0);
+
+    if(!redirect.isEmpty())
+        Download(redirect, userData);
     else
-    {
-        m_DownloadedData = pReply->readAll();
-        emit downloaded();
-    }
+        emit downloaded(userData, pReply->readAll());
 
     pReply->deleteLater();
 }
-
-QByteArray CFileDownloader::downloadedData() const
-{
-    return m_DownloadedData;
-}
-
-

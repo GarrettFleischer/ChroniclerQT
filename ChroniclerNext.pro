@@ -91,7 +91,8 @@ HEADERS += \
     Misc/Bubbles/cstartheredelegate.h \
     Misc/Bubbles/cstarthereedit.h \
     Properties/Widgets/cstarthereproperties.h \
-    Misc/cshighlighter.h
+    Misc/cshighlighter.h \
+    Misc/Palette/cpalettemodel.h
 
 SOURCES += \
     Bubbles/cactionbubble.cpp \
@@ -165,4 +166,5 @@ SOURCES += \
     Misc/Bubbles/cstartheredelegate.cpp \
     Misc/Bubbles/cstarthereedit.cpp \
     Properties/Widgets/cstarthereproperties.cpp \
-    Misc/cshighlighter.cpp
+    Misc/cshighlighter.cpp \
+    Misc/Palette/cpalettemodel.cpp

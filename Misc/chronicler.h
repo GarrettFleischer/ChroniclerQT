@@ -86,22 +86,22 @@ namespace Chronicler
 
         bool operator <(QString _version) const
         {
-            return versionToInt(string) < versionToInt(_version);
+            return versionDiff(string, _version) < 0;
         }
 
         bool operator >(QString _version) const
         {
-            return versionToInt(string) > versionToInt(_version);
+            return versionDiff(string, _version) > 0;
         }
 
         bool operator <=(QString _version) const
         {
-            return versionToInt(string) <= versionToInt(_version);
+            return versionDiff(string, _version) <= 0;
         }
 
         bool operator >=(QString _version) const
         {
-            return versionToInt(string) >= versionToInt(_version);
+            return versionDiff(string, _version) >= 0;
         }
 
         friend QDataStream & operator<<(QDataStream &stream, const CVersion &rhs)
@@ -116,13 +116,14 @@ namespace Chronicler
 
     private:
         int versionToInt(const QString &versionToInt) const;
+        int versionDiff(const QString &v1, const QString &v2) const;
     };
 
 
     /// @brief Do NOT instantiate this struct, use shared() singleton access.
     struct SharedInstances
     {
-        const CVersion ProgramVersion = CVersion("0.9.18.1");
+        const CVersion ProgramVersion = CVersion("0.10.0.0");
 
         CMainWindow *mainWindow;
 

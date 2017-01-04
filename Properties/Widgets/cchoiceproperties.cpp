@@ -60,7 +60,7 @@ void CChoiceProperties::MoveDown()
 
 void CChoiceProperties::AddItem()
 {
-    m_choiceBubble->choices()->AddItem(new CChoice(m_choiceBubble->getPalette(), m_choiceBubble->getFont(), m_choiceBubble));
+    m_choiceBubble->choices()->AddItem(new CChoice(m_choiceBubble->getPaletteAction(), m_choiceBubble->getFont(), m_choiceBubble));
     m_view->edit(QModelIndex(m_view->model()->index(m_view->model()->rowCount() - 1, 0)));
 }
 

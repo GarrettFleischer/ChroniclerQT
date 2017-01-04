@@ -4,6 +4,7 @@
 #include <QGraphicsScene>
 #include <QColorDialog>
 #include <QLineEdit>
+#include <QListView>
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -45,13 +46,13 @@ CPaletteCreator::CPaletteCreator(QWidget *parent)
     scene->addItem(m_bubble);
 
     QSize s(32, 32);
-    m_fillButton = new CColorButton(s, m_bubble->getPalette()->getPalette().fill);
+    m_fillButton = new CColorButton(s, m_bubble->getPaletteAction()->getPalette().fill);
     connect(m_fillButton, SIGNAL(colorChanged(QColor)), this, SLOT(PaletteChanged()));
-    m_lineButton = new CColorButton(s, m_bubble->getPalette()->getPalette().line);
+    m_lineButton = new CColorButton(s, m_bubble->getPaletteAction()->getPalette().line);
     connect(m_lineButton, SIGNAL(colorChanged(QColor)), this, SLOT(PaletteChanged()));
-    m_selectButton = new CColorButton(s, m_bubble->getPalette()->getPalette().select);
+    m_selectButton = new CColorButton(s, m_bubble->getPaletteAction()->getPalette().select);
     connect(m_selectButton, SIGNAL(colorChanged(QColor)), this, SLOT(PaletteChanged()));
-    m_fontButton = new CColorButton(s, m_bubble->getPalette()->getPalette().font);
+    m_fontButton = new CColorButton(s, m_bubble->getPaletteAction()->getPalette().font);
     connect(m_fontButton, SIGNAL(colorChanged(QColor)), this, SLOT(PaletteChanged()));
 
     m_name = new QLineEdit("New Palette");
@@ -93,7 +94,7 @@ void CPaletteCreator::setPalette(const Chronicler::CPalette &palette)
 
 const CPalette CPaletteCreator::getPalette() const
 {
-    return m_bubble->getPalette()->getPalette();
+    return m_bubble->getPaletteAction()->getPalette();
 }
 
 void CPaletteCreator::setName(const QString &name)

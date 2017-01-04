@@ -206,7 +206,7 @@ void CBubble::setPalette(CPaletteAction *palette)
     emit PaletteChanged();
 }
 
-CPaletteAction * CBubble::getPalette()
+CPaletteAction * CBubble::getPaletteAction()
 {
     return m_paletteAction;
 }
