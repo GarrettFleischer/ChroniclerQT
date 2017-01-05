@@ -123,7 +123,7 @@ namespace Chronicler
     /// @brief Do NOT instantiate this struct, use shared() singleton access.
     struct SharedInstances
     {
-        const CVersion ProgramVersion = CVersion("0.10.1.0");
+        const CVersion ProgramVersion = CVersion("0.10.1.1");
 
         CMainWindow *mainWindow;
 
