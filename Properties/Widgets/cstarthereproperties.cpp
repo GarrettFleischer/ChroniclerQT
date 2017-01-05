@@ -15,7 +15,7 @@
 #include "Misc/Bubbles/ccodeedit.h"
 
 CStartHereProperties::CStartHereProperties(QWidget *parent)
-    : QWidget(parent)
+    : QWidget(parent), m_bubble(Q_NULLPTR)
 {
     CListButtons *btns = new CListButtons(this, CListButtons::Add | CListButtons::Remove);
     connect(btns, SIGNAL(addItem()), this, SLOT(AddItem()));
@@ -77,10 +77,12 @@ void CStartHereProperties::RemoveItem()
 
 void CStartHereProperties::LabelChanged(QString label)
 {
-    m_bubble->setLabel(label);
+    if(m_bubble)
+        m_bubble->setLabel(label);
 }
 
 void CStartHereProperties::CodeChanged()
 {
-    m_bubble->setCustomCode(m_customCodeEdit->toPlainText());
+    if(m_bubble)
+        m_bubble->setCustomCode(m_customCodeEdit->toPlainText());
 }

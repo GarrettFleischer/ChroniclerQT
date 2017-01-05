@@ -92,7 +92,25 @@ HEADERS += \
     Misc/Bubbles/cstarthereedit.h \
     Properties/Widgets/cstarthereproperties.h \
     Misc/cshighlighter.h \
-    Misc/Palette/cpalettemodel.h
+    Misc/Palette/cpalettemodel.h \
+    hunspell/affentry.hxx \
+    hunspell/affixmgr.hxx \
+    hunspell/atypes.hxx \
+    hunspell/baseaffix.hxx \
+    hunspell/csutil.hxx \
+    hunspell/dictmgr.hxx \
+    hunspell/filemgr.hxx \
+    hunspell/hashmgr.hxx \
+    hunspell/htypes.hxx \
+    hunspell/hunspell.h \
+    hunspell/hunspell.hxx \
+    hunspell/hunzip.hxx \
+    hunspell/langnum.hxx \
+    hunspell/phonet.hxx \
+    hunspell/suggestmgr.hxx \
+    hunspell/w_char.hxx \
+    Misc/SpellTextEdit.h \
+    Misc/highlighter.h
 
 SOURCES += \
     Bubbles/cactionbubble.cpp \
@@ -167,4 +185,21 @@ SOURCES += \
     Misc/Bubbles/cstarthereedit.cpp \
     Properties/Widgets/cstarthereproperties.cpp \
     Misc/cshighlighter.cpp \
-    Misc/Palette/cpalettemodel.cpp
+    Misc/Palette/cpalettemodel.cpp \
+    hunspell/affentry.cxx \
+    hunspell/affixmgr.cxx \
+    hunspell/csutil.cxx \
+    hunspell/dictmgr.cxx \
+    hunspell/filemgr.cxx \
+    hunspell/hashmgr.cxx \
+    hunspell/hunspell.cxx \
+    hunspell/hunzip.cxx \
+    hunspell/phonet.cxx \
+    hunspell/suggestmgr.cxx \
+    hunspell/utf_info.cxx \
+    Misc/SpellTextEdit.cpp \
+    Misc/highlighter.cpp
+
+DISTFILES += \
+    hunspell/license.hunspell \
+    hunspell/license.myspell

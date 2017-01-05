@@ -1,6 +1,9 @@
 #ifndef TEXTEDIT_H
 #define TEXTEDIT_H
 
+#include "Misc/SpellTextEdit.h"
+#include "Misc/highlighter.h"
+
 #include <QtCore>
 #include <QtGui>
 
@@ -16,7 +19,8 @@
 
 
 
-class CTextEdit : public QTextEdit
+
+class CTextEdit : public SpellTextEdit
 {
     Q_OBJECT
 

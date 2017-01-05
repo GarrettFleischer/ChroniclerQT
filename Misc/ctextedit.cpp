@@ -1,7 +1,9 @@
 #include "ctextedit.h"
 
+#include "Misc/cshighlighter.h"
+
 CTextEdit::CTextEdit(QWidget * parent, QStringListModel * model, const QString & text)
-    : QTextEdit(parent), m_completer(0), m_completionModel(model), m_enabled(true), m_alwaysEnabled(false), m_acceptsReturn(true), m_acceptsTab(false), m_ctrlHeld(false)
+    : SpellTextEdit(parent), m_completer(0), m_completionModel(model), m_enabled(true), m_alwaysEnabled(false), m_acceptsReturn(true), m_acceptsTab(false), m_ctrlHeld(false)
 {
     setText(text);
 
@@ -11,6 +13,12 @@ CTextEdit::CTextEdit(QWidget * parent, QStringListModel * model, const QString &
     m_filtered = new QStringListModel(this);
 
     setCompleter(new QCompleter(m_filtered, this));
+
+    QString dictPath = QCoreApplication::applicationDirPath() + "/en_US.dic";
+    setDict(dictPath);
+
+    Highlighter *highlighter = new Highlighter(document(), dictPath, true);
+    connect(this, SIGNAL(addWord(QString)), highlighter, SLOT(slot_addWord(QString)));
 }
 
 

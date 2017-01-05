@@ -18,7 +18,7 @@ CConditionProperties::CConditionProperties(QWidget *parent)
     m_conditionEdit->setFixedHeight(m_conditionEdit->fontMetrics().height() * 2);
     connect(m_conditionEdit, SIGNAL(textChanged()), this, SLOT(ConditionChanged()));
 
-    new CSHighlighter(m_conditionEdit->document());
+//    new CSHighlighter(m_conditionEdit->document());
 
     // Condition Layout
     QHBoxLayout *lCondition = new QHBoxLayout();
