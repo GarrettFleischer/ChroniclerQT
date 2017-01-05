@@ -189,7 +189,7 @@ void CHomepage::FileDownloaded(QVariant userData, QByteArray data)
 
             WriteToFile(basePath + uf.path, data, uf.permissions);
 
-            if(++m_filesDownloaded <= m_updateVersion.files.length())
+            if(++m_filesDownloaded >= m_updateVersion.files.length())
                 FinishInstallingUpdates();
         }
     }
