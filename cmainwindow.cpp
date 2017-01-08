@@ -517,10 +517,10 @@ void CMainWindow::CreateActions()
     connect(shared().debugAction, SIGNAL(triggered(bool)), this, SLOT(DebugProject()));
 
     // Other
-    QAction *escape_action = new QAction(this);
-    escape_action->setShortcut(Qt::Key_Escape);
-    connect(escape_action, SIGNAL(triggered(bool)), this, SLOT(EscapePressed()));
-    addAction(escape_action);
+    shared().escapeAction = new QAction(this);
+    shared().escapeAction->setShortcut(Qt::Key_Escape);
+    connect(shared().escapeAction, SIGNAL(triggered(bool)), this, SLOT(EscapePressed()));
+    addAction(shared().escapeAction);
 }
 
 

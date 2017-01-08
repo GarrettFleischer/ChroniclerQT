@@ -2,6 +2,9 @@
 
 #include "Misc/cshighlighter.h"
 
+#include "Misc/chronicler.h"
+using Chronicler::shared;
+
 CTextEdit::CTextEdit(QWidget * parent, QStringListModel * model, const QString & text)
     : SpellTextEdit(parent), m_completer(0), m_completionModel(model), m_enabled(true), m_alwaysEnabled(false), m_acceptsReturn(true), m_acceptsTab(false), m_ctrlHeld(false)
 {
@@ -13,6 +16,8 @@ CTextEdit::CTextEdit(QWidget * parent, QStringListModel * model, const QString &
     m_filtered = new QStringListModel(this);
 
     setCompleter(new QCompleter(m_filtered, this));
+
+    connect(shared().escapeAction, SIGNAL(triggered(bool)), this, SLOT(EscapePressed()));
 
     QString dictPath = QCoreApplication::applicationDirPath() + "/en_US.dic";
     setDict(dictPath);
@@ -168,6 +173,14 @@ void CTextEdit::insertCompletion(const QString& completion)
     setTextCursor(tc);
 }
 
+void CTextEdit::EscapePressed()
+{
+    if(!m_completer->popup()->isHidden())
+        m_enabled = false;
+    else
+        m_enabled = true;
+}
+
 
 void CTextEdit::focusInEvent(QFocusEvent *e)
 {
@@ -181,13 +194,7 @@ void CTextEdit::keyPressEvent(QKeyEvent *e)
 {
     const bool isEscape = (e->key() == Qt::Key_Escape);
     if(isEscape)
-    {
-        if(!m_completer->popup()->isHidden())
-            m_enabled = false;
-        else
-            m_enabled = true;
-    }
-
+        EscapePressed();
     const bool isReturn = (e->key() == Qt::Key_Return || e->key() == Qt::Key_Enter);
     const bool isTab = (e->key() == Qt::Key_Tab);
 

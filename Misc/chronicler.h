@@ -115,7 +115,6 @@ namespace Chronicler
         }
 
     private:
-        int versionToInt(const QString &versionToInt) const;
         int versionDiff(const QString &v1, const QString &v2) const;
     };
 
@@ -123,7 +122,7 @@ namespace Chronicler
     /// @brief Do NOT instantiate this struct, use shared() singleton access.
     struct SharedInstances
     {
-        const CVersion ProgramVersion = CVersion("0.10.1.1");
+        const CVersion ProgramVersion = CVersion("0.10.1.2");
 
         CMainWindow *mainWindow;
 
@@ -173,6 +172,7 @@ namespace Chronicler
         QAction *compileAction;
         QAction *playAction;
         QAction *debugAction;
+        QAction *escapeAction;
 
         QUndoStack *history;
 

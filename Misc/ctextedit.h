@@ -60,6 +60,7 @@ protected:
 
 private slots:
     void insertCompletion(const QString &completion);
+    void EscapePressed();
 };
 
 #endif // TEXTEDIT_H
