@@ -61,11 +61,11 @@ void CActionDelegate::destroyEditor(QWidget *editor, const QModelIndex &index) c
     editor->setParent(Q_NULLPTR);
 }
 
-void CActionDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
-{
-    QTextDocument doc;
-    new CSHighlighter(&doc);
+//void CActionDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+//{
+//    QTextDocument doc;
+//    new CSHighlighter(&doc);
 
-    doc.setPlainText(index.data().toString());
-    doc.drawContents(painter, option.rect);
-}
+//    doc.setPlainText(index.data().toString());
+//    doc.drawContents(painter, option.rect);
+//}
