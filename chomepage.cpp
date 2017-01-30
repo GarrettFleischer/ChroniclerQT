@@ -291,17 +291,11 @@ void CHomepage::FinishInstallingUpdates()
             shared().mainWindow->close();
             QDesktopServices::openUrl(QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + "/Chronicler_Updater.exe"));
         }
-        else if(m_os == Linux)
+        else if(m_os == Linux || m_os == Mac)
         {
             QProcess *process = new QProcess();
             connect(process, SIGNAL(finished(int)), shared().mainWindow, SLOT(close()));
             process->start(QCoreApplication::applicationDirPath() + "/Chronicler_Updater");
-        }
-        else if(m_os == Mac)
-        {
-            QProcess *process = new QProcess();
-            connect(process, SIGNAL(finished(int)), shared().mainWindow, SLOT(close()));
-            process->start(QCoreApplication::applicationDirPath() + "/Chronicler_Updater.app");
         }
     }
 }
