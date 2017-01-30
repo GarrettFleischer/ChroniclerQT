@@ -56,7 +56,7 @@ CHomepage::CHomepage(QWidget *parent)
 #endif
 #ifdef Q_OS_OSX
     m_os = Mac;
-    m_executable = "/Chronicler-Next";
+    m_executable = "/Chronicler-Next.app";
 #endif
 #ifdef Q_OS_LINUX
     m_os = Linux;
@@ -291,11 +291,17 @@ void CHomepage::FinishInstallingUpdates()
             shared().mainWindow->close();
             QDesktopServices::openUrl(QUrl::fromLocalFile(QCoreApplication::applicationDirPath() + "/Chronicler_Updater.exe"));
         }
-        else if(m_os == Linux || m_os == Mac)
+        else if(m_os == Linux)
         {
             QProcess *process = new QProcess();
             connect(process, SIGNAL(finished(int)), shared().mainWindow, SLOT(close()));
             process->start(QCoreApplication::applicationDirPath() + "/Chronicler_Updater");
+        }
+        else if(m_os == Mac)
+        {
+            QProcess *process = new QProcess();
+            connect(process, SIGNAL(finished(int)), shared().mainWindow, SLOT(close()));
+            process->start(QCoreApplication::applicationDirPath() + "/Chronicler_Updater.app");
         }
     }
 }
