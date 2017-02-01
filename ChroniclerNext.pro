@@ -8,6 +8,7 @@ RESOURCES   =	chroniclernext.qrc
 #}
 
 RC_ICONS += GameSmith.ico
+ICON = GameSmith.icns
 
 TRANSLATIONS += chroniclernext_es.ts
 

@@ -56,7 +56,7 @@ CHomepage::CHomepage(QWidget *parent)
 #endif
 #ifdef Q_OS_OSX
     m_os = Mac;
-    m_executable = "/Chronicler-Next";
+    m_executable = "/Chronicler-Next.app";
 #endif
 #ifdef Q_OS_LINUX
     m_os = Linux;

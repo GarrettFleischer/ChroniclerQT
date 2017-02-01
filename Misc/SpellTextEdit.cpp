@@ -60,7 +60,7 @@ SpellTextEdit::~SpellTextEdit()
         }
         file.close();
     }
-    if (file.open(QIODevice::WriteOnly | QIODevice::Text))
+    if (pChecker && file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
         //		std::cout << "write" << std::endl;
 

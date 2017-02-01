@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
     program = "/Chronicler-Next.exe";
 #endif
 #ifdef Q_OS_OSX
-    program = "";
+    program = "/Chronicler-Next.app";
 #endif
 #ifdef Q_OS_LINUX
     program = "/Chronicler-Next";
