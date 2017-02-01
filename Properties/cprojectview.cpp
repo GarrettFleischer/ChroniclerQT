@@ -83,7 +83,7 @@ Q_DECLARE_METATYPE(QStringList)
 
 
 CProjectView::CProjectView(QWidget *parent)
-    : QWidget(parent), m_version(shared().ProgramVersion), m_path("")
+    : QWidget(parent), m_version(shared().ProgramVersion), m_path(""), m_webView(Q_NULLPTR)
 {
     m_sceneModel = new CSceneModel(this);
 
@@ -95,6 +95,7 @@ CProjectView::CProjectView(QWidget *parent)
     connect(m_sceneModel, SIGNAL(dataChanged(QModelIndex,QModelIndex,QVector<int>)), this, SLOT(DataChanged(QModelIndex,QModelIndex)));
 
     m_webView = new QWebView();
+    m_webView->settings()->setObjectCacheCapacities(0,0,0);
 
     CListButtons *btns = new CListButtons(this);
     connect(btns, SIGNAL(moveUp()), this, SLOT(MoveUp()));
@@ -244,7 +245,7 @@ void CProjectView::PlayProject(CStartHereBubble *debugStart)
         QString web_dir = shared().settingsView->choiceScriptDirectory() + "/web";
         ExportChoiceScript(web_dir + "/mygame", debugStart);
 
-        m_webView->setUrl(QUrl::fromLocalFile(web_dir + "/mygame/index.html"));
+        m_webView->setUrl(QUrl::fromLocalFile(web_dir + "/index.html"));
         m_webView->reload();
 
         if(shared().sceneTabs->indexOf(m_webView) == -1)

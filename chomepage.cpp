@@ -247,7 +247,7 @@ void CHomepage::CheckForUpdates(const QByteArray &data)
     for(UpdateVersion uv : updateVersions)
     {
         // Find the first available update
-        if(shared().ProgramVersion < uv.version)
+        if(shared().ProgramVersion < uv.version && uv.files.length())
         {
             // Ask if the user wishes to download the update
             QMessageBox msgBox;
