@@ -67,6 +67,7 @@ QString CSceneModel::uniqueName(const QString &scene, int row)
 {
     int val = 1;
     QString name = scene;
+    name.replace(" ", "_");
     bool found = true;
 
     while(found)

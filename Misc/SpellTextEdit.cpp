@@ -147,9 +147,8 @@ void SpellTextEdit::contextMenuEvent(QContextMenuEvent *event)
     if (!liste.isEmpty())
     {
         menu->addSeparator();
-        QAction *a;
-        a = menu->addAction(tr("Add .."), this, SLOT(slot_addWord()));
-        a = menu->addAction(tr("Ignore .."), this, SLOT(slot_ignoreWord()));
+        menu->addAction(tr("Add .."), this, SLOT(slot_addWord()));
+        menu->addAction(tr("Ignore .."), this, SLOT(slot_ignoreWord()));
         for (int i = 0; i < qMin(int(MaxWords),liste.size()); ++i) {
             misspelledWordsActs[i]->setText(liste.at(i).trimmed());
             misspelledWordsActs[i]->setVisible(true);
