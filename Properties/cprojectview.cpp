@@ -487,6 +487,8 @@ void CProjectView::ExportChoiceScript(const QString &path, CStartHereBubble *deb
 
         QList<CBubble *> bubbles = view->cScene()->bubbles();
         qSort(bubbles.begin(), bubbles.end(), SortByOrderAscending);
+        bubbles.removeAll(view->cScene()->startBubble());
+        bubbles.prepend(view->cScene()->startBubble());
 
         QList<CBubble *> processed;
 
@@ -569,7 +571,10 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
         }
 
         // generate label...
-        cs +=  "\n\n*label " + MakeLabel(bubble, bubbles);
+        if(LabelNeeded(bubble, bubbles, processed, debugStart))
+            cs +=  "\n\n*label " + MakeLabel(bubble, bubbles);
+        else
+            cs += "\n\n";
 
         // ------------ Start bubble ------------
         if(bubble->getType() == Chronicler::StartBubble)
@@ -577,6 +582,8 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
             CStartBubble *start = static_cast<CStartBubble *>(bubble);
             if(!start->link())
                 cs += indent + "*finish\n";
+            else
+                cs += BubbleToChoiceScript(bubbles, processed, indent_level, start->link()->to(), debugStart);
         }
 
         // ------------ Story bubble ------------
@@ -824,7 +831,7 @@ QString CProjectView::BubbleToChoiceScript(const QList<CBubble *> &bubbles, QLis
     }
 
     return cs;
-}
+}*/
 
 bool CProjectView::LabelNeeded(CBubble *bubble, const QList<CBubble *> &bubbles, const QList<CBubble *> &processed, CStartHereBubble *debugStart)
 {
@@ -835,7 +842,7 @@ bool CProjectView::LabelNeeded(CBubble *bubble, const QList<CBubble *> &bubbles,
     bool locked_and_processed = bubble->getLocked() && processed.contains(bubble);
 
     // if it is in debug mode
-    if(debugStart && (connections.length() > 1 || locked_and_processed))
+    if(bubble->getLabel().length() || (debugStart && (connections.length() > 1 || locked_and_processed)))
         return true;
     else
     {
@@ -850,13 +857,14 @@ bool CProjectView::LabelNeeded(CBubble *bubble, const QList<CBubble *> &bubbles,
     }
 
     if(connections.length() > 0)
-    {
-        // if the only connecting bubble hasn't been processed yet...
-        CBubble *from = connections.first()->from()->container();
-        int diff = (bubble->getOrder() - from->getOrder());
-        if((diff > 1) && !processed.contains(from))
-            return true;
-    }
+        return true;
+//    {
+//        // if the only connecting bubble hasn't been processed yet...
+//        CBubble *from = connections.first()->from()->container();
+//        int diff = (bubble->getOrder() - from->getOrder());
+//        if((diff > 1) && !processed.contains(from))
+//            return true;
+//    }
 
     // check if there is a *goto directive to this label
     QRegularExpression re;
@@ -887,7 +895,7 @@ bool CProjectView::LabelNeeded(CBubble *bubble, const QList<CBubble *> &bubbles,
     }
 
     return false;
-}*/
+}
 
 QString CProjectView::MakeLabel(CBubble *bubble, const QList<CBubble *> &bubbles)
 {
